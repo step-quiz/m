@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Material de matemàtiques — Cerca</title>
+<style>
+  /* ── Design tokens ──────────────────────────────────────────────── */
+  :root {
+    --bg:        #f5f5f7;
+    --surface:   #ffffff;
+    --surface-2: #fafafa;
+    --surface-3: #f0f0f3;
+    --text:      #1d1d1f;
+    --text-2:    #6e6e73;
+    --text-3:    #aeaeb2;
+    --accent:    #0071e3;
+    --accent-soft: rgba(0,113,227,.10);
+    --green:     #34c759;
+    --amber:     #ff9f0a;
+    --purple:    #bf5af2;
+    --red:       #ff3b30;
+    --divider:   rgba(0,0,0,.07);
+    --divider-2: rgba(0,0,0,.04);
+    --radius:    14px;
+    --radius-sm: 8px;
+    --radius-xs: 5px;
+    --sh:        0 1px 2px rgba(0,0,0,.04), 0 2px 8px rgba(0,0,0,.05);
+    --sh-md:     0 4px 16px rgba(0,0,0,.07), 0 2px 6px rgba(0,0,0,.04);
+    --sh-lg:     0 16px 48px rgba(0,0,0,.10), 0 4px 12px rgba(0,0,0,.06);
+    --ease:      cubic-bezier(.4,0,.2,1);
+    --spring:    cubic-bezier(.34,1.56,.64,1);
+    --mono:      ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+
+    /* Category accents — used to color origin pills and card borders */
+    --c-propi:          #0071e3;  --c-propi-tint:          rgba(0,113,227,.10);
+    --c-florence:       #bf5af2;  --c-florence-tint:       rgba(191,90,242,.10);
+    --c-recursos-mates: #34c759;  --c-recursos-mates-tint: rgba(52,199,89,.12);
+    --c-edu365:         #ff9f0a;  --c-edu365-tint:         rgba(255,159,10,.12);
+    --c-altres:         #6e6e73;  --c-altres-tint:         rgba(110,110,115,.12);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    font-size: 14px;
+    line-height: 1.45;
+  }
+
+  button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+  input, select { font: inherit; color: inherit; }
+  ul { list-style: none; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ── Topbar ─────────────────────────────────────────────────────── */
+  .topbar {
+    position: sticky; top: 0; z-index: 50;
+    display: grid;
+    grid-template-columns: 220px 1fr auto;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 20px;
+    background: rgba(255,255,255,.88);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid var(--divider);
+  }
+  .brand {
+    font-size: 15px; font-weight: 700; letter-spacing: -.01em;
+  }
+  .brand .brand-sub {
+    font-weight: 500; color: var(--text-2); margin-left: 6px;
+  }
+  .search-wrap {
+    position: relative;
+    max-width: 560px;
+    width: 100%;
+    justify-self: start;
+  }
+  .search-wrap svg {
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    width: 14px; height: 14px; color: var(--text-3); pointer-events: none;
+  }
+  #search {
+    width: 100%;
+    padding: 8px 12px 8px 34px;
+    background: var(--surface-3);
+    border: 1px solid transparent;
+    border-radius: 980px;
+    transition: background .15s, border-color .15s, box-shadow .15s;
+  }
+  #search:focus {
+    outline: none;
+    background: var(--surface);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-soft);
+  }
+
+  .selection-bar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 4px 4px 4px 12px;
+    background: var(--text);
+    color: #fff;
+    border-radius: 980px;
+    box-shadow: var(--sh-md);
+    animation: fade-up .25s var(--spring);
+  }
+  .selection-bar[hidden] { display: none; }
+  .selection-bar .sel-count { font-size: 13px; font-weight: 600; }
+  .selection-bar .sel-count .sel-hidden { color: rgba(255,255,255,.55); font-weight: 400; margin-left: 4px; }
+  .selection-bar select {
+    background: rgba(255,255,255,.12);
+    color: #fff;
+    border: none;
+    border-radius: 980px;
+    padding: 6px 10px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .selection-bar select option { color: var(--text); background: #fff; }
+  .selection-bar button {
+    padding: 7px 14px;
+    border-radius: 980px;
+    font-size: 12px;
+    font-weight: 600;
+    transition: background .15s;
+  }
+  .selection-bar .btn-primary { background: var(--accent); color: #fff; }
+  .selection-bar .btn-primary:hover { background: #0064cc; }
+  .selection-bar .btn-ghost { background: rgba(255,255,255,.10); color: #fff; }
+  .selection-bar .btn-ghost:hover { background: rgba(255,255,255,.20); }
+
+  /* ── Layout ─────────────────────────────────────────────────────── */
+  .layout {
+    display: grid;
+    grid-template-columns: 280px 1fr 0;
+    height: calc(100vh - 57px);
+    height: calc(100dvh - 57px);
+    transition: grid-template-columns .25s var(--ease);
+  }
+  .layout.has-preview {
+    grid-template-columns: 280px minmax(380px, 1fr) minmax(420px, 580px);
+  }
+
+  /* ── Filter rail ────────────────────────────────────────────────── */
+  .filter-rail {
+    border-right: 1px solid var(--divider);
+    overflow-y: auto;
+    padding: 14px 14px 80px;
+    background: var(--surface-2);
+  }
+  .filter-rail h3 {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin: 14px 4px 8px;
+  }
+  .filter-rail h3:first-child { margin-top: 4px; }
+
+  .filter-group {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 4px 6px;
+    margin-bottom: 10px;
+    box-shadow: var(--sh);
+  }
+  .filter-group summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 13px;
+    user-select: none;
+  }
+  .filter-group summary::-webkit-details-marker { display: none; }
+  .filter-group summary:hover { background: var(--surface-2); }
+  .filter-group .group-label { flex: 1; }
+  .filter-group .group-count {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 2px 7px;
+    border-radius: 980px;
+    min-width: 18px;
+    text-align: center;
+  }
+  .filter-group .group-count:empty { display: none; }
+  .filter-group .group-caret {
+    width: 10px; height: 10px;
+    color: var(--text-3);
+    transition: transform .15s;
+  }
+  .filter-group[open] .group-caret { transform: rotate(90deg); }
+
+  .filter-list { padding: 2px 4px 8px; }
+  .filter-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 5px 8px;
+    border-radius: var(--radius-xs);
+    cursor: pointer;
+    font-size: 13px;
+    transition: background .12s;
+  }
+  .filter-item:hover { background: var(--surface-2); }
+  .filter-item input[type=checkbox] {
+    width: 14px; height: 14px;
+    accent-color: var(--accent);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .filter-item .fi-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .filter-item .fi-count {
+    font-size: 11px;
+    color: var(--text-3);
+    font-variant-numeric: tabular-nums;
+  }
+  .filter-item.is-zero { opacity: .4; }
+  .filter-item.is-zero:hover { opacity: .7; }
+
+  .filter-rail .clear-all {
+    width: 100%;
+    margin-top: 10px;
+    padding: 9px;
+    border-radius: var(--radius-sm);
+    font-size: 12px; font-weight: 600;
+    color: var(--text-2);
+    background: var(--surface);
+    box-shadow: var(--sh);
+    transition: background .15s, color .15s;
+  }
+  .filter-rail .clear-all:hover { background: var(--red); color: #fff; }
+  .filter-rail .clear-all:disabled { opacity: .4; cursor: default; background: var(--surface); color: var(--text-3); }
+
+  /* ── Results ────────────────────────────────────────────────────── */
+  .results-wrap {
+    overflow-y: auto;
+    padding: 16px 22px 60px;
+  }
+  .chip-row {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin-bottom: 10px;
+    min-height: 0;
+  }
+  .chip-row:empty { margin-bottom: 0; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 6px 4px 10px;
+    background: var(--surface);
+    border: 1px solid var(--divider);
+    border-radius: 980px;
+    font-size: 11px;
+    color: var(--text-2);
+    box-shadow: var(--sh);
+  }
+  .chip .chip-x {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--text-3);
+    transition: background .12s, color .12s;
+  }
+  .chip .chip-x:hover { background: var(--red); color: #fff; }
+  .chip .chip-x svg { width: 8px; height: 8px; }
+  .chip.chip-query { color: var(--accent); }
+
+  .results-header {
+    display: flex; align-items: baseline; gap: 12px;
+    padding: 4px 4px 12px;
+    color: var(--text-2);
+    font-size: 12px;
+  }
+  .results-header .res-count { font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; }
+  .results-header .res-keyboard {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--text-3);
+  }
+  .results-header kbd {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 1px 5px;
+    border-radius: 4px;
+    background: var(--surface-3);
+    border: 1px solid var(--divider);
+  }
+
+  .results {
+    display: flex; flex-direction: column;
+    gap: 6px;
+  }
+
+  /* ── Card ───────────────────────────────────────────────────────── */
+  .card {
+    display: grid;
+    grid-template-columns: 22px 32px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    background: var(--surface);
+    border: 1px solid var(--divider);
+    border-radius: var(--radius-sm);
+    box-shadow: inset 3px 0 0 transparent;
+    transition:
+      box-shadow .18s var(--ease),
+      transform  .18s var(--ease),
+      background .18s var(--ease),
+      border-color .18s var(--ease);
+    animation: fade-up .25s var(--ease) both;
+    cursor: pointer;
+  }
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .card.is-open {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .card.is-selected {
+    background: rgba(52,199,89,.06);
+    border-color: rgba(52,199,89,.4);
+  }
+  .card.is-selected.is-open {
+    background: linear-gradient(0deg, var(--accent-soft), var(--accent-soft)), rgba(52,199,89,.06);
+  }
+
+  .card[data-origin=propi]:hover          { box-shadow: inset 3px 0 0 var(--c-propi); }
+  .card[data-origin=florence]:hover       { box-shadow: inset 3px 0 0 var(--c-florence); }
+  .card[data-origin=recursos-mates]:hover { box-shadow: inset 3px 0 0 var(--c-recursos-mates); }
+  .card[data-origin=edu365]:hover         { box-shadow: inset 3px 0 0 var(--c-edu365); }
+  .card[data-origin=altres]:hover         { box-shadow: inset 3px 0 0 var(--c-altres); }
+  .card:hover { transform: translateX(2px); }
+
+  .card .card-check {
+    width: 16px; height: 16px;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+
+  .card .card-icon {
+    width: 30px; height: 36px;
+    border-radius: 4px;
+    background: linear-gradient(135deg, var(--c-propi-tint), transparent);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 9px; font-weight: 700;
+    letter-spacing: .04em;
+    flex-shrink: 0;
+  }
+  .card[data-format=pdf]  .card-icon { color: #c0392b; background: rgba(192,57,43,.08); }
+  .card[data-format=doc]  .card-icon { color: #2563eb; background: rgba(37,99,235,.08); }
+
+  .card-main { min-width: 0; }
+  .card-title {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.35;
+    margin-bottom: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .card-meta {
+    display: flex; align-items: center; flex-wrap: wrap;
+    gap: 4px 6px;
+    font-size: 11px;
+    color: var(--text-2);
+  }
+
+  .pill {
+    display: inline-flex; align-items: center;
+    padding: 1px 7px;
+    border-radius: 980px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .01em;
+    line-height: 1.6;
+    white-space: nowrap;
+  }
+  .pill-origin[data-origin=propi]          { background: var(--c-propi-tint);          color: var(--c-propi); }
+  .pill-origin[data-origin=florence]       { background: var(--c-florence-tint);       color: var(--c-florence); }
+  .pill-origin[data-origin=recursos-mates] { background: var(--c-recursos-mates-tint); color: #1a7a3a; }
+  .pill-origin[data-origin=edu365]         { background: var(--c-edu365-tint);         color: #a05a00; }
+  .pill-origin[data-origin=altres]         { background: var(--c-altres-tint);         color: var(--c-altres); }
+  .pill-course { background: var(--surface-3); color: var(--text-2); }
+  .pill-type   { background: rgba(0,113,227,.08); color: var(--accent); }
+  .pill-act    { background: var(--surface-3); color: var(--text-2); }
+  .pill-year   { font-family: var(--mono); color: var(--text-3); background: transparent; padding: 0 2px; }
+
+  .card-actions {
+    display: flex; gap: 4px;
+    opacity: 0;
+    transition: opacity .15s;
+  }
+  .card:hover .card-actions,
+  .card.is-open .card-actions { opacity: 1; }
+  .card-actions button {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--text-2);
+    transition: background .12s, color .12s;
+  }
+  .card-actions button:hover { background: var(--surface-3); color: var(--text); }
+  .card-actions svg { width: 14px; height: 14px; }
+
+  /* Empty / loading / error */
+  .state-empty, .state-loading, .state-error {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-2);
+  }
+  .state-empty .se-icon { font-size: 32px; margin-bottom: 12px; opacity: .5; }
+  .state-empty p { margin: 4px 0; }
+  .state-empty button { margin-top: 14px; padding: 8px 16px; border-radius: 980px; background: var(--accent); color: #fff; font-size: 13px; font-weight: 600; }
+  .state-error { color: var(--red); }
+  .state-error code { font-family: var(--mono); font-size: 12px; padding: 2px 6px; background: var(--surface-3); border-radius: 4px; color: var(--text); }
+
+  .skel {
+    height: 60px;
+    background: linear-gradient(90deg, var(--surface-2) 0%, var(--surface-3) 50%, var(--surface-2) 100%);
+    background-size: 200% 100%;
+    border-radius: var(--radius-sm);
+    animation: shimmer 1.4s ease-in-out infinite;
+    margin-bottom: 6px;
+  }
+  @keyframes shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* ── Preview drawer ─────────────────────────────────────────────── */
+  .preview-drawer {
+    border-left: 1px solid var(--divider);
+    background: var(--surface);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .preview-drawer[hidden] { display: none; }
+
+  .preview-head {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--divider);
+    flex-shrink: 0;
+  }
+  .preview-head .pv-title {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .preview-head .pv-close {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--surface-3);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--text-2);
+    transition: background .12s;
+    flex-shrink: 0;
+  }
+  .preview-head .pv-close:hover { background: var(--red); color: #fff; }
+  .preview-head .pv-close svg { width: 12px; height: 12px; }
+
+  .preview-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--divider);
+    padding: 0 6px;
+    flex-shrink: 0;
+  }
+  .preview-tabs button {
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-2);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color .12s, border-color .12s;
+  }
+  .preview-tabs button.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .preview-tabs button:hover:not(.active) { color: var(--text); }
+
+  .preview-body { flex: 1; overflow: hidden; min-height: 0; position: relative; }
+  .preview-body iframe { width: 100%; height: 100%; border: none; display: block; }
+  .preview-body .pv-meta {
+    height: 100%;
+    overflow-y: auto;
+    padding: 16px 18px 24px;
+  }
+  .pv-meta dl {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 8px 12px;
+    font-size: 12.5px;
+  }
+  .pv-meta dt {
+    color: var(--text-3);
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: .04em;
+    padding-top: 2px;
+  }
+  .pv-meta dd { color: var(--text); }
+  .pv-meta dd code { font-family: var(--mono); font-size: 11px; color: var(--text-2); }
+  .pv-meta .pv-notes {
+    margin-top: 18px;
+    padding: 12px 14px;
+    background: var(--surface-2);
+    border-radius: var(--radius-sm);
+    font-size: 12.5px;
+    color: var(--text);
+    line-height: 1.55;
+  }
+  .pv-meta .pv-notes-label {
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .06em;
+    color: var(--text-3);
+    margin-bottom: 6px;
+  }
+  .pv-meta .pv-pills {
+    display: flex; flex-wrap: wrap; gap: 4px;
+  }
+
+  .preview-actions {
+    display: flex; gap: 6px;
+    padding: 10px 12px;
+    border-top: 1px solid var(--divider);
+    flex-shrink: 0;
+    background: var(--surface-2);
+  }
+  .preview-actions button, .preview-actions a {
+    flex: 1;
+    padding: 7px 10px;
+    border-radius: 980px;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    transition: background .12s, color .12s;
+  }
+  .preview-actions .btn-prim { background: var(--accent); color: #fff; }
+  .preview-actions .btn-prim:hover { background: #0064cc; }
+  .preview-actions .btn-ghost { background: var(--surface-3); color: var(--text-2); }
+  .preview-actions .btn-ghost:hover { background: var(--divider); color: var(--text); }
+
+  /* ── Footer ─────────────────────────────────────────────────────── */
+  .footer-note {
+    position: fixed; left: 0; bottom: 0;
+    padding: 6px 14px;
+    font-size: 10px; color: var(--text-3);
+    pointer-events: none;
+  }
+  .footer-note a { color: var(--text-3); pointer-events: auto; }
+
+  /* ── Small screens (best-effort, not optimized) ─────────────────── */
+  @media (max-width: 900px) {
+    .topbar { grid-template-columns: 1fr auto; }
+    .brand { display: none; }
+    .layout, .layout.has-preview {
+      grid-template-columns: 1fr;
+      height: auto;
+    }
+    .filter-rail { display: none; }
+    .preview-drawer { display: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">Material<span class="brand-sub">· cerca</span></div>
+  <div class="search-wrap">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/>
+    </svg>
+    <input id="search" type="search" placeholder="Cerca per títol, tema, etiqueta… (tolera errors)" autocomplete="off" spellcheck="false">
+  </div>
+  <div class="selection-bar" id="selection-bar" hidden>
+    <span class="sel-count" id="sel-count"></span>
+    <select id="docs-format" title="Format per a Google Docs">
+      <option value="pdf">Docs → PDF</option>
+      <option value="docx">Docs → DOCX</option>
+    </select>
+    <button class="btn-ghost" id="btn-clear-sel">Esborra</button>
+    <button class="btn-primary" id="btn-download">Descarrega</button>
+  </div>
+</header>
+
+<main class="layout" id="layout">
+  <aside class="filter-rail" id="filter-rail" aria-label="Filtres"></aside>
+
+  <section class="results-wrap">
+    <div class="chip-row" id="chip-row" aria-live="polite"></div>
+    <div class="results-header">
+      <span class="res-count" id="res-count">—</span>
+      <span class="res-keyboard">
+        <kbd>⇧</kbd> + clic = rang &nbsp;·&nbsp; <kbd>⌘/Ctrl</kbd> + <kbd>A</kbd> = tots visibles &nbsp;·&nbsp; <kbd>Esc</kbd> = tanca preview
+      </span>
+    </div>
+    <ul class="results" id="results"></ul>
+  </section>
+
+  <aside class="preview-drawer" id="preview-drawer" hidden></aside>
+</main>
+
+<div class="footer-note">
+  © 2026 — Eina interna · <a href="afegir-material.html">Edita el manifest →</a>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   Material finder — vanilla JS, no dependencies.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── CONFIG ────────────────────────────────────────────────────── */
+const MANIFEST_URL = 'manifest.json';
+const FILTER_GROUPS = [
+  { key: 'course',     label: 'Curs',              field: 'courses',    multi: true  },
+  { key: 'origin',     label: 'Origen',            field: 'origin',     multi: false },
+  { key: 'math_sense', label: 'Sentit matemàtic',  field: 'math_sense', multi: false },
+  { key: 'activity',   label: 'Activitat',         field: 'activities', multi: true  },
+  { key: 'type',       label: 'Tipus',             field: 'type',       multi: false },
+  { key: 'format',     label: 'Format',            field: 'format',     multi: false },
+];
+const ESO_COURSES  = ['1ESO','2ESO','3ESO','4ESO'];
+const BATX_COURSES = ['1Bat','2Bat'];
+
+/* ─── STATE ─────────────────────────────────────────────────────── */
+const state = {
+  manifest: null,
+  vocabLabels: {},
+  query: '',
+  filters: {},                  // { groupKey: Set([values]) }
+  selected: new Set(),
+  openId: null,
+  docsFormat: 'pdf',
+  lastClickedIdx: -1,
+  filterCollapsed: {},
+};
+FILTER_GROUPS.forEach(g => state.filters[g.key] = new Set());
+
+/* ─── DOM REFS ──────────────────────────────────────────────────── */
+const $ = id => document.getElementById(id);
+const els = {
+  layout:        $('layout'),
+  filterRail:    $('filter-rail'),
+  chipRow:       $('chip-row'),
+  resCount:      $('res-count'),
+  results:       $('results'),
+  preview:       $('preview-drawer'),
+  selBar:        $('selection-bar'),
+  selCount:      $('sel-count'),
+  btnDownload:   $('btn-download'),
+  btnClearSel:   $('btn-clear-sel'),
+  docsFormat:    $('docs-format'),
+  search:        $('search'),
+};
+
+/* ═══════════════════════════════════════════════════════════════════
+   UTIL — normalize, fuzzy match, labels
+   ═══════════════════════════════════════════════════════════════════ */
+
+function normalize(s) {
+  if (!s) return '';
+  return String(s)
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^\w\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function damerauLevenshtein(a, b) {
+  const m = a.length, n = b.length;
+  if (!m) return n;
+  if (!n) return m;
+  const d = Array.from({length: m + 1}, () => new Array(n + 1).fill(0));
+  for (let i = 0; i <= m; i++) d[i][0] = i;
+  for (let j = 0; j <= n; j++) d[0][j] = j;
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      const cost = a[i-1] === b[j-1] ? 0 : 1;
+      d[i][j] = Math.min(
+        d[i-1][j]   + 1,
+        d[i][j-1]   + 1,
+        d[i-1][j-1] + cost
+      );
+      if (i > 1 && j > 1 && a[i-1] === b[j-2] && a[i-2] === b[j-1]) {
+        d[i][j] = Math.min(d[i][j], d[i-2][j-2] + 1);
+      }
+    }
+  }
+  return d[m][n];
+}
+
+/* Returns score per token: 100 exact, 60 distance-1, 0 no match */
+function scoreToken(blob, token) {
+  if (!token) return 0;
+  if (blob.indexOf(token) >= 0) return 100;
+  if (token.length < 4) return 0;
+  // Scan windows of length L-1, L, L+1 in the blob
+  const L = token.length;
+  for (const wl of [L, L - 1, L + 1]) {
+    if (wl < 2 || wl > blob.length) continue;
+    for (let i = 0; i + wl <= blob.length; i++) {
+      const w = blob.substring(i, i + wl);
+      if (damerauLevenshtein(token, w) <= 1) return 60;
+    }
+  }
+  return 0;
+}
+
+function matchesQuery(file, queryTokens) {
+  if (!queryTokens.length) return { ok: true, score: 0 };
+  let total = 0;
+  for (const t of queryTokens) {
+    const s = scoreToken(file._blob, t);
+    if (s === 0) return { ok: false, score: 0 };
+    total += s;
+  }
+  return { ok: true, score: total };
+}
+
+function label(value) {
+  if (!value && value !== 0) return '';
+  if (state.vocabLabels[value]) return state.vocabLabels[value];
+  return String(value).replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+
+function escHtml(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+
+/* Course umbrella matching: a filter on '3ESO' matches files tagged
+   ['3ESO'], ['ESO'], or ['generic']. */
+function fileMatchesCourse(file, requested) {
+  const tags = file.courses || [];
+  if (tags.includes('generic')) return true;
+  if (tags.includes(requested)) return true;
+  if (tags.includes('ESO')  && ESO_COURSES.includes(requested))  return true;
+  if (tags.includes('Bat')  && BATX_COURSES.includes(requested)) return true;
+  return false;
+}
+
+/* For a given filter group, does the file pass the group's selection? */
+function fileMatchesGroup(file, group, selectedSet) {
+  if (!selectedSet || !selectedSet.size) return true;
+  if (group.key === 'course') {
+    for (const req of selectedSet) if (fileMatchesCourse(file, req)) return true;
+    return false;
+  }
+  const v = file[group.field];
+  if (Array.isArray(v)) {
+    for (const x of v) if (selectedSet.has(x)) return true;
+    return false;
+  }
+  return selectedSet.has(v);
+}
+
+function fileMatchesAllFilters(file) {
+  for (const g of FILTER_GROUPS) {
+    if (!fileMatchesGroup(file, g, state.filters[g.key])) return false;
+  }
+  return true;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   FILTER ENGINE — main compute
+   ═══════════════════════════════════════════════════════════════════ */
+
+function computeFiltered() {
+  if (!state.manifest) return [];
+  const queryTokens = normalize(state.query).split(' ').filter(Boolean);
+  const out = [];
+  for (const f of state.manifest.files) {
+    if (!fileMatchesAllFilters(f)) continue;
+    const m = matchesQuery(f, queryTokens);
+    if (!m.ok) continue;
+    out.push({ file: f, score: m.score });
+  }
+  if (queryTokens.length) {
+    out.sort((a, b) => b.score - a.score || a.file.title.localeCompare(b.file.title));
+  } else {
+    out.sort((a, b) => a.file.title.localeCompare(b.file.title));
+  }
+  return out.map(x => x.file);
+}
+
+/* Per-checkbox counts: for each group G and each value V,
+   count files matching all filters EXCEPT G, AND value V is set/has V. */
+function computeCounts() {
+  const counts = {};
+  if (!state.manifest) return counts;
+  const queryTokens = normalize(state.query).split(' ').filter(Boolean);
+
+  // Pre-filter: files that match query and ALL filters except for G
+  for (const G of FILTER_GROUPS) {
+    counts[G.key] = {};
+    const passQueryAndOthers = state.manifest.files.filter(f => {
+      const m = matchesQuery(f, queryTokens);
+      if (!m.ok) return false;
+      for (const H of FILTER_GROUPS) {
+        if (H.key === G.key) continue;
+        if (!fileMatchesGroup(f, H, state.filters[H.key])) return false;
+      }
+      return true;
+    });
+    const values = state.manifest.vocabulary[G.key] || [];
+    for (const v of values) {
+      let c = 0;
+      for (const f of passQueryAndOthers) {
+        if (G.key === 'course' ? fileMatchesCourse(f, v)
+            : (Array.isArray(f[G.field]) ? f[G.field].includes(v) : f[G.field] === v)) {
+          c++;
+        }
+      }
+      counts[G.key][v] = c;
+    }
+  }
+  return counts;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   RENDER — filters, chips, results, preview
+   ═══════════════════════════════════════════════════════════════════ */
+
+function renderFilters() {
+  const counts = computeCounts();
+  const html = FILTER_GROUPS.map(G => {
+    const values  = state.manifest.vocabulary[G.key] || [];
+    const sel     = state.filters[G.key];
+    const open    = state.filterCollapsed[G.key] !== true;
+    const selSize = sel.size;
+    return `
+      <details class="filter-group" ${open ? 'open' : ''} data-group="${G.key}">
+        <summary>
+          <svg class="group-caret" viewBox="0 0 10 10" fill="currentColor" aria-hidden="true">
+            <path d="M3 1l4 4-4 4z"/>
+          </svg>
+          <span class="group-label">${escHtml(G.label)}</span>
+          <span class="group-count">${selSize ? selSize : ''}</span>
+        </summary>
+        <div class="filter-list">
+          ${values.map(v => {
+            const c = counts[G.key]?.[v] ?? 0;
+            const checked = sel.has(v);
+            const zero = !checked && c === 0;
+            return `
+              <label class="filter-item ${zero ? 'is-zero' : ''}">
+                <input type="checkbox" data-group="${G.key}" data-value="${escHtml(v)}" ${checked ? 'checked' : ''}>
+                <span class="fi-label">${escHtml(label(v))}</span>
+                <span class="fi-count">${c}</span>
+              </label>
+            `;
+          }).join('')}
+        </div>
+      </details>
+    `;
+  }).join('');
+  const hasAny = FILTER_GROUPS.some(G => state.filters[G.key].size > 0) || state.query;
+  els.filterRail.innerHTML = `
+    <h3>Filtra el material</h3>
+    ${html}
+    <button class="clear-all" ${hasAny ? '' : 'disabled'}>Esborra-ho tot</button>
+  `;
+}
+
+function renderChips() {
+  const chips = [];
+  if (state.query) {
+    chips.push(`<span class="chip chip-query">
+      <span>Cerca: "${escHtml(state.query)}"</span>
+      <button class="chip-x" data-chip-clear="query" title="Esborra cerca">
+        <svg viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 1l6 6M7 1l-6 6"/></svg>
+      </button>
+    </span>`);
+  }
+  for (const G of FILTER_GROUPS) {
+    for (const v of state.filters[G.key]) {
+      chips.push(`<span class="chip">
+        <span>${escHtml(G.label)}: ${escHtml(label(v))}</span>
+        <button class="chip-x" data-chip-group="${G.key}" data-chip-value="${escHtml(v)}" title="Treu filtre">
+          <svg viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 1l6 6M7 1l-6 6"/></svg>
+        </button>
+      </span>`);
+    }
+  }
+  els.chipRow.innerHTML = chips.join('');
+}
+
+function renderResults(filtered) {
+  const total = state.manifest.files.length;
+  els.resCount.textContent =
+    filtered.length === total
+      ? `${total} fitxers`
+      : `${filtered.length} de ${total} fitxers`;
+
+  if (!filtered.length) {
+    els.results.innerHTML = `
+      <li class="state-empty">
+        <div class="se-icon">∅</div>
+        <p><strong>No s'ha trobat cap material.</strong></p>
+        <p>Prova a treure algun filtre o revisa la cerca.</p>
+        <button id="empty-reset">Restableix filtres</button>
+      </li>`;
+    const btn = $('empty-reset');
+    if (btn) btn.onclick = clearAll;
+    return;
+  }
+
+  els.results.innerHTML = filtered.map((f, idx) => {
+    const isSel  = state.selected.has(f.id);
+    const isOpen = state.openId === f.id;
+    const origin = f.origin || 'altres';
+    const fmtIcon = (f.format || '?').toUpperCase();
+
+    const courseChips = (f.courses || []).map(c =>
+      `<span class="pill pill-course">${escHtml(label(c))}</span>`).join('');
+    const actChips = (f.activities || []).slice(0, 2).map(a =>
+      `<span class="pill pill-act">${escHtml(label(a))}</span>`).join('');
+    const moreAct = (f.activities || []).length > 2
+      ? `<span class="pill pill-act">+${(f.activities.length - 2)}</span>` : '';
+
+    return `
+      <li>
+        <div class="card ${isSel ? 'is-selected' : ''} ${isOpen ? 'is-open' : ''}"
+             data-id="${escHtml(f.id)}" data-idx="${idx}"
+             data-format="${escHtml(f.format || '')}"
+             data-origin="${escHtml(origin)}">
+          <input type="checkbox" class="card-check" ${isSel ? 'checked' : ''}
+                 data-id="${escHtml(f.id)}" data-idx="${idx}"
+                 aria-label="Selecciona ${escHtml(f.title)}">
+          <div class="card-icon">${escHtml(fmtIcon)}</div>
+          <div class="card-main">
+            <div class="card-title">${escHtml(f.title)}</div>
+            <div class="card-meta">
+              <span class="pill pill-origin" data-origin="${escHtml(origin)}">${escHtml(label(origin))}</span>
+              ${courseChips}
+              ${f.type ? `<span class="pill pill-type">${escHtml(label(f.type))}</span>` : ''}
+              ${actChips}${moreAct}
+              ${f.year ? `<span class="pill pill-year">${escHtml(f.year)}</span>` : ''}
+            </div>
+          </div>
+          <div class="card-actions">
+            <button class="act-download" data-id="${escHtml(f.id)}" title="Descarrega">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 2v9M4 8l4 4 4-4M3 14h10"/>
+              </svg>
+            </button>
+            <button class="act-preview" data-id="${escHtml(f.id)}" title="Visualitza">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z"/><circle cx="8" cy="8" r="2"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </li>`;
+  }).join('');
+}
+
+function renderSelectionBar() {
+  const n = state.selected.size;
+  if (n === 0) {
+    els.selBar.hidden = true;
+    return;
+  }
+  els.selBar.hidden = false;
+  // Count how many of selected are hidden by current filters
+  const visibleIds = new Set(computeFiltered().map(f => f.id));
+  let hidden = 0;
+  state.selected.forEach(id => { if (!visibleIds.has(id)) hidden++; });
+  els.selCount.innerHTML = `${n} seleccionat${n === 1 ? '' : 's'}${hidden ? `<span class="sel-hidden">(${hidden} ocult${hidden === 1 ? '' : 's'})</span>` : ''}`;
+}
+
+function renderPreview() {
+  if (!state.openId) {
+    els.preview.hidden = true;
+    els.layout.classList.remove('has-preview');
+    return;
+  }
+  const f = state.manifest.files.find(x => x.id === state.openId);
+  if (!f) {
+    closePreview();
+    return;
+  }
+  els.preview.hidden = false;
+  els.layout.classList.add('has-preview');
+
+  const previewSrc = `https://drive.google.com/file/d/${encodeURIComponent(f.drive_id)}/preview`;
+  const driveOpen  = f.format === 'doc'
+    ? `https://docs.google.com/document/d/${encodeURIComponent(f.drive_id)}/edit`
+    : `https://drive.google.com/file/d/${encodeURIComponent(f.drive_id)}/view`;
+
+  els.preview.innerHTML = `
+    <div class="preview-head">
+      <div class="pv-title">${escHtml(f.title)}</div>
+      <button class="pv-close" id="pv-close" title="Tanca (Esc)">
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg>
+      </button>
+    </div>
+    <div class="preview-tabs">
+      <button id="tab-view" class="active">Visor</button>
+      <button id="tab-meta">Metadades</button>
+    </div>
+    <div class="preview-body" id="pv-body">
+      <iframe src="${previewSrc}" title="Visor de ${escHtml(f.title)}" allow="autoplay"></iframe>
+    </div>
+    <div class="preview-actions">
+      <a class="btn-ghost" href="${driveOpen}" target="_blank" rel="noopener">Obre al Drive ↗</a>
+      <button class="btn-ghost" id="pv-copy">Copia enllaç</button>
+      <button class="btn-prim"  id="pv-download">Descarrega</button>
+    </div>
+  `;
+
+  $('pv-close').onclick = closePreview;
+  $('tab-view').onclick = () => switchPreviewTab('view', f);
+  $('tab-meta').onclick = () => switchPreviewTab('meta', f);
+  $('pv-download').onclick = () => downloadFiles([f]);
+  $('pv-copy').onclick = () => {
+    const url = location.origin + location.pathname + '?' + buildUrlParams({ openOnly: true });
+    navigator.clipboard?.writeText(url).then(() => {
+      const b = $('pv-copy');
+      const orig = b.textContent;
+      b.textContent = 'Copiat ✓';
+      setTimeout(() => { b.textContent = orig; }, 1500);
+    });
+  };
+}
+
+function switchPreviewTab(tab, f) {
+  const tv = $('tab-view'), tm = $('tab-meta'), body = $('pv-body');
+  tv.classList.toggle('active', tab === 'view');
+  tm.classList.toggle('active', tab === 'meta');
+  if (tab === 'view') {
+    const src = `https://drive.google.com/file/d/${encodeURIComponent(f.drive_id)}/preview`;
+    body.innerHTML = `<iframe src="${src}" title="Visor de ${escHtml(f.title)}"></iframe>`;
+  } else {
+    const coursePills = (f.courses || []).map(c => `<span class="pill pill-course">${escHtml(label(c))}</span>`).join(' ');
+    const actPills    = (f.activities || []).map(a => `<span class="pill pill-act">${escHtml(label(a))}</span>`).join(' ');
+    body.innerHTML = `
+      <div class="pv-meta">
+        <dl>
+          <dt>Origen</dt>     <dd><span class="pill pill-origin" data-origin="${escHtml(f.origin || 'altres')}">${escHtml(label(f.origin))}</span></dd>
+          <dt>Format</dt>     <dd>${escHtml(label(f.format))}</dd>
+          <dt>Curs(os)</dt>   <dd><div class="pv-pills">${coursePills || '—'}</div></dd>
+          <dt>Sentit mat.</dt><dd>${f.math_sense ? escHtml(label(f.math_sense)) : '—'}</dd>
+          <dt>Activitats</dt> <dd><div class="pv-pills">${actPills || '—'}</div></dd>
+          <dt>Tipus</dt>      <dd>${f.type ? `<span class="pill pill-type">${escHtml(label(f.type))}</span>` : '—'}</dd>
+          <dt>Any</dt>        <dd>${f.year ? escHtml(f.year) : '—'}</dd>
+          <dt>ID intern</dt>  <dd><code>${escHtml(f.id)}</code></dd>
+          <dt>Drive ID</dt>   <dd><code>${escHtml(f.drive_id)}</code></dd>
+        </dl>
+        ${f.notes ? `
+          <div class="pv-notes">
+            <div class="pv-notes-label">Notes</div>
+            ${escHtml(f.notes)}
+          </div>` : ''}
+      </div>`;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ACTIONS — open/close, download, select
+   ═══════════════════════════════════════════════════════════════════ */
+
+function openPreview(id) {
+  if (state.openId === id) return;
+  state.openId = id;
+  renderPreview();
+  // mark open card
+  document.querySelectorAll('.card.is-open').forEach(c => c.classList.remove('is-open'));
+  const card = document.querySelector(`.card[data-id="${CSS.escape(id)}"]`);
+  if (card) card.classList.add('is-open');
+  syncToUrl(false);
+}
+
+function closePreview() {
+  state.openId = null;
+  renderPreview();
+  document.querySelectorAll('.card.is-open').forEach(c => c.classList.remove('is-open'));
+  syncToUrl(false);
+}
+
+function downloadUrlFor(file, docsFormat) {
+  if (file.format === 'doc') {
+    return `https://docs.google.com/document/d/${encodeURIComponent(file.drive_id)}/export?format=${docsFormat}`;
+  }
+  return `https://drive.google.com/uc?export=download&id=${encodeURIComponent(file.drive_id)}`;
+}
+
+async function downloadFiles(files) {
+  if (!files.length) return;
+  if (files.length > 10) {
+    if (!confirm(`Estàs a punt de baixar ${files.length} fitxers. Continuar?`)) return;
+  }
+  for (const f of files) {
+    const a = document.createElement('a');
+    a.href = downloadUrlFor(f, state.docsFormat);
+    a.download = '';
+    a.rel = 'noopener';
+    a.target = '_blank';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    await new Promise(r => setTimeout(r, 250));
+  }
+}
+
+function downloadSelected() {
+  const map = new Map(state.manifest.files.map(f => [f.id, f]));
+  const files = [...state.selected].map(id => map.get(id)).filter(Boolean);
+  downloadFiles(files);
+}
+
+function toggleSelect(id, idx, shift) {
+  if (shift && state.lastClickedIdx >= 0) {
+    const filtered = computeFiltered();
+    const [a, b] = [state.lastClickedIdx, idx].sort((x,y) => x - y);
+    for (let i = a; i <= b && i < filtered.length; i++) {
+      state.selected.add(filtered[i].id);
+    }
+  } else {
+    if (state.selected.has(id)) state.selected.delete(id);
+    else state.selected.add(id);
+  }
+  state.lastClickedIdx = idx;
+  renderAll();
+}
+
+function selectAllVisible() {
+  const filtered = computeFiltered();
+  const allSelected = filtered.every(f => state.selected.has(f.id));
+  if (allSelected) {
+    filtered.forEach(f => state.selected.delete(f.id));
+  } else {
+    filtered.forEach(f => state.selected.add(f.id));
+  }
+  renderAll();
+}
+
+function clearSelection() {
+  state.selected.clear();
+  renderAll();
+}
+
+function clearAll() {
+  state.query = '';
+  els.search.value = '';
+  FILTER_GROUPS.forEach(g => state.filters[g.key].clear());
+  syncToUrl();
+  renderAll();
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   URL STATE
+   ═══════════════════════════════════════════════════════════════════ */
+
+function buildUrlParams({ openOnly } = {}) {
+  const p = new URLSearchParams();
+  if (state.query) p.set('q', state.query);
+  for (const G of FILTER_GROUPS) {
+    if (state.filters[G.key].size) {
+      p.set(G.key, [...state.filters[G.key]].join(','));
+    }
+  }
+  if (state.openId) p.set('open', state.openId);
+  if (openOnly) {
+    const o = new URLSearchParams();
+    if (state.openId) o.set('open', state.openId);
+    return o.toString();
+  }
+  return p.toString();
+}
+
+function syncToUrl(replace = true) {
+  const qs = buildUrlParams();
+  const url = location.pathname + (qs ? '?' + qs : '');
+  if (replace) history.replaceState(null, '', url);
+  else         history.pushState(null, '', url);
+}
+
+function syncFromUrl() {
+  const p = new URLSearchParams(location.search);
+  state.query = p.get('q') || '';
+  els.search.value = state.query;
+  for (const G of FILTER_GROUPS) {
+    state.filters[G.key].clear();
+    const v = p.get(G.key);
+    if (v) v.split(',').forEach(x => x && state.filters[G.key].add(x));
+  }
+  state.openId = p.get('open') || null;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   GLUE — render everything
+   ═══════════════════════════════════════════════════════════════════ */
+
+function renderAll() {
+  renderFilters();
+  renderChips();
+  renderResults(computeFiltered());
+  renderSelectionBar();
+  renderPreview();
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   EVENT WIRING
+   ═══════════════════════════════════════════════════════════════════ */
+
+let searchTimer = 0;
+els.search.addEventListener('input', e => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    state.query = e.target.value.trim();
+    syncToUrl();
+    renderAll();
+  }, 120);
+});
+
+els.filterRail.addEventListener('change', e => {
+  const cb = e.target.closest('input[type=checkbox][data-group]');
+  if (!cb) return;
+  const g = cb.dataset.group, v = cb.dataset.value;
+  if (cb.checked) state.filters[g].add(v);
+  else            state.filters[g].delete(v);
+  syncToUrl();
+  renderAll();
+});
+
+els.filterRail.addEventListener('click', e => {
+  if (e.target.closest('.clear-all')) {
+    clearAll();
+    return;
+  }
+  // Track collapse/expand of filter groups
+  const summary = e.target.closest('summary');
+  if (summary) {
+    const det = summary.parentElement;
+    // <details> toggles AFTER the event; defer
+    setTimeout(() => {
+      const g = det.dataset.group;
+      state.filterCollapsed[g] = !det.open;
+    }, 0);
+  }
+});
+
+els.chipRow.addEventListener('click', e => {
+  const btn = e.target.closest('button.chip-x');
+  if (!btn) return;
+  if (btn.dataset.chipClear === 'query') {
+    state.query = '';
+    els.search.value = '';
+  } else if (btn.dataset.chipGroup) {
+    state.filters[btn.dataset.chipGroup].delete(btn.dataset.chipValue);
+  }
+  syncToUrl();
+  renderAll();
+});
+
+els.results.addEventListener('click', e => {
+  // Checkbox
+  const cb = e.target.closest('input.card-check');
+  if (cb) {
+    e.preventDefault();   // we manage check state ourselves
+    toggleSelect(cb.dataset.id, parseInt(cb.dataset.idx, 10), e.shiftKey);
+    return;
+  }
+  // Download action
+  const dl = e.target.closest('button.act-download');
+  if (dl) {
+    e.stopPropagation();
+    const f = state.manifest.files.find(x => x.id === dl.dataset.id);
+    if (f) downloadFiles([f]);
+    return;
+  }
+  // Preview action
+  const pv = e.target.closest('button.act-preview');
+  if (pv) {
+    e.stopPropagation();
+    openPreview(pv.dataset.id);
+    return;
+  }
+  // Card body click → preview
+  const card = e.target.closest('.card');
+  if (card) openPreview(card.dataset.id);
+});
+
+els.btnDownload.onclick = downloadSelected;
+els.btnClearSel.onclick = clearSelection;
+els.docsFormat.addEventListener('change', e => { state.docsFormat = e.target.value; });
+
+document.addEventListener('keydown', e => {
+  // Escape closes preview
+  if (e.key === 'Escape' && state.openId) {
+    closePreview();
+    return;
+  }
+  // Cmd/Ctrl+A while not typing in an input
+  const inField = e.target.matches('input, textarea, select');
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'a' && !inField) {
+    e.preventDefault();
+    selectAllVisible();
+  }
+});
+
+window.addEventListener('popstate', () => {
+  syncFromUrl();
+  renderAll();
+});
+
+/* ═══════════════════════════════════════════════════════════════════
+   INIT
+   ═══════════════════════════════════════════════════════════════════ */
+
+async function loadManifest() {
+  const res = await fetch(MANIFEST_URL, { cache: 'no-cache' });
+  if (!res.ok) throw new Error(`HTTP ${res.status} en carregar ${MANIFEST_URL}`);
+  const data = await res.json();
+  // Validate basics
+  if (!data.vocabulary || !Array.isArray(data.files)) {
+    throw new Error('Manifest invàlid: falta "vocabulary" o "files".');
+  }
+  // Build search blob per file
+  for (const f of data.files) {
+    const parts = [
+      f.title || '', f.notes || '',
+      ...(f.courses || []).map(label),
+      label(f.origin || ''),
+      label(f.math_sense || ''),
+      ...(f.activities || []).map(label),
+      label(f.type || ''),
+      // Also include raw values so people can search "1ESO" literally
+      ...(f.courses || []),
+      f.origin || '', f.math_sense || '',
+      ...(f.activities || []),
+      f.type || '', f.format || ''
+    ];
+    f._blob = normalize(parts.join(' '));
+  }
+  return data;
+}
+
+function showLoading() {
+  els.results.innerHTML = Array.from({length: 5}).map(() => `<li class="skel"></li>`).join('');
+  els.resCount.textContent = 'Carregant…';
+}
+
+function showError(err) {
+  els.results.innerHTML = `
+    <li class="state-error">
+      <p><strong>No s'ha pogut carregar el manifest.</strong></p>
+      <p>${escHtml(err.message)}</p>
+      <p>Comprova que <code>${escHtml(MANIFEST_URL)}</code> existeixi i sigui accessible.</p>
+    </li>`;
+  els.resCount.textContent = '';
+}
+
+async function init() {
+  showLoading();
+  try {
+    state.manifest = await loadManifest();
+    state.vocabLabels = state.manifest.vocabulary_labels || {};
+    syncFromUrl();
+    renderAll();
+    // Scroll-to-open if preview was deep-linked
+    if (state.openId) {
+      setTimeout(() => {
+        const card = document.querySelector(`.card[data-id="${CSS.escape(state.openId)}"]`);
+        if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
+    }
+  } catch (err) {
+    console.error(err);
+    showError(err);
+  }
+}
+
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Editor del manifest — Material de matemàtiques</title>
+<style>
+  :root {
+    --bg:        #f5f5f7;
+    --surface:   #ffffff;
+    --surface-2: #fafafa;
+    --surface-3: #f0f0f3;
+    --text:      #1d1d1f;
+    --text-2:    #6e6e73;
+    --text-3:    #aeaeb2;
+    --accent:    #0071e3;
+    --accent-soft: rgba(0,113,227,.10);
+    --green:     #34c759;
+    --amber:     #ff9f0a;
+    --red:       #ff3b30;
+    --divider:   rgba(0,0,0,.08);
+    --divider-2: rgba(0,0,0,.04);
+    --radius:    14px;
+    --radius-sm: 8px;
+    --radius-xs: 5px;
+    --sh:        0 1px 2px rgba(0,0,0,.04), 0 2px 8px rgba(0,0,0,.05);
+    --sh-md:     0 4px 16px rgba(0,0,0,.07), 0 2px 6px rgba(0,0,0,.04);
+    --sh-lg:     0 16px 48px rgba(0,0,0,.15);
+    --ease:      cubic-bezier(.4,0,.2,1);
+    --mono:      ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    min-height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    font-size: 14px;
+    line-height: 1.45;
+  }
+
+  button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+  input, select, textarea { font: inherit; color: inherit; }
+  a { color: var(--accent); }
+
+  /* ── Topbar ─────────────────────────────────────────────────────── */
+  .topbar {
+    position: sticky; top: 0; z-index: 20;
+    display: flex; align-items: center; gap: 14px;
+    padding: 11px 22px;
+    background: rgba(255,255,255,.92);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid var(--divider);
+  }
+  .topbar h1 {
+    font-size: 15px; font-weight: 700; letter-spacing: -.01em;
+  }
+  .topbar h1 .h-sub { color: var(--text-2); font-weight: 500; margin-left: 6px; }
+  .topbar .dirty {
+    font-size: 11px;
+    color: var(--amber);
+    background: rgba(255,159,10,.12);
+    padding: 3px 8px;
+    border-radius: 980px;
+    font-weight: 600;
+  }
+  .topbar .dirty[hidden] { display: none; }
+  .topbar .spacer { flex: 1; }
+  .topbar a.back { font-size: 12px; color: var(--text-2); text-decoration: none; }
+  .topbar a.back:hover { color: var(--text); }
+
+  .btn {
+    padding: 7px 14px;
+    border-radius: 980px;
+    font-size: 12px;
+    font-weight: 600;
+    transition: background .12s, color .12s, box-shadow .12s;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .btn svg { width: 12px; height: 12px; }
+  .btn-prim  { background: var(--accent); color: #fff; box-shadow: var(--sh); }
+  .btn-prim:hover { background: #0064cc; }
+  .btn-ghost { background: var(--surface-3); color: var(--text-2); }
+  .btn-ghost:hover { background: var(--divider); color: var(--text); }
+  .btn-danger { background: rgba(255,59,48,.10); color: var(--red); }
+  .btn-danger:hover { background: var(--red); color: #fff; }
+
+  /* ── Layout ─────────────────────────────────────────────────────── */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 22px 22px 80px;
+  }
+
+  .panel {
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--sh);
+    margin-bottom: 16px;
+  }
+  .panel > summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 18px;
+    user-select: none;
+  }
+  .panel > summary::-webkit-details-marker { display: none; }
+  .panel > summary svg.caret {
+    width: 11px; height: 11px;
+    color: var(--text-3);
+    transition: transform .15s;
+  }
+  .panel[open] > summary svg.caret { transform: rotate(90deg); }
+  .panel > summary h2 {
+    font-size: 14px; font-weight: 700; letter-spacing: -.01em; flex: 1;
+  }
+  .panel > summary .panel-hint {
+    font-size: 11px; color: var(--text-3); font-weight: 500;
+  }
+  .panel-body {
+    padding: 0 18px 18px;
+    border-top: 1px solid var(--divider-2);
+    padding-top: 14px;
+  }
+
+  /* ── Drop zone (when no manifest loaded) ────────────────────────── */
+  .drop-zone {
+    margin: 22px auto;
+    max-width: 720px;
+    border: 2px dashed var(--text-3);
+    border-radius: var(--radius);
+    background: var(--surface);
+    padding: 50px 24px;
+    text-align: center;
+    transition: border-color .15s, background .15s;
+  }
+  .drop-zone.dragover { border-color: var(--accent); background: var(--accent-soft); }
+  .drop-zone h2 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .drop-zone p { color: var(--text-2); font-size: 13px; margin-bottom: 14px; }
+  .drop-zone .dz-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .drop-zone input[type=file] { display: none; }
+
+  /* ── Form rows ──────────────────────────────────────────────────── */
+  .row {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 10px 14px;
+    align-items: start;
+    margin-bottom: 10px;
+  }
+  .row label { font-size: 12px; font-weight: 600; color: var(--text-2); padding-top: 7px; }
+  .row label .req { color: var(--red); margin-left: 2px; }
+  .row .field { min-width: 0; }
+  .row input[type=text],
+  .row input[type=number],
+  .row input[type=url],
+  .row textarea,
+  .row select {
+    width: 100%;
+    padding: 7px 10px;
+    background: var(--surface-2);
+    border: 1px solid var(--divider);
+    border-radius: var(--radius-xs);
+    transition: background .12s, border-color .12s, box-shadow .12s;
+  }
+  .row input:focus, .row textarea:focus, .row select:focus {
+    outline: none;
+    background: var(--surface);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+  .row textarea { min-height: 60px; resize: vertical; font-family: inherit; }
+  .row .hint { font-size: 11px; color: var(--text-3); margin-top: 3px; }
+
+  /* ── Vocabulary chips ───────────────────────────────────────────── */
+  .vocab-row {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 10px 14px;
+    align-items: start;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--divider-2);
+  }
+  .vocab-row:last-child { border-bottom: none; }
+  .vocab-row > label { font-size: 12px; font-weight: 600; color: var(--text-2); padding-top: 8px; }
+  .vocab-row .chips {
+    display: flex; flex-wrap: wrap; gap: 5px; align-items: center;
+  }
+  .vchip {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 4px 4px 4px 9px;
+    background: var(--surface-3);
+    border-radius: 980px;
+    font-size: 12px;
+    color: var(--text);
+  }
+  .vchip .vchip-label {
+    color: var(--text-2);
+    font-size: 10px;
+    border-left: 1px solid var(--divider);
+    padding-left: 6px;
+    margin-left: 2px;
+  }
+  .vchip .vchip-edit, .vchip .vchip-del {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--text-3);
+    transition: background .12s, color .12s;
+  }
+  .vchip .vchip-edit:hover { background: var(--accent); color: #fff; }
+  .vchip .vchip-del:hover  { background: var(--red); color: #fff; }
+  .vchip svg { width: 9px; height: 9px; }
+  .vchip-add {
+    padding: 4px 10px;
+    border-radius: 980px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-soft);
+    transition: background .12s;
+  }
+  .vchip-add:hover { background: var(--accent); color: #fff; }
+
+  /* ── Files table ────────────────────────────────────────────────── */
+  .file-toolbar {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 12px;
+  }
+  .file-toolbar input[type=search] {
+    flex: 1;
+    max-width: 320px;
+    padding: 7px 12px;
+    background: var(--surface-2);
+    border: 1px solid var(--divider);
+    border-radius: 980px;
+  }
+  .file-toolbar input[type=search]:focus {
+    outline: none; background: var(--surface);
+    border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+  .file-toolbar .count { font-size: 12px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+
+  .file-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 4px;
+  }
+  .file-table thead th {
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .06em;
+    color: var(--text-3);
+    padding: 4px 10px;
+    text-align: left;
+  }
+  .file-table tbody tr {
+    background: var(--surface-2);
+    transition: background .12s;
+  }
+  .file-table tbody tr:hover { background: var(--surface-3); }
+  .file-table tbody td {
+    padding: 9px 10px;
+    border-top: 1px solid var(--divider);
+    border-bottom: 1px solid var(--divider);
+    vertical-align: middle;
+  }
+  .file-table tbody td:first-child {
+    border-left: 1px solid var(--divider);
+    border-radius: var(--radius-xs) 0 0 var(--radius-xs);
+  }
+  .file-table tbody td:last-child {
+    border-right: 1px solid var(--divider);
+    border-radius: 0 var(--radius-xs) var(--radius-xs) 0;
+  }
+  .file-table .ft-title {
+    font-weight: 600;
+    color: var(--text);
+    max-width: 380px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .file-table .ft-id {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-3);
+    margin-top: 2px;
+    max-width: 380px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .file-table .ft-pill {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 980px;
+    font-size: 10px;
+    font-weight: 600;
+    background: var(--surface-3);
+    color: var(--text-2);
+    margin-right: 3px;
+  }
+  .file-table .ft-pill.format-pdf { background: rgba(192,57,43,.10); color: #c0392b; }
+  .file-table .ft-pill.format-doc { background: rgba(37,99,235,.10); color: #2563eb; }
+  .file-table .ft-actions { text-align: right; white-space: nowrap; }
+  .file-table .ft-actions button {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    color: var(--text-2);
+    transition: background .12s, color .12s;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .file-table .ft-actions button svg { width: 13px; height: 13px; }
+  .file-table .ft-actions button:hover { background: var(--surface); color: var(--text); }
+  .file-table .ft-actions button.del:hover { background: var(--red); color: #fff; }
+
+  .empty-files {
+    text-align: center;
+    padding: 32px 16px;
+    color: var(--text-2);
+    font-size: 13px;
+  }
+
+  /* ── Modal ──────────────────────────────────────────────────────── */
+  .modal-bg {
+    position: fixed; inset: 0; z-index: 100;
+    background: rgba(0,0,0,.4);
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+    animation: fade-in .15s;
+  }
+  .modal-bg[hidden] { display: none; }
+  @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+  .modal {
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--sh-lg);
+    width: 100%;
+    max-width: 640px;
+    max-height: calc(100vh - 48px);
+    display: flex; flex-direction: column;
+    animation: slide-up .2s var(--ease);
+  }
+  @keyframes slide-up {
+    from { opacity: 0; transform: translateY(12px) scale(.98); }
+    to   { opacity: 1; transform: translateY(0)    scale(1); }
+  }
+  .modal-head {
+    display: flex; align-items: center; gap: 8px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--divider);
+    flex-shrink: 0;
+  }
+  .modal-head h2 { font-size: 14px; font-weight: 700; flex: 1; }
+  .modal-head .m-close {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--surface-3);
+    color: var(--text-2);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .modal-head .m-close:hover { background: var(--red); color: #fff; }
+  .modal-head .m-close svg { width: 11px; height: 11px; }
+  .modal-body { padding: 16px 18px; overflow-y: auto; }
+  .modal-foot {
+    display: flex; gap: 8px; justify-content: flex-end;
+    padding: 12px 18px;
+    border-top: 1px solid var(--divider);
+    background: var(--surface-2);
+    border-radius: 0 0 var(--radius) var(--radius);
+    flex-shrink: 0;
+  }
+  .modal-foot .errmsg {
+    flex: 1; color: var(--red); font-size: 12px; font-weight: 600;
+    align-self: center; text-align: left;
+  }
+
+  /* Checkbox/radio cluster */
+  .check-cluster {
+    display: flex; flex-wrap: wrap; gap: 4px 6px;
+    padding: 4px 0;
+  }
+  .check-cluster label {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 9px;
+    border-radius: 980px;
+    background: var(--surface-2);
+    border: 1px solid var(--divider);
+    font-size: 12px;
+    cursor: pointer;
+    transition: background .12s, border-color .12s, color .12s;
+  }
+  .check-cluster label:hover { background: var(--surface-3); }
+  .check-cluster input { accent-color: var(--accent); }
+  .check-cluster label.is-checked {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%);
+    z-index: 200;
+    padding: 10px 18px;
+    background: var(--text);
+    color: #fff;
+    border-radius: 980px;
+    font-size: 13px; font-weight: 600;
+    box-shadow: var(--sh-lg);
+    animation: toast-in .25s var(--ease);
+  }
+  .toast.is-err { background: var(--red); }
+  .toast[hidden] { display: none; }
+  @keyframes toast-in {
+    from { opacity: 0; transform: translate(-50%, 8px); }
+    to   { opacity: 1; transform: translate(-50%, 0); }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <h1>Editor de manifest<span class="h-sub">· material de matemàtiques</span></h1>
+  <span class="dirty" id="dirty-flag" hidden>● Canvis sense desar</span>
+  <div class="spacer"></div>
+  <a class="back" href="index.html">← Tornar al cercador</a>
+  <button class="btn btn-ghost" id="btn-load">
+    <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8V1M3 4l3-3 3 3M2 9h8v2H2z"/></svg>
+    Carrega
+  </button>
+  <button class="btn btn-prim" id="btn-save">
+    <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 1v8M3 6l3 3 3-3M2 11h8"/></svg>
+    Descarrega manifest
+  </button>
+  <input type="file" id="file-input" accept=".json,application/json" hidden>
+</header>
+
+<main class="container" id="container">
+  <!-- populated by JS -->
+</main>
+
+<div class="modal-bg" id="modal-bg" hidden>
+  <div class="modal" id="modal" role="dialog" aria-modal="true"></div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   Manifest editor — vanilla JS, no dependencies.
+   ═══════════════════════════════════════════════════════════════════ */
+
+const FILTER_GROUPS = [
+  { key: 'origin',     label: 'Origen',           field: 'origin',     multi: false, required: false },
+  { key: 'format',     label: 'Format',           field: 'format',     multi: false, required: true  },
+  { key: 'course',     label: 'Curs',             field: 'courses',    multi: true,  required: false },
+  { key: 'math_sense', label: 'Sentit matemàtic', field: 'math_sense', multi: false, required: false },
+  { key: 'activity',   label: 'Activitat',        field: 'activities', multi: true,  required: false },
+  { key: 'type',       label: 'Tipus',            field: 'type',       multi: false, required: false },
+];
+
+/* Default empty manifest scaffold */
+function emptyManifest() {
+  return {
+    version: 1,
+    generated: new Date().toISOString().slice(0, 10),
+    folder_url: '',
+    vocabulary: {
+      origin: ['propi', 'florence', 'recursos-mates', 'altres'],
+      format: ['pdf', 'doc'],
+      course: ['1ESO','2ESO','3ESO','4ESO','1Bat','2Bat','ESO','Bat','generic'],
+      math_sense: ['algebraic','mesura','espacial','estocastic','numeric','analitic'],
+      activity: [],
+      type: ['exercici','exercici-solucions','dossier','examen','examen-recuperacio-trimestral','examen-recuperacio-global']
+    },
+    vocabulary_labels: {},
+    files: []
+  };
+}
+
+/* ─── STATE ─────────────────────────────────────────────────────── */
+const state = {
+  manifest: null,
+  dirty: false,
+  fileSearch: '',
+  editing: null,   // file being edited; null when modal closed
+  editingNew: false,
+};
+
+const $ = id => document.getElementById(id);
+
+/* ─── HELPERS ───────────────────────────────────────────────────── */
+function escHtml(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+function attr(s) { return escHtml(s); }
+
+function label(value) {
+  if (!value && value !== 0) return '';
+  if (state.manifest?.vocabulary_labels?.[value]) return state.manifest.vocabulary_labels[value];
+  return String(value).replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+
+function slugify(s) {
+  return String(s)
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 60);
+}
+
+function setDirty(flag = true) {
+  state.dirty = flag;
+  $('dirty-flag').hidden = !flag;
+}
+
+function toast(msg, isErr = false, dur = 2200) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.toggle('is-err', isErr);
+  t.hidden = false;
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => { t.hidden = true; }, dur);
+}
+
+/* ─── LOAD / SAVE ───────────────────────────────────────────────── */
+function loadFromText(text, sourceName) {
+  let data;
+  try { data = JSON.parse(text); }
+  catch (e) { toast('JSON invàlid: ' + e.message, true, 4000); return false; }
+  if (!data.vocabulary || !Array.isArray(data.files)) {
+    toast('Manifest invàlid: falta "vocabulary" o "files"', true, 4000); return false;
+  }
+  // Ensure every vocab key exists
+  for (const G of FILTER_GROUPS) {
+    if (!Array.isArray(data.vocabulary[G.key])) data.vocabulary[G.key] = [];
+  }
+  if (!data.vocabulary_labels || typeof data.vocabulary_labels !== 'object') {
+    data.vocabulary_labels = {};
+  }
+  state.manifest = data;
+  state.dirty = false;
+  $('dirty-flag').hidden = true;
+  render();
+  toast(`Manifest carregat (${data.files.length} fitxers)${sourceName ? ' des de ' + sourceName : ''}`);
+  return true;
+}
+
+function loadFromFile(file) {
+  const reader = new FileReader();
+  reader.onload = () => loadFromText(reader.result, file.name);
+  reader.onerror = () => toast('No s\'ha pogut llegir el fitxer', true);
+  reader.readAsText(file);
+}
+
+function downloadManifest() {
+  if (!state.manifest) return;
+  // Stamp generated date
+  state.manifest.generated = new Date().toISOString().slice(0, 10);
+  const text = JSON.stringify(state.manifest, null, 2);
+  const blob = new Blob([text], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'manifest.json';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+  state.dirty = false;
+  $('dirty-flag').hidden = true;
+  toast('manifest.json descarregat');
+}
+
+/* ─── RENDER ─────────────────────────────────────────────────────── */
+function render() {
+  if (!state.manifest) {
+    renderDropZone();
+    return;
+  }
+  renderEditor();
+}
+
+function renderDropZone() {
+  $('container').innerHTML = `
+    <div class="drop-zone" id="drop-zone">
+      <h2>Editor del manifest</h2>
+      <p>
+        Carrega un <code>manifest.json</code> existent per editar-lo,
+        o comença des d'una plantilla buida amb el vocabulari per defecte.
+      </p>
+      <div class="dz-row">
+        <button class="btn btn-prim"  id="dz-pick">Carrega manifest.json</button>
+        <button class="btn btn-ghost" id="dz-new">Comença des de zero</button>
+      </div>
+      <p style="margin-top:16px;font-size:11px;color:var(--text-3)">
+        També pots arrossegar el fitxer aquí.
+      </p>
+    </div>
+  `;
+  $('dz-pick').onclick = () => $('file-input').click();
+  $('dz-new').onclick = () => { state.manifest = emptyManifest(); setDirty(true); render(); };
+}
+
+function renderEditor() {
+  const m = state.manifest;
+  $('container').innerHTML = `
+    <details class="panel" open>
+      <summary>
+        <svg class="caret" viewBox="0 0 10 10" fill="currentColor"><path d="M3 1l4 4-4 4z"/></svg>
+        <h2>Configuració general</h2>
+        <span class="panel-hint">Versió ${escHtml(m.version)} · generat ${escHtml(m.generated)}</span>
+      </summary>
+      <div class="panel-body">
+        <div class="row">
+          <label for="cfg-folder">URL carpeta Drive</label>
+          <div class="field">
+            <input id="cfg-folder" type="url" value="${attr(m.folder_url || '')}"
+                   placeholder="https://drive.google.com/drive/folders/…">
+            <div class="hint">Per referència. L'app no llegeix la carpeta; cada fitxer es referencia pel seu <code>drive_id</code>.</div>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details class="panel">
+      <summary>
+        <svg class="caret" viewBox="0 0 10 10" fill="currentColor"><path d="M3 1l4 4-4 4z"/></svg>
+        <h2>Vocabulari</h2>
+        <span class="panel-hint">Valors disponibles per cada categoria d'etiqueta</span>
+      </summary>
+      <div class="panel-body" id="vocab-body">
+        ${FILTER_GROUPS.map(G => renderVocabRow(G)).join('')}
+        <div class="hint" style="margin-top:10px">
+          Clica una etiqueta per editar el seu nom visible. El × la treu del vocabulari
+          (els fitxers que la facin servir mantindran el valor, però sortirà sense format).
+        </div>
+      </div>
+    </details>
+
+    <details class="panel" open>
+      <summary>
+        <svg class="caret" viewBox="0 0 10 10" fill="currentColor"><path d="M3 1l4 4-4 4z"/></svg>
+        <h2>Fitxers</h2>
+        <span class="panel-hint">${m.files.length} ${m.files.length === 1 ? 'fitxer' : 'fitxers'}</span>
+      </summary>
+      <div class="panel-body">
+        <div class="file-toolbar">
+          <input id="file-search" type="search" placeholder="Filtra per títol o ID…" value="${attr(state.fileSearch)}">
+          <span class="count" id="file-count"></span>
+          <button class="btn btn-prim" id="btn-add-file">
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2v8M2 6h8"/></svg>
+            Afegir fitxer
+          </button>
+        </div>
+        <div id="file-list"></div>
+      </div>
+    </details>
+  `;
+  $('cfg-folder').addEventListener('input', e => { m.folder_url = e.target.value; setDirty(); });
+  $('file-search').addEventListener('input', e => { state.fileSearch = e.target.value; renderFileList(); });
+  $('btn-add-file').onclick = () => openModal(null);
+  renderFileList();
+}
+
+function renderVocabRow(G) {
+  const values = state.manifest.vocabulary[G.key] || [];
+  const chips = values.map(v => {
+    const lbl = state.manifest.vocabulary_labels[v];
+    return `
+      <span class="vchip" data-vchip-group="${attr(G.key)}" data-vchip-value="${attr(v)}">
+        <span class="vchip-value"><code style="font-family:var(--mono);font-size:11px">${escHtml(v)}</code></span>
+        ${lbl ? `<span class="vchip-label">${escHtml(lbl)}</span>` : ''}
+        <button class="vchip-edit" title="Edita etiqueta visible">
+          <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 8l1.5-.5L8 2l-1-1-5.5 5.5L1 8z"/></svg>
+        </button>
+        <button class="vchip-del" title="Treu del vocabulari">
+          <svg viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 1l6 6M7 1l-6 6"/></svg>
+        </button>
+      </span>
+    `;
+  }).join('');
+  return `
+    <div class="vocab-row">
+      <label>${escHtml(G.label)}</label>
+      <div class="chips" data-vocab-group="${attr(G.key)}">
+        ${chips}
+        <button class="vchip-add" data-vocab-add="${attr(G.key)}">+ nou</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderFileList() {
+  const m = state.manifest;
+  const q = state.fileSearch.trim().toLowerCase();
+  const filtered = m.files.filter(f => {
+    if (!q) return true;
+    return f.title.toLowerCase().includes(q) || (f.id || '').toLowerCase().includes(q);
+  });
+  $('file-count').textContent = q
+    ? `${filtered.length} de ${m.files.length}`
+    : `${m.files.length}`;
+
+  if (!m.files.length) {
+    $('file-list').innerHTML = `<div class="empty-files">Cap fitxer encara. Clica <strong>Afegir fitxer</strong> per començar.</div>`;
+    return;
+  }
+  if (!filtered.length) {
+    $('file-list').innerHTML = `<div class="empty-files">Cap fitxer coincideix amb la cerca.</div>`;
+    return;
+  }
+
+  $('file-list').innerHTML = `
+    <table class="file-table">
+      <thead><tr>
+        <th>Títol / ID</th><th>Format</th><th>Curs</th><th>Tipus</th><th></th>
+      </tr></thead>
+      <tbody>
+        ${filtered.map(f => `
+          <tr data-file-id="${attr(f.id)}">
+            <td>
+              <div class="ft-title">${escHtml(f.title || '(sense títol)')}</div>
+              <div class="ft-id">${escHtml(f.id)}</div>
+            </td>
+            <td><span class="ft-pill format-${attr(f.format || '')}">${escHtml(label(f.format))}</span></td>
+            <td>${(f.courses || []).slice(0, 3).map(c => `<span class="ft-pill">${escHtml(label(c))}</span>`).join('')}${(f.courses || []).length > 3 ? `<span class="ft-pill">+${(f.courses.length - 3)}</span>` : ''}</td>
+            <td>${f.type ? `<span class="ft-pill">${escHtml(label(f.type))}</span>` : '—'}</td>
+            <td class="ft-actions">
+              <button class="edit" title="Edita">
+                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M1 11l1.5-.5L11 2 10 1 1.5 9.5 1 11z"/></svg>
+              </button>
+              <button class="del" title="Elimina">
+                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M3 4v6a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1V4M1 4h10M5 2h2"/></svg>
+              </button>
+            </td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+/* ─── VOCAB INTERACTIONS ────────────────────────────────────────── */
+function addVocabValue(groupKey) {
+  const v = prompt(`Nou valor per "${groupKey}" (ex: probabilitat-bayes):`)?.trim();
+  if (!v) return;
+  if (!/^[a-z0-9-]+$/.test(v)) {
+    toast('Només lletres minúscules, números i guions', true);
+    return;
+  }
+  const list = state.manifest.vocabulary[groupKey];
+  if (list.includes(v)) { toast('Aquest valor ja existeix', true); return; }
+  list.push(v);
+  const lbl = prompt('Etiqueta visible (deixa buit per usar el valor automàtic):')?.trim();
+  if (lbl) state.manifest.vocabulary_labels[v] = lbl;
+  setDirty();
+  render();
+}
+
+function editVocabLabel(groupKey, value) {
+  const current = state.manifest.vocabulary_labels[value] || '';
+  const next = prompt(`Etiqueta visible per "${value}":`, current);
+  if (next === null) return;
+  if (next.trim()) state.manifest.vocabulary_labels[value] = next.trim();
+  else             delete state.manifest.vocabulary_labels[value];
+  setDirty();
+  render();
+}
+
+function removeVocabValue(groupKey, value) {
+  const inUse = state.manifest.files.filter(f => {
+    const G = FILTER_GROUPS.find(g => g.key === groupKey);
+    const v = f[G.field];
+    return Array.isArray(v) ? v.includes(value) : v === value;
+  });
+  if (inUse.length) {
+    if (!confirm(`Aquest valor s'usa a ${inUse.length} fitxer(s). Vols treure'l del vocabulari igualment?\n(els fitxers mantindran el valor però es mostrarà sense format)`)) return;
+  }
+  state.manifest.vocabulary[groupKey] = state.manifest.vocabulary[groupKey].filter(x => x !== value);
+  setDirty();
+  render();
+}
+
+/* ─── FILE MODAL ────────────────────────────────────────────────── */
+function openModal(file) {
+  state.editingNew = !file;
+  // Working copy so cancel discards changes
+  state.editing = file
+    ? JSON.parse(JSON.stringify(file))
+    : {
+        id: '',
+        drive_id: '',
+        title: '',
+        format: 'pdf',
+        origin: state.manifest.vocabulary.origin[0] || '',
+        courses: [],
+        math_sense: '',
+        activities: [],
+        type: '',
+        year: null,
+        notes: ''
+      };
+  renderModal();
+  $('modal-bg').hidden = false;
+  setTimeout(() => $('f-title')?.focus(), 50);
+}
+
+function closeModal() {
+  state.editing = null;
+  state.editingNew = false;
+  $('modal-bg').hidden = true;
+  $('modal').innerHTML = '';
+}
+
+function renderModal() {
+  const f = state.editing;
+  const m = state.manifest;
+  $('modal').innerHTML = `
+    <div class="modal-head">
+      <h2>${state.editingNew ? 'Nou fitxer' : 'Edita fitxer'}</h2>
+      <button class="m-close" id="m-close" title="Tanca (Esc)">
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 2l8 8M10 2l-8 8"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <label for="f-title">Títol <span class="req">*</span></label>
+        <div class="field">
+          <input id="f-title" type="text" value="${attr(f.title)}" placeholder="ex: Sistemes d'equacions amb solucions">
+        </div>
+      </div>
+      <div class="row">
+        <label for="f-id">ID intern <span class="req">*</span></label>
+        <div class="field">
+          <input id="f-id" type="text" value="${attr(f.id)}" placeholder="auto-generat des del títol">
+          <div class="hint">Identificador estable per a URLs. Només minúscules, números i guions.</div>
+        </div>
+      </div>
+      <div class="row">
+        <label for="f-drive">Drive ID <span class="req">*</span></label>
+        <div class="field">
+          <input id="f-drive" type="text" value="${attr(f.drive_id)}" placeholder="ex: 1AbCdEfGhIjKlMnOpQrStUv (de https://drive.google.com/file/d/…)">
+          <div class="hint">També acceptes l'URL completa, l'extreu automàticament.</div>
+        </div>
+      </div>
+      <div class="row">
+        <label>Format <span class="req">*</span></label>
+        <div class="field check-cluster" id="f-format">
+          ${(m.vocabulary.format || []).map(v => `
+            <label class="${f.format === v ? 'is-checked' : ''}">
+              <input type="radio" name="f-format" value="${attr(v)}" ${f.format === v ? 'checked' : ''}>
+              ${escHtml(label(v))}
+            </label>
+          `).join('')}
+        </div>
+      </div>
+      <div class="row">
+        <label>Origen</label>
+        <div class="field check-cluster" id="f-origin">
+          ${(m.vocabulary.origin || []).map(v => `
+            <label class="${f.origin === v ? 'is-checked' : ''}">
+              <input type="radio" name="f-origin" value="${attr(v)}" ${f.origin === v ? 'checked' : ''}>
+              ${escHtml(label(v))}
+            </label>
+          `).join('')}
+        </div>
+      </div>
+      <div class="row">
+        <label>Curs(os)</label>
+        <div class="field check-cluster" id="f-courses">
+          ${(m.vocabulary.course || []).map(v => {
+            const on = (f.courses || []).includes(v);
+            return `<label class="${on ? 'is-checked' : ''}">
+              <input type="checkbox" name="f-courses" value="${attr(v)}" ${on ? 'checked' : ''}>
+              ${escHtml(label(v))}
+            </label>`;
+          }).join('')}
+        </div>
+      </div>
+      <div class="row">
+        <label>Sentit matemàtic</label>
+        <div class="field check-cluster" id="f-math">
+          <label class="${!f.math_sense ? 'is-checked' : ''}">
+            <input type="radio" name="f-math" value="" ${!f.math_sense ? 'checked' : ''}>
+            (cap)
+          </label>
+          ${(m.vocabulary.math_sense || []).map(v => `
+            <label class="${f.math_sense === v ? 'is-checked' : ''}">
+              <input type="radio" name="f-math" value="${attr(v)}" ${f.math_sense === v ? 'checked' : ''}>
+              ${escHtml(label(v))}
+            </label>
+          `).join('')}
+        </div>
+      </div>
+      <div class="row">
+        <label>Activitats</label>
+        <div class="field check-cluster" id="f-acts">
+          ${(m.vocabulary.activity || []).length === 0
+            ? '<div class="hint">No hi ha activitats al vocabulari. Afegeix-ne a la secció Vocabulari de més amunt.</div>'
+            : (m.vocabulary.activity || []).map(v => {
+                const on = (f.activities || []).includes(v);
+                return `<label class="${on ? 'is-checked' : ''}">
+                  <input type="checkbox" name="f-acts" value="${attr(v)}" ${on ? 'checked' : ''}>
+                  ${escHtml(label(v))}
+                </label>`;
+              }).join('')}
+        </div>
+      </div>
+      <div class="row">
+        <label>Tipus</label>
+        <div class="field check-cluster" id="f-type">
+          <label class="${!f.type ? 'is-checked' : ''}">
+            <input type="radio" name="f-type" value="" ${!f.type ? 'checked' : ''}>
+            (cap)
+          </label>
+          ${(m.vocabulary.type || []).map(v => `
+            <label class="${f.type === v ? 'is-checked' : ''}">
+              <input type="radio" name="f-type" value="${attr(v)}" ${f.type === v ? 'checked' : ''}>
+              ${escHtml(label(v))}
+            </label>
+          `).join('')}
+        </div>
+      </div>
+      <div class="row">
+        <label for="f-year">Any</label>
+        <div class="field">
+          <input id="f-year" type="number" min="1990" max="2100" value="${attr(f.year ?? '')}" placeholder="ex: 2024" style="max-width:120px">
+        </div>
+      </div>
+      <div class="row">
+        <label for="f-notes">Notes</label>
+        <div class="field">
+          <textarea id="f-notes" placeholder="Comentaris, número d'exercicis, observacions…">${escHtml(f.notes || '')}</textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <div class="errmsg" id="m-err"></div>
+      <button class="btn btn-ghost" id="m-cancel">Cancel·la</button>
+      ${state.editingNew ? '' : `<button class="btn btn-danger" id="m-delete">Elimina</button>`}
+      <button class="btn btn-prim" id="m-save">${state.editingNew ? 'Crea fitxer' : 'Desa canvis'}</button>
+    </div>
+  `;
+
+  // Wire up modal
+  $('m-close').onclick = closeModal;
+  $('m-cancel').onclick = closeModal;
+  $('m-save').onclick = saveModal;
+  if ($('m-delete')) $('m-delete').onclick = deleteEditing;
+
+  // Auto-slug from title if id is empty
+  $('f-title').addEventListener('input', () => {
+    if (state.editingNew && !$('f-id').value) {
+      // suggest, don't force
+      $('f-id').placeholder = slugify($('f-title').value) || 'auto-generat des del títol';
+    }
+  });
+
+  // Extract drive_id from URL if pasted
+  $('f-drive').addEventListener('blur', () => {
+    const raw = $('f-drive').value.trim();
+    const m1 = raw.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    const m2 = raw.match(/id=([a-zA-Z0-9_-]+)/);
+    if (m1) $('f-drive').value = m1[1];
+    else if (m2) $('f-drive').value = m2[1];
+  });
+
+  // Visual feedback on checkbox/radio toggle
+  $('modal').addEventListener('change', e => {
+    const lab = e.target.closest('label');
+    if (!lab) return;
+    if (e.target.type === 'radio') {
+      lab.parentElement.querySelectorAll('label.is-checked').forEach(l => l.classList.remove('is-checked'));
+      lab.classList.add('is-checked');
+    } else if (e.target.type === 'checkbox') {
+      lab.classList.toggle('is-checked', e.target.checked);
+    }
+  });
+}
+
+function readModal() {
+  const f = {};
+  f.title    = $('f-title').value.trim();
+  f.id       = $('f-id').value.trim() || slugify(f.title);
+  f.drive_id = $('f-drive').value.trim();
+  f.format   = document.querySelector('input[name=f-format]:checked')?.value || '';
+  f.origin   = document.querySelector('input[name=f-origin]:checked')?.value || '';
+  f.courses  = [...document.querySelectorAll('input[name=f-courses]:checked')].map(x => x.value);
+  f.math_sense = document.querySelector('input[name=f-math]:checked')?.value || '';
+  f.activities = [...document.querySelectorAll('input[name=f-acts]:checked')].map(x => x.value);
+  f.type     = document.querySelector('input[name=f-type]:checked')?.value || '';
+  const y = $('f-year').value.trim();
+  f.year     = y ? parseInt(y, 10) : null;
+  f.notes    = $('f-notes').value.trim();
+  return f;
+}
+
+function saveModal() {
+  const f = readModal();
+  const err = $('m-err');
+  err.textContent = '';
+
+  if (!f.title) return (err.textContent = 'El títol és obligatori');
+  if (!f.id)    return (err.textContent = 'L\'ID intern és obligatori');
+  if (!/^[a-z0-9-]+$/.test(f.id)) return (err.textContent = 'L\'ID només pot tenir lletres minúscules, números i guions');
+  if (!f.drive_id) return (err.textContent = 'El Drive ID és obligatori');
+  if (!f.format)   return (err.textContent = 'Tria un format');
+
+  // Uniqueness
+  const others = state.manifest.files.filter(x => x !== state.editing && x.id === f.id);
+  // When editing, state.editing is a clone — find original by reference instead via id
+  const origId = state.editingNew ? null : state.editing.id;
+  if (!state.editingNew) {
+    // same-id okay if it's our original
+  }
+  const conflict = state.manifest.files.find(x => x.id === f.id && x.id !== origId);
+  if (conflict) return (err.textContent = `Ja existeix un fitxer amb ID "${f.id}"`);
+
+  // Clean empty values for tidiness
+  if (!f.year) delete f.year;
+  if (!f.math_sense) delete f.math_sense;
+  if (!f.type) delete f.type;
+  if (!f.notes) delete f.notes;
+  if (!f.activities.length) delete f.activities;
+  if (!f.courses.length) delete f.courses;
+
+  if (state.editingNew) {
+    state.manifest.files.push(f);
+    toast(`Fitxer "${f.title}" afegit`);
+  } else {
+    const idx = state.manifest.files.findIndex(x => x.id === origId);
+    if (idx >= 0) state.manifest.files[idx] = f;
+    toast(`Fitxer "${f.title}" desat`);
+  }
+  setDirty();
+  closeModal();
+  render();
+}
+
+function deleteEditing() {
+  const id = state.editing?.id;
+  if (!id) return;
+  if (!confirm(`Eliminar el fitxer "${state.editing.title}"?\nNo afecta el fitxer real al Drive, només l'entrada al manifest.`)) return;
+  state.manifest.files = state.manifest.files.filter(x => x.id !== id);
+  setDirty();
+  closeModal();
+  render();
+  toast('Fitxer eliminat');
+}
+
+/* ─── EVENT WIRING ──────────────────────────────────────────────── */
+$('btn-load').onclick = () => $('file-input').click();
+$('btn-save').onclick = () => {
+  if (!state.manifest) { toast('Carrega o crea un manifest primer', true); return; }
+  downloadManifest();
+};
+$('file-input').addEventListener('change', e => {
+  const f = e.target.files?.[0];
+  if (f) loadFromFile(f);
+  e.target.value = '';
+});
+
+// Drag-and-drop on the whole page
+let dragDepth = 0;
+window.addEventListener('dragenter', e => {
+  e.preventDefault();
+  dragDepth++;
+  const dz = document.getElementById('drop-zone');
+  if (dz) dz.classList.add('dragover');
+});
+window.addEventListener('dragleave', () => {
+  dragDepth = Math.max(0, dragDepth - 1);
+  if (dragDepth === 0) {
+    const dz = document.getElementById('drop-zone');
+    if (dz) dz.classList.remove('dragover');
+  }
+});
+window.addEventListener('dragover', e => { e.preventDefault(); });
+window.addEventListener('drop', e => {
+  e.preventDefault();
+  dragDepth = 0;
+  const dz = document.getElementById('drop-zone');
+  if (dz) dz.classList.remove('dragover');
+  const f = e.dataTransfer?.files?.[0];
+  if (f && (f.type === 'application/json' || f.name.endsWith('.json'))) {
+    loadFromFile(f);
+  } else if (f) {
+    toast('Cal un fitxer .json', true);
+  }
+});
+
+// Delegated clicks on container
+document.addEventListener('click', e => {
+  // Vocab: add
+  const addBtn = e.target.closest('[data-vocab-add]');
+  if (addBtn) { addVocabValue(addBtn.dataset.vocabAdd); return; }
+  // Vocab: chip edit
+  const editVoc = e.target.closest('.vchip .vchip-edit');
+  if (editVoc) {
+    const chip = editVoc.closest('.vchip');
+    editVocabLabel(chip.dataset.vchipGroup, chip.dataset.vchipValue);
+    return;
+  }
+  // Vocab: chip delete
+  const delVoc = e.target.closest('.vchip .vchip-del');
+  if (delVoc) {
+    const chip = delVoc.closest('.vchip');
+    removeVocabValue(chip.dataset.vchipGroup, chip.dataset.vchipValue);
+    return;
+  }
+  // File: edit
+  const editRow = e.target.closest('.file-table tbody button.edit');
+  if (editRow) {
+    const id = editRow.closest('tr').dataset.fileId;
+    const f = state.manifest.files.find(x => x.id === id);
+    if (f) openModal(f);
+    return;
+  }
+  // File: delete inline
+  const delRow = e.target.closest('.file-table tbody button.del');
+  if (delRow) {
+    const id = delRow.closest('tr').dataset.fileId;
+    const f = state.manifest.files.find(x => x.id === id);
+    if (!f) return;
+    if (!confirm(`Eliminar el fitxer "${f.title}"?\nNo afecta el fitxer real al Drive, només l'entrada al manifest.`)) return;
+    state.manifest.files = state.manifest.files.filter(x => x.id !== id);
+    setDirty();
+    render();
+    toast('Fitxer eliminat');
+    return;
+  }
+  // File: row click (anywhere not on action buttons) → edit
+  const row = e.target.closest('.file-table tbody tr');
+  if (row && !e.target.closest('button')) {
+    const id = row.dataset.fileId;
+    const f = state.manifest.files.find(x => x.id === id);
+    if (f) openModal(f);
+    return;
+  }
+});
+
+// Escape closes modal
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && state.editing) closeModal();
+});
+
+// Prevent accidental nav with unsaved changes
+window.addEventListener('beforeunload', e => {
+  if (state.dirty) { e.preventDefault(); e.returnValue = ''; }
+});
+
+/* ─── INIT ──────────────────────────────────────────────────────── */
+// Try to pre-load manifest.json from same dir; if not present, show drop zone
+(async function init() {
+  try {
+    const res = await fetch('manifest.json', { cache: 'no-cache' });
+    if (res.ok) {
+      const text = await res.text();
+      loadFromText(text, 'manifest.json');
+      return;
+    }
+  } catch {}
+  render();  // drop zone
+})();
+</script>
+</body>
+</html>
