@@ -62,7 +62,7 @@
   .topbar {
     position: sticky; top: 0; z-index: 50;
     display: grid;
-    grid-template-columns: 220px 1fr auto;
+    grid-template-columns: 220px 1fr;
     align-items: center;
     gap: 16px;
     padding: 10px 20px;
@@ -101,40 +101,6 @@
     border-color: var(--accent);
     box-shadow: 0 0 0 4px var(--accent-soft);
   }
-
-  .selection-bar {
-    display: flex; align-items: center; gap: 8px;
-    padding: 4px 4px 4px 12px;
-    background: var(--text);
-    color: #fff;
-    border-radius: 980px;
-    box-shadow: var(--sh-md);
-    animation: fade-up .25s var(--spring);
-  }
-  .selection-bar[hidden] { display: none; }
-  .selection-bar .sel-count { font-size: 13px; font-weight: 600; }
-  .selection-bar .sel-count .sel-hidden { color: rgba(255,255,255,.55); font-weight: 400; margin-left: 4px; }
-  .selection-bar select {
-    background: rgba(255,255,255,.12);
-    color: #fff;
-    border: none;
-    border-radius: 980px;
-    padding: 6px 10px;
-    font-size: 12px;
-    cursor: pointer;
-  }
-  .selection-bar select option { color: var(--text); background: #fff; }
-  .selection-bar button {
-    padding: 7px 14px;
-    border-radius: 980px;
-    font-size: 12px;
-    font-weight: 600;
-    transition: background .15s;
-  }
-  .selection-bar .btn-primary { background: var(--accent); color: #fff; }
-  .selection-bar .btn-primary:hover { background: #0064cc; }
-  .selection-bar .btn-ghost { background: rgba(255,255,255,.10); color: #fff; }
-  .selection-bar .btn-ghost:hover { background: rgba(255,255,255,.20); }
 
   /* ── Layout ─────────────────────────────────────────────────────── */
   .layout {
@@ -303,7 +269,7 @@
   /* ── Card ───────────────────────────────────────────────────────── */
   .card {
     display: grid;
-    grid-template-columns: 22px 32px 1fr auto;
+    grid-template-columns: 32px 1fr auto;
     align-items: center;
     gap: 12px;
     padding: 11px 14px;
@@ -327,13 +293,6 @@
     border-color: var(--accent);
     background: var(--accent-soft);
   }
-  .card.is-selected {
-    background: rgba(52,199,89,.06);
-    border-color: rgba(52,199,89,.4);
-  }
-  .card.is-selected.is-open {
-    background: linear-gradient(0deg, var(--accent-soft), var(--accent-soft)), rgba(52,199,89,.06);
-  }
 
   .card[data-origin=propi]:hover          { box-shadow: inset 3px 0 0 var(--c-propi); }
   .card[data-origin=florence]:hover       { box-shadow: inset 3px 0 0 var(--c-florence); }
@@ -341,12 +300,6 @@
   .card[data-origin=edu365]:hover         { box-shadow: inset 3px 0 0 var(--c-edu365); }
   .card[data-origin=altres]:hover         { box-shadow: inset 3px 0 0 var(--c-altres); }
   .card:hover { transform: translateX(2px); }
-
-  .card .card-check {
-    width: 16px; height: 16px;
-    accent-color: var(--accent);
-    cursor: pointer;
-  }
 
   .card .card-icon {
     width: 30px; height: 36px;
@@ -399,21 +352,28 @@
   .pill-year   { font-family: var(--mono); color: var(--text-3); background: transparent; padding: 0 2px; }
 
   .card-actions {
-    display: flex; gap: 4px;
-    opacity: 0;
-    transition: opacity .15s;
+    display: none;
+    gap: 6px;
   }
-  .card:hover .card-actions,
-  .card.is-open .card-actions { opacity: 1; }
-  .card-actions button {
-    width: 30px; height: 30px;
-    border-radius: 8px;
-    display: inline-flex; align-items: center; justify-content: center;
-    color: var(--text-2);
-    transition: background .12s, color .12s;
+  .card.is-open .card-actions { display: flex; }
+  .card-actions .btn-act {
+    padding: 7px 12px;
+    border-radius: 980px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid var(--divider);
+    background: var(--surface);
+    color: var(--text);
+    transition: background .12s, border-color .12s, transform .12s;
   }
-  .card-actions button:hover { background: var(--surface-3); color: var(--text); }
-  .card-actions svg { width: 14px; height: 14px; }
+  .card-actions .btn-act:hover { background: var(--surface-3); }
+  .card-actions .btn-act.btn-prim {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+  .card-actions .btn-act.btn-prim:hover { background: #0064cc; }
+  .card-actions .btn-act:active { transform: scale(.96); }
 
   /* Empty / loading / error */
   .state-empty, .state-loading, .state-error {
@@ -479,65 +439,8 @@
   .preview-head .pv-close:hover { background: var(--red); color: #fff; }
   .preview-head .pv-close svg { width: 12px; height: 12px; }
 
-  .preview-tabs {
-    display: flex;
-    border-bottom: 1px solid var(--divider);
-    padding: 0 6px;
-    flex-shrink: 0;
-  }
-  .preview-tabs button {
-    padding: 8px 14px;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-2);
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-    transition: color .12s, border-color .12s;
-  }
-  .preview-tabs button.active { color: var(--accent); border-bottom-color: var(--accent); }
-  .preview-tabs button:hover:not(.active) { color: var(--text); }
-
   .preview-body { flex: 1; overflow: hidden; min-height: 0; position: relative; }
   .preview-body iframe { width: 100%; height: 100%; border: none; display: block; }
-  .preview-body .pv-meta {
-    height: 100%;
-    overflow-y: auto;
-    padding: 16px 18px 24px;
-  }
-  .pv-meta dl {
-    display: grid;
-    grid-template-columns: 110px 1fr;
-    gap: 8px 12px;
-    font-size: 12.5px;
-  }
-  .pv-meta dt {
-    color: var(--text-3);
-    font-weight: 500;
-    text-transform: uppercase;
-    font-size: 10px;
-    letter-spacing: .04em;
-    padding-top: 2px;
-  }
-  .pv-meta dd { color: var(--text); }
-  .pv-meta dd code { font-family: var(--mono); font-size: 11px; color: var(--text-2); }
-  .pv-meta .pv-notes {
-    margin-top: 18px;
-    padding: 12px 14px;
-    background: var(--surface-2);
-    border-radius: var(--radius-sm);
-    font-size: 12.5px;
-    color: var(--text);
-    line-height: 1.55;
-  }
-  .pv-meta .pv-notes-label {
-    font-size: 10px; font-weight: 700;
-    text-transform: uppercase; letter-spacing: .06em;
-    color: var(--text-3);
-    margin-bottom: 6px;
-  }
-  .pv-meta .pv-pills {
-    display: flex; flex-wrap: wrap; gap: 4px;
-  }
 
   .preview-actions {
     display: flex; gap: 6px;
@@ -546,19 +449,18 @@
     flex-shrink: 0;
     background: var(--surface-2);
   }
-  .preview-actions button, .preview-actions a {
+  .preview-actions a {
     flex: 1;
-    padding: 7px 10px;
+    padding: 8px 10px;
     border-radius: 980px;
     font-size: 12px;
     font-weight: 600;
     text-align: center;
-    transition: background .12s, color .12s;
+    background: var(--accent);
+    color: #fff;
+    transition: background .12s;
   }
-  .preview-actions .btn-prim { background: var(--accent); color: #fff; }
-  .preview-actions .btn-prim:hover { background: #0064cc; }
-  .preview-actions .btn-ghost { background: var(--surface-3); color: var(--text-2); }
-  .preview-actions .btn-ghost:hover { background: var(--divider); color: var(--text); }
+  .preview-actions a:hover { background: #0064cc; text-decoration: none; }
 
   /* ── Footer ─────────────────────────────────────────────────────── */
   .footer-note {
@@ -592,15 +494,6 @@
     </svg>
     <input id="search" type="search" placeholder="Cerca per títol, tema, etiqueta… (tolera errors)" autocomplete="off" spellcheck="false">
   </div>
-  <div class="selection-bar" id="selection-bar" hidden>
-    <span class="sel-count" id="sel-count"></span>
-    <select id="docs-format" title="Format per a Google Docs">
-      <option value="pdf">Docs → PDF</option>
-      <option value="docx">Docs → DOCX</option>
-    </select>
-    <button class="btn-ghost" id="btn-clear-sel">Esborra</button>
-    <button class="btn-primary" id="btn-download">Descarrega</button>
-  </div>
 </header>
 
 <main class="layout" id="layout">
@@ -611,7 +504,7 @@
     <div class="results-header">
       <span class="res-count" id="res-count">—</span>
       <span class="res-keyboard">
-        <kbd>⇧</kbd> + clic = rang &nbsp;·&nbsp; <kbd>⌘/Ctrl</kbd> + <kbd>A</kbd> = tots visibles &nbsp;·&nbsp; <kbd>Esc</kbd> = tanca preview
+        <kbd>Esc</kbd> = tanca preview
       </span>
     </div>
     <ul class="results" id="results"></ul>
@@ -648,10 +541,8 @@ const state = {
   vocabLabels: {},
   query: '',
   filters: {},                  // { groupKey: Set([values]) }
-  selected: new Set(),
-  openId: null,
-  docsFormat: 'pdf',
-  lastClickedIdx: -1,
+  openId: null,                 // card actualment expandida amb les dues accions
+  previewing: false,            // si el panell lateral està obert mostrant l'iframe
   filterCollapsed: {},
 };
 FILTER_GROUPS.forEach(g => state.filters[g.key] = new Set());
@@ -665,11 +556,6 @@ const els = {
   resCount:      $('res-count'),
   results:       $('results'),
   preview:       $('preview-drawer'),
-  selBar:        $('selection-bar'),
-  selCount:      $('sel-count'),
-  btnDownload:   $('btn-download'),
-  btnClearSel:   $('btn-clear-sel'),
-  docsFormat:    $('docs-format'),
   search:        $('search'),
 };
 
@@ -929,7 +815,6 @@ function renderResults(filtered) {
   }
 
   els.results.innerHTML = filtered.map((f, idx) => {
-    const isSel  = state.selected.has(f.id);
     const isOpen = state.openId === f.id;
     const origin = f.origin || 'altres';
     const fmtIcon = (f.format || '?').toUpperCase();
@@ -941,15 +826,16 @@ function renderResults(filtered) {
     const moreAct = (f.activities || []).length > 2
       ? `<span class="pill pill-act">+${(f.activities.length - 2)}</span>` : '';
 
+    const driveOpen = f.format === 'doc'
+      ? `https://docs.google.com/document/d/${encodeURIComponent(f.drive_id)}/edit`
+      : `https://drive.google.com/file/d/${encodeURIComponent(f.drive_id)}/view`;
+
     return `
       <li>
-        <div class="card ${isSel ? 'is-selected' : ''} ${isOpen ? 'is-open' : ''}"
+        <div class="card ${isOpen ? 'is-open' : ''}"
              data-id="${escHtml(f.id)}" data-idx="${idx}"
              data-format="${escHtml(f.format || '')}"
              data-origin="${escHtml(origin)}">
-          <input type="checkbox" class="card-check" ${isSel ? 'checked' : ''}
-                 data-id="${escHtml(f.id)}" data-idx="${idx}"
-                 aria-label="Selecciona ${escHtml(f.title)}">
           <div class="card-icon">${escHtml(fmtIcon)}</div>
           <div class="card-main">
             <div class="card-title">${escHtml(f.title)}</div>
@@ -962,16 +848,8 @@ function renderResults(filtered) {
             </div>
           </div>
           <div class="card-actions">
-            <button class="act-download" data-id="${escHtml(f.id)}" title="Descarrega">
-              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M8 2v9M4 8l4 4 4-4M3 14h10"/>
-              </svg>
-            </button>
-            <button class="act-preview" data-id="${escHtml(f.id)}" title="Visualitza">
-              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z"/><circle cx="8" cy="8" r="2"/>
-              </svg>
-            </button>
+            <button class="btn-act btn-prim act-preview" data-id="${escHtml(f.id)}">Previsualitza</button>
+            <a class="btn-act act-drive" href="${driveOpen}" target="_blank" rel="noopener">Obre al Drive ↗</a>
           </div>
         </div>
       </li>`;
