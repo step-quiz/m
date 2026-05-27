@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated": "2026-05-27",
-  "folder_url": "https://drive.google.com/drive/folders/REPLACE_WITH_YOUR_FOLDER_ID",
+  "folder_url": "https://drive.google.com/drive/folders/1WjqddjN3uQhO7zUXzRKwDmBia6jqCUdy",
   "vocabulary": {
     "origin": ["propi", "florence", "recursos-mates", "edu365", "altres"],
     "format": ["pdf", "doc"],
@@ -73,7 +73,7 @@
   "files": [
     {
       "id": "sistemes-eq-3eso-2024-01",
-      "drive_id": "1exbrFhRADOVk5Ox-uYHtRmG1JSrZC41W",
+      "drive_id": "1-SkPJcxjULavYU8wayt_uri4hkMary6476BI-EZ_aFI",
       "title": "Sistemes d'equacions lineals — fitxa de repàs amb solucions",
       "format": "pdf",
       "origin": "propi",
@@ -86,7 +86,7 @@
     },
     {
       "id": "derivades-1bat-florence-01",
-      "drive_id": "REPLACE_WITH_REAL_DRIVE_ID_002",
+      "drive_id": "1-SkPJcxjULavYU8wayt_uri4hkMary6476BI-EZ_aFI",
       "title": "Derivades: regla de la cadena i derivades successives",
       "format": "pdf",
       "origin": "florence",
@@ -99,7 +99,7 @@
     },
     {
       "id": "bayes-2bat-rmates-01",
-      "drive_id": "REPLACE_WITH_REAL_DRIVE_ID_003",
+      "drive_id": "1-SkPJcxjULavYU8wayt_uri4hkMary6476BI-EZ_aFI",
       "title": "Probabilitat condicionada i teorema de Bayes — diagrames d'arbre",
       "format": "doc",
       "origin": "recursos-mates",
@@ -112,7 +112,7 @@
     },
     {
       "id": "integrals-2bat-propi-rec-trim-2025",
-      "drive_id": "REPLACE_WITH_REAL_DRIVE_ID_004",
+      "drive_id": "1-SkPJcxjULavYU8wayt_uri4hkMary6476BI-EZ_aFI",
       "title": "Recuperació trimestral 2T — integrals indefinides i definides",
       "format": "pdf",
       "origin": "propi",
@@ -125,7 +125,7 @@
     },
     {
       "id": "trigonometria-4eso-propi-01",
-      "drive_id": "REPLACE_WITH_REAL_DRIVE_ID_005",
+      "drive_id": "1-SkPJcxjULavYU8wayt_uri4hkMary6476BI-EZ_aFI",
       "title": "Trigonometria — raons en el triangle rectangle",
       "format": "pdf",
       "origin": "propi",
