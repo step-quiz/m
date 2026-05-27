@@ -638,10 +638,11 @@ function escHtml(s) {
 }
 
 /* Course umbrella matching: a filter on '3ESO' matches files tagged
-   ['3ESO'], ['ESO'], or ['generic']. */
+   ['3ESO'] or ['ESO']. A file with NO course tags matches every course
+   filter (it is considered universally relevant). */
 function fileMatchesCourse(file, requested) {
   const tags = file.courses || [];
-  if (tags.includes('generic')) return true;
+  if (tags.length === 0) return true;
   if (tags.includes(requested)) return true;
   if (tags.includes('ESO')  && ESO_COURSES.includes(requested))  return true;
   if (tags.includes('Bat')  && BATX_COURSES.includes(requested)) return true;
