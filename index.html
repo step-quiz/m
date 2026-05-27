@@ -513,17 +513,6 @@
   <aside class="preview-drawer" id="preview-drawer" hidden></aside>
 </main>
 
-<div class="sel-bar" id="sel-bar" hidden>
-  <span class="sel-count" id="sel-count"></span>
-  <select id="docs-format" title="Format d'exportació">
-    <option value="pdf">PDF</option>
-    <option value="docx">DOCX</option>
-    <option value="odt">ODT</option>
-  </select>
-  <button class="btn-ghost" id="btn-clear-sel">Deselecciona</button>
-  <button class="btn-prim"  id="btn-download">Descarrega selecció</button>
-</div>
-
 <div class="footer-note">
   © 2026 — Eina interna · <a href="afegir-material.html">Edita el manifest →</a>
 </div>
@@ -555,8 +544,6 @@ const state = {
   openId: null,                 // card actualment expandida amb les dues accions
   previewing: false,            // si el panell lateral està obert mostrant l'iframe
   filterCollapsed: {},
-  selected: new Set(),          // ids de fitxers seleccionats
-  docsFormat: 'pdf',            // format exportació docs de Google
 };
 FILTER_GROUPS.forEach(g => state.filters[g.key] = new Set());
 
@@ -570,11 +557,6 @@ const els = {
   results:       $('results'),
   preview:       $('preview-drawer'),
   search:        $('search'),
-  selBar:        $('sel-bar'),
-  selCount:      $('sel-count'),
-  btnDownload:   $('btn-download'),
-  btnClearSel:   $('btn-clear-sel'),
-  docsFormat:    $('docs-format'),
 };
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -749,7 +731,6 @@ function computeCounts() {
    ═══════════════════════════════════════════════════════════════════ */
 
 function renderFilters() {
-  if (!state.manifest) return;
   const counts = computeCounts();
   const html = FILTER_GROUPS.map(G => {
     const values  = state.manifest.vocabulary[G.key] || [];
@@ -875,22 +856,8 @@ function renderResults(filtered) {
   }).join('');
 }
 
-function renderSelectionBar() {
-  const n = state.selected.size;
-  if (n === 0) {
-    els.selBar.hidden = true;
-    return;
-  }
-  els.selBar.hidden = false;
-  // Count how many of selected are hidden by current filters
-  const visibleIds = new Set(computeFiltered().map(f => f.id));
-  let hidden = 0;
-  state.selected.forEach(id => { if (!visibleIds.has(id)) hidden++; });
-  els.selCount.innerHTML = `${n} seleccionat${n === 1 ? '' : 's'}${hidden ? `<span class="sel-hidden">(${hidden} ocult${hidden === 1 ? '' : 's'})</span>` : ''}`;
-}
-
 function renderPreview() {
-  if (!state.openId) {
+  if (!state.previewing || !state.openId) {
     els.preview.hidden = true;
     els.layout.classList.remove('has-preview');
     return;
@@ -915,155 +882,52 @@ function renderPreview() {
         <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg>
       </button>
     </div>
-    <div class="preview-tabs">
-      <button id="tab-view" class="active">Visor</button>
-      <button id="tab-meta">Metadades</button>
-    </div>
     <div class="preview-body" id="pv-body">
       <iframe src="${previewSrc}" title="Visor de ${escHtml(f.title)}" allow="autoplay"></iframe>
     </div>
     <div class="preview-actions">
-      <a class="btn-ghost" href="${driveOpen}" target="_blank" rel="noopener">Obre al Drive ↗</a>
-      <button class="btn-ghost" id="pv-copy">Copia enllaç</button>
-      <button class="btn-prim"  id="pv-download">Descarrega</button>
+      <a href="${driveOpen}" target="_blank" rel="noopener">Obre al Drive ↗</a>
     </div>
   `;
 
-  const btnClose    = $('pv-close');
-  const btnTabView  = $('tab-view');
-  const btnTabMeta  = $('tab-meta');
-  const btnDownload = $('pv-download');
-  const btnCopy     = $('pv-copy');
-
-  if (btnClose)    btnClose.onclick    = closePreview;
-  if (btnTabView)  btnTabView.onclick  = () => switchPreviewTab('view', f);
-  if (btnTabMeta)  btnTabMeta.onclick  = () => switchPreviewTab('meta', f);
-  if (btnDownload) btnDownload.onclick = () => downloadFiles([f]);
-  if (btnCopy)     btnCopy.onclick     = () => {
-    const url = location.origin + location.pathname + '?' + buildUrlParams({ openOnly: true });
-    navigator.clipboard?.writeText(url).then(() => {
-      const b = $('pv-copy');
-      const orig = b.textContent;
-      b.textContent = 'Copiat ✓';
-      setTimeout(() => { b.textContent = orig; }, 1500);
-    });
-  };
-}
-
-function switchPreviewTab(tab, f) {
-  const tv = $('tab-view'), tm = $('tab-meta'), body = $('pv-body');
-  tv.classList.toggle('active', tab === 'view');
-  tm.classList.toggle('active', tab === 'meta');
-  if (tab === 'view') {
-    const src = `https://drive.google.com/file/d/${encodeURIComponent(f.drive_id)}/preview`;
-    body.innerHTML = `<iframe src="${src}" title="Visor de ${escHtml(f.title)}"></iframe>`;
-  } else {
-    const coursePills = (f.courses || []).map(c => `<span class="pill pill-course">${escHtml(label(c))}</span>`).join(' ');
-    const actPills    = (f.activities || []).map(a => `<span class="pill pill-act">${escHtml(label(a))}</span>`).join(' ');
-    body.innerHTML = `
-      <div class="pv-meta">
-        <dl>
-          <dt>Origen</dt>     <dd><span class="pill pill-origin" data-origin="${escHtml(f.origin || 'altres')}">${escHtml(label(f.origin))}</span></dd>
-          <dt>Format</dt>     <dd>${escHtml(label(f.format))}</dd>
-          <dt>Curs(os)</dt>   <dd><div class="pv-pills">${coursePills || '—'}</div></dd>
-          <dt>Sentit mat.</dt><dd>${f.math_sense ? escHtml(label(f.math_sense)) : '—'}</dd>
-          <dt>Activitats</dt> <dd><div class="pv-pills">${actPills || '—'}</div></dd>
-          <dt>Tipus</dt>      <dd>${f.type ? `<span class="pill pill-type">${escHtml(label(f.type))}</span>` : '—'}</dd>
-          <dt>Any</dt>        <dd>${f.year ? escHtml(f.year) : '—'}</dd>
-          <dt>ID intern</dt>  <dd><code>${escHtml(f.id)}</code></dd>
-          <dt>Drive ID</dt>   <dd><code>${escHtml(f.drive_id)}</code></dd>
-        </dl>
-        ${f.notes ? `
-          <div class="pv-notes">
-            <div class="pv-notes-label">Notes</div>
-            ${escHtml(f.notes)}
-          </div>` : ''}
-      </div>`;
-  }
+  $('pv-close').onclick = closePreview;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   ACTIONS — open/close, download, select
+   ACTIONS — toggle card open, preview drawer
    ═══════════════════════════════════════════════════════════════════ */
 
-function openPreview(id) {
-  if (state.openId === id) return;
+function toggleOpen(id) {
+  // Click on same card → close it (and close the preview if open).
+  if (state.openId === id) {
+    closeCard();
+    return;
+  }
   state.openId = id;
-  renderPreview();
-  // mark open card
-  document.querySelectorAll('.card.is-open').forEach(c => c.classList.remove('is-open'));
-  const card = document.querySelector(`.card[data-id="${CSS.escape(id)}"]`);
-  if (card) card.classList.add('is-open');
+  state.previewing = false;     // re-clicking a different card resets the preview
+  renderAll();
+  syncToUrl(false);
+}
+
+function closeCard() {
+  state.openId = null;
+  state.previewing = false;
+  renderAll();
+  syncToUrl(false);
+}
+
+function openPreview(id) {
+  state.openId = id;
+  state.previewing = true;
+  renderAll();
   syncToUrl(false);
 }
 
 function closePreview() {
-  state.openId = null;
-  renderPreview();
-  document.querySelectorAll('.card.is-open').forEach(c => c.classList.remove('is-open'));
+  // Only close the side panel; keep the card open with its action buttons.
+  state.previewing = false;
+  renderAll();
   syncToUrl(false);
-}
-
-function downloadUrlFor(file, docsFormat) {
-  if (file.format === 'doc') {
-    return `https://docs.google.com/document/d/${encodeURIComponent(file.drive_id)}/export?format=${docsFormat}`;
-  }
-  return `https://drive.google.com/uc?export=download&id=${encodeURIComponent(file.drive_id)}`;
-}
-
-async function downloadFiles(files) {
-  if (!files.length) return;
-  if (files.length > 10) {
-    if (!confirm(`Estàs a punt de baixar ${files.length} fitxers. Continuar?`)) return;
-  }
-  for (const f of files) {
-    const a = document.createElement('a');
-    a.href = downloadUrlFor(f, state.docsFormat);
-    a.download = '';
-    a.rel = 'noopener';
-    a.target = '_blank';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    await new Promise(r => setTimeout(r, 250));
-  }
-}
-
-function downloadSelected() {
-  const map = new Map(state.manifest.files.map(f => [f.id, f]));
-  const files = [...state.selected].map(id => map.get(id)).filter(Boolean);
-  downloadFiles(files);
-}
-
-function toggleSelect(id, idx, shift) {
-  if (shift && state.lastClickedIdx >= 0) {
-    const filtered = computeFiltered();
-    const [a, b] = [state.lastClickedIdx, idx].sort((x,y) => x - y);
-    for (let i = a; i <= b && i < filtered.length; i++) {
-      state.selected.add(filtered[i].id);
-    }
-  } else {
-    if (state.selected.has(id)) state.selected.delete(id);
-    else state.selected.add(id);
-  }
-  state.lastClickedIdx = idx;
-  renderAll();
-}
-
-function selectAllVisible() {
-  const filtered = computeFiltered();
-  const allSelected = filtered.every(f => state.selected.has(f.id));
-  if (allSelected) {
-    filtered.forEach(f => state.selected.delete(f.id));
-  } else {
-    filtered.forEach(f => state.selected.add(f.id));
-  }
-  renderAll();
-}
-
-function clearSelection() {
-  state.selected.clear();
-  renderAll();
 }
 
 function clearAll() {
@@ -1122,7 +986,6 @@ function renderAll() {
   renderFilters();
   renderChips();
   renderResults(computeFiltered());
-  renderSelectionBar();
   renderPreview();
 }
 
@@ -1181,48 +1044,28 @@ els.chipRow.addEventListener('click', e => {
 });
 
 els.results.addEventListener('click', e => {
-  // Checkbox
-  const cb = e.target.closest('input.card-check');
-  if (cb) {
-    e.preventDefault();   // we manage check state ourselves
-    toggleSelect(cb.dataset.id, parseInt(cb.dataset.idx, 10), e.shiftKey);
-    return;
-  }
-  // Download action
-  const dl = e.target.closest('button.act-download');
-  if (dl) {
-    e.stopPropagation();
-    const f = state.manifest.files.find(x => x.id === dl.dataset.id);
-    if (f) downloadFiles([f]);
-    return;
-  }
-  // Preview action
+  // "Previsualitza" button → open side drawer with iframe.
   const pv = e.target.closest('button.act-preview');
   if (pv) {
     e.stopPropagation();
     openPreview(pv.dataset.id);
     return;
   }
-  // Card body click → preview
-  const card = e.target.closest('.card');
-  if (card) openPreview(card.dataset.id);
-});
-
-els.btnDownload.onclick = downloadSelected;
-els.btnClearSel.onclick = clearSelection;
-els.docsFormat.addEventListener('change', e => { state.docsFormat = e.target.value; });
-
-document.addEventListener('keydown', e => {
-  // Escape closes preview
-  if (e.key === 'Escape' && state.openId) {
-    closePreview();
+  // "Obre al Drive" link → let the browser handle target=_blank navigation.
+  if (e.target.closest('a.act-drive')) {
+    e.stopPropagation();
     return;
   }
-  // Cmd/Ctrl+A while not typing in an input
-  const inField = e.target.matches('input, textarea, select');
-  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'a' && !inField) {
-    e.preventDefault();
-    selectAllVisible();
+  // Click on the card body → toggle action buttons.
+  const card = e.target.closest('.card');
+  if (card) toggleOpen(card.dataset.id);
+});
+
+document.addEventListener('keydown', e => {
+  // Escape closes the side preview first; on a second press, collapses the card.
+  if (e.key === 'Escape') {
+    if (state.previewing) closePreview();
+    else if (state.openId) closeCard();
   }
 });
 
