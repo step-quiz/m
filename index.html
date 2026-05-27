@@ -513,6 +513,17 @@
   <aside class="preview-drawer" id="preview-drawer" hidden></aside>
 </main>
 
+<div class="sel-bar" id="sel-bar" hidden>
+  <span class="sel-count" id="sel-count"></span>
+  <select id="docs-format" title="Format d'exportació">
+    <option value="pdf">PDF</option>
+    <option value="docx">DOCX</option>
+    <option value="odt">ODT</option>
+  </select>
+  <button class="btn-ghost" id="btn-clear-sel">Deselecciona</button>
+  <button class="btn-prim"  id="btn-download">Descarrega selecció</button>
+</div>
+
 <div class="footer-note">
   © 2026 — Eina interna · <a href="afegir-material.html">Edita el manifest →</a>
 </div>
@@ -544,6 +555,8 @@ const state = {
   openId: null,                 // card actualment expandida amb les dues accions
   previewing: false,            // si el panell lateral està obert mostrant l'iframe
   filterCollapsed: {},
+  selected: new Set(),          // ids de fitxers seleccionats
+  docsFormat: 'pdf',            // format exportació docs de Google
 };
 FILTER_GROUPS.forEach(g => state.filters[g.key] = new Set());
 
@@ -557,6 +570,11 @@ const els = {
   results:       $('results'),
   preview:       $('preview-drawer'),
   search:        $('search'),
+  selBar:        $('sel-bar'),
+  selCount:      $('sel-count'),
+  btnDownload:   $('btn-download'),
+  btnClearSel:   $('btn-clear-sel'),
+  docsFormat:    $('docs-format'),
 };
 
 /* ═══════════════════════════════════════════════════════════════════
