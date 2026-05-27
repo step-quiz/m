@@ -731,6 +731,7 @@ function computeCounts() {
    ═══════════════════════════════════════════════════════════════════ */
 
 function renderFilters() {
+  if (!state.manifest) return;
   const counts = computeCounts();
   const html = FILTER_GROUPS.map(G => {
     const values  = state.manifest.vocabulary[G.key] || [];
@@ -910,11 +911,17 @@ function renderPreview() {
     </div>
   `;
 
-  $('pv-close').onclick = closePreview;
-  $('tab-view').onclick = () => switchPreviewTab('view', f);
-  $('tab-meta').onclick = () => switchPreviewTab('meta', f);
-  $('pv-download').onclick = () => downloadFiles([f]);
-  $('pv-copy').onclick = () => {
+  const btnClose    = $('pv-close');
+  const btnTabView  = $('tab-view');
+  const btnTabMeta  = $('tab-meta');
+  const btnDownload = $('pv-download');
+  const btnCopy     = $('pv-copy');
+
+  if (btnClose)    btnClose.onclick    = closePreview;
+  if (btnTabView)  btnTabView.onclick  = () => switchPreviewTab('view', f);
+  if (btnTabMeta)  btnTabMeta.onclick  = () => switchPreviewTab('meta', f);
+  if (btnDownload) btnDownload.onclick = () => downloadFiles([f]);
+  if (btnCopy)     btnCopy.onclick     = () => {
     const url = location.origin + location.pathname + '?' + buildUrlParams({ openOnly: true });
     navigator.clipboard?.writeText(url).then(() => {
       const b = $('pv-copy');
