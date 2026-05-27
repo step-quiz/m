@@ -378,5 +378,172 @@
       "year": 2024,
       "notes": "Exercicis bàsics + problemes d'aplicació amb solucions detallades."
     }
+  ],
+  "basic": {
+    "course": [
+      "1ESO",
+      "2ESO",
+      "3ESO",
+      "4ESO",
+      "1Bat",
+      "2Bat"
+    ],
+    "math_sense": [
+      "algebraic",
+      "mesura",
+      "espacial",
+      "estocastic",
+      "numeric"
+    ],
+    "type": [
+      "exercici",
+      "exercici-solucions",
+      "dossier",
+      "examen",
+      "teoria"
+    ],
+    "format": [
+      "pdf",
+      "doc"
+    ]
+  },
+  "activity_blocks": [
+    {
+      "key": "aritmetica",
+      "label": "Aritmètica",
+      "items": [
+        "nombres-naturals",
+        "nombres-enters",
+        "divisibilitat",
+        "fraccions",
+        "nombres-decimals",
+        "nombres-racionals",
+        "potencies",
+        "arrels-radicals",
+        "notacio-cientifica",
+        "percentatges",
+        "proporcionalitat",
+        "interes-simple-compost",
+        "nombres-reals",
+        "nombres-complexos",
+        "logaritmes-exponencials",
+        "successions",
+        "progressions"
+      ]
+    },
+    {
+      "key": "algebra",
+      "label": "Àlgebra",
+      "items": [
+        "llenguatge-algebraic",
+        "monomis-polinomis",
+        "identitats-notables",
+        "factoritzacio",
+        "equacions",
+        "equacions-segon-grau",
+        "sistemes-equacions",
+        "inequacions",
+        "matrius",
+        "determinants",
+        "sistemes-lineals-gauss",
+        "rouche-frobenius"
+      ]
+    },
+    {
+      "key": "geometria-sintetica",
+      "label": "Geometria sintètica",
+      "items": [
+        "figures-planes",
+        "poligons",
+        "arees-perimetres",
+        "pitagores",
+        "tales",
+        "semblanca",
+        "moviments-pla",
+        "cossos-geometrics",
+        "volums-arees-cossos"
+      ]
+    },
+    {
+      "key": "geometria-analitica",
+      "label": "Geometria analítica",
+      "items": [
+        "geometria-pla-cartesia",
+        "vectors-pla",
+        "geometria-analitica-pla",
+        "rectes-pla",
+        "coniques",
+        "vectors-espai",
+        "producte-escalar",
+        "producte-vectorial-mixt",
+        "rectes-plans-espai",
+        "distancies-angles"
+      ]
+    },
+    {
+      "key": "funcions",
+      "label": "Funcions",
+      "items": [
+        "concepte-funcio",
+        "funcio-lineal",
+        "recta-afi",
+        "funcio-quadratica",
+        "creixement-decreixement",
+        "funcio-exponencial-logaritmica",
+        "funcions-racionals",
+        "funcio-valor-absolut",
+        "funcions-trossos"
+      ]
+    },
+    {
+      "key": "analisi",
+      "label": "Anàlisi (càlcul)",
+      "items": [
+        "limits",
+        "continuitat",
+        "asimptotes",
+        "estudi-funcio",
+        "derivades",
+        "regla-cadena",
+        "derivades-successives",
+        "aplicacions-derivada",
+        "optimitzacio",
+        "integrals",
+        "metodes-integracio",
+        "integral-definida",
+        "calcul-arees"
+      ]
+    },
+    {
+      "key": "trigonometria",
+      "label": "Trigonometria",
+      "items": [
+        "trigonometria",
+        "triangles-rectangles",
+        "identitats-trigonometriques",
+        "equacions-trigonometriques",
+        "sinus-cosinus",
+        "funcions-trigonometriques"
+      ]
+    },
+    {
+      "key": "estadistica-probabilitat",
+      "label": "Estadística i probabilitat",
+      "items": [
+        "estadistica-descriptiva",
+        "mesures-centralitzacio",
+        "mesures-dispersio",
+        "taules-grafics-estadistics",
+        "probabilitat-basica",
+        "combinatoria",
+        "probabilitat-condicionada",
+        "teorema-bayes",
+        "variables-aleatories",
+        "distribucio-binomial",
+        "distribucio-normal",
+        "inferencia-estadistica",
+        "contrast-hipotesis"
+      ]
+    }
   ]
 }

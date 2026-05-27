@@ -131,6 +131,57 @@
   }
   .filter-rail h3:first-child { margin-top: 4px; }
 
+  /* Mode toggle (Bàsic / Avançat) */
+  .mode-toggle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: var(--surface-3);
+    border-radius: 980px;
+    padding: 3px;
+    margin-bottom: 4px;
+  }
+  .mode-toggle button {
+    padding: 6px 10px;
+    border-radius: 980px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-2);
+    transition: background .15s, color .15s, box-shadow .15s;
+  }
+  .mode-toggle button.active {
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: var(--sh);
+  }
+  .mode-toggle button:not(.active):hover { color: var(--text); }
+
+  .mode-hint {
+    margin: 8px 4px 0;
+    padding: 8px 10px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-radius: var(--radius-sm);
+    font-size: 11px;
+    line-height: 1.4;
+  }
+
+  /* Activity blocks (advanced mode only) */
+  .filter-block {
+    padding: 4px 0 6px;
+  }
+  .filter-block + .filter-block {
+    border-top: 1px solid var(--divider-2);
+    margin-top: 4px;
+  }
+  .filter-block-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    padding: 6px 10px 4px;
+  }
+
   .filter-group {
     background: var(--surface);
     border-radius: var(--radius);
@@ -544,6 +595,7 @@ const state = {
   openId: null,                 // card actualment expandida amb les dues accions
   previewing: false,            // si el panell lateral està obert mostrant l'iframe
   filterCollapsed: {},
+  uiMode: 'basic',              // 'basic' | 'advanced' — persistit a localStorage
 };
 FILTER_GROUPS.forEach(g => state.filters[g.key] = new Set());
 
@@ -732,12 +784,58 @@ function computeCounts() {
    ═══════════════════════════════════════════════════════════════════ */
 
 function renderFilters() {
+  if (!state.manifest) return;
   const counts = computeCounts();
+  const mode = state.uiMode;
+  const basic = state.manifest.basic || {};
+  const blocks = state.manifest.activity_blocks || [];
+
+  // For each group, decide which values to show.
+  // - basic: only the slugs whitelisted in manifest.basic[G.key]; if the group
+  //   has no entry in manifest.basic, the whole group is hidden.
+  // - advanced: all values from vocabulary[G.key].
+  function valuesFor(G) {
+    const all = state.manifest.vocabulary[G.key] || [];
+    if (mode === 'advanced') return all;
+    const allow = basic[G.key];
+    if (!allow) return null;                     // group hidden in basic
+    const allowSet = new Set(allow);
+    return all.filter(v => allowSet.has(v));     // preserve manifest order
+  }
+
+  function renderItem(G, v) {
+    const c = counts[G.key]?.[v] ?? 0;
+    const checked = state.filters[G.key].has(v);
+    const zero = !checked && c === 0;
+    return `
+      <label class="filter-item ${zero ? 'is-zero' : ''}">
+        <input type="checkbox" data-group="${G.key}" data-value="${escHtml(v)}" ${checked ? 'checked' : ''}>
+        <span class="fi-label">${escHtml(label(v))}</span>
+        <span class="fi-count">${c}</span>
+      </label>`;
+  }
+
   const html = FILTER_GROUPS.map(G => {
-    const values  = state.manifest.vocabulary[G.key] || [];
-    const sel     = state.filters[G.key];
-    const open    = state.filterCollapsed[G.key] !== true;
+    const values = valuesFor(G);
+    if (values === null) return '';              // group hidden
+    const sel = state.filters[G.key];
+    const open = state.filterCollapsed[G.key] !== true;
     const selSize = sel.size;
+
+    // Special case: in advanced mode, render Activity grouped by blocks.
+    let body;
+    if (G.key === 'activity' && mode === 'advanced' && blocks.length) {
+      body = blocks.map(b => `
+        <div class="filter-block">
+          <div class="filter-block-label">${escHtml(b.label)}</div>
+          <div class="filter-list">
+            ${b.items.map(v => renderItem(G, v)).join('')}
+          </div>
+        </div>`).join('');
+    } else {
+      body = `<div class="filter-list">${values.map(v => renderItem(G, v)).join('')}</div>`;
+    }
+
     return `
       <details class="filter-group" ${open ? 'open' : ''} data-group="${G.key}">
         <summary>
@@ -747,29 +845,42 @@ function renderFilters() {
           <span class="group-label">${escHtml(G.label)}</span>
           <span class="group-count">${selSize ? selSize : ''}</span>
         </summary>
-        <div class="filter-list">
-          ${values.map(v => {
-            const c = counts[G.key]?.[v] ?? 0;
-            const checked = sel.has(v);
-            const zero = !checked && c === 0;
-            return `
-              <label class="filter-item ${zero ? 'is-zero' : ''}">
-                <input type="checkbox" data-group="${G.key}" data-value="${escHtml(v)}" ${checked ? 'checked' : ''}>
-                <span class="fi-label">${escHtml(label(v))}</span>
-                <span class="fi-count">${c}</span>
-              </label>
-            `;
-          }).join('')}
-        </div>
-      </details>
-    `;
+        ${body}
+      </details>`;
   }).join('');
+
   const hasAny = FILTER_GROUPS.some(G => state.filters[G.key].size > 0) || state.query;
+  // Count active filters from groups hidden in basic — useful so the user
+  // knows why some chips are showing without a matching rail entry.
+  let hiddenActive = 0;
+  if (mode === 'basic') {
+    for (const G of FILTER_GROUPS) {
+      const values = valuesFor(G);
+      const allow = values ? new Set(values) : new Set();
+      for (const v of state.filters[G.key]) if (!allow.has(v)) hiddenActive++;
+    }
+  }
+
   els.filterRail.innerHTML = `
+    <div class="mode-toggle" role="tablist" aria-label="Mode de filtres">
+      <button id="mode-basic"    class="${mode === 'basic'    ? 'active' : ''}" role="tab">Bàsic</button>
+      <button id="mode-advanced" class="${mode === 'advanced' ? 'active' : ''}" role="tab">Avançat</button>
+    </div>
+    ${hiddenActive ? `<div class="mode-hint">Tens ${hiddenActive} filtre${hiddenActive===1?'':'s'} actiu${hiddenActive===1?'':'s'} només visible${hiddenActive===1?'':'s'} a Avançat.</div>` : ''}
     <h3>Filtra el material</h3>
     ${html}
     <button class="clear-all" ${hasAny ? '' : 'disabled'}>Esborra-ho tot</button>
   `;
+
+  $('mode-basic').onclick    = () => setMode('basic');
+  $('mode-advanced').onclick = () => setMode('advanced');
+}
+
+function setMode(m) {
+  if (state.uiMode === m) return;
+  state.uiMode = m;
+  try { localStorage.setItem('material:uiMode', m); } catch (e) {}
+  renderAll();
 }
 
 function renderChips() {
@@ -1125,6 +1236,11 @@ function showError(err) {
 async function init() {
   showLoading();
   try {
+    // Restaure ui mode from localStorage (default: basic).
+    try {
+      const saved = localStorage.getItem('material:uiMode');
+      if (saved === 'basic' || saved === 'advanced') state.uiMode = saved;
+    } catch (e) {}
     state.manifest = await loadManifest();
     state.vocabLabels = state.manifest.vocabulary_labels || {};
     syncFromUrl();
