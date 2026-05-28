@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Extreu JSON — Material de matemàtiques</title>
+<title>Extreu JSON — Material de matemàtiques (Gemini)</title>
 <style>
   :root {
     --bg:        #f5f5f7;
@@ -733,7 +733,7 @@ async function run() {
     if (/Cal una clau/i.test(msg)) {
       hint = '';
     } else if (/not found|no s'ha trobat|is not found|not supported/i.test(msg)) {
-      hint = ' — prem «Carrega models» i tria'n un de la llista.';
+      hint = ` — prem «Carrega models» i tria'n un de la llista.`;
     } else if (/Failed to fetch|NetworkError|CORS/i.test(msg)) {
       hint = ' — possible bloqueig CORS/xarxa; comprova la connexió i que la clau és de Google AI Studio.';
     } else if (/API key|invalid|PERMISSION|403|400|401/i.test(msg)) {
