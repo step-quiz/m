@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Extreu JSON — Material de matemàtiques</title>
+<style>
+  :root {
+    --bg:        #f5f5f7;
+    --surface:   #ffffff;
+    --surface-2: #fafafa;
+    --surface-3: #f0f0f3;
+    --text:      #1d1d1f;
+    --text-2:    #6e6e73;
+    --text-3:    #aeaeb2;
+    --accent:    #0071e3;
+    --accent-soft: rgba(0,113,227,.10);
+    --green:     #34c759;
+    --green-soft: rgba(52,199,89,.12);
+    --amber:     #ff9f0a;
+    --red:       #ff3b30;
+    --divider:   rgba(0,0,0,.08);
+    --divider-2: rgba(0,0,0,.04);
+    --radius:    14px;
+    --radius-sm: 8px;
+    --radius-xs: 5px;
+    --sh:        0 1px 2px rgba(0,0,0,.04), 0 2px 8px rgba(0,0,0,.05);
+    --sh-md:     0 4px 16px rgba(0,0,0,.07), 0 2px 6px rgba(0,0,0,.04);
+    --sh-lg:     0 16px 48px rgba(0,0,0,.15);
+    --ease:      cubic-bezier(.4,0,.2,1);
+    --mono:      ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    min-height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    font-size: 14px;
+    line-height: 1.45;
+  }
+
+  button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+  input, select, textarea { font: inherit; color: inherit; }
+  a { color: var(--accent); }
+
+  /* ── Topbar ─────────────────────────────────────────────────────── */
+  .topbar {
+    position: sticky; top: 0; z-index: 20;
+    display: flex; align-items: center; gap: 14px;
+    padding: 11px 22px;
+    background: rgba(255,255,255,.92);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid var(--divider);
+  }
+  .topbar h1 { font-size: 15px; font-weight: 700; letter-spacing: -.01em; }
+  .topbar h1 .h-sub { color: var(--text-2); font-weight: 500; margin-left: 6px; }
+  .topbar .spacer { flex: 1; }
+  .topbar a.back { font-size: 12px; color: var(--text-2); text-decoration: none; }
+  .topbar a.back:hover { color: var(--text); }
+
+  .btn {
+    padding: 7px 14px;
+    border-radius: 980px;
+    font-size: 12px;
+    font-weight: 600;
+    transition: background .12s, color .12s, box-shadow .12s;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .btn svg { width: 12px; height: 12px; }
+  .btn-prim  { background: var(--accent); color: #fff; box-shadow: var(--sh); }
+  .btn-prim:hover { background: #0064cc; }
+  .btn-prim:disabled { background: var(--text-3); cursor: default; box-shadow: none; }
+  .btn-ghost { background: var(--surface-3); color: var(--text-2); }
+  .btn-ghost:hover { background: var(--divider); color: var(--text); }
+
+  /* ── Layout ─────────────────────────────────────────────────────── */
+  .container { max-width: 1100px; margin: 0 auto; padding: 22px 22px 80px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+  @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
+
+  .panel {
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--sh);
+    margin-bottom: 16px;
+  }
+  .panel-head {
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--divider-2);
+  }
+  .panel-head h2 { font-size: 14px; font-weight: 700; letter-spacing: -.01em; flex: 1; }
+  .panel-head .panel-hint { font-size: 11px; color: var(--text-3); font-weight: 500; }
+  .panel-body { padding: 16px 18px; }
+
+  /* ── Drop zone ──────────────────────────────────────────────────── */
+  .drop-zone {
+    border: 2px dashed var(--text-3);
+    border-radius: var(--radius);
+    background: var(--surface-2);
+    padding: 40px 24px;
+    text-align: center;
+    transition: border-color .15s, background .15s;
+    cursor: pointer;
+  }
+  .drop-zone.dragover { border-color: var(--accent); background: var(--accent-soft); }
+  .drop-zone .dz-icon { width: 40px; height: 40px; color: var(--text-3); margin: 0 auto 10px; }
+  .drop-zone h3 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .drop-zone p { color: var(--text-2); font-size: 12px; margin-bottom: 12px; }
+  .drop-zone input[type=file] { display: none; }
+
+  .filechip {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 12px;
+    padding: 6px 8px 6px 12px;
+    background: var(--surface-3);
+    border-radius: 980px;
+    font-size: 12px; font-weight: 600;
+  }
+  .filechip .fc-pill {
+    padding: 2px 7px; border-radius: 980px; font-size: 10px; font-weight: 700;
+    background: rgba(192,57,43,.10); color: #c0392b;
+  }
+  .filechip .fc-pill.doc { background: rgba(37,99,235,.10); color: #2563eb; }
+  .filechip .fc-x {
+    width: 20px; height: 20px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--surface); color: var(--text-3);
+  }
+  .filechip .fc-x:hover { background: var(--red); color: #fff; }
+  .filechip .fc-x svg { width: 9px; height: 9px; }
+
+  /* ── Preview ────────────────────────────────────────────────────── */
+  .preview {
+    margin-top: 14px;
+    border: 1px solid var(--divider);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: var(--surface-2);
+  }
+  .preview embed, .preview iframe { width: 100%; height: 420px; border: none; display: block; }
+  .preview .docx-render {
+    max-height: 420px; overflow: auto; padding: 18px 22px;
+    background: #fff; font-size: 13px; color: var(--text);
+  }
+  .preview .docx-render img { max-width: 100%; height: auto; }
+  .preview .docx-render h1, .preview .docx-render h2, .preview .docx-render h3 { margin: .6em 0 .3em; }
+  .preview .docx-render p { margin: .35em 0; }
+
+  /* ── Settings ───────────────────────────────────────────────────── */
+  .setting-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .setting-row label { font-size: 12px; font-weight: 600; color: var(--text-2); }
+  .setting-row input[type=password], .setting-row input[type=text] {
+    flex: 1; min-width: 220px;
+    padding: 7px 10px;
+    background: var(--surface-2);
+    border: 1px solid var(--divider);
+    border-radius: var(--radius-xs);
+    font-family: var(--mono); font-size: 12px;
+  }
+  .setting-row input:focus {
+    outline: none; background: var(--surface);
+    border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+  .note {
+    font-size: 11px; color: var(--text-3); margin-top: 8px; line-height: 1.5;
+  }
+  .note code { font-family: var(--mono); background: var(--surface-3); padding: 1px 5px; border-radius: 4px; color: var(--text-2); }
+
+  /* ── Status / progress ──────────────────────────────────────────── */
+  .status {
+    display: flex; align-items: center; gap: 9px;
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 13px; font-weight: 600;
+    background: var(--accent-soft); color: var(--accent);
+    margin-bottom: 14px;
+  }
+  .status.err { background: rgba(255,59,48,.10); color: var(--red); }
+  .status.ok  { background: var(--green-soft); color: #1a8a3a; }
+  .status[hidden] { display: none; }
+  .spinner {
+    width: 15px; height: 15px; border-radius: 50%;
+    border: 2px solid var(--accent-soft); border-top-color: var(--accent);
+    animation: spin .7s linear infinite; flex-shrink: 0;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── Result ─────────────────────────────────────────────────────── */
+  .result-empty { text-align: center; padding: 40px 16px; color: var(--text-3); font-size: 13px; }
+  .result-empty svg { width: 34px; height: 34px; margin-bottom: 8px; opacity: .6; }
+
+  .summary { display: grid; gap: 9px; margin-bottom: 16px; }
+  .summary .srow { display: grid; grid-template-columns: 130px 1fr; gap: 10px; align-items: start; }
+  .summary .srow .skey {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em;
+    color: var(--text-3); padding-top: 4px;
+  }
+  .summary .schips { display: flex; flex-wrap: wrap; gap: 5px; }
+  .summary .schip {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 9px; border-radius: 980px;
+    background: var(--surface-3); font-size: 12px; color: var(--text);
+  }
+  .summary .schip .schip-slug { font-family: var(--mono); font-size: 10px; color: var(--text-3); }
+  .summary .sval { font-size: 13px; padding-top: 2px; }
+  .summary .sval.muted { color: var(--text-3); font-style: italic; }
+  .summary .sval.mono { font-family: var(--mono); font-size: 12px; }
+
+  .json-box {
+    position: relative;
+    background: #1d1d1f; color: #f5f5f7;
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    font-family: var(--mono); font-size: 12px; line-height: 1.55;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .json-box .jk { color: #7dd3fc; }
+  .json-box .js { color: #86efac; }
+  .json-box .jn { color: #fca5a5; }
+  .json-actions { display: flex; gap: 8px; margin-top: 10px; }
+
+  .warn-inline {
+    font-size: 11px; color: var(--amber); font-weight: 600;
+    background: rgba(255,159,10,.12); padding: 2px 8px; border-radius: 980px;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%);
+    z-index: 200;
+    padding: 10px 18px;
+    background: var(--text); color: #fff;
+    border-radius: 980px; font-size: 13px; font-weight: 600;
+    box-shadow: var(--sh-lg);
+  }
+  .toast.is-err { background: var(--red); }
+  .toast[hidden] { display: none; }
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <h1>Extreu JSON<span class="h-sub">— inspecció visual → entrada de manifest</span></h1>
+    <span class="spacer"></span>
+    <a class="back" href="afegir-material.html">↗ Editor del manifest</a>
+  </div>
+
+  <div class="container">
+    <div class="grid">
+
+      <!-- ── Left column: input ─────────────────────────────────── -->
+      <div>
+        <div class="panel">
+          <div class="panel-head">
+            <h2>Document</h2>
+            <span class="panel-hint">PDF o DOCX</span>
+          </div>
+          <div class="panel-body">
+            <div class="drop-zone" id="drop-zone">
+              <svg class="dz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 3v4a1 1 0 0 0 1 1h4"/>
+                <path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/>
+                <path d="M12 11v6M9.5 13.5 12 11l2.5 2.5"/>
+              </svg>
+              <h3>Arrossega un fitxer aquí</h3>
+              <p>o fes clic per triar-lo · PDF, DOCX</p>
+              <span class="btn btn-ghost">Tria un fitxer</span>
+              <input type="file" id="file-input" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+              <div id="filechip-slot"></div>
+            </div>
+            <div id="preview-slot"></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h2>Configuració</h2>
+          </div>
+          <div class="panel-body">
+            <div class="setting-row">
+              <label for="api-key">Clau API</label>
+              <input id="api-key" type="password" placeholder="sk-ant-… (opcional)" autocomplete="off" spellcheck="false">
+            </div>
+            <div class="note">
+              Si executes aquesta pàgina <strong>dins d'un Artifact de Claude</strong>, deixa la clau buida: la crida a l'API ja està gestionada.
+              Si la fas servir <strong>allotjada pel teu compte</strong> (p. ex. GitHub Pages), enganxa una clau d'Anthropic; s'usa només en memòria, mai es desa.
+            </div>
+            <div class="note" id="vocab-note"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Right column: result ───────────────────────────────── -->
+      <div>
+        <div class="status" id="status" hidden></div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h2>Entrada de manifest</h2>
+            <span class="panel-hint" id="result-hint"></span>
+          </div>
+          <div class="panel-body">
+            <div id="result-slot">
+              <div class="result-empty">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 7h16M4 12h10M4 17h7"/>
+                </svg>
+                <div>Tria un document per generar la seva entrada JSON.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js"></script>
+<script>
+"use strict";
+
+/* ─── BAKED-IN VOCABULARY (still synced from a manifest.json if present) ── */
+let VOCAB = {
+  origin: ["mmaca","fem-matematiques","propi","florence","reptes-mates","bogdan","propi1","propi2","propi3","propi4","propi5","propi6","propi7","propi8","repo1","repo2","repo3"],
+  format: ["pdf","doc"],
+  course: ["1ESO","2ESO","3ESO","4ESO","1Bat","2Bat","ESO","Bat","primaria","SIEI","aula-acollida"],
+  math_sense: ["algebraic","mesura","espacial","estocastic","numeric","analitic","socio-emocional"],
+  activity: ["nombres-naturals","nombres-enters","divisibilitat","fraccions","nombres-decimals","nombres-racionals","potencies","arrels-radicals","notacio-cientifica","percentatges","proporcionalitat","interes-simple-compost","llenguatge-algebraic","monomis-polinomis","identitats-notables","factoritzacio","equacions","equacions-segon-grau","sistemes-equacions","inequacions","figures-planes","poligons","arees-perimetres","pitagores","tales","semblanca","cossos-geometrics","volums-arees-cossos","moviments-pla","geometria-pla-cartesia","concepte-funcio","funcio-lineal","recta-afi","funcio-quadratica","creixement-decreixement","trigonometria","triangles-rectangles","estadistica-descriptiva","mesures-centralitzacio","mesures-dispersio","taules-grafics-estadistics","probabilitat-basica","combinatoria","nombres-reals","nombres-complexos","logaritmes-exponencials","successions","progressions","identitats-trigonometriques","equacions-trigonometriques","sinus-cosinus","funcions-trigonometriques","vectors-pla","geometria-analitica-pla","rectes-pla","coniques","funcio-exponencial-logaritmica","funcions-racionals","funcio-valor-absolut","funcions-trossos","limits","continuitat","asimptotes","estudi-funcio","derivades","regla-cadena","derivades-successives","aplicacions-derivada","optimitzacio","integrals","metodes-integracio","integral-definida","calcul-arees","matrius","determinants","sistemes-lineals-gauss","rouche-frobenius","vectors-espai","producte-escalar","producte-vectorial-mixt","rectes-plans-espai","distancies-angles","probabilitat-condicionada","teorema-bayes","variables-aleatories","distribucio-binomial","distribucio-normal","inferencia-estadistica","contrast-hipotesis"],
+  type: ["exercici","exercici-solucions","dossier","examen","examen-recuperacio-trimestral","examen-recuperacio-global","teoria","examen-estructura","examen-correccio"]
+};
+let LABELS = {
+  "mmaca":"MMACA","fem-matematiques":"Fem Mates","propi":"IMT","florence":"Florence","reptes-mates":"Reptes","bogdan":"Bogdan","propi1":"IMT-1","propi2":"IMT-2","propi3":"IMT-3","propi4":"IMT-4","propi5":"IMT-5","propi6":"IMT-6","propi7":"IMT-7","propi8":"IMT-8","repo1":"Font 1","repo2":"Font 2","repo3":"Font 3","pdf":"PDF","doc":"Google Doc","1ESO":"1r ESO","2ESO":"2n ESO","3ESO":"3r ESO","4ESO":"4t ESO","1Bat":"1r Bat","2Bat":"2n Bat","ESO":"ESO","Bat":"Bat","primaria":"Primària","SIEI":"SIEI","aula-acollida":"Aula d'acollida","algebraic":"Algebraic","mesura":"Mesura","espacial":"Espacial","estocastic":"Estocàstic","numeric":"Numèric","analitic":"Analític","socio-emocional":"Socioemocional","nombres-naturals":"Nombres naturals","nombres-enters":"Nombres enters","divisibilitat":"Divisibilitat","fraccions":"Fraccions","nombres-decimals":"Nombres decimals","nombres-racionals":"Nombres racionals","potencies":"Potències","arrels-radicals":"Arrels i radicals","notacio-cientifica":"Notació científica","percentatges":"Percentatges","proporcionalitat":"Proporcionalitat","interes-simple-compost":"Interès simple i compost","llenguatge-algebraic":"Llenguatge algebraic","monomis-polinomis":"Monomis i polinomis","identitats-notables":"Identitats notables","factoritzacio":"Factorització","equacions":"Equacions","equacions-segon-grau":"Equacions de segon grau","sistemes-equacions":"Sistemes d'equacions","inequacions":"Inequacions","figures-planes":"Figures planes","poligons":"Polígons","arees-perimetres":"Àrees i perímetres","pitagores":"Teorema de Pitàgores","tales":"Teorema de Tales","semblanca":"Semblança","cossos-geometrics":"Cossos geomètrics","volums-arees-cossos":"Volums i àrees de cossos","moviments-pla":"Moviments al pla","geometria-pla-cartesia":"Geometria al pla cartesià","concepte-funcio":"Concepte de funció","funcio-lineal":"Funció lineal","recta-afi":"Recta afí","funcio-quadratica":"Funció quadràtica","creixement-decreixement":"Creixement i decreixement","trigonometria":"Trigonometria","triangles-rectangles":"Resolució de triangles rectangles","estadistica-descriptiva":"Estadística descriptiva","mesures-centralitzacio":"Mesures de centralització","mesures-dispersio":"Mesures de dispersió","taules-grafics-estadistics":"Taules i gràfics estadístics","probabilitat-basica":"Probabilitat bàsica","combinatoria":"Combinatòria","nombres-reals":"Nombres reals","nombres-complexos":"Nombres complexos","logaritmes-exponencials":"Logaritmes i exponencials","successions":"Successions","progressions":"Progressions aritmètiques i geomètriques","identitats-trigonometriques":"Identitats trigonomètriques","equacions-trigonometriques":"Equacions trigonomètriques","sinus-cosinus":"Teorema del sinus i del cosinus","funcions-trigonometriques":"Funcions trigonomètriques","vectors-pla":"Vectors al pla","geometria-analitica-pla":"Geometria analítica al pla","rectes-pla":"Rectes al pla","coniques":"Còniques","funcio-exponencial-logaritmica":"Funció exponencial i logarítmica","funcions-racionals":"Funcions racionals","funcio-valor-absolut":"Funció valor absolut","funcions-trossos":"Funcions a trossos","limits":"Límits de funcions","continuitat":"Continuïtat","asimptotes":"Asímptotes","estudi-funcio":"Estudi de funció","derivades":"Derivades","regla-cadena":"Regla de la cadena","derivades-successives":"Derivades successives","aplicacions-derivada":"Aplicacions de la derivada","optimitzacio":"Optimització","integrals":"Integrals","metodes-integracio":"Mètodes d'integració","integral-definida":"Integral definida","calcul-arees":"Càlcul d'àrees","matrius":"Matrius","determinants":"Determinants","sistemes-lineals-gauss":"Sistemes lineals (Gauss)","rouche-frobenius":"Teorema de Rouché-Frobenius","vectors-espai":"Vectors a l'espai","producte-escalar":"Producte escalar","producte-vectorial-mixt":"Producte vectorial i mixt","rectes-plans-espai":"Rectes i plans a l'espai","distancies-angles":"Distàncies i angles","probabilitat-condicionada":"Probabilitat condicionada","teorema-bayes":"Teorema de Bayes","variables-aleatories":"Variables aleatòries","distribucio-binomial":"Distribució binomial","distribucio-normal":"Distribució normal","inferencia-estadistica":"Inferència estadística","contrast-hipotesis":"Contrast d'hipòtesis","exercici":"Exercici","exercici-solucions":"Exercici amb solucions","dossier":"Dossier","examen":"Examen","examen-recuperacio-trimestral":"Recuperació trimestral","examen-recuperacio-global":"Recuperació global","teoria":"Teoria","examen-estructura":"Estructura d'examen","examen-correccio":"Correcció d'examen"
+};
+
+/* ─── STATE ─────────────────────────────────────────────────────── */
+const state = {
+  file: null,
+  format: null,     // 'pdf' | 'doc'
+  previewURL: null,
+  busy: false,
+  result: null,     // last parsed entry
+};
+
+/* ─── DOM HELPERS ───────────────────────────────────────────────── */
+const $ = id => document.getElementById(id);
+function escHtml(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function label(v) { return LABELS[v] || String(v).replace(/-/g,' ').replace(/\b\w/g, c => c.toUpperCase()); }
+function slugify(s) {
+  return String(s).toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z0-9]+/g,'-')
+    .replace(/^-|-$/g,'')
+    .slice(0,60);
+}
+function toast(msg, isErr=false, dur=2200) {
+  const t = $('toast');
+  t.textContent = msg; t.classList.toggle('is-err', isErr); t.hidden = false;
+  clearTimeout(toast._t); toast._t = setTimeout(()=>{ t.hidden = true; }, dur);
+}
+function setStatus(msg, kind='', spinner=false) {
+  const s = $('status');
+  if (!msg) { s.hidden = true; return; }
+  s.hidden = false;
+  s.className = 'status' + (kind ? ' ' + kind : '');
+  s.innerHTML = (spinner ? '<span class="spinner"></span>' : '') + escHtml(msg);
+}
+
+/* ─── FILE INTAKE ───────────────────────────────────────────────── */
+function detectFormat(file) {
+  const n = (file.name || '').toLowerCase();
+  if (n.endsWith('.pdf') || file.type === 'application/pdf') return 'pdf';
+  if (n.endsWith('.docx') || file.type.includes('wordprocessingml')) return 'doc';
+  return null;
+}
+
+function setFile(file) {
+  const fmt = detectFormat(file);
+  if (!fmt) { toast('Format no admès. Cal un PDF o un DOCX.', true); return; }
+  clearPreviewURL();
+  state.file = file;
+  state.format = fmt;
+  renderFileChip();
+  renderPreview();
+  // Auto-run
+  run();
+}
+
+function clearFile() {
+  clearPreviewURL();
+  state.file = null; state.format = null; state.result = null;
+  $('filechip-slot').innerHTML = '';
+  $('preview-slot').innerHTML = '';
+  renderEmptyResult();
+  setStatus('');
+}
+
+function clearPreviewURL() {
+  if (state.previewURL) { URL.revokeObjectURL(state.previewURL); state.previewURL = null; }
+}
+
+function renderFileChip() {
+  const f = state.file;
+  $('filechip-slot').innerHTML = `
+    <div class="filechip">
+      <span class="fc-pill ${state.format === 'doc' ? 'doc' : ''}">${state.format === 'doc' ? 'DOCX' : 'PDF'}</span>
+      <span>${escHtml(f.name)}</span>
+      <button class="fc-x" id="fc-x" title="Treu el fitxer">
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 2l8 8M10 2l-8 8"/></svg>
+      </button>
+    </div>`;
+  $('fc-x').onclick = (e) => { e.stopPropagation(); clearFile(); };
+}
+
+async function renderPreview() {
+  const slot = $('preview-slot');
+  if (state.format === 'pdf') {
+    state.previewURL = URL.createObjectURL(state.file);
+    slot.innerHTML = `<div class="preview"><iframe src="${state.previewURL}#toolbar=0"></iframe></div>`;
+  } else {
+    slot.innerHTML = `<div class="preview"><div class="docx-render" id="docx-render"><span style="color:var(--text-3)">Renderitzant…</span></div></div>`;
+    try {
+      const buf = await state.file.arrayBuffer();
+      const res = await mammoth.convertToHtml({ arrayBuffer: buf });
+      $('docx-render').innerHTML = res.value || '<span style="color:var(--text-3)">(sense contingut visible)</span>';
+    } catch (e) {
+      const el = $('docx-render'); if (el) el.innerHTML = '<span style="color:var(--red)">No s\'ha pogut renderitzar el DOCX.</span>';
+    }
+  }
+}
+
+/* ─── BUILD MODEL INPUT ─────────────────────────────────────────── */
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(String(r.result).split(',')[1]);
+    r.onerror = () => reject(r.error || new Error('lectura fallida'));
+    r.readAsDataURL(file);
+  });
+}
+
+function buildInstruction() {
+  const vocabForModel = {
+    origin: VOCAB.origin.map(v => ({ slug: v, label: label(v) })),
+    course: VOCAB.course.map(v => ({ slug: v, label: label(v) })),
+    math_sense: VOCAB.math_sense.map(v => ({ slug: v, label: label(v) })),
+    activity: VOCAB.activity.map(v => ({ slug: v, label: label(v) })),
+    type: VOCAB.type.map(v => ({ slug: v, label: label(v) })),
+  };
+  return [
+    "Ets un assistent que cataloga documents de matemàtiques de secundària (en català) per a un repositori escolar.",
+    "Inspecciona el document (títol, text, logotips, peus de pàgina, marques d'aigua, tipus d'activitats, diagrames, nivell de dificultat) i genera UNA entrada de manifest en JSON.",
+    "",
+    "VOCABULARI CONTROLAT (fes servir EXCLUSIVAMENT els valors 'slug' d'aquestes llistes):",
+    JSON.stringify(vocabForModel, null, 2),
+    "",
+    "CAMPS DE SORTIDA i regles:",
+    "- \"title\": títol curt en català basat en el TEMA matemàtic principal (p. ex. \"Àrea i perímetre\"). Evita subtítols, eslògans i signes d'exclamació. Sense punt final.",
+    "- \"id\": el \"title\" en format slug (minúscules, sense accents, separat per guions).",
+    "- \"drive_id\": sempre cadena buida \"\" (no es pot deduir del contingut).",
+    "- \"format\": fes servir exactament \"" + (state.format || 'pdf') + "\".",
+    "- \"origin\": un sol slug d'origin si pots identificar la procedència pels logos o peus de pàgina (p. ex. logo \"FLORENCE\" → \"florence\"). Si no és clar, omet el camp.",
+    "- \"courses\": array de slugs de course als quals va dirigit, deduïts del nivell i contingut.",
+    "- \"math_sense\": un sol slug de math_sense, el sentit matemàtic predominant.",
+    "- \"activities\": array de slugs d'activity que cobreix el document; tria els més específics.",
+    "- \"type\": un sol slug de type segons la naturalesa del material (recull d'activitats per a l'alumnat → \"dossier\"; fitxa d'exercicis → \"exercici\"; amb solucions → \"exercici-solucions\"; prova d'avaluació → \"examen\"; apunts → \"teoria\").",
+    "",
+    "REGLES GENERALS:",
+    "- Fes servir NOMÉS slugs presents al vocabulari. No inventis valors.",
+    "- Omet els camps opcionals que no puguis determinar amb confiança (excepte title, id, drive_id i format, que sempre hi han de ser).",
+    "- Respon NOMÉS amb l'objecte JSON, sense ```json, sense text ni comentaris.",
+    "- Ordre de claus: title, id, drive_id, format, origin, courses, math_sense, activities, type.",
+  ].join('\n');
+}
+
+async function buildUserContent() {
+  const blocks = [];
+  blocks.push({ type: 'text', text: buildInstruction() });
+
+  if (state.format === 'pdf') {
+    const b64 = await fileToBase64(state.file);
+    blocks.push({ type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: b64 } });
+    blocks.push({ type: 'text', text: 'Aquí tens el document PDF. Genera ara la seva entrada JSON.' });
+  } else {
+    // DOCX → text + (some) images, via mammoth
+    const buf = await state.file.arrayBuffer();
+    let text = '', html = '';
+    try {
+      const r = await mammoth.convertToHtml({ arrayBuffer: buf });
+      html = r.value || '';
+    } catch (_) {}
+    const docEl = new DOMParser().parseFromString(html || '', 'text/html');
+    text = (docEl.body.textContent || '').replace(/\n{3,}/g, '\n\n').trim();
+
+    // Embedded images (mammoth inlines them as data URIs)
+    const imgs = [...docEl.querySelectorAll('img')]
+      .map(im => im.getAttribute('src') || '')
+      .filter(src => src.startsWith('data:'))
+      .slice(0, 4);
+    for (const src of imgs) {
+      const m = src.match(/^data:([^;]+);base64,(.+)$/);
+      if (m) blocks.push({ type: 'image', source: { type: 'base64', media_type: m[1], data: m[2] } });
+    }
+    blocks.push({ type: 'text', text: 'TEXT EXTRET DEL DOCUMENT DOCX:\n\n' + text.slice(0, 14000) + '\n\nGenera ara la seva entrada JSON.' });
+  }
+  return blocks;
+}
+
+/* ─── API CALL ──────────────────────────────────────────────────── */
+async function callModel(content) {
+  const key = $('api-key').value.trim();
+  const body = {
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: 1000,
+    messages: [{ role: 'user', content }],
+  };
+  const headers = { 'Content-Type': 'application/json' };
+  if (key) {
+    // Self-hosted: caller supplies their own key (browser-direct access)
+    headers['x-api-key'] = key;
+    headers['anthropic-version'] = '2023-06-01';
+    headers['anthropic-dangerous-direct-browser-access'] = 'true';
+  }
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST', headers, body: JSON.stringify(body),
+  });
+  const data = await res.json();
+  if (!res.ok || data.error) {
+    const msg = data?.error?.message || ('HTTP ' + res.status);
+    throw new Error(msg);
+  }
+  const out = (data.content || [])
+    .filter(b => b.type === 'text').map(b => b.text).join('\n');
+  return out;
+}
+
+function parseEntry(rawText) {
+  let txt = String(rawText || '').replace(/```json|```/g, '').trim();
+  // Grab the outermost {...} just in case
+  const a = txt.indexOf('{'), b = txt.lastIndexOf('}');
+  if (a >= 0 && b > a) txt = txt.slice(a, b + 1);
+  return JSON.parse(txt);
+}
+
+/* ─── NORMALISE / VALIDATE AGAINST VOCABULARY ───────────────────── */
+function normaliseEntry(raw) {
+  const warnings = [];
+  const out = {};
+
+  out.title = (raw.title || '').toString().trim() || 'Sense títol';
+  out.id = slugify(raw.id && /^[a-z0-9-]+$/.test(raw.id) ? raw.id : out.title) || slugify(out.title) || 'sense-titol';
+  out.drive_id = '';                       // mai deduïble del contingut
+  out.format = VOCAB.format.includes(state.format) ? state.format : 'pdf';
+
+  const single = (val, list, name) => {
+    if (val == null || val === '') return undefined;
+    if (list.includes(val)) return val;
+    warnings.push(`«${val}» no és un valor vàlid de ${name}; s'ha descartat`);
+    return undefined;
+  };
+  const multi = (arr, list, name) => {
+    if (!Array.isArray(arr)) return [];
+    const ok = [], seen = new Set();
+    for (const v of arr) {
+      if (list.includes(v) && !seen.has(v)) { ok.push(v); seen.add(v); }
+      else if (!list.includes(v)) warnings.push(`«${v}» no és un valor vàlid de ${name}; s'ha descartat`);
+    }
+    return ok;
+  };
+
+  const origin = single(raw.origin, VOCAB.origin, 'origin');
+  if (origin) out.origin = origin;
+
+  const courses = multi(raw.courses || raw.course, VOCAB.course, 'course');
+  if (courses.length) out.courses = courses;
+
+  const ms = single(raw.math_sense, VOCAB.math_sense, 'math_sense');
+  if (ms) out.math_sense = ms;
+
+  const acts = multi(raw.activities || raw.activity, VOCAB.activity, 'activity');
+  if (acts.length) out.activities = acts;
+
+  const type = single(raw.type, VOCAB.type, 'type');
+  if (type) out.type = type;
+
+  return { entry: out, warnings };
+}
+
+/* ─── RENDER RESULT ─────────────────────────────────────────────── */
+const FIELD_ORDER = ['title','id','drive_id','format','origin','courses','math_sense','activities','type'];
+const SINGLE_VOCAB = { format: true, origin: true, math_sense: true, type: true };
+const MULTI_VOCAB  = { courses: true, activities: true };
+
+function highlightJson(obj) {
+  const json = JSON.stringify(obj, FIELD_ORDER, 2);
+  return escHtml(json)
+    .replace(/&quot;([a-z_]+)&quot;:/g, '<span class="jk">&quot;$1&quot;</span>:')
+    .replace(/: (&quot;[^&]*&quot;)/g, ': <span class="js">$1</span>')
+    .replace(/(&quot;[^&]*&quot;)(,?)(\n)/g, '<span class="js">$1</span>$2$3')
+    .replace(/: (\d+)/g, ': <span class="jn">$1</span>');
+}
+
+function chip(slug) {
+  return `<span class="schip">${escHtml(label(slug))}<span class="schip-slug">${escHtml(slug)}</span></span>`;
+}
+
+function renderEmptyResult() {
+  $('result-hint').textContent = '';
+  $('result-slot').innerHTML = `
+    <div class="result-empty">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 7h16M4 12h10M4 17h7"/>
+      </svg>
+      <div>Tria un document per generar la seva entrada JSON.</div>
+    </div>`;
+}
+
+function renderResult(entry, warnings) {
+  state.result = entry;
+  $('result-hint').textContent = warnings.length ? '' : 'generat';
+
+  const rows = FIELD_ORDER
+    .filter(k => entry[k] !== undefined)
+    .map(k => {
+      let valHtml;
+      if (MULTI_VOCAB[k]) {
+        valHtml = `<div class="schips">${entry[k].map(chip).join('')}</div>`;
+      } else if (SINGLE_VOCAB[k] && k !== 'format') {
+        valHtml = `<div class="schips">${chip(entry[k])}</div>`;
+      } else if (k === 'format') {
+        valHtml = `<div class="schips">${chip(entry[k])}</div>`;
+      } else if (k === 'drive_id') {
+        valHtml = `<div class="sval muted">buit — omple'l manualment (no és visible al document)</div>`;
+      } else if (k === 'id') {
+        valHtml = `<div class="sval mono">${escHtml(entry[k])}</div>`;
+      } else {
+        valHtml = `<div class="sval">${escHtml(entry[k])}</div>`;
+      }
+      return `<div class="srow"><div class="skey">${escHtml(k)}</div>${valHtml}</div>`;
+    }).join('');
+
+  const warnHtml = warnings.length
+    ? `<div style="margin-bottom:14px"><span class="warn-inline">${warnings.length} avís(os)</span>
+        <div class="note">${warnings.map(escHtml).join('<br>')}</div></div>`
+    : '';
+
+  $('result-slot').innerHTML = `
+    ${warnHtml}
+    <div class="summary">${rows}</div>
+    <div class="json-box" id="json-box">${highlightJson(entry)}</div>
+    <div class="json-actions">
+      <button class="btn btn-prim" id="copy-json">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Copia JSON
+      </button>
+      <button class="btn btn-ghost" id="copy-json-comma" title="Amb una coma final, per enganxar dins de \"files\": [ … ]">Copia + coma</button>
+    </div>`;
+
+  const jsonStr = JSON.stringify(entry, FIELD_ORDER, 2);
+  $('copy-json').onclick = () => copyText(jsonStr, 'JSON copiat');
+  $('copy-json-comma').onclick = () => copyText(jsonStr + ',', 'JSON copiat (amb coma)');
+}
+
+async function copyText(txt, okMsg) {
+  try { await navigator.clipboard.writeText(txt); toast(okMsg); }
+  catch { toast('No s\'ha pogut copiar', true); }
+}
+
+/* ─── ORCHESTRATION ─────────────────────────────────────────────── */
+async function run() {
+  if (!state.file || state.busy) return;
+  state.busy = true;
+  setStatus('Analitzant el document amb Claude…', '', true);
+  try {
+    const content = await buildUserContent();
+    const raw = await callModel(content);
+    let parsed;
+    try { parsed = parseEntry(raw); }
+    catch (e) { throw new Error('La resposta del model no és un JSON vàlid.'); }
+    const { entry, warnings } = normaliseEntry(parsed);
+    renderResult(entry, warnings);
+    setStatus('Entrada generada. Revisa-la i copia-la al manifest.', 'ok');
+  } catch (e) {
+    const msg = String(e.message || e);
+    let hint = '';
+    if (/Failed to fetch|NetworkError|CORS/i.test(msg)) {
+      hint = ' — si has allotjat la pàgina pel teu compte, cal una clau API a Configuració; dins d\'un Artifact de Claude hauria de funcionar sense clau.';
+    } else if (/401|authentication|x-api-key|credential/i.test(msg)) {
+      hint = ' — comprova la clau API.';
+    }
+    setStatus('Error: ' + msg + hint, 'err');
+  } finally {
+    state.busy = false;
+  }
+}
+
+/* ─── VOCAB SYNC (optional) ─────────────────────────────────────── */
+function applyManifest(m) {
+  if (m?.vocabulary) {
+    VOCAB = {
+      origin: m.vocabulary.origin || VOCAB.origin,
+      format: m.vocabulary.format || VOCAB.format,
+      course: m.vocabulary.course || VOCAB.course,
+      math_sense: m.vocabulary.math_sense || VOCAB.math_sense,
+      activity: m.vocabulary.activity || VOCAB.activity,
+      type: m.vocabulary.type || VOCAB.type,
+    };
+  }
+  if (m?.vocabulary_labels) LABELS = Object.assign({}, LABELS, m.vocabulary_labels);
+  $('vocab-note').innerHTML = 'Vocabulari carregat des de <code>manifest.json</code> (sincronitzat).';
+}
+
+(async function syncVocab() {
+  try {
+    const res = await fetch('manifest.json', { cache: 'no-cache' });
+    if (res.ok) {
+      const m = await res.json();
+      applyManifest(m);
+      return;
+    }
+  } catch (_) {}
+  $('vocab-note').innerHTML = 'Vocabulari intern integrat. Col·loca aquest fitxer al costat de <code>manifest.json</code> perquè se sincronitzi automàticament.';
+})();
+
+/* ─── EVENT WIRING ──────────────────────────────────────────────── */
+$('drop-zone').addEventListener('click', (e) => {
+  if (e.target.closest('.fc-x')) return;
+  $('file-input').click();
+});
+$('file-input').addEventListener('change', e => {
+  const f = e.target.files?.[0];
+  if (f) setFile(f);
+  e.target.value = '';
+});
+
+let dragDepth = 0;
+const dz = $('drop-zone');
+window.addEventListener('dragenter', e => { e.preventDefault(); dragDepth++; dz.classList.add('dragover'); });
+window.addEventListener('dragleave', () => { dragDepth = Math.max(0, dragDepth - 1); if (!dragDepth) dz.classList.remove('dragover'); });
+window.addEventListener('dragover', e => e.preventDefault());
+window.addEventListener('drop', e => {
+  e.preventDefault(); dragDepth = 0; dz.classList.remove('dragover');
+  const f = e.dataTransfer?.files?.[0];
+  if (f) setFile(f);
+});
+
+renderEmptyResult();
+</script>
+</body>
+</html>
