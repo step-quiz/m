@@ -506,6 +506,7 @@
       "math_sense": "mesura",
       "activities": [
         "trigonometria",
+        "triangles-rectangles",
         "identitats-trigonometriques",
         "sinus-cosinus"
       ],
@@ -524,6 +525,22 @@
       "activities": [
         "derivades",
         "regla-cadena"
+      ],
+      "type": "dossier"
+    },
+    {
+      "title": "Percentatges",
+      "id": "percentatges",
+      "drive_id": "1KnfJz3kbrT2SUE5WwH08d7NEXGx-Xt8u",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "2ESO"
+      ],
+      "math_sense": "mesura",
+      "activities": [
+        "percentatges",
+        "taules-grafics-estadistics"
       ],
       "type": "dossier"
     }
