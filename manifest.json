@@ -166,7 +166,7 @@
     "propi6": "IMT-6",
     "propi7": "IMT-7",
     "propi8": "IMT-8",
-    "repo1": "Font 1",
+    "repo1": "G.Morales",
     "repo2": "Font 2",
     "repo3": "Font 3",
     "pdf": "PDF",
@@ -299,7 +299,7 @@
       "notes": "Eixos de coordenades"
     },
     {
-      "title": "Teorema de Pitàgores-1",
+      "title": "Teorema de Pitàgores",
       "id": "teorema-de-pitagores-1",
       "drive_id": "1BLWEO4wgCSTUOcMJ40a5SOpEmhJbx5TvtenNe9yX8QY",
       "format": "pdf",
@@ -313,7 +313,7 @@
       "year": 2026
     },
     {
-      "title": "Àrea i perímetre (1)",
+      "title": "Àrea i perímetre",
       "id": "area-i-perimetre-1",
       "drive_id": "1yx89eut7Ey2aKVQZNNj3tpe-DmItGtuA",
       "format": "pdf",
@@ -326,6 +326,35 @@
       "activities": [
         "figures-planes",
         "arees-perimetres"
+      ],
+      "type": "dossier"
+    },
+    {
+      "title": "Desenvolupament pla de cossos geomètrics",
+      "id": "desenvolupament-pla-de-cossos-geometrics",
+      "drive_id": "1CUd5CKph1V1A156qR2RVUGmaZ2iomowI",
+      "format": "pdf",
+      "origin": "florence",
+      "math_sense": "espacial",
+      "activities": [
+        "figures-planes",
+        "cossos-geometrics"
+      ],
+      "type": "dossier"
+    },
+    {
+      "title": "Potencies i arrels",
+      "id": "potencies-i-arrels",
+      "drive_id": "1oUImZr-o5ytNxO9l6erBvOKoWxb4FH_b",
+      "format": "pdf",
+      "origin": "repo1",
+      "courses": [
+        "1ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "potencies",
+        "arrels-radicals"
       ],
       "type": "dossier"
     }
