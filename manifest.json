@@ -137,7 +137,8 @@
       "distribucio-binomial",
       "distribucio-normal",
       "inferencia-estadistica",
-      "contrast-hipotesis"
+      "contrast-hipotesis",
+      "circumferencia-cercle"
     ],
     "type": [
       "exercici",
@@ -167,7 +168,7 @@
     "propi7": "IMT-7",
     "propi8": "IMT-8",
     "repo1": "G.Morales",
-    "repo2": "Font 2",
+    "repo2": "INS Gelida",
     "repo3": "Font 3",
     "pdf": "PDF",
     "doc": "Google Doc",
@@ -286,7 +287,9 @@
     "examen-recuperacio-global": "Recuperació global",
     "teoria": "Teoria",
     "examen-estructura": "Estructura d'examen",
-    "examen-correccio": "Correcció d'examen"
+    "examen-correccio": "Correcció d'examen",
+    "nombre-pi": "Ús del nombre Pi",
+    "circumferencia-cercle": "Circumferència i/o cercle"
   },
   "files": [
     {
@@ -304,6 +307,9 @@
       "drive_id": "1BLWEO4wgCSTUOcMJ40a5SOpEmhJbx5TvtenNe9yX8QY",
       "format": "pdf",
       "origin": "propi",
+      "courses": [
+        "2ESO"
+      ],
       "math_sense": "mesura",
       "activities": [
         "arees-perimetres",
@@ -435,6 +441,39 @@
         "equacions"
       ],
       "type": "dossier"
+    },
+    {
+      "title": "Perímetre de circumferència i àrea de cercle",
+      "id": "perimetre-de-circumferencia-i-area-de-cercle",
+      "drive_id": "1xBq1mfl_DuvI6UKbNS7xcY8mr0Cphf55byZZ87bFgFk",
+      "format": "doc",
+      "origin": "propi",
+      "courses": [
+        "2ESO"
+      ],
+      "math_sense": "mesura",
+      "activities": [
+        "figures-planes",
+        "arees-perimetres",
+        "circumferencia-cercle"
+      ],
+      "type": "dossier"
+    },
+    {
+      "title": "Distància entre 2 rectes que es creuen",
+      "id": "distancia-entre-2-rectes-que-es-creuen",
+      "drive_id": "1lFO8DqN1tzXbOMyEAS5xJWI2jhljqeLJ",
+      "format": "pdf",
+      "origin": "repo2",
+      "courses": [
+        "2Bat"
+      ],
+      "math_sense": "mesura",
+      "activities": [
+        "rectes-plans-espai",
+        "distancies-angles"
+      ],
+      "type": "teoria"
     }
   ],
   "basic": {
