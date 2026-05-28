@@ -284,12 +284,22 @@
           </div>
           <div class="panel-body">
             <div class="setting-row">
-              <label for="api-key">Clau API</label>
-              <input id="api-key" type="password" placeholder="sk-ant-… (opcional)" autocomplete="off" spellcheck="false">
+              <label for="api-key">Clau Gemini</label>
+              <input id="api-key" type="password" placeholder="AIza… (Google AI Studio)" autocomplete="off" spellcheck="false">
+              <button class="btn btn-ghost" id="load-models">Carrega models</button>
+            </div>
+            <div class="setting-row" style="margin-top:10px">
+              <label for="model-sel">Model</label>
+              <select id="model-sel" style="flex:1; min-width:220px; padding:7px 10px; background:var(--surface-2); border:1px solid var(--divider); border-radius:var(--radius-xs); font-family:var(--mono); font-size:12px;">
+                <option value="gemini-2.5-flash">gemini-2.5-flash</option>
+                <option value="gemini-2.5-pro">gemini-2.5-pro</option>
+                <option value="gemini-2.0-flash">gemini-2.0-flash</option>
+              </select>
             </div>
             <div class="note">
-              Si executes aquesta pàgina <strong>dins d'un Artifact de Claude</strong>, deixa la clau buida: la crida a l'API ja està gestionada.
-              Si la fas servir <strong>allotjada pel teu compte</strong> (p. ex. GitHub Pages), enganxa una clau d'Anthropic; s'usa només en memòria, mai es desa.
+              La clau de <strong>Google AI Studio</strong> es fa servir només en memòria i s'envia directament a <code>generativelanguage.googleapis.com</code>; mai es desa.
+              Prem <strong>Carrega models</strong> per llistar només els models que la teva clau pot fer servir (així evites l'error de «model no trobat»).
+              <br><strong>Avís:</strong> si publiques aquesta pàgina, qualsevol que la visiti pot veure la clau al codi de xarxa. Fes-la servir només per a ús personal/local i restringeix-la a aquesta API a la consola de Google.
             </div>
             <div class="note" id="vocab-note"></div>
           </div>
@@ -482,16 +492,17 @@ function buildInstruction() {
   ].join('\n');
 }
 
+// Builds the Gemini "parts" array for one user turn.
 async function buildUserContent() {
-  const blocks = [];
-  blocks.push({ type: 'text', text: buildInstruction() });
+  const parts = [];
+  parts.push({ text: buildInstruction() });
 
   if (state.format === 'pdf') {
     const b64 = await fileToBase64(state.file);
-    blocks.push({ type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: b64 } });
-    blocks.push({ type: 'text', text: 'Aquí tens el document PDF. Genera ara la seva entrada JSON.' });
+    parts.push({ inline_data: { mime_type: 'application/pdf', data: b64 } });
+    parts.push({ text: 'Aquí tens el document PDF. Genera ara la seva entrada de manifest.' });
   } else {
-    // DOCX → text + (some) images, via mammoth
+    // DOCX → text + (some) embedded images, via mammoth
     const buf = await state.file.arrayBuffer();
     let text = '', html = '';
     try {
@@ -501,45 +512,72 @@ async function buildUserContent() {
     const docEl = new DOMParser().parseFromString(html || '', 'text/html');
     text = (docEl.body.textContent || '').replace(/\n{3,}/g, '\n\n').trim();
 
-    // Embedded images (mammoth inlines them as data URIs)
     const imgs = [...docEl.querySelectorAll('img')]
       .map(im => im.getAttribute('src') || '')
       .filter(src => src.startsWith('data:'))
       .slice(0, 4);
     for (const src of imgs) {
       const m = src.match(/^data:([^;]+);base64,(.+)$/);
-      if (m) blocks.push({ type: 'image', source: { type: 'base64', media_type: m[1], data: m[2] } });
+      if (m) parts.push({ inline_data: { mime_type: m[1], data: m[2] } });
     }
-    blocks.push({ type: 'text', text: 'TEXT EXTRET DEL DOCUMENT DOCX:\n\n' + text.slice(0, 14000) + '\n\nGenera ara la seva entrada JSON.' });
+    parts.push({ text: 'TEXT EXTRET DEL DOCUMENT DOCX:\n\n' + text.slice(0, 14000) + '\n\nGenera ara la seva entrada de manifest.' });
   }
-  return blocks;
+  return parts;
 }
 
-/* ─── API CALL ──────────────────────────────────────────────────── */
-async function callModel(content) {
-  const key = $('api-key').value.trim();
-  const body = {
-    model: 'claude-sonnet-4-20250514',
-    max_tokens: 1000,
-    messages: [{ role: 'user', content }],
+/* ─── RESPONSE SCHEMA (constrains the model to valid vocabulary slugs) ── */
+function buildResponseSchema() {
+  return {
+    type: 'OBJECT',
+    properties: {
+      title:      { type: 'STRING' },
+      id:         { type: 'STRING' },
+      drive_id:   { type: 'STRING' },
+      format:     { type: 'STRING', enum: VOCAB.format },
+      origin:     { type: 'STRING', enum: VOCAB.origin },
+      courses:    { type: 'ARRAY', items: { type: 'STRING', enum: VOCAB.course } },
+      math_sense: { type: 'STRING', enum: VOCAB.math_sense },
+      activities: { type: 'ARRAY', items: { type: 'STRING', enum: VOCAB.activity } },
+      type:       { type: 'STRING', enum: VOCAB.type },
+    },
+    required: ['title', 'id', 'drive_id', 'format'],
+    propertyOrdering: ['title','id','drive_id','format','origin','courses','math_sense','activities','type'],
   };
-  const headers = { 'Content-Type': 'application/json' };
-  if (key) {
-    // Self-hosted: caller supplies their own key (browser-direct access)
-    headers['x-api-key'] = key;
-    headers['anthropic-version'] = '2023-06-01';
-    headers['anthropic-dangerous-direct-browser-access'] = 'true';
-  }
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST', headers, body: JSON.stringify(body),
+}
+
+/* ─── API CALL (Google Gemini) ──────────────────────────────────── */
+async function callModel(parts) {
+  const key = $('api-key').value.trim();
+  if (!key) throw new Error('Cal una clau de Gemini API. Posa-la a Configuració.');
+  const model = ($('model-sel').value || '').trim() || 'gemini-2.5-flash';
+
+  const body = {
+    contents: [{ role: 'user', parts }],
+    generationConfig: {
+      responseMimeType: 'application/json',
+      responseSchema: buildResponseSchema(),
+      temperature: 0,
+    },
+  };
+
+  const url = 'https://generativelanguage.googleapis.com/v1beta/models/'
+    + encodeURIComponent(model) + ':generateContent';
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
+    body: JSON.stringify(body),
   });
   const data = await res.json();
   if (!res.ok || data.error) {
-    const msg = data?.error?.message || ('HTTP ' + res.status);
-    throw new Error(msg);
+    throw new Error(data?.error?.message || ('HTTP ' + res.status));
   }
-  const out = (data.content || [])
-    .filter(b => b.type === 'text').map(b => b.text).join('\n');
+  const cand = data.candidates?.[0];
+  if (cand && cand.finishReason && cand.finishReason !== 'STOP' && !cand.content) {
+    throw new Error('Resposta bloquejada o incompleta (' + cand.finishReason + ').');
+  }
+  const out = (cand?.content?.parts || []).map(p => p.text || '').join('');
+  if (!out) throw new Error('Resposta buida del model.');
   return out;
 }
 
@@ -679,7 +717,7 @@ async function copyText(txt, okMsg) {
 async function run() {
   if (!state.file || state.busy) return;
   state.busy = true;
-  setStatus('Analitzant el document amb Claude…', '', true);
+  setStatus('Analitzant el document amb Gemini…', '', true);
   try {
     const content = await buildUserContent();
     const raw = await callModel(content);
@@ -692,10 +730,14 @@ async function run() {
   } catch (e) {
     const msg = String(e.message || e);
     let hint = '';
-    if (/Failed to fetch|NetworkError|CORS/i.test(msg)) {
-      hint = ' — si has allotjat la pàgina pel teu compte, cal una clau API a Configuració; dins d\'un Artifact de Claude hauria de funcionar sense clau.';
-    } else if (/401|authentication|x-api-key|credential/i.test(msg)) {
-      hint = ' — comprova la clau API.';
+    if (/Cal una clau/i.test(msg)) {
+      hint = '';
+    } else if (/not found|no s'ha trobat|is not found|not supported/i.test(msg)) {
+      hint = ' — prem «Carrega models» i tria'n un de la llista.';
+    } else if (/Failed to fetch|NetworkError|CORS/i.test(msg)) {
+      hint = ' — possible bloqueig CORS/xarxa; comprova la connexió i que la clau és de Google AI Studio.';
+    } else if (/API key|invalid|PERMISSION|403|400|401/i.test(msg)) {
+      hint = ' — comprova la clau de Gemini i que l\'API està activada al teu projecte.';
     }
     setStatus('Error: ' + msg + hint, 'err');
   } finally {
@@ -704,6 +746,42 @@ async function run() {
 }
 
 /* ─── VOCAB SYNC (optional) ─────────────────────────────────────── */
+async function loadModels() {
+  const key = $('api-key').value.trim();
+  if (!key) { toast('Posa primer la clau de Gemini', true); return; }
+  setStatus('Carregant la llista de models…', '', true);
+  try {
+    const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models', {
+      headers: { 'x-goog-api-key': key },
+    });
+    const data = await res.json();
+    if (!res.ok || data.error) throw new Error(data?.error?.message || ('HTTP ' + res.status));
+
+    const usable = (data.models || [])
+      .filter(m => (m.supportedGenerationMethods || []).includes('generateContent'))
+      .map(m => (m.name || '').replace(/^models\//, ''))
+      .filter(n => /^gemini/i.test(n) && !/embedding|aqa|image|imagen|veo|tts|live/i.test(n));
+
+    if (!usable.length) throw new Error('La clau no exposa cap model amb generateContent.');
+
+    // flash first (rapid/cheap), then the rest
+    usable.sort((a, b) => (/(flash)/i.test(b) ? 1 : 0) - (/(flash)/i.test(a) ? 1 : 0) || b.localeCompare(a));
+    const prev = $('model-sel').value;
+    $('model-sel').innerHTML = usable.map(n => `<option value="${escHtml(n)}">${escHtml(n)}</option>`).join('');
+    if (usable.includes(prev)) $('model-sel').value = prev;
+
+    setStatus('Models carregats (' + usable.length + '). Triat: ' + $('model-sel').value, 'ok');
+    toast('Models carregats');
+    if (state.file && !state.busy) run();
+  } catch (e) {
+    const msg = String(e.message || e);
+    const hint = /Failed to fetch|NetworkError|CORS/i.test(msg)
+      ? ' — possible bloqueig CORS o de xarxa; comprova que la clau és de Google AI Studio.'
+      : (/API key|invalid|403|400/i.test(msg) ? ' — comprova que la clau és correcta i té l\'API activada.' : '');
+    setStatus('Error carregant models: ' + msg + hint, 'err');
+  }
+}
+
 function applyManifest(m) {
   if (m?.vocabulary) {
     VOCAB = {
@@ -752,6 +830,11 @@ window.addEventListener('drop', e => {
   const f = e.dataTransfer?.files?.[0];
   if (f) setFile(f);
 });
+
+$('load-models').onclick = loadModels;
+$('model-sel').addEventListener('change', () => { if (state.file && !state.busy) run(); });
+// If the user pastes a key after having dropped a file, let them retry easily.
+$('api-key').addEventListener('change', () => { if (state.file && !state.busy && !state.result) run(); });
 
 renderEmptyResult();
 </script>
