@@ -1117,36 +1117,49 @@ function renderPreview() {
    ACTIONS — toggle card open, preview drawer
    ═══════════════════════════════════════════════════════════════════ */
 
-function toggleOpen(id) {
-  // Click on same card → close it (and close the preview if open).
-  if (state.openId === id) {
-    closeCard();
-    return;
+/* Swap is-open class without touching the rest of the DOM */
+function applyOpenState(prevId, newId) {
+  if (prevId) {
+    const el = els.results.querySelector(`.card[data-id="${CSS.escape(prevId)}"]`);
+    if (el) el.classList.remove('is-open');
   }
+  if (newId) {
+    const el = els.results.querySelector(`.card[data-id="${CSS.escape(newId)}"]`);
+    if (el) el.classList.add('is-open');
+  }
+}
+
+function toggleOpen(id) {
+  if (state.openId === id) { closeCard(); return; }
+  const prevId = state.openId;
   state.openId = id;
-  state.previewing = false;     // re-clicking a different card resets the preview
-  renderAll();
+  state.previewing = false;
+  applyOpenState(prevId, id);
+  renderPreview();
   syncToUrl(false);
 }
 
 function closeCard() {
+  const prevId = state.openId;
   state.openId = null;
   state.previewing = false;
-  renderAll();
+  applyOpenState(prevId, null);
+  renderPreview();
   syncToUrl(false);
 }
 
 function openPreview(id) {
+  const prevId = state.openId;
   state.openId = id;
   state.previewing = true;
-  renderAll();
+  applyOpenState(prevId, id);
+  renderPreview();
   syncToUrl(false);
 }
 
 function closePreview() {
-  // Only close the side panel; keep the card open with its action buttons.
   state.previewing = false;
-  renderAll();
+  renderPreview();
   syncToUrl(false);
 }
 
