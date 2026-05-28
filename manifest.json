@@ -309,8 +309,25 @@
         "arees-perimetres",
         "pitagores"
       ],
-      "type": "dossier",
+      "type": "exercici",
       "year": 2026
+    },
+    {
+      "title": "Àrea i perímetre (1)",
+      "id": "area-i-perimetre-1",
+      "drive_id": "1yx89eut7Ey2aKVQZNNj3tpe-DmItGtuA",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "1ESO",
+        "2ESO"
+      ],
+      "math_sense": "mesura",
+      "activities": [
+        "figures-planes",
+        "arees-perimetres"
+      ],
+      "type": "dossier"
     }
   ],
   "basic": {
