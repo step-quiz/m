@@ -543,6 +543,17 @@
         "taules-grafics-estadistics"
       ],
       "type": "dossier"
+    },
+    {
+      "title": "Joc de fitxes (teoria de jocs)",
+      "id": "joc-de-fitxes-teoria-de-jocs",
+      "drive_id": "139fDgpCXEgZ6A8GU1qZdmuo52uXs7dHI",
+      "format": "pdf",
+      "origin": "fem-matematiques",
+      "courses": [
+        "ESO"
+      ],
+      "type": "dossier"
     }
   ],
   "basic": {
