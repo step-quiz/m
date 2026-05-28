@@ -341,6 +341,9 @@
       "drive_id": "1CUd5CKph1V1A156qR2RVUGmaZ2iomowI",
       "format": "pdf",
       "origin": "florence",
+      "courses": [
+        "ESO"
+      ],
       "math_sense": "espacial",
       "activities": [
         "figures-planes",
@@ -474,6 +477,55 @@
         "distancies-angles"
       ],
       "type": "teoria"
+    },
+    {
+      "title": "Polinomis",
+      "id": "polinomis",
+      "drive_id": "1gvQTBZuP7Z0kDrehdjg2NoJ8EY47fb3S",
+      "format": "pdf",
+      "origin": "bogdan",
+      "courses": [
+        "1Bat"
+      ],
+      "math_sense": "algebraic",
+      "activities": [
+        "monomis-polinomis",
+        "factoritzacio"
+      ],
+      "type": "dossier"
+    },
+    {
+      "title": "Trigonometria",
+      "id": "trigonometria",
+      "drive_id": "1ksIBtQ1uSvOEPoIUdMwnZKlTgiEihjWW",
+      "format": "pdf",
+      "origin": "bogdan",
+      "courses": [
+        "4ESO"
+      ],
+      "math_sense": "mesura",
+      "activities": [
+        "trigonometria",
+        "identitats-trigonometriques",
+        "sinus-cosinus"
+      ],
+      "type": "dossier"
+    },
+    {
+      "title": "Derivades",
+      "id": "derivades",
+      "drive_id": "1QfYuW6MIlisY6uzamACYfpX7ju6e-ZGx",
+      "format": "pdf",
+      "origin": "bogdan",
+      "courses": [
+        "2Bat"
+      ],
+      "math_sense": "algebraic",
+      "activities": [
+        "derivades",
+        "regla-cadena"
+      ],
+      "type": "dossier"
     }
   ],
   "basic": {
