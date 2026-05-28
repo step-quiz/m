@@ -297,6 +297,20 @@
       "origin": "propi",
       "year": 2026,
       "notes": "Eixos de coordenades"
+    },
+    {
+      "title": "Teorema de Pitàgores-1",
+      "id": "teorema-de-pitagores-1",
+      "drive_id": "1BLWEO4wgCSTUOcMJ40a5SOpEmhJbx5TvtenNe9yX8QY",
+      "format": "pdf",
+      "origin": "propi",
+      "math_sense": "mesura",
+      "activities": [
+        "arees-perimetres",
+        "pitagores"
+      ],
+      "type": "dossier",
+      "year": 2026
     }
   ],
   "basic": {
