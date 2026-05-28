@@ -357,6 +357,84 @@
         "arrels-radicals"
       ],
       "type": "dossier"
+    },
+    {
+      "title": "Nombres enters",
+      "id": "nombres-enters",
+      "drive_id": "1aMWvL9Tp0PcZ8C1MyDTT4XD5vF6TuzkK",
+      "format": "pdf",
+      "origin": "repo1",
+      "courses": [
+        "1ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "nombres-enters"
+      ],
+      "type": "dossier"
+    },
+    {
+      "title": "Divisibilitat",
+      "id": "divisibilitat",
+      "drive_id": "1qb3bl-YXQNr-89pWNKKhIjN4p-i_CJjx",
+      "format": "pdf",
+      "origin": "repo1",
+      "courses": [
+        "1ESO"
+      ],
+      "activities": [
+        "nombres-naturals",
+        "divisibilitat"
+      ],
+      "type": "dossier"
+    },
+    {
+      "title": "Fraccions",
+      "id": "fraccions",
+      "drive_id": "1U8qyHQGMJ48y7yfXerkyg19WqBRD4upV",
+      "format": "pdf",
+      "origin": "repo1",
+      "courses": [
+        "1ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "fraccions",
+        "nombres-decimals",
+        "nombres-racionals"
+      ],
+      "type": "dossier"
+    },
+    {
+      "title": "Proporcionalitat numèrica",
+      "id": "proporcionalitat-numerica",
+      "drive_id": "1PWjyD5T9nFX6Wa-Nn1J551fd6P8D-Oma",
+      "format": "pdf",
+      "origin": "repo1",
+      "courses": [
+        "1ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "proporcionalitat"
+      ],
+      "type": "dossier"
+    },
+    {
+      "title": "Llenguatge algebraic",
+      "id": "llenguatge-algebraic",
+      "drive_id": "1kkg_ExQlwOhD-trBue_z7SFoeSMK5OYz",
+      "format": "pdf",
+      "origin": "mmaca",
+      "courses": [
+        "1ESO"
+      ],
+      "math_sense": "algebraic",
+      "activities": [
+        "llenguatge-algebraic",
+        "equacions"
+      ],
+      "type": "dossier"
     }
   ],
   "basic": {
