@@ -373,6 +373,14 @@
     gap: 7px;
     align-items: start;
   }
+  /* When the preview drawer is open, cards fill the (now narrow) results column */
+  .layout.has-preview .results { align-items: stretch; }
+  .layout.has-preview .card { width: 100%; }
+  .layout.has-preview .card-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 
   /* ── Card ───────────────────────────────────────────────────────── */
   .card {
