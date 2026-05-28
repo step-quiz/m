@@ -62,7 +62,7 @@
   .topbar {
     position: sticky; top: 0; z-index: 50;
     display: grid;
-    grid-template-columns: 252px 1fr;  /* 280-28 (left rail width minus padding) */
+    grid-template-columns: 196px 1fr auto;  /* rail · search · recents */
     align-items: center;
     gap: 16px;
     padding: 10px 20px;
@@ -96,16 +96,99 @@
     box-shadow: 0 0 0 4px var(--accent-soft);
   }
 
+  /* ── Recents ────────────────────────────────────────────────────── */
+  .recents-wrap { position: relative; justify-self: end; }
+  .recents-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 14px;
+    border-radius: 980px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-2);
+    background: var(--surface-3);
+    border: 1px solid transparent;
+    transition: background .12s, color .12s, border-color .12s;
+    white-space: nowrap;
+  }
+  .recents-btn svg { width: 15px; height: 15px; }
+  .recents-btn:hover { background: var(--divider); color: var(--text); }
+  .recents-wrap.is-open .recents-btn {
+    background: var(--surface);
+    border-color: var(--accent);
+    color: var(--text);
+  }
+
+  .recents-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 340px;
+    max-width: 90vw;
+    max-height: min(440px, 70vh);
+    overflow-y: auto;
+    background: var(--surface);
+    border: 1px solid var(--divider);
+    border-radius: var(--radius);
+    box-shadow: var(--sh-md);
+    padding: 6px;
+    z-index: 60;
+    animation: fade-up .18s var(--ease);
+  }
+  .recents-menu[hidden] { display: none; }
+  .recents-menu .rec-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 6px 8px 8px;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: .06em; text-transform: uppercase;
+    color: var(--text-3);
+  }
+  .recents-menu .rec-clear {
+    font-size: 11px; font-weight: 600;
+    color: var(--text-3);
+    text-transform: none; letter-spacing: 0;
+    padding: 2px 6px; border-radius: 6px;
+  }
+  .recents-menu .rec-clear:hover { color: var(--red); background: var(--surface-2); }
+  .recents-menu .rec-item {
+    display: flex; align-items: center; gap: 10px;
+    width: 100%;
+    padding: 8px 8px;
+    border-radius: var(--radius-sm);
+    text-align: left;
+    transition: background .12s;
+    cursor: pointer;
+  }
+  .recents-menu .rec-item:hover { background: var(--surface-3); }
+  .recents-menu .rec-icon {
+    flex-shrink: 0;
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 9px; font-weight: 700;
+  }
+  .recents-menu .rec-icon[data-format=pdf] { color: #c0392b; background: rgba(192,57,43,.08); }
+  .recents-menu .rec-icon[data-format=doc] { color: #2563eb; background: rgba(37,99,235,.08); }
+  .recents-menu .rec-body { flex: 1; min-width: 0; }
+  .recents-menu .rec-title {
+    font-size: 12.5px; font-weight: 500; color: var(--text);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .recents-menu .rec-when { font-size: 10.5px; color: var(--text-3); margin-top: 1px; }
+  .recents-menu .rec-empty {
+    padding: 18px 12px; text-align: center;
+    font-size: 12.5px; color: var(--text-3); line-height: 1.5;
+  }
+
   /* ── Layout ─────────────────────────────────────────────────────── */
   .layout {
     display: grid;
-    grid-template-columns: 280px 1fr 0;
+    grid-template-columns: 224px 1fr 0;
     height: calc(100vh - 57px);
     height: calc(100dvh - 57px);
     transition: grid-template-columns .25s var(--ease);
   }
   .layout.has-preview {
-    grid-template-columns: 280px minmax(380px, 1fr) minmax(420px, 580px);
+    grid-template-columns: 224px minmax(380px, 1fr) minmax(420px, 620px);
   }
 
   /* ── Filter rail ────────────────────────────────────────────────── */
@@ -364,14 +447,9 @@
     letter-spacing: .01em;
     line-height: 1.6;
     white-space: nowrap;
+    background: var(--surface-3);
+    color: var(--text-2);
   }
-  .pill-origin[data-origin=propi]          { background: var(--c-propi-tint);          color: var(--c-propi); }
-  .pill-origin[data-origin=florence]       { background: var(--c-florence-tint);       color: var(--c-florence); }
-  .pill-origin[data-origin=recursos-mates] { background: var(--c-recursos-mates-tint); color: #1a7a3a; }
-  .pill-origin[data-origin=edu365]         { background: var(--c-edu365-tint);         color: #a05a00; }
-  .pill-origin[data-origin=altres]         { background: var(--c-altres-tint);         color: var(--c-altres); }
-  .pill-course { background: var(--surface-3); color: var(--text-2); }
-  .pill-type   { background: rgba(0,113,227,.08); color: var(--accent); }
 
   .card-actions {
     display: none;
@@ -464,26 +542,6 @@
   .preview-body { flex: 1; overflow: hidden; min-height: 0; position: relative; }
   .preview-body iframe { width: 100%; height: 100%; border: none; display: block; }
 
-  .preview-actions {
-    display: flex; gap: 6px;
-    padding: 10px 12px;
-    border-top: 1px solid var(--divider);
-    flex-shrink: 0;
-    background: var(--surface-2);
-  }
-  .preview-actions a {
-    flex: 1;
-    padding: 8px 10px;
-    border-radius: 980px;
-    font-size: 12px;
-    font-weight: 600;
-    text-align: center;
-    background: var(--accent);
-    color: #fff;
-    transition: background .12s;
-  }
-  .preview-actions a:hover { background: #0064cc; text-decoration: none; }
-
   /* ── Footer ─────────────────────────────────────────────────────── */
   .footer-note {
     position: fixed; left: 0; bottom: 0;
@@ -518,6 +576,15 @@
     </svg>
     <input id="search" type="search" placeholder="Cerca…" autocomplete="off" spellcheck="false">
   </div>
+  <div class="recents-wrap" id="recents-wrap">
+    <button class="recents-btn" id="recents-btn" aria-haspopup="true" aria-expanded="false" title="Documents oberts recentment">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="8" cy="8" r="6.5"/><path d="M8 4.5V8l2.5 1.5"/>
+      </svg>
+      <span>Recents</span>
+    </button>
+    <div class="recents-menu" id="recents-menu" hidden></div>
+  </div>
 </header>
 
 <main class="layout" id="layout">
@@ -544,11 +611,11 @@
 const MANIFEST_URL = 'manifest.json';
 const FILTER_GROUPS = [
   { key: 'course',     label: 'Curs',              field: 'courses',    multi: true  },
-  { key: 'origin',     label: 'Origen',            field: 'origin',     multi: false },
   { key: 'math_sense', label: 'Sentit matemàtic',  field: 'math_sense', multi: false },
-  { key: 'activity',   label: 'Activitat',         field: 'activities', multi: true  },
-  { key: 'type',       label: 'Tipus',             field: 'type',       multi: false },
   { key: 'format',     label: 'Format',            field: 'format',     multi: false },
+  { key: 'type',       label: 'Tipus',             field: 'type',       multi: false },
+  { key: 'origin',     label: 'Origen',            field: 'origin',     multi: false },
+  { key: 'activity',   label: 'Activitat',         field: 'activities', multi: true  },
 ];
 const ESO_COURSES  = ['1ESO','2ESO','3ESO','4ESO'];
 const BATX_COURSES = ['1Bat','2Bat'];
@@ -575,7 +642,98 @@ const els = {
   results:       $('results'),
   preview:       $('preview-drawer'),
   search:        $('search'),
+  recentsWrap:   $('recents-wrap'),
+  recentsBtn:    $('recents-btn'),
+  recentsMenu:   $('recents-menu'),
 };
+
+/* ─── RECENTS (localStorage) ────────────────────────────────────── */
+const RECENTS_KEY = 'material:recents';
+const RECENTS_MAX = 10;
+
+function getRecents() {
+  try {
+    const raw = localStorage.getItem(RECENTS_KEY);
+    if (!raw) return [];
+    const arr = JSON.parse(raw);
+    return Array.isArray(arr) ? arr : [];
+  } catch (e) { return []; }
+}
+
+function pushRecent(id) {
+  if (!id) return;
+  let list = getRecents().filter(r => r.id !== id);   // dedup: remove existing
+  list.unshift({ id, ts: Date.now() });               // newest first
+  list = list.slice(0, RECENTS_MAX);                   // cap at 10
+  try { localStorage.setItem(RECENTS_KEY, JSON.stringify(list)); } catch (e) {}
+}
+
+function clearRecents() {
+  try { localStorage.removeItem(RECENTS_KEY); } catch (e) {}
+  renderRecentsMenu();
+}
+
+function relativeTime(ts) {
+  const diff = Date.now() - ts;
+  const min = Math.floor(diff / 60000);
+  if (min < 1)  return 'ara mateix';
+  if (min < 60) return `fa ${min} min`;
+  const h = Math.floor(min / 60);
+  if (h < 24)   return `fa ${h} h`;
+  const d = Math.floor(h / 24);
+  if (d === 1)  return 'ahir';
+  if (d < 7)    return `fa ${d} dies`;
+  const w = Math.floor(d / 7);
+  if (w < 5)    return `fa ${w} setmana${w === 1 ? '' : 'nes'}`;
+  const mo = Math.floor(d / 30);
+  return `fa ${mo} mes${mo === 1 ? '' : 'os'}`;
+}
+
+function renderRecentsMenu() {
+  const list = getRecents();
+  const byId = new Map((state.manifest?.files || []).map(f => [f.id, f]));
+  // Keep only recents that still exist in the manifest.
+  const items = list.map(r => ({ rec: r, file: byId.get(r.id) })).filter(x => x.file);
+
+  if (!items.length) {
+    els.recentsMenu.innerHTML = `
+      <div class="rec-head"><span>Recents</span></div>
+      <div class="rec-empty">Encara no has obert cap document al Drive.<br>Els que obris apareixeran aquí.</div>`;
+    return;
+  }
+
+  els.recentsMenu.innerHTML = `
+    <div class="rec-head">
+      <span>Oberts recentment</span>
+      <button class="rec-clear" id="rec-clear">Esborra</button>
+    </div>
+    ${items.map(({ rec, file }) => `
+      <button class="rec-item" data-id="${escHtml(file.id)}">
+        <span class="rec-icon" data-format="${escHtml(file.format || '')}">${escHtml((file.format || '?').toUpperCase())}</span>
+        <span class="rec-body">
+          <span class="rec-title">${escHtml(file.title)}</span>
+          <span class="rec-when">${escHtml(relativeTime(rec.ts))}</span>
+        </span>
+      </button>`).join('')}
+  `;
+
+  const clr = $('rec-clear');
+  if (clr) clr.onclick = (e) => { e.stopPropagation(); clearRecents(); };
+}
+
+function toggleRecentsMenu(force) {
+  const open = force !== undefined ? force : els.recentsMenu.hidden;
+  if (open) {
+    renderRecentsMenu();
+    els.recentsMenu.hidden = false;
+    els.recentsWrap.classList.add('is-open');
+    els.recentsBtn.setAttribute('aria-expanded', 'true');
+  } else {
+    els.recentsMenu.hidden = true;
+    els.recentsWrap.classList.remove('is-open');
+    els.recentsBtn.setAttribute('aria-expanded', 'false');
+  }
+}
 
 /* ═══════════════════════════════════════════════════════════════════
    UTIL — normalize, fuzzy match, labels
@@ -910,7 +1068,6 @@ function renderResults(filtered) {
             <div class="card-meta">
               ${courseChips}
               ${origin ? `<span class="pill pill-origin" data-origin="${escHtml(origin)}">${escHtml(label(origin))}</span>` : ''}
-              ${f.type ? `<span class="pill pill-type">${escHtml(label(f.type))}</span>` : ''}
             </div>
           </div>
           <div class="card-actions">
@@ -937,9 +1094,6 @@ function renderPreview() {
   els.layout.classList.add('has-preview');
 
   const previewSrc = `https://drive.google.com/file/d/${encodeURIComponent(f.drive_id)}/preview`;
-  const driveOpen  = f.format === 'doc'
-    ? `https://docs.google.com/document/d/${encodeURIComponent(f.drive_id)}/edit`
-    : `https://drive.google.com/file/d/${encodeURIComponent(f.drive_id)}/view`;
 
   els.preview.innerHTML = `
     <div class="preview-head">
@@ -950,9 +1104,6 @@ function renderPreview() {
     </div>
     <div class="preview-body" id="pv-body">
       <iframe src="${previewSrc}" title="Visor de ${escHtml(f.title)}" allow="autoplay"></iframe>
-    </div>
-    <div class="preview-actions">
-      <a href="${driveOpen}" target="_blank" rel="noopener">Obre al Drive ↗</a>
     </div>
   `;
 
@@ -1117,9 +1268,12 @@ els.results.addEventListener('click', e => {
     openPreview(pv.dataset.id);
     return;
   }
-  // "Obre al Drive" link → let the browser handle target=_blank navigation.
-  if (e.target.closest('a.act-drive')) {
+  // "Obre al Drive" link → record as recent, then let the browser open it.
+  const drive = e.target.closest('a.act-drive');
+  if (drive) {
     e.stopPropagation();
+    const card = drive.closest('.card');
+    if (card) pushRecent(card.dataset.id);
     return;
   }
   // Click on the card body → toggle action buttons.
@@ -1130,8 +1284,31 @@ els.results.addEventListener('click', e => {
 document.addEventListener('keydown', e => {
   // Escape closes the side preview first; on a second press, collapses the card.
   if (e.key === 'Escape') {
+    if (!els.recentsMenu.hidden) { toggleRecentsMenu(false); return; }
     if (state.previewing) closePreview();
     else if (state.openId) closeCard();
+  }
+});
+
+/* Recents button + dropdown */
+els.recentsBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  toggleRecentsMenu();
+});
+els.recentsMenu.addEventListener('click', e => {
+  const item = e.target.closest('.rec-item');
+  if (!item) return;
+  const id = item.dataset.id;
+  toggleRecentsMenu(false);
+  // Selecting a recent re-opens it in the preview drawer.
+  openPreview(id);
+  const card = document.querySelector(`.card[data-id="${CSS.escape(id)}"]`);
+  if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+});
+// Click outside closes the dropdown.
+document.addEventListener('click', e => {
+  if (!els.recentsMenu.hidden && !els.recentsWrap.contains(e.target)) {
+    toggleRecentsMenu(false);
   }
 });
 
