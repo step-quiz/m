@@ -696,16 +696,21 @@ function renderResult(entry, warnings) {
     <div class="summary">${rows}</div>
     <div class="json-box" id="json-box">${highlightJson(entry)}</div>
     <div class="json-actions">
-      <button class="btn btn-prim" id="copy-json">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-        Copia JSON
+      <button class="btn btn-prim" id="open-editor" title="Obre afegir-material.html amb aquesta entrada pre-emplenada">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3h7v7"/><path d="M10 14L21 3"/><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></svg>
+        Edita al manifest →
       </button>
+      <button class="btn btn-ghost" id="copy-json">Copia JSON</button>
       <button class="btn btn-ghost" id="copy-json-comma" title="Amb una coma final, per enganxar dins de \"files\": [ … ]">Copia + coma</button>
     </div>`;
 
   const jsonStr = JSON.stringify(entry, FIELD_ORDER, 2);
   $('copy-json').onclick = () => copyText(jsonStr, 'JSON copiat');
   $('copy-json-comma').onclick = () => copyText(jsonStr + ',', 'JSON copiat (amb coma)');
+  $('open-editor').onclick = () => {
+    const payload = encodeURIComponent(JSON.stringify(entry));
+    window.open('afegir-material.html#new=' + payload, '_blank', 'noopener');
+  };
 }
 
 async function copyText(txt, okMsg) {

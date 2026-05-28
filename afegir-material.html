@@ -553,6 +553,8 @@ function loadFromText(text, sourceName) {
   $('dirty-flag').hidden = true;
   render();
   toast(`Manifest carregat (${data.files.length} fitxers)${sourceName ? ' des de ' + sourceName : ''}`);
+  // If extreu-json handed off an entry via #new=..., consume it now.
+  if (typeof consumePrefilledEntry === 'function') consumePrefilledEntry();
   return true;
 }
 
@@ -609,7 +611,12 @@ function renderDropZone() {
     </div>
   `;
   $('dz-pick').onclick = () => $('file-input').click();
-  $('dz-new').onclick = () => { state.manifest = emptyManifest(); setDirty(true); render(); };
+  $('dz-new').onclick = () => {
+    state.manifest = emptyManifest();
+    setDirty(true);
+    render();
+    if (typeof consumePrefilledEntry === 'function') consumePrefilledEntry();
+  };
 }
 
 function renderEditor() {
@@ -1161,6 +1168,50 @@ window.addEventListener('beforeunload', e => {
 });
 
 /* ─── INIT ──────────────────────────────────────────────────────── */
+
+// Handoff from extreu-json.html: a URL hash like "#new=<urlencoded JSON>"
+// pre-fills the "new file" modal once a manifest is available.
+let pendingPrefilledEntry = null;
+(function pickUpPrefilledEntry() {
+  const m = (location.hash || '').match(/^#new=(.+)$/);
+  if (!m) return;
+  try {
+    pendingPrefilledEntry = JSON.parse(decodeURIComponent(m[1]));
+  } catch (e) {
+    console.warn('Hash d\'entrada pre-emplenada no vàlid:', e);
+  }
+  // Clean the URL so reloads don't replay the handoff
+  history.replaceState(null, '', location.pathname + location.search);
+})();
+
+function consumePrefilledEntry() {
+  if (!pendingPrefilledEntry || !state.manifest) return;
+  const incoming = pendingPrefilledEntry;
+  pendingPrefilledEntry = null;
+  // Open as NEW (not edit), merging incoming on top of the default empty entry
+  state.editingNew = true;
+  state.editing = Object.assign(
+    {
+      id: '',
+      drive_id: '',
+      title: '',
+      format: 'pdf',
+      origin: state.manifest.vocabulary.origin[0] || '',
+      courses: [],
+      math_sense: '',
+      activities: [],
+      type: '',
+      year: null,
+      notes: ''
+    },
+    incoming
+  );
+  renderModal();
+  $('modal-bg').hidden = false;
+  setTimeout(() => $('f-title')?.focus(), 50);
+  toast('Entrada pre-emplenada des de extreu-json');
+}
+
 // Try to pre-load manifest.json from same dir; if not present, show drop zone
 (async function init() {
   try {
@@ -1168,10 +1219,14 @@ window.addEventListener('beforeunload', e => {
     if (res.ok) {
       const text = await res.text();
       loadFromText(text, 'manifest.json');
+      consumePrefilledEntry();
       return;
     }
   } catch {}
   render();  // drop zone
+  if (pendingPrefilledEntry) {
+    toast('Tens un fitxer per afegir des de extreu-json — carrega o crea primer el manifest', false, 5000);
+  }
 })();
 </script>
 </body>
