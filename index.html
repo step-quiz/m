@@ -339,7 +339,7 @@
   /* ── Results ────────────────────────────────────────────────────── */
   .results-wrap {
     overflow-y: auto;
-    padding: 16px 22px 80px;
+    padding: 16px 22px 60px;
   }
   .chip-row {
     display: flex; flex-wrap: wrap; gap: 6px;
@@ -554,37 +554,56 @@
   }
   .footer-note a { color: var(--text-3); pointer-events: auto; }
 
-  /* ── Quick actions (floating bottom cluster) ────────────────────── */
-  .quick-actions {
-    position: fixed;
-    left: 50%; bottom: 14px;
-    transform: translateX(-50%);
-    z-index: 45;
-    display: flex; align-items: center;
-    gap: 2px;
-    padding: 4px;
-    background: rgba(255,255,255,.82);
-    backdrop-filter: saturate(180%) blur(20px);
-    -webkit-backdrop-filter: saturate(180%) blur(20px);
-    border: 1px solid var(--divider);
-    border-radius: 980px;
-    box-shadow: var(--sh-md);
-  }
-  .quick-actions a {
+  /* ── Top-right cluster (Configuració + Recents) ─────────────────── */
+  .topbar-right { justify-self: end; display: flex; align-items: center; gap: 10px; }
+
+  .config-wrap { position: relative; }
+  .config-btn {
     display: inline-flex; align-items: center; gap: 6px;
-    padding: 7px 14px;
+    padding: 8px 14px;
     border-radius: 980px;
-    font-size: 12.5px; font-weight: 600;
+    font-size: 13px; font-weight: 600;
     color: var(--text-2);
-    text-decoration: none;
+    background: var(--surface-3);
+    border: 1px solid transparent;
+    transition: background .12s, color .12s, border-color .12s;
     white-space: nowrap;
-    transition: background .12s, color .12s;
   }
-  .quick-actions a:hover { background: var(--surface-3); color: var(--text); text-decoration: none; }
-  .quick-actions a svg { width: 14px; height: 14px; }
-  .quick-actions a.qa-ai { color: var(--accent); }
-  .quick-actions a.qa-ai:hover { background: var(--accent-soft); color: var(--accent); }
-  .quick-actions .qa-sep { width: 1px; height: 18px; background: var(--divider); margin: 0 2px; }
+  .config-btn svg { width: 15px; height: 15px; }
+  .config-btn:hover { background: var(--divider); color: var(--text); }
+  .config-wrap.is-open .config-btn {
+    background: var(--surface);
+    border-color: var(--accent);
+    color: var(--text);
+  }
+
+  .config-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    width: 252px; max-width: 90vw;
+    background: var(--surface);
+    border: 1px solid var(--divider);
+    border-radius: var(--radius);
+    box-shadow: var(--sh-md);
+    padding: 6px;
+    z-index: 60;
+    animation: fade-up .18s var(--ease);
+  }
+  .config-menu[hidden] { display: none; }
+  .config-item {
+    display: flex; align-items: center; gap: 11px;
+    padding: 9px 10px;
+    border-radius: var(--radius-sm);
+    font-size: 13px; font-weight: 500;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .config-item:hover { background: var(--surface-3); text-decoration: none; }
+  .config-item svg { width: 16px; height: 16px; color: var(--text-2); flex-shrink: 0; }
+  .config-item.cfg-ai { color: var(--accent); font-weight: 600; }
+  .config-item.cfg-ai svg { color: var(--accent); }
+  .cfg-sep { height: 1px; background: var(--divider); margin: 5px 8px; }
 
   /* ── Pristine hint state (no filter, no search) ─────────────────── */
   .results > .state-hint { align-self: stretch; width: 100%; }
@@ -648,14 +667,44 @@
     </svg>
     <input id="search" type="search" placeholder="Cerca…" autocomplete="off" spellcheck="false">
   </div>
-  <div class="recents-wrap" id="recents-wrap">
-    <button class="recents-btn" id="recents-btn" aria-haspopup="true" aria-expanded="false" title="Documents oberts recentment">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="8" cy="8" r="6.5"/><path d="M8 4.5V8l2.5 1.5"/>
-      </svg>
-      <span>Recents</span>
-    </button>
-    <div class="recents-menu" id="recents-menu" hidden></div>
+  <div class="topbar-right">
+    <div class="config-wrap" id="config-wrap">
+      <button class="config-btn" id="config-btn" aria-haspopup="true" aria-expanded="false" title="Eines i configuració">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="8" cy="8" r="2.1"/>
+          <path d="M8 1.4v1.7M8 12.9v1.7M2.6 4.7l1.5.9M11.9 10.4l1.5.9M2.6 11.3l1.5-.9M11.9 5.6l1.5-.9"/>
+        </svg>
+        <span>Configuració</span>
+      </button>
+      <div class="config-menu" id="config-menu" role="menu" hidden>
+        <a class="config-item" role="menuitem" href="afegir-material.html">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 3.5v9M3.5 8h9"/></svg>
+          <span>Afegir</span>
+        </a>
+        <a class="config-item cfg-ai" role="menuitem" href="extreu-json.html">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.5l1.4 3.4 3.6.3-2.7 2.3.8 3.5L8 12.9l-3.1 1.8.8-3.5L3 8.9l3.6-.3z"/></svg>
+          <span>Afegir amb IA</span>
+        </a>
+        <a class="config-item" role="menuitem" href="eliminar-curs.html">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3.5l3.5 3.5-5.5 5.5H3.5v-3.5z"/><path d="M7.5 5l3.5 3.5"/></svg>
+          <span>Eliminar curs</span>
+        </a>
+        <div class="cfg-sep" aria-hidden="true"></div>
+        <a class="config-item" role="menuitem" target="_blank" rel="noopener" href="https://drive.google.com/drive/folders/1jTYNRPJrR9ToTuDkYNahEtZaOrUp-wQg?usp=drive_link">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1.8 4.2A1.2 1.2 0 0 1 3 3h3l1.5 1.6H13a1.2 1.2 0 0 1 1.2 1.2v6A1.2 1.2 0 0 1 13 13H3a1.2 1.2 0 0 1-1.2-1.2z"/></svg>
+          <span>Repositori ↗</span>
+        </a>
+      </div>
+    </div>
+    <div class="recents-wrap" id="recents-wrap">
+      <button class="recents-btn" id="recents-btn" aria-haspopup="true" aria-expanded="false" title="Documents oberts recentment">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="8" cy="8" r="6.5"/><path d="M8 4.5V8l2.5 1.5"/>
+        </svg>
+        <span>Recents</span>
+      </button>
+      <div class="recents-menu" id="recents-menu" hidden></div>
+    </div>
   </div>
 </header>
 
@@ -669,26 +718,6 @@
 
   <aside class="preview-drawer" id="preview-drawer" hidden></aside>
 </main>
-
-<nav class="quick-actions" aria-label="Accions ràpides">
-  <a href="afegir-material.html">
-    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 3.5v9M3.5 8h9"/></svg>
-    Afegir
-  </a>
-  <a class="qa-ai" href="extreu-json.html">
-    <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.5l1.4 3.4 3.6.3-2.7 2.3.8 3.5L8 12.9l-3.1 1.8.8-3.5L3 8.9l3.6-.3z"/></svg>
-    Afegir amb IA
-  </a>
-  <a href="eliminar-curs.html">
-    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3.5l3.5 3.5-5.5 5.5H3.5v-3.5z"/><path d="M7.5 5l3.5 3.5"/></svg>
-    Eliminar curs
-  </a>
-  <span class="qa-sep" aria-hidden="true"></span>
-  <a href="https://drive.google.com/drive/folders/1jTYNRPJrR9ToTuDkYNahEtZaOrUp-wQg?usp=drive_link" target="_blank" rel="noopener">
-    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1.8 4.2A1.2 1.2 0 0 1 3 3h3l1.5 1.6H13a1.2 1.2 0 0 1 1.2 1.2v6A1.2 1.2 0 0 1 13 13H3a1.2 1.2 0 0 1-1.2-1.2z"/></svg>
-    Repositori
-  </a>
-</nav>
 
 <script>
 /* ═══════════════════════════════════════════════════════════════════
@@ -733,6 +762,9 @@ const els = {
   recentsWrap:   $('recents-wrap'),
   recentsBtn:    $('recents-btn'),
   recentsMenu:   $('recents-menu'),
+  configWrap:    $('config-wrap'),
+  configBtn:     $('config-btn'),
+  configMenu:    $('config-menu'),
 };
 
 /* ─── RECENTS (localStorage) ────────────────────────────────────── */
@@ -812,6 +844,7 @@ function renderRecentsMenu() {
 function toggleRecentsMenu(force) {
   const open = force !== undefined ? force : els.recentsMenu.hidden;
   if (open) {
+    toggleConfigMenu(false);
     renderRecentsMenu();
     els.recentsMenu.hidden = false;
     els.recentsWrap.classList.add('is-open');
@@ -820,6 +853,20 @@ function toggleRecentsMenu(force) {
     els.recentsMenu.hidden = true;
     els.recentsWrap.classList.remove('is-open');
     els.recentsBtn.setAttribute('aria-expanded', 'false');
+  }
+}
+
+function toggleConfigMenu(force) {
+  const open = force !== undefined ? force : els.configMenu.hidden;
+  if (open) {
+    toggleRecentsMenu(false);
+    els.configMenu.hidden = false;
+    els.configWrap.classList.add('is-open');
+    els.configBtn.setAttribute('aria-expanded', 'true');
+  } else {
+    els.configMenu.hidden = true;
+    els.configWrap.classList.remove('is-open');
+    els.configBtn.setAttribute('aria-expanded', 'false');
   }
 }
 
@@ -1406,10 +1453,17 @@ els.results.addEventListener('click', e => {
 document.addEventListener('keydown', e => {
   // Escape closes the side preview first; on a second press, collapses the card.
   if (e.key === 'Escape') {
+    if (!els.configMenu.hidden)  { toggleConfigMenu(false); return; }
     if (!els.recentsMenu.hidden) { toggleRecentsMenu(false); return; }
     if (state.previewing) closePreview();
     else if (state.openId) closeCard();
   }
+});
+
+/* Configuració button + dropdown */
+els.configBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  toggleConfigMenu();
 });
 
 /* Recents button + dropdown */
@@ -1427,10 +1481,13 @@ els.recentsMenu.addEventListener('click', e => {
   const card = document.querySelector(`.card[data-id="${CSS.escape(id)}"]`);
   if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
 });
-// Click outside closes the dropdown.
+// Click outside closes the dropdowns.
 document.addEventListener('click', e => {
   if (!els.recentsMenu.hidden && !els.recentsWrap.contains(e.target)) {
     toggleRecentsMenu(false);
+  }
+  if (!els.configMenu.hidden && !els.configWrap.contains(e.target)) {
+    toggleConfigMenu(false);
   }
 });
 
