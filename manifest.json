@@ -557,6 +557,456 @@
         "interes-simple-compost"
       ],
       "type": "exercici"
+    },
+    {
+      "title": "Volum i cares d'un cub",
+      "id": "nrich-painted-cube",
+      "drive_id": "1gtApyRpeZA8OxlDDSpbVYyTYiryay-tR",
+      "format": "pdf",
+      "origin": "nrich",
+      "courses": [
+        "3ESO",
+        "4ESO"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "volums-arees-cossos",
+        "potencies"
+      ],
+      "type": "exercici",
+      "year": 2026,
+      "notes": "NRICH: Painted Cube"
+    },
+    {
+      "title": "Equacions amb símbols",
+      "id": "nrich-whats-it-worth",
+      "drive_id": "1Ud5r_rXt-PVjBlguqIRRHXMKlFwDPQ_W",
+      "format": "pdf",
+      "origin": "nrich",
+      "courses": [
+        "1ESO",
+        "2ESO",
+        "3ESO"
+      ],
+      "math_sense": "algebraic",
+      "activities": [
+        "sistemes-equacions",
+        "llenguatge-algebraic"
+      ],
+      "type": "exercici",
+      "year": 2026,
+      "notes": "NRICH: What's it Worth?"
+    },
+    {
+      "title": "Múltiples i divisors (joc en parella)",
+      "id": "nrich-fm-game",
+      "drive_id": "1aAuFwfuCkLBmVVPC4dQ766-WAu50FgiJ",
+      "format": "pdf",
+      "origin": "nrich",
+      "courses": [
+        "1ESO",
+        "2ESO",
+        "3ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "divisibilitat"
+      ],
+      "type": "exercici",
+      "year": 2026,
+      "notes": "NRICH: Factors and Multiples Game (parella)"
+    },
+    {
+      "title": "Múltiples i divisors (joc individual)",
+      "id": "nrich-fm-game-solo",
+      "drive_id": "1MOte5Q_l3Vn57wgaqs6HkYFWM05w1x8B",
+      "format": "pdf",
+      "origin": "nrich",
+      "courses": [
+        "1ESO",
+        "2ESO",
+        "3ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "divisibilitat"
+      ],
+      "type": "exercici",
+      "year": 2026,
+      "notes": "NRICH: Factors and Multiples Game (individual)"
+    },
+    {
+      "title": "Trencaclosques de múltiples i divisors",
+      "id": "nrich-fm-puzzle",
+      "drive_id": "1cNRmVxBYGCuIRVP8CpyXCn4LpBma7JxM",
+      "format": "pdf",
+      "origin": "nrich",
+      "courses": [
+        "1ESO",
+        "2ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "divisibilitat"
+      ],
+      "type": "exercici",
+      "year": 2026,
+      "notes": "NRICH: Factors and Multiples Puzzle"
+    },
+    {
+      "title": "Sumes de nombres consecutius",
+      "id": "nrich-summing-consecutive",
+      "drive_id": "16eY77twdyn10gusMtKx4_-LPLv5QfGSS",
+      "format": "pdf",
+      "origin": "nrich",
+      "courses": [
+        "1ESO",
+        "2ESO"
+      ],
+      "math_sense": "algebraic",
+      "activities": [
+        "llenguatge-algebraic",
+        "successions"
+      ],
+      "type": "exercici",
+      "year": 2026,
+      "notes": "NRICH: Summing Consecutive Numbers"
+    },
+    {
+      "title": "Àrea de quadrats inclinats i teorema de Pitàgores",
+      "id": "nrich-tilted-squares",
+      "drive_id": "1OAjVUUgBP3-SbIULr8wCLDz-oRuM6hRP",
+      "format": "pdf",
+      "origin": "nrich",
+      "courses": [
+        "1ESO",
+        "2ESO",
+        "3ESO"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "arees-perimetres",
+        "pitagores"
+      ],
+      "type": "exercici",
+      "year": 2026,
+      "notes": "NRICH: Tilted Squares"
+    },
+    {
+      "title": "Vèrtexs en quadrats",
+      "id": "nrich-opposite-vertices-sq",
+      "drive_id": "1Unw53RC8cEQGsCmIS_uUl43aWNn1bmox",
+      "format": "pdf",
+      "origin": "nrich",
+      "courses": [
+        "1ESO",
+        "2ESO"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "geometria-pla-cartesia",
+        "figures-planes"
+      ],
+      "type": "exercici",
+      "year": 2026,
+      "notes": "NRICH: Opposite Vertices - Squares"
+    },
+    {
+      "title": "Vèrtexs en rombes",
+      "id": "nrich-opposite-vertices-rh",
+      "drive_id": "1izWgi48MXzW2j1UQzziggjwm8nzSf9ql",
+      "format": "pdf",
+      "origin": "nrich",
+      "courses": [
+        "1ESO",
+        "2ESO"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "geometria-pla-cartesia",
+        "figures-planes"
+      ],
+      "type": "exercici",
+      "year": 2026,
+      "notes": "NRICH: Opposite Vertices - Rhombuses"
+    },
+    {
+      "title": "Parells, senars, probabilitat i joc just",
+      "id": "nrich-odds-and-evens",
+      "drive_id": "14LjHbemOJcOstt1Cft86iStYVLir2yfa",
+      "format": "pdf",
+      "origin": "nrich",
+      "courses": [
+        "1ESO",
+        "2ESO"
+      ],
+      "math_sense": "estocastic",
+      "activities": [
+        "probabilitat-basica"
+      ],
+      "type": "exercici",
+      "year": 2026,
+      "notes": "NRICH: Odds and Evens"
+    },
+    {
+      "title": "Endevinar edat i equacions de 2n grau",
+      "id": "nrich-how-old-am-i",
+      "drive_id": "1Z5uiAZlqZIpEFbM7blJoY33Cv0102Fhr",
+      "format": "pdf",
+      "origin": "nrich",
+      "courses": [
+        "3ESO",
+        "4ESO"
+      ],
+      "math_sense": "algebraic",
+      "activities": [
+        "equacions-segon-grau"
+      ],
+      "type": "exercici",
+      "year": 2026,
+      "notes": "NRICH: How Old Am I?"
+    },
+    {
+      "title": "Patrons de llumins",
+      "id": "nrich-seven-squares",
+      "drive_id": "17bX-ZZXFzNhfhHbkgdA65F9uzRIAtcL4",
+      "format": "pdf",
+      "origin": "nrich",
+      "courses": [
+        "1ESO",
+        "2ESO"
+      ],
+      "math_sense": "algebraic",
+      "activities": [
+        "successions",
+        "llenguatge-algebraic"
+      ],
+      "type": "exercici",
+      "year": 2026,
+      "notes": "NRICH: Seven Squares"
+    },
+    {
+      "title": "Patrons de llumins (fórmula general)",
+      "id": "nrich-seven-squares-more",
+      "drive_id": "1TSHAw3SCqbB42zk2cYZXS0sIh-JRRq0b",
+      "format": "pdf",
+      "origin": "nrich",
+      "courses": [
+        "1ESO",
+        "2ESO"
+      ],
+      "math_sense": "algebraic",
+      "activities": [
+        "successions",
+        "llenguatge-algebraic"
+      ],
+      "type": "exercici",
+      "year": 2026,
+      "notes": "NRICH: Seven Squares - More Patterns"
+    },
+    {
+      "title": "Successions hexagonals",
+      "id": "nrich-steel-cables",
+      "drive_id": "14ZkHBE9vZnvS2VgWhGSjUcWnZYGcfk-R",
+      "format": "pdf",
+      "origin": "nrich",
+      "courses": [
+        "3ESO",
+        "4ESO"
+      ],
+      "math_sense": "algebraic",
+      "activities": [
+        "successions",
+        "llenguatge-algebraic"
+      ],
+      "type": "exercici",
+      "year": 2026,
+      "notes": "NRICH: Steel Cables"
+    },
+    {
+      "title": "Simetria i recompte",
+      "id": "nrich-attractive-tablecloths",
+      "drive_id": "1EzbIYF-tlPcuwnnghjCDnijckZ71ZUOA",
+      "format": "pdf",
+      "origin": "nrich",
+      "courses": [
+        "3ESO",
+        "4ESO"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "moviments-pla",
+        "successions"
+      ],
+      "type": "exercici",
+      "year": 2026,
+      "notes": "NRICH: Attractive Tablecloths"
+    },
+    {
+      "title": "Simetria i recompte (plantilles)",
+      "id": "nrich-attractive-tablecloths-tpl",
+      "drive_id": "1MZFDt60cY8OfGEmOxclg3Mf8PyI1GoWu",
+      "format": "pdf",
+      "origin": "nrich",
+      "courses": [
+        "3ESO",
+        "4ESO"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "moviments-pla"
+      ],
+      "type": "exercici",
+      "year": 2026,
+      "notes": "NRICH: Attractive Tablecloths - templates"
+    },
+    {
+      "title": "Perímetre amb llenguatge algebraic",
+      "id": "nrich-perimeter-expressions",
+      "drive_id": "13x3BJNg_kO2sgrmZsns3wTKg5axo3wvh",
+      "format": "pdf",
+      "origin": "nrich",
+      "courses": [
+        "1ESO",
+        "2ESO"
+      ],
+      "math_sense": "algebraic",
+      "activities": [
+        "llenguatge-algebraic",
+        "arees-perimetres"
+      ],
+      "type": "exercici",
+      "year": 2026,
+      "notes": "NRICH: Perimeter Expressions"
+    },
+    {
+      "title": "Vectors i quadrats",
+      "id": "nrich-vector-journeys",
+      "drive_id": "1oMH5K5U3xtnxS7M8eag7hzAQMLLpn9V8",
+      "format": "pdf",
+      "origin": "nrich",
+      "courses": [
+        "4ESO",
+        "1Bat"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "geometria-pla-cartesia"
+      ],
+      "type": "exercici",
+      "year": 2026,
+      "notes": "NRICH: Vector Journeys"
+    },
+    {
+      "title": "Operacions amb daus",
+      "id": "nrich-dicey-operations",
+      "drive_id": "1G0rzUXjkFa0L8mUpDgBWQIDi8kTWI1d2",
+      "format": "pdf",
+      "origin": "nrich",
+      "courses": [
+        "1ESO",
+        "2ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "nombres-naturals"
+      ],
+      "type": "exercici",
+      "year": 2026,
+      "notes": "NRICH: Dicey Operations"
+    },
+    {
+      "title": "Operacions amb daus (full de joc)",
+      "id": "nrich-dicey-operations-score",
+      "drive_id": "1ENNGJYe6cGVEr5LS0hV2KV5aUoQNcVZw",
+      "format": "pdf",
+      "origin": "nrich",
+      "courses": [
+        "1ESO",
+        "2ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "nombres-naturals"
+      ],
+      "type": "exercici",
+      "year": 2026,
+      "notes": "NRICH: Dicey Operations - scoring sheet"
+    },
+    {
+      "title": "Àrea de triangles isòsceles",
+      "id": "nrich-isosceles-triangles",
+      "drive_id": "1oV9GFpVReKi8-58OzKoPt-t4XE-b3v4l",
+      "format": "pdf",
+      "origin": "nrich",
+      "courses": [
+        "1ESO",
+        "2ESO"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "arees-perimetres",
+        "geometria-pla-cartesia"
+      ],
+      "type": "exercici",
+      "year": 2026,
+      "notes": "NRICH: Isosceles Triangles"
+    },
+    {
+      "title": "Mitjana, mediana i moda",
+      "id": "nrich-m-m-and-m",
+      "drive_id": "1Yo9Pzh2D6TPbE8URJ4pqu6HsIJ5O7XEF",
+      "format": "pdf",
+      "origin": "nrich",
+      "courses": [
+        "1ESO",
+        "2ESO"
+      ],
+      "math_sense": "estocastic",
+      "activities": [
+        "mesures-centralitzacio"
+      ],
+      "type": "exercici",
+      "year": 2026,
+      "notes": "NRICH: M, M and M"
+    },
+    {
+      "title": "Producte de nombres consecutius",
+      "id": "nrich-pair-products",
+      "drive_id": "1TRGao2CJOazXLAVbNfReUweDtzuCRaLZ",
+      "format": "pdf",
+      "origin": "nrich",
+      "courses": [
+        "3ESO",
+        "4ESO"
+      ],
+      "math_sense": "algebraic",
+      "activities": [
+        "identitats-notables",
+        "factoritzacio"
+      ],
+      "type": "exercici",
+      "year": 2026,
+      "notes": "NRICH: Pair Products"
+    },
+    {
+      "title": "Taules de multiplicar desplaçades",
+      "id": "nrich-shifting-times-tables",
+      "drive_id": "1WJmRilSVmIiUcDgIxDwo7vmuLXZVf6-l",
+      "format": "pdf",
+      "origin": "nrich",
+      "courses": [
+        "1ESO",
+        "2ESO"
+      ],
+      "math_sense": "algebraic",
+      "activities": [
+        "successions",
+        "divisibilitat"
+      ],
+      "type": "exercici",
+      "year": 2026,
+      "notes": "NRICH: Shifting Times Tables"
     }
   ],
   "basic": {
