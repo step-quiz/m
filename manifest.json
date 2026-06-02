@@ -1031,7 +1031,7 @@
       "id": "prova-cb-2eso-2024",
       "format": "web",
       "origin": "proves-cb",
-      "url": "../cb/test.html?p=1&nivell=2eso&any=2024",
+      "url": "https://cb.step-quiz.net/test.html?p=1&nivell=2eso&any=2024",
       "courses": [
         "2ESO"
       ],
@@ -1043,7 +1043,7 @@
       "id": "prova-cb-2eso-2025",
       "format": "web",
       "origin": "proves-cb",
-      "url": "../cb/test.html?p=1&nivell=2eso&any=2025",
+      "url": "https://cb.step-quiz.net/test.html?p=1&nivell=2eso&any=2025",
       "courses": [
         "2ESO"
       ],
@@ -1055,7 +1055,7 @@
       "id": "prova-cb-4eso-2022",
       "format": "web",
       "origin": "proves-cb",
-      "url": "../cb/test.html?p=1&nivell=4eso&any=2022",
+      "url": "https://cb.step-quiz.net/test.html?p=1&nivell=4eso&any=2022",
       "courses": [
         "4ESO"
       ],
@@ -1067,7 +1067,7 @@
       "id": "prova-cb-4eso-2023",
       "format": "web",
       "origin": "proves-cb",
-      "url": "../cb/test.html?p=1&nivell=4eso&any=2023",
+      "url": "https://cb.step-quiz.net/test.html?p=1&nivell=4eso&any=2023",
       "courses": [
         "4ESO"
       ],
@@ -1079,7 +1079,7 @@
       "id": "prova-cb-4eso-2024",
       "format": "web",
       "origin": "proves-cb",
-      "url": "../cb/test.html?p=1&nivell=4eso&any=2024",
+      "url": "https://cb.step-quiz.net/test.html?p=1&nivell=4eso&any=2024",
       "courses": [
         "4ESO"
       ],
@@ -1091,7 +1091,7 @@
       "id": "prova-cb-4eso-2025",
       "format": "web",
       "origin": "proves-cb",
-      "url": "../cb/test.html?p=1&nivell=4eso&any=2025",
+      "url": "https://cb.step-quiz.net/test.html?p=1&nivell=4eso&any=2025",
       "courses": [
         "4ESO"
       ],

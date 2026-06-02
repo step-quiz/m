@@ -1231,8 +1231,8 @@ function renderResults(filtered) {
             </div>
           </div>
           <div class="card-actions">
-            <button class="btn-act btn-prim act-preview" data-id="${escHtml(f.id)}">Previsualitza</button>
-            <a class="btn-act act-drive" href="${openHref}" target="_blank" rel="noopener">${openLabel}</a>
+            ${isLink ? '' : `<button class="btn-act btn-prim act-preview" data-id="${escHtml(f.id)}">Previsualitza</button>`}
+            <a class="btn-act ${isLink ? 'btn-prim ' : ''}act-drive" href="${openHref}" target="_blank" rel="noopener">${openLabel}</a>
           </div>
         </div>
       </li>`;
@@ -1308,6 +1308,13 @@ function closeCard() {
 }
 
 function openPreview(id) {
+  // Web resources (proves CB, etc.) have no Drive preview — open externally.
+  const wf = state.manifest?.files.find(x => x.id === id);
+  if (wf && wf.url) {
+    pushRecent(id);
+    window.open(wf.url, '_blank', 'noopener');
+    return;
+  }
   const prevId = state.openId;
   state.openId = id;
   state.previewing = true;
