@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eliminar curs — Material de matemàtiques</title>
+<style>
+  :root {
+    --bg:        #f5f5f7;
+    --surface:   #ffffff;
+    --surface-2: #fafafa;
+    --surface-3: #f0f0f3;
+    --text:      #1d1d1f;
+    --text-2:    #6e6e73;
+    --text-3:    #aeaeb2;
+    --accent:    #0071e3;
+    --accent-soft: rgba(0,113,227,.10);
+    --green:     #34c759;
+    --green-soft: rgba(52,199,89,.12);
+    --amber:     #ff9f0a;
+    --red:       #ff3b30;
+    --red-soft:  rgba(255,59,48,.10);
+    --divider:   rgba(0,0,0,.08);
+    --divider-2: rgba(0,0,0,.04);
+    --radius:    14px;
+    --radius-sm: 8px;
+    --radius-xs: 5px;
+    --sh:        0 1px 2px rgba(0,0,0,.04), 0 2px 8px rgba(0,0,0,.05);
+    --sh-md:     0 4px 16px rgba(0,0,0,.07), 0 2px 6px rgba(0,0,0,.04);
+    --sh-lg:     0 16px 48px rgba(0,0,0,.15);
+    --ease:      cubic-bezier(.4,0,.2,1);
+    --mono:      ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    min-height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    font-size: 14px;
+    line-height: 1.45;
+  }
+
+  button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+  input, select, textarea { font: inherit; color: inherit; }
+  a { color: var(--accent); }
+
+  /* ── Topbar ─────────────────────────────────────────────────────── */
+  .topbar {
+    position: sticky; top: 0; z-index: 20;
+    display: flex; align-items: center; gap: 14px;
+    padding: 11px 22px;
+    background: rgba(255,255,255,.92);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid var(--divider);
+  }
+  .topbar h1 { font-size: 15px; font-weight: 700; letter-spacing: -.01em; }
+  .topbar h1 .h-sub { color: var(--text-2); font-weight: 500; margin-left: 6px; }
+  .topbar .spacer { flex: 1; }
+  .topbar a.back { font-size: 12px; color: var(--text-2); text-decoration: none; }
+  .topbar a.back:hover { color: var(--text); }
+
+  /* ── Buttons ────────────────────────────────────────────────────── */
+  .btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 9px 16px;
+    border-radius: 980px;
+    font-size: 13px; font-weight: 600;
+    transition: background .12s, color .12s, box-shadow .12s, opacity .12s;
+  }
+  .btn svg { width: 15px; height: 15px; }
+  .btn-prim  { background: var(--accent); color: #fff; box-shadow: var(--sh); }
+  .btn-prim:hover { background: #0064cc; }
+  .btn-prim:disabled { background: var(--text-3); cursor: default; box-shadow: none; }
+  .btn-ghost { background: var(--surface-3); color: var(--text-2); }
+  .btn-ghost:hover { background: var(--divider); color: var(--text); }
+
+  /* ── Layout ─────────────────────────────────────────────────────── */
+  .container { max-width: 920px; margin: 0 auto; padding: 22px 22px 90px; }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--divider);
+    border-radius: var(--radius);
+    box-shadow: var(--sh);
+    margin-bottom: 16px;
+  }
+  .panel-head {
+    display: flex; align-items: center; gap: 8px;
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--divider-2);
+  }
+  .panel-head h2 { font-size: 13px; font-weight: 700; }
+  .panel-head .step {
+    width: 20px; height: 20px; flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--accent); color: #fff;
+    font-size: 11px; font-weight: 700;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .panel-head .panel-hint { margin-left: auto; font-size: 11px; color: var(--text-3); }
+  .panel-body { padding: 16px; }
+
+  .intro {
+    font-size: 13px; color: var(--text-2); line-height: 1.5;
+    margin-bottom: 16px;
+  }
+  .intro strong { color: var(--text); font-weight: 600; }
+
+  /* ── Drop zone ──────────────────────────────────────────────────── */
+  .drop-zone {
+    border: 1.5px dashed var(--divider);
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    text-align: center;
+    padding: 30px 20px;
+    cursor: pointer;
+    transition: border-color .15s, background .15s;
+  }
+  .drop-zone.dragover { border-color: var(--accent); background: var(--accent-soft); }
+  .drop-zone .dz-icon { width: 40px; height: 40px; color: var(--text-3); margin: 0 auto 10px; }
+  .drop-zone h3 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .drop-zone p { color: var(--text-2); font-size: 12px; margin-bottom: 12px; }
+  .drop-zone input[type=file] { display: none; }
+
+  .filechip {
+    display: inline-flex; align-items: center; gap: 9px;
+    margin-top: 14px;
+    padding: 7px 9px 7px 11px;
+    background: var(--surface-3);
+    border-radius: 980px;
+    font-size: 12.5px;
+  }
+  .filechip .fc-pill {
+    font-family: var(--mono); font-size: 9px; font-weight: 700;
+    padding: 3px 6px; border-radius: 5px;
+    background: rgba(192,57,43,.10); color: #c0392b;
+  }
+  .filechip .fc-name { max-width: 360px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .filechip .fc-x {
+    width: 18px; height: 18px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--surface); color: var(--text-3);
+  }
+  .filechip .fc-x:hover { background: var(--red); color: #fff; }
+  .filechip .fc-x svg { width: 9px; height: 9px; }
+
+  /* ── Detected tokens ────────────────────────────────────────────── */
+  .field-label { font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--text-3); margin-bottom: 8px; }
+
+  .tokens { display: flex; flex-wrap: wrap; gap: 8px; }
+  .token {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 7px 12px;
+    border-radius: 980px;
+    border: 1px solid var(--divider);
+    background: var(--surface);
+    font-size: 13px; font-weight: 600;
+    color: var(--text);
+    cursor: pointer;
+    transition: background .12s, border-color .12s, color .12s, opacity .12s;
+  }
+  .token .tok-mono { font-family: var(--mono); }
+  .token .tok-count {
+    font-size: 10.5px; font-weight: 700;
+    color: var(--text-3);
+    background: var(--surface-3);
+    padding: 1px 6px; border-radius: 980px;
+  }
+  .token.on  { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+  .token.on .tok-count { background: rgba(0,113,227,.16); color: var(--accent); }
+  .token.off { opacity: .5; }
+  .token .tok-check { width: 14px; height: 14px; }
+
+  .empty-detect {
+    font-size: 12.5px; color: var(--text-2);
+    background: var(--surface-2);
+    border: 1px solid var(--divider-2);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+  }
+
+  /* ── Manual add ─────────────────────────────────────────────────── */
+  .manual-row { display: flex; gap: 8px; margin-top: 14px; }
+  .manual-row input[type=text] {
+    flex: 1;
+    padding: 9px 12px;
+    border: 1px solid var(--divider);
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    font-size: 13px;
+  }
+  .manual-row input[type=text]:focus {
+    outline: none; background: var(--surface);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-soft);
+  }
+
+  /* ── Options ────────────────────────────────────────────────────── */
+  .opt-row {
+    display: flex; align-items: center; gap: 10px;
+    margin-top: 14px;
+    font-size: 13px; color: var(--text-2);
+  }
+  .opt-row label { display: inline-flex; align-items: center; gap: 7px; cursor: pointer; }
+  .opt-row input[type=color] {
+    width: 30px; height: 30px; padding: 0;
+    border: 1px solid var(--divider); border-radius: 7px;
+    background: none; cursor: pointer;
+  }
+  .opt-row input[type=color]:disabled { opacity: .4; cursor: default; }
+
+  /* ── Preview ────────────────────────────────────────────────────── */
+  .preview-list { display: flex; flex-direction: column; gap: 14px; }
+  .preview-page {
+    border: 1px solid var(--divider);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: var(--surface-2);
+  }
+  .preview-page .pp-head {
+    font-size: 11px; font-weight: 700; color: var(--text-3);
+    padding: 7px 11px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--divider-2);
+  }
+  .preview-page canvas {
+    display: block; width: 100%; height: auto;
+  }
+
+  /* ── Status / actions ───────────────────────────────────────────── */
+  .actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .status {
+    font-size: 12.5px;
+    padding: 9px 13px;
+    border-radius: var(--radius-sm);
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .status.err { background: var(--red-soft); color: var(--red); }
+  .status.ok  { background: var(--green-soft); color: #1a8a3a; }
+  .status[hidden] { display: none; }
+
+  .note {
+    font-size: 11.5px; color: var(--text-3); line-height: 1.5;
+    margin-top: 12px;
+  }
+  .note code { font-family: var(--mono); background: var(--surface-3); padding: 1px 5px; border-radius: 4px; color: var(--text-2); }
+
+  .hidden { display: none !important; }
+
+  .spin {
+    width: 15px; height: 15px;
+    border: 2px solid rgba(255,255,255,.35);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <h1>Eliminar curs<span class="h-sub">— treu la referència al curs acadèmic d'un PDF</span></h1>
+    <span class="spacer"></span>
+    <a class="back" href="index.html">← Torna al cercador</a>
+  </div>
+
+  <div class="container">
+
+    <p class="intro">
+      Carrega un PDF i aquesta eina en treu una <strong>referència concreta a un curs acadèmic</strong>
+      (per exemple <code style="font-family:var(--mono)">(2025-26)</code>), deixant la resta del document
+      exactament igual. Tot passa al teu navegador: el fitxer no s'envia enlloc.
+    </p>
+
+    <!-- STEP 1: file -->
+    <div class="panel">
+      <div class="panel-head">
+        <span class="step">1</span>
+        <h2>Tria el PDF</h2>
+        <span class="panel-hint">Només PDF</span>
+      </div>
+      <div class="panel-body">
+        <div class="drop-zone" id="drop-zone">
+          <svg class="dz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 3v4a1 1 0 0 0 1 1h4"/>
+            <path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/>
+            <path d="M12 11v6M9.5 13.5 12 11l2.5 2.5"/>
+          </svg>
+          <h3>Arrossega un PDF aquí</h3>
+          <p>o fes clic per triar-lo</p>
+          <span class="btn btn-ghost">Tria un fitxer</span>
+          <input type="file" id="file-input" accept=".pdf,application/pdf">
+        </div>
+        <div id="filechip-slot"></div>
+      </div>
+    </div>
+
+    <!-- STEP 2: what to remove -->
+    <div class="panel hidden" id="panel-detect">
+      <div class="panel-head">
+        <span class="step">2</span>
+        <h2>Què vols treure?</h2>
+        <span class="panel-hint" id="detect-hint"></span>
+      </div>
+      <div class="panel-body">
+        <div class="field-label">Referències de curs detectades</div>
+        <div id="tokens" class="tokens"></div>
+
+        <div class="manual-row">
+          <input type="text" id="manual-input" placeholder="…o escriu un text exacte a treure (p. ex. Curs 2025-2026)" autocomplete="off" spellcheck="false">
+          <button class="btn btn-ghost" id="manual-add">Afegeix</button>
+        </div>
+
+        <div class="opt-row">
+          <label>
+            <input type="checkbox" id="auto-color" checked>
+            Detecta el color de fons automàticament
+          </label>
+          <label style="margin-left:auto;">
+            Color manual
+            <input type="color" id="bg-color" value="#ffffff" disabled>
+          </label>
+        </div>
+
+        <div class="note">
+          La referència es tapa amb un rectangle opac del color del fons, de manera que desapareix en
+          pantalla i en imprimir. La resta del document (text, imatges, posicions) no es toca.
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: preview -->
+    <div class="panel hidden" id="panel-preview">
+      <div class="panel-head">
+        <span class="step">3</span>
+        <h2>Previsualització</h2>
+        <span class="panel-hint">en vermell, el que s'eliminarà</span>
+      </div>
+      <div class="panel-body">
+        <div class="preview-list" id="preview-list"></div>
+      </div>
+    </div>
+
+    <!-- STEP 4: actions -->
+    <div class="panel hidden" id="panel-actions">
+      <div class="panel-body">
+        <div class="actions">
+          <button class="btn btn-prim" id="generate" disabled>
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1v9M4.5 6.5 8 10l3.5-3.5M2.5 13.5h11"/></svg>
+            Genera i descarrega el PDF net
+          </button>
+          <span class="status" id="status" hidden></span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+  <script>
+  /* ═══════════════════════════════════════════════════════════════════
+     Eliminar curs — treu una referència a un curs acadèmic d'un PDF.
+     Estratègia: el text dels PDF de Google Docs va codificat com a glifs
+     (no és cercable als bytes), però pdf.js el recupera a Unicode i ens
+     en dóna la posició. Localitzem la referència i la tapem amb un
+     rectangle del color del fons amb pdf-lib. La resta queda intacta.
+     ═══════════════════════════════════════════════════════════════════ */
+
+  const pdfjsLib = window['pdfjsLib'];
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+  const $ = id => document.getElementById(id);
+  const els = {
+    drop:        $('drop-zone'),
+    file:        $('file-input'),
+    chipSlot:    $('filechip-slot'),
+    panelDetect: $('panel-detect'),
+    panelPreview:$('panel-preview'),
+    panelActions:$('panel-actions'),
+    detectHint:  $('detect-hint'),
+    tokens:      $('tokens'),
+    manualInput: $('manual-input'),
+    manualAdd:   $('manual-add'),
+    autoColor:   $('auto-color'),
+    bgColor:     $('bg-color'),
+    previewList: $('preview-list'),
+    generate:    $('generate'),
+    status:      $('status'),
+  };
+
+  // Patró de curs acadèmic: 2025-26, 2025-2026, 2025/26, amb o sense
+  // parèntesis, i amb guió normal o llarg.
+  const YEAR_RE = /\(?\s?(?:19|20)\d{2}\s?[-–—/]\s?\d{2,4}\s?\)?/g;
+
+  const PREVIEW_SCALE = 2;
+
+  const state = {
+    fileName: '',
+    bytes: null,           // Uint8Array original (intacte)
+    pageHeights: [],       // alçada PDF per pàgina (pt)
+    occurrences: [],       // { pageIndex, text, x, y, w, h, fill:{r,g,b}, source }
+    enabled: new Set(),    // textos (claus) actius
+    renders: new Map(),    // pageIndex -> { canvas, viewport }
+  };
+
+  /* ─── Helpers d'UI ─────────────────────────────────────────────── */
+  function show(el){ el.classList.remove('hidden'); }
+  function hide(el){ el.classList.add('hidden'); }
+  function setStatus(msg, kind){
+    if(!msg){ els.status.hidden = true; return; }
+    els.status.hidden = false;
+    els.status.textContent = msg;
+    els.status.className = 'status' + (kind ? ' ' + kind : '');
+  }
+  function escHtml(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+  function resetUI(){
+    hide(els.panelDetect); hide(els.panelPreview); hide(els.panelActions);
+    els.tokens.innerHTML = '';
+    els.previewList.innerHTML = '';
+    setStatus('');
+    state.occurrences = [];
+    state.enabled = new Set();
+    state.renders = new Map();
+    state.pageHeights = [];
+    els.generate.disabled = true;
+  }
+
+  /* ─── Càrrega del fitxer ───────────────────────────────────────── */
+  els.drop.addEventListener('click', () => els.file.click());
+  els.drop.addEventListener('dragover', e => { e.preventDefault(); els.drop.classList.add('dragover'); });
+  els.drop.addEventListener('dragleave', () => els.drop.classList.remove('dragover'));
+  els.drop.addEventListener('drop', e => {
+    e.preventDefault(); els.drop.classList.remove('dragover');
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+  });
+  els.file.addEventListener('change', e => {
+    if (e.target.files && e.target.files[0]) handleFile(e.target.files[0]);
+  });
+
+  function renderFileChip(){
+    els.chipSlot.innerHTML = `
+      <div class="filechip">
+        <span class="fc-pill">PDF</span>
+        <span class="fc-name">${escHtml(state.fileName)}</span>
+        <button class="fc-x" id="fc-remove" title="Treu el fitxer">
+          <svg viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 1l6 6M7 1l-6 6"/></svg>
+        </button>
+      </div>`;
+    $('fc-remove').onclick = () => { state.bytes = null; state.fileName = ''; els.chipSlot.innerHTML = ''; resetUI(); };
+  }
+
+  async function handleFile(file){
+    if (!/\.pdf$/i.test(file.name) && file.type !== 'application/pdf'){
+      resetUI(); setStatus('Això no sembla un PDF. Tria un fitxer .pdf.', 'err');
+      show(els.panelActions);
+      return;
+    }
+    resetUI();
+    state.fileName = file.name;
+    state.bytes = new Uint8Array(await file.arrayBuffer());
+    renderFileChip();
+    show(els.panelActions);
+    setStatus('Analitzant el document…');
+    try {
+      await analyze();
+      setStatus('');
+    } catch (err){
+      console.error(err);
+      setStatus('No s\'ha pogut llegir el PDF: ' + err.message, 'err');
+    }
+  }
+
+  /* ─── Geometria d'un text item de pdf.js (espai PDF, origen a baix) ─ */
+  function itemBox(it){
+    const t = it.transform;            // [a,b,c,d,e,f]
+    const x = t[4], y = t[5];          // posició (línia base)
+    const h = Math.hypot(t[2], t[3]) || it.height || 10;
+    const w = it.width;
+    return { x, y, w, top: y + h * 0.95, bottom: y - h * 0.30 };
+  }
+
+  /* ─── Cerca de coincidències en una línia reconstruïda ─────────── */
+  function scanLine(text, map, regex){
+    const hits = [];
+    regex.lastIndex = 0;
+    let m;
+    while ((m = regex.exec(text)) !== null){
+      const a = m.index, z = m.index + m[0].length;
+      if (z <= a){ regex.lastIndex++; continue; }
+      const segs = map.slice(a, z);
+      if (!segs.length) continue;
+      const left   = Math.min(...segs.map(g => g.x0));
+      const right  = Math.max(...segs.map(g => g.x1));
+      const top    = Math.max(...segs.map(g => g.top));
+      const bottom = Math.min(...segs.map(g => g.bottom));
+      hits.push({ text: m[0].trim(), x: left, y: bottom, w: right - left, h: top - bottom });
+    }
+    return hits;
+  }
+
+  function buildLines(items){
+    const boxes = items.map(it => ({ it, b: itemBox(it) }));
+    const lines = [];
+    for (const entry of boxes){
+      let line = lines.find(L => Math.abs(L.y - entry.b.y) <= Math.max(2, entry.b.top - entry.b.bottom) * 0.5);
+      if (!line){ line = { y: entry.b.y, parts: [] }; lines.push(line); }
+      line.parts.push(entry);
+    }
+    for (const L of lines) L.parts.sort((p, q) => p.b.x - q.b.x);
+    // Construeix string + mapa de caràcters per línia.
+    return lines.map(L => {
+      let s = ''; const map = [];
+      for (const { it, b } of L.parts){
+        const str = it.str || '';
+        const n = Math.max(1, str.length);
+        const cw = b.w / n;
+        for (let k = 0; k < str.length; k++){
+          s += str[k];
+          map.push({ x0: b.x + cw * k, x1: b.x + cw * (k + 1), top: b.top, bottom: b.bottom });
+        }
+      }
+      return { s, map };
+    });
+  }
+
+  function literalRegex(phrase){
+    const esc = phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return new RegExp(esc, 'gi');
+  }
+
+  /* ─── Mostreig del color de fons al voltant d'una caixa ────────── */
+  function sampleBg(ctx, viewport, box){
+    const margin = 3;
+    const pts = [];
+    const topY = box.y + box.h + margin;
+    const botY = box.y - margin;
+    for (let i = 0; i <= 4; i++){
+      const xx = box.x + (box.w * i / 4);
+      pts.push([xx, topY]); pts.push([xx, botY]);
+    }
+    pts.push([box.x - margin, box.y + box.h / 2]);
+    pts.push([box.x + box.w + margin, box.y + box.h / 2]);
+    const cols = [];
+    for (const [px, py] of pts){
+      const v = viewport.convertToViewportPoint(px, py);
+      const cx = Math.round(v[0]), cy = Math.round(v[1]);
+      if (cx < 0 || cy < 0 || cx >= ctx.canvas.width || cy >= ctx.canvas.height) continue;
+      const d = ctx.getImageData(cx, cy, 1, 1).data;
+      cols.push([d[0], d[1], d[2]]);
+    }
+    if (!cols.length) return { r: 1, g: 1, b: 1 };
+    const med = ch => { const arr = cols.map(c => c[ch]).sort((a, b) => a - b); return arr[Math.floor(arr.length / 2)]; };
+    return { r: med(0) / 255, g: med(1) / 255, b: med(2) / 255 };
+  }
+
+  /* ─── Anàlisi: detecta referències i prepara previsualització ──── */
+  async function analyze(){
+    const doc = await pdfjsLib.getDocument({ data: state.bytes.slice() }).promise;
+    state.pageHeights = [];
+    state.occurrences = [];
+
+    // 1) Recull coincidències (només text) per saber quines pàgines pintar.
+    const perPage = [];
+    for (let p = 1; p <= doc.numPages; p++){
+      const page = await doc.getPage(p);
+      const vp1 = page.getViewport({ scale: 1 });
+      state.pageHeights[p - 1] = vp1.height;
+      const tc = await page.getTextContent();
+      const items = tc.items.filter(it => it.str && it.str.length);
+      const lines = buildLines(items);
+      const hits = [];
+      for (const { s, map } of lines){
+        for (const h of scanLine(s, map, YEAR_RE)) hits.push(h);
+      }
+      perPage.push({ pageNum: p, hits });
+    }
+
+    const pagesWithHits = perPage.filter(pp => pp.hits.length);
+
+    if (!pagesWithHits.length){
+      els.detectHint.textContent = 'cap detectada';
+      els.tokens.innerHTML = `<div class="empty-detect">
+        No s'ha detectat cap referència de curs automàticament. Pots escriure el text exacte a treure a sota.
+      </div>`;
+      show(els.panelDetect);
+      renderActionsState();
+      return;
+    }
+
+    // 2) Renderitza les pàgines amb coincidències (mostreig + previsualització).
+    for (const pp of pagesWithHits){
+      const page = await doc.getPage(pp.pageNum);
+      const viewport = page.getViewport({ scale: PREVIEW_SCALE });
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.ceil(viewport.width);
+      canvas.height = Math.ceil(viewport.height);
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
+      await page.render({ canvasContext: ctx, viewport }).promise;
+      state.renders.set(pp.pageNum - 1, { canvas, viewport });
+
+      for (const h of pp.hits){
+        const fill = sampleBg(ctx, viewport, h);
+        state.occurrences.push({ pageIndex: pp.pageNum - 1, ...h, fill, source: 'auto' });
+      }
+    }
+
+    // Selecciona per defecte tots els textos detectats.
+    state.enabled = new Set(state.occurrences.map(o => o.text));
+
+    els.detectHint.textContent = state.occurrences.length + ' coincidènci' + (state.occurrences.length === 1 ? 'a' : 'es');
+    renderTokens();
+    show(els.panelDetect);
+    redrawPreview();
+    show(els.panelPreview);
+    renderActionsState();
+  }
+
+  /* ─── Tokens (agrupats per text) ───────────────────────────────── */
+  function renderTokens(){
+    const groups = new Map();
+    for (const o of state.occurrences){
+      groups.set(o.text, (groups.get(o.text) || 0) + 1);
+    }
+    if (!groups.size){
+      els.tokens.innerHTML = `<div class="empty-detect">
+        Cap referència seleccionada. Escriu el text exacte a treure a sota.
+      </div>`;
+      return;
+    }
+    els.tokens.innerHTML = [...groups.entries()].map(([text, count]) => {
+      const on = state.enabled.has(text);
+      return `<button class="token ${on ? 'on' : 'off'}" data-text="${escHtml(text)}">
+        ${on
+          ? '<svg class="tok-check" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5 6 10.5 11 4"/></svg>'
+          : '<svg class="tok-check" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="7" cy="7" r="5"/></svg>'}
+        <span class="tok-mono">${escHtml(text)}</span>
+        <span class="tok-count">${count}</span>
+      </button>`;
+    }).join('');
+  }
+
+  els.tokens.addEventListener('click', e => {
+    const btn = e.target.closest('.token');
+    if (!btn) return;
+    const text = btn.dataset.text;
+    if (state.enabled.has(text)) state.enabled.delete(text);
+    else state.enabled.add(text);
+    renderTokens();
+    redrawPreview();
+    renderActionsState();
+  });
+
+  /* ─── Afegir text manual ───────────────────────────────────────── */
+  els.manualAdd.addEventListener('click', addManual);
+  els.manualInput.addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); addManual(); } });
+
+  async function addManual(){
+    const phrase = els.manualInput.value.trim();
+    if (!phrase) return;
+    if (!state.bytes){ setStatus('Primer carrega un PDF.', 'err'); return; }
+    setStatus('Cercant «' + phrase + '»…');
+    try {
+      const found = await findPhrase(phrase);
+      if (!found){
+        setStatus('No s\'ha trobat «' + phrase + '» al document.', 'err');
+        return;
+      }
+      els.manualInput.value = '';
+      setStatus('');
+      renderTokens();
+      redrawPreview();
+      show(els.panelPreview);
+      renderActionsState();
+    } catch (err){
+      console.error(err);
+      setStatus('Error cercant el text: ' + err.message, 'err');
+    }
+  }
+
+  async function findPhrase(phrase){
+    const doc = await pdfjsLib.getDocument({ data: state.bytes.slice() }).promise;
+    const re = literalRegex(phrase);
+    let any = false;
+    for (let p = 1; p <= doc.numPages; p++){
+      const page = await doc.getPage(p);
+      const tc = await page.getTextContent();
+      const items = tc.items.filter(it => it.str && it.str.length);
+      const lines = buildLines(items);
+      const hits = [];
+      for (const { s, map } of lines){
+        for (const h of scanLine(s, map, re)) hits.push(h);
+      }
+      if (!hits.length) continue;
+      any = true;
+      // Renderitza la pàgina si encara no ho està (per mostreig + preview).
+      let render = state.renders.get(p - 1);
+      if (!render){
+        const viewport = page.getViewport({ scale: PREVIEW_SCALE });
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.ceil(viewport.width);
+        canvas.height = Math.ceil(viewport.height);
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        await page.render({ canvasContext: ctx, viewport }).promise;
+        render = { canvas, viewport };
+        state.renders.set(p - 1, render);
+        if (!state.pageHeights[p - 1]) state.pageHeights[p - 1] = page.getViewport({ scale: 1 }).height;
+      }
+      const ctx = render.canvas.getContext('2d', { willReadFrequently: true });
+      for (const h of hits){
+        const fill = sampleBg(ctx, render.viewport, h);
+        state.occurrences.push({ pageIndex: p - 1, ...h, text: phrase, fill, source: 'manual' });
+        state.enabled.add(phrase);
+      }
+    }
+    return any;
+  }
+
+  /* ─── Previsualització amb ressaltat ───────────────────────────── */
+  function redrawPreview(){
+    const pageIdxs = [...state.renders.keys()].sort((a, b) => a - b);
+    els.previewList.innerHTML = '';
+    for (const idx of pageIdxs){
+      const { canvas, viewport } = state.renders.get(idx);
+      const wrap = document.createElement('div');
+      wrap.className = 'preview-page';
+      const head = document.createElement('div');
+      head.className = 'pp-head';
+      head.textContent = 'Pàgina ' + (idx + 1);
+      // Còpia del canvas perquè el dibuix del ressaltat no toqui l'original.
+      const view = document.createElement('canvas');
+      view.width = canvas.width; view.height = canvas.height;
+      const vctx = view.getContext('2d');
+      vctx.drawImage(canvas, 0, 0);
+      // Dibuixa rectangles sobre les coincidències actives d'aquesta pàgina.
+      for (const o of state.occurrences){
+        if (o.pageIndex !== idx) continue;
+        if (!state.enabled.has(o.text)) continue;
+        const tl = viewport.convertToViewportPoint(o.x, o.y + o.h);
+        const w = o.w * viewport.scale, h = o.h * viewport.scale;
+        vctx.fillStyle = 'rgba(255,59,48,.28)';
+        vctx.fillRect(tl[0], tl[1], w, h);
+        vctx.strokeStyle = 'rgba(255,59,48,.9)';
+        vctx.lineWidth = 1.5;
+        vctx.strokeRect(tl[0], tl[1], w, h);
+      }
+      wrap.appendChild(head);
+      wrap.appendChild(view);
+      els.previewList.appendChild(wrap);
+    }
+  }
+
+  function renderActionsState(){
+    const n = state.occurrences.filter(o => state.enabled.has(o.text)).length;
+    els.generate.disabled = n === 0 || !state.bytes;
+  }
+
+  /* ─── Opció de color manual ────────────────────────────────────── */
+  els.autoColor.addEventListener('change', () => {
+    els.bgColor.disabled = els.autoColor.checked;
+  });
+
+  function hexToRgb01(hex){
+    const m = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(hex);
+    if (!m) return { r: 1, g: 1, b: 1 };
+    return { r: parseInt(m[1], 16) / 255, g: parseInt(m[2], 16) / 255, b: parseInt(m[3], 16) / 255 };
+  }
+
+  /* ─── Generació del PDF net ────────────────────────────────────── */
+  els.generate.addEventListener('click', generate);
+
+  async function generate(){
+    const active = state.occurrences.filter(o => state.enabled.has(o.text));
+    if (!active.length || !state.bytes) return;
+
+    els.generate.disabled = true;
+    const orig = els.generate.innerHTML;
+    els.generate.innerHTML = '<span class="spin"></span> Generant…';
+    setStatus('');
+
+    try {
+      const { PDFDocument, rgb } = window.PDFLib;
+      const pdfDoc = await PDFDocument.load(state.bytes.slice());
+      const pages = pdfDoc.getPages();
+      const useAuto = els.autoColor.checked;
+      const manualColor = hexToRgb01(els.bgColor.value);
+      const pad = 1.2;
+
+      for (const o of active){
+        const page = pages[o.pageIndex];
+        if (!page) continue;
+        const c = useAuto ? o.fill : manualColor;
+        page.drawRectangle({
+          x: o.x - pad,
+          y: o.y - pad,
+          width: o.w + pad * 2,
+          height: o.h + pad * 2,
+          color: rgb(c.r, c.g, c.b),
+        });
+      }
+
+      const out = await pdfDoc.save();
+      const base = state.fileName.replace(/\.pdf$/i, '');
+      download(out, base + ' (sense curs).pdf');
+      setStatus('Fet! S\'ha descarregat el PDF amb ' + active.length + ' referènci' + (active.length === 1 ? 'a treta' : 'es tretes') + '.', 'ok');
+    } catch (err){
+      console.error(err);
+      setStatus('No s\'ha pogut generar el PDF: ' + err.message, 'err');
+    } finally {
+      els.generate.innerHTML = orig;
+      renderActionsState();
+    }
+  }
+
+  function download(bytes, name){
+    const blob = new Blob([bytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = name;
+    document.body.appendChild(a); a.click();
+    setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 1500);
+  }
+  </script>
+</body>
+</html>
