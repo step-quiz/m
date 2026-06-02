@@ -274,7 +274,6 @@
     "teoria": "Teoria",
     "examen-estructura": "Estructura d'examen",
     "examen-correccio": "Correcció d'examen",
-    "nombre-pi": "Ús del nombre Pi",
     "circumferencia-cercle": "Circumferència i/o cercle"
   },
   "files": [
@@ -284,6 +283,14 @@
       "drive_id": "1-SkPJcxjULavYU8wayt_uri4hkMary6476BI-EZ_aFI",
       "format": "doc",
       "origin": "miquel-tarradell",
+      "courses": [
+        "ESO",
+        "Bat"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "geometria-pla-cartesia"
+      ],
       "year": 2026,
       "notes": "Eixos de coordenades"
     },
@@ -537,7 +544,12 @@
       "format": "pdf",
       "origin": "fem-matematiques",
       "courses": [
-        "ESO"
+        "ESO",
+        "Bat"
+      ],
+      "math_sense": "estocastic",
+      "activities": [
+        "combinatoria"
       ],
       "type": "dossier"
     },

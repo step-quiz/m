@@ -422,6 +422,56 @@
     from { opacity: 0; transform: translate(-50%, 8px); }
     to   { opacity: 1; transform: translate(-50%, 0); }
   }
+
+  /* ── Validation panel ───────────────────────────────────────────── */
+  .v-status {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 12px; font-weight: 600;
+  }
+  .v-dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+  .v-status.ok   { color: var(--green); } .v-status.ok   .v-dot { background: var(--green); }
+  .v-status.warn { color: var(--amber); } .v-status.warn .v-dot { background: var(--amber); }
+  .v-status.err  { color: var(--red);   } .v-status.err  .v-dot { background: var(--red);   }
+
+  .v-section + .v-section { margin-top: 16px; }
+  .v-section-title {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .04em; margin-bottom: 8px;
+  }
+  .v-section-title.err  { color: var(--red);   }
+  .v-section-title.warn { color: var(--amber); }
+
+  .v-group {
+    border: 1px solid var(--divider); border-radius: var(--radius-sm);
+    overflow: hidden; margin-bottom: 8px; background: var(--surface-2);
+  }
+  .v-group-head {
+    display: flex; align-items: center; gap: 8px;
+    width: 100%; padding: 9px 12px; text-align: left; cursor: pointer;
+    transition: background .12s;
+  }
+  .v-group-head:hover { background: var(--surface-3); }
+  .v-group-title { font-size: 13px; font-weight: 600; }
+  .v-group-id    { font-family: var(--mono); font-size: 11px; color: var(--text-3); }
+  .v-group-count { margin-left: auto; font-size: 11px; font-weight: 600; color: var(--text-2); }
+
+  .v-issues { padding: 2px 12px 9px; }
+  .v-issue  { display: flex; align-items: baseline; gap: 8px; font-size: 12px; color: var(--text-2); padding: 2px 0; }
+  .v-issue .v-field { font-family: var(--mono); font-size: 11px; color: var(--text-3); min-width: 76px; flex: none; }
+  .v-issue.err  .v-field { color: var(--red);   }
+  .v-issue.warn .v-field { color: var(--amber); }
+
+  .v-ok-msg { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-2); }
+
+  /* Row badges in the file table */
+  .ft-badges { display: inline-flex; gap: 5px; }
+  .ft-badge {
+    display: inline-flex; align-items: center; gap: 3px;
+    font-size: 10px; font-weight: 700; line-height: 1;
+    padding: 3px 6px; border-radius: 980px; vertical-align: middle;
+  }
+  .ft-badge.err  { background: rgba(255,59,48,.12);  color: var(--red); }
+  .ft-badge.warn { background: rgba(255,159,10,.16); color: #9a6300;     }
 </style>
 </head>
 <body>
@@ -567,6 +617,17 @@ function loadFromFile(file) {
 
 function downloadManifest() {
   if (!state.manifest) return;
+  // Block on structural errors (duplicate IDs / values outside the vocabulary —
+  // those break the search filters). Warnings (incomplete entries) don't block.
+  const v = validateManifest();
+  if (v.errors.length) {
+    const ok = confirm(
+      `El manifest té ${v.errors.length} error${v.errors.length === 1 ? '' : 's'} `
+      + `que poden trencar els filtres del cercador (IDs duplicats o valors fora del vocabulari).\n\n`
+      + `Vols descarregar-lo igualment?`
+    );
+    if (!ok) return;
+  }
   // Stamp generated date
   state.manifest.generated = new Date().toISOString().slice(0, 10);
   const text = JSON.stringify(state.manifest, null, 2);
@@ -582,6 +643,162 @@ function downloadManifest() {
   state.dirty = false;
   $('dirty-flag').hidden = true;
   toast('manifest.json descarregat');
+}
+
+/* ─── VALIDATION ────────────────────────────────────────────────── */
+/* Scans every file against the vocabulary and the required-field rules.
+   ERRORS break the search/filters: a duplicate ID, or a tagged value that is
+   NOT in vocabulary[...] (that file silently disappears from its facet — the
+   typo case). WARNINGS are incomplete-but-usable entries with no course,
+   sense, activity or type: exactly the "Eixos" / "Joc de fitxes" situation. */
+
+// field on the file · key in vocabulary · is it a list? · label · required?
+const VALIDATION_FIELDS = [
+  { field: 'format',     vkey: 'format',     multi: false, label: 'Format',    required: true  },
+  { field: 'origin',     vkey: 'origin',     multi: false, label: 'Origen',    required: false },
+  { field: 'math_sense', vkey: 'math_sense', multi: false, label: 'Sentit',    required: false },
+  { field: 'type',       vkey: 'type',       multi: false, label: 'Tipus',     required: false },
+  { field: 'courses',    vkey: 'course',     multi: true,  label: 'Curs',      required: false },
+  { field: 'activities', vkey: 'activity',   multi: true,  label: 'Activitat', required: false },
+];
+// Fields whose absence is only a warning (entry still usable, just less findable).
+const COMPLETENESS_WARN = [
+  { field: 'courses',    msg: 'Sense curs' },
+  { field: 'math_sense', msg: 'Sense sentit matemàtic' },
+  { field: 'activities', msg: 'Sense activitat' },
+  { field: 'type',       msg: 'Sense tipus' },
+];
+
+function validateManifest() {
+  const empty = { errors: [], warnings: [], all: [], byId: new Map() };
+  const m = state.manifest;
+  if (!m) return empty;
+  const vocab = m.vocabulary || {};
+  const inVocab = (vkey, val) => Array.isArray(vocab[vkey]) && vocab[vkey].includes(val);
+
+  // Count IDs across the whole list so duplicates are caught even on import.
+  const idCount = new Map();
+  for (const f of m.files) {
+    const id = f.id || '';
+    idCount.set(id, (idCount.get(id) || 0) + 1);
+  }
+
+  const issues = [];   // { id, title, level:'error'|'warn', field, msg }
+  const push = (f, level, field, msg) =>
+    issues.push({ id: f.id || '', title: f.title || '(sense títol)', level, field, msg });
+
+  for (const f of m.files) {
+    // Hard-required identity fields. The modal enforces these, but an imported
+    // or pre-filled manifest can slip past it.
+    if (!f.id)                       push(f, 'error', 'id',       'Sense ID intern');
+    else if (idCount.get(f.id) > 1)  push(f, 'error', 'id',       `ID duplicat: "${f.id}"`);
+    if (!f.title)                    push(f, 'error', 'title',    'Sense títol');
+    if (!f.drive_id)                 push(f, 'error', 'drive_id', 'Sense Drive ID (no es podrà obrir)');
+
+    // Every tagged value must exist in the vocabulary, or its filter misses it.
+    for (const F of VALIDATION_FIELDS) {
+      const raw = f[F.field];
+      if (F.multi) {
+        for (const v of (raw || [])) {
+          if (!inVocab(F.vkey, v)) push(f, 'error', F.field, `${F.label}: "${v}" no és al vocabulari`);
+        }
+      } else if (raw) {
+        if (!inVocab(F.vkey, raw)) push(f, 'error', F.field, `${F.label}: "${raw}" no és al vocabulari`);
+      } else if (F.required) {
+        push(f, 'error', F.field, `Falta el ${F.label.toLowerCase()}`);
+      }
+    }
+
+    // Incomplete-but-usable → warning, so the entry stays findable by every facet.
+    for (const W of COMPLETENESS_WARN) {
+      const raw = f[W.field];
+      const isEmpty = Array.isArray(raw) ? raw.length === 0 : !raw;
+      if (isEmpty) push(f, 'warn', W.field, W.msg);
+    }
+  }
+
+  const byId = new Map();
+  for (const it of issues) {
+    if (!byId.has(it.id)) byId.set(it.id, { error: 0, warn: 0 });
+    byId.get(it.id)[it.level === 'error' ? 'error' : 'warn']++;
+  }
+
+  return {
+    errors:   issues.filter(i => i.level === 'error'),
+    warnings: issues.filter(i => i.level === 'warn'),
+    all:      issues,
+    byId,
+  };
+}
+
+/* Groups a flat issue list by file, preserving first-seen order. */
+function groupIssuesByFile(list) {
+  const map = new Map();
+  for (const it of list) {
+    if (!map.has(it.id)) map.set(it.id, { id: it.id, title: it.title, items: [] });
+    map.get(it.id).items.push(it);
+  }
+  return [...map.values()];
+}
+
+/* The report panel rendered at the top of the editor. Re-runs on every render,
+   so it always reflects the current state. */
+function renderValidationPanel() {
+  const v = validateManifest();
+  const nE = v.errors.length, nW = v.warnings.length;
+
+  let statusClass, statusText;
+  if (nE)      { statusClass = 'err';  statusText = `${nE} error${nE === 1 ? '' : 's'}` + (nW ? ` · ${nW} avís${nW === 1 ? '' : 'os'}` : ''); }
+  else if (nW) { statusClass = 'warn'; statusText = `${nW} avís${nW === 1 ? '' : 'os'}`; }
+  else         { statusClass = 'ok';   statusText = 'Tot correcte'; }
+
+  const open = (nE || nW) ? ' open' : '';   // expand only when there's something to fix
+
+  let body;
+  if (!nE && !nW) {
+    body = `<div class="v-ok-msg">
+      <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg>
+      Cap ID duplicat, cap valor fora del vocabulari, i totes les entrades tenen curs, sentit, activitat i tipus.
+    </div>`;
+  } else {
+    const section = (title, cls, list) => {
+      if (!list.length) return '';
+      return `
+        <div class="v-section">
+          <div class="v-section-title ${cls}">${escHtml(title)} · ${list.length}</div>
+          ${groupIssuesByFile(list).map(g => `
+            <div class="v-group">
+              <button class="v-group-head" data-vissue-id="${attr(g.id)}" title="Obre aquesta entrada">
+                <span class="v-group-title">${escHtml(g.title)}</span>
+                <span class="v-group-id">${escHtml(g.id || '—')}</span>
+                <span class="v-group-count">${g.items.length}</span>
+              </button>
+              <ul class="v-issues">
+                ${g.items.map(it => `
+                  <li class="v-issue ${it.level === 'error' ? 'err' : 'warn'}">
+                    <span class="v-field">${escHtml(it.field)}</span>
+                    <span>${escHtml(it.msg)}</span>
+                  </li>`).join('')}
+              </ul>
+            </div>`).join('')}
+        </div>`;
+    };
+    body = section('Errors — trenquen els filtres', 'err', v.errors)
+         + section('Avisos — entrades incompletes', 'warn', v.warnings);
+  }
+
+  return `
+    <details class="panel vpanel"${open}>
+      <summary>
+        <svg class="caret" viewBox="0 0 10 10" fill="currentColor"><path d="M3 1l4 4-4 4z"/></svg>
+        <h2>Validació</h2>
+        <span class="v-status ${statusClass}"><span class="v-dot"></span>${escHtml(statusText)}</span>
+      </summary>
+      <div class="panel-body">
+        ${body}
+      </div>
+    </details>
+  `;
 }
 
 /* ─── RENDER ─────────────────────────────────────────────────────── */
@@ -622,6 +839,7 @@ function renderDropZone() {
 function renderEditor() {
   const m = state.manifest;
   $('container').innerHTML = `
+    ${renderValidationPanel()}
     <details class="panel" open>
       <summary>
         <svg class="caret" viewBox="0 0 10 10" fill="currentColor"><path d="M3 1l4 4-4 4z"/></svg>
@@ -677,6 +895,15 @@ function renderEditor() {
   $('cfg-folder').addEventListener('input', e => { m.folder_url = e.target.value; setDirty(); });
   $('file-search').addEventListener('input', e => { state.fileSearch = e.target.value; renderFileList(); });
   $('btn-add-file').onclick = () => openModal(null);
+  // Click an issue in the validation panel → jump straight into that entry.
+  document.querySelectorAll('[data-vissue-id]').forEach(btn => {
+    btn.onclick = () => {
+      const id = btn.dataset.vissueId;
+      const f = state.manifest.files.find(x => (x.id || '') === id);
+      if (f) openModal(f);
+      else toast('Aquesta entrada no té ID; edita-la des de la llista', true);
+    };
+  });
   renderFileList();
 }
 
@@ -711,6 +938,15 @@ function renderVocabRow(G) {
 function renderFileList() {
   const m = state.manifest;
   const q = state.fileSearch.trim().toLowerCase();
+  const vById = validateManifest().byId;
+  const badgeHtml = (id) => {
+    const b = vById.get(id || '');
+    if (!b || (!b.error && !b.warn)) return '';
+    let out = ' <span class="ft-badges">';
+    if (b.error) out += `<span class="ft-badge err"  title="${b.error} error${b.error === 1 ? '' : 's'} de validació">▲ ${b.error}</span>`;
+    if (b.warn)  out += `<span class="ft-badge warn" title="${b.warn} avís${b.warn === 1 ? '' : 'os'} de validació">● ${b.warn}</span>`;
+    return out + '</span>';
+  };
   const filtered = m.files.filter(f => {
     if (!q) return true;
     return f.title.toLowerCase().includes(q) || (f.id || '').toLowerCase().includes(q);
@@ -737,7 +973,7 @@ function renderFileList() {
         ${filtered.map(f => `
           <tr data-file-id="${attr(f.id)}">
             <td>
-              <div class="ft-title">${escHtml(f.title || '(sense títol)')}</div>
+              <div class="ft-title">${escHtml(f.title || '(sense títol)')}${badgeHtml(f.id)}</div>
               <div class="ft-id">${escHtml(f.id)}</div>
             </td>
             <td><span class="ft-pill format-${attr(f.format || '')}">${escHtml(label(f.format))}</span></td>
