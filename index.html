@@ -615,8 +615,8 @@
   }
   .hint-bubble--search  { top: 6px;  left: 2px; }
   .hint-bubble--filters { top: 104px; left: 2px; }
-  .hint-bubble--search  .hint-arrow { animation: nudge-up 1.8s var(--ease) infinite; }
-  .hint-bubble--filters .hint-arrow { animation: nudge-left 1.8s var(--ease) infinite; }
+  .hint-bubble--search  .hint-arrow { animation: nudge-up 1s var(--ease) infinite; }
+  .hint-bubble--filters .hint-arrow { animation: nudge-left 1s var(--ease) infinite; }
   @keyframes nudge-up   { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
   @keyframes nudge-left { 0%,100% { transform: translateX(0); } 50% { transform: translateX(-5px); } }
   @media (prefers-reduced-motion: reduce) {
@@ -669,10 +669,6 @@
 
   <aside class="preview-drawer" id="preview-drawer" hidden></aside>
 </main>
-
-<div class="footer-note">
-  © 2026 — Eina interna · <a href="afegir-material.html">Edita el manifest →</a>
-</div>
 
 <nav class="quick-actions" aria-label="Accions ràpides">
   <a href="afegir-material.html">
