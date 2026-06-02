@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Banc d'ítems CB — Material de matemàtiques</title>
+<style>
+  /* ── Design tokens (compartits amb el cercador) ─────────────────── */
+  :root {
+    --bg:        #f5f5f7;
+    --surface:   #ffffff;
+    --surface-2: #fafafa;
+    --surface-3: #f0f0f3;
+    --text:      #1d1d1f;
+    --text-2:    #6e6e73;
+    --text-3:    #aeaeb2;
+    --accent:    #0071e3;
+    --accent-soft: rgba(0,113,227,.10);
+    --green:     #34c759;
+    --green-soft: rgba(52,199,89,.12);
+    --amber:     #ff9f0a;
+    --red:       #ff3b30;
+    --divider:   rgba(0,0,0,.08);
+    --divider-2: rgba(0,0,0,.04);
+    --radius:    14px;
+    --radius-sm: 8px;
+    --radius-xs: 5px;
+    --sh:        0 1px 2px rgba(0,0,0,.04), 0 2px 8px rgba(0,0,0,.05);
+    --sh-md:     0 4px 16px rgba(0,0,0,.07), 0 2px 6px rgba(0,0,0,.04);
+    --sh-lg:     0 16px 48px rgba(0,0,0,.15);
+    --ease:      cubic-bezier(.4,0,.2,1);
+    --mono:      ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    min-height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg); color: var(--text);
+    -webkit-font-smoothing: antialiased; font-size: 14px; line-height: 1.45;
+  }
+  button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+  input, select { font: inherit; color: inherit; }
+  ul { list-style: none; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  img { max-width: 100%; display: block; }
+
+  /* ── Topbar ─────────────────────────────────────────────────────── */
+  .topbar {
+    position: sticky; top: 0; z-index: 40;
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 22px;
+    background: rgba(245,245,247,.82);
+    backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid var(--divider);
+  }
+  .topbar h1 { font-size: 17px; font-weight: 700; letter-spacing: -.02em; }
+  .topbar h1 .h-sub { font-weight: 500; color: var(--text-3); font-size: 13px; margin-left: 8px; }
+  .spacer { flex: 1; }
+  .back { font-size: 13px; color: var(--text-2); font-weight: 600; }
+  .count-pill {
+    font-size: 12px; font-weight: 600; color: var(--text-2);
+    background: var(--surface-3); padding: 4px 11px; border-radius: 980px;
+  }
+
+  /* ── Layout ─────────────────────────────────────────────────────── */
+  .layout { display: grid; grid-template-columns: 224px 1fr; gap: 24px; padding: 22px; max-width: 1500px; margin: 0 auto; }
+
+  /* ── Filter rail ────────────────────────────────────────────────── */
+  .rail { align-self: start; position: sticky; top: 78px; display: flex; flex-direction: column; gap: 16px; }
+  .fgroup { background: var(--surface); border-radius: var(--radius); box-shadow: var(--sh); overflow: hidden; }
+  .fgroup > summary {
+    list-style: none; cursor: pointer; display: flex; align-items: center; gap: 8px;
+    padding: 11px 14px; user-select: none;
+  }
+  .fgroup > summary::-webkit-details-marker { display: none; }
+  .fgroup > summary .caret { width: 10px; height: 10px; color: var(--text-3); transition: transform .15s; }
+  .fgroup[open] > summary .caret { transform: rotate(90deg); }
+  .fgroup > summary h2 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--text-2); flex: 1; }
+  .fgroup > summary .gsel { font-size: 11px; color: var(--accent); font-weight: 600; }
+  .flist { padding: 2px 8px 10px; }
+  .fitem {
+    display: flex; align-items: center; gap: 9px; padding: 6px 8px;
+    border-radius: var(--radius-xs); cursor: pointer; font-size: 13px;
+  }
+  .fitem:hover { background: var(--surface-2); }
+  .fitem input { accent-color: var(--accent); width: 15px; height: 15px; }
+  .rail-clear {
+    margin-top: 2px; padding: 9px; text-align: center;
+    font-size: 12px; font-weight: 600; color: var(--text-2);
+    background: var(--surface); border-radius: var(--radius); box-shadow: var(--sh);
+  }
+  .rail-clear:hover { color: var(--red); }
+
+  /* ── Active chips ───────────────────────────────────────────────── */
+  .chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; min-height: 4px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent-soft); color: var(--accent);
+    padding: 5px 10px; border-radius: 980px; font-size: 12px; font-weight: 600;
+  }
+  .chip button { display: inline-flex; color: inherit; opacity: .7; }
+  .chip button:hover { opacity: 1; }
+  .chip svg { width: 9px; height: 9px; }
+
+  .lead { font-size: 13px; color: var(--text-2); margin-bottom: 14px; max-width: 70ch; }
+
+  /* ── Results grid ───────────────────────────────────────────────── */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+  .bcard {
+    background: var(--surface); border-radius: var(--radius); box-shadow: var(--sh);
+    overflow: hidden; cursor: pointer; text-align: left;
+    border: 1px solid transparent; transition: box-shadow .15s, transform .15s, border-color .15s;
+    display: flex; flex-direction: column;
+  }
+  .bcard:hover { box-shadow: var(--sh-md); transform: translateY(-2px); border-color: var(--divider); }
+  .bthumb { height: 132px; background: var(--surface-3); overflow: hidden; display: flex; align-items: center; justify-content: center; }
+  .bthumb img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+  .bbody { padding: 12px 13px 13px; display: flex; flex-direction: column; gap: 8px; }
+  .btitle { font-size: 14px; font-weight: 650; letter-spacing: -.01em; }
+  .bmeta { display: flex; flex-wrap: wrap; gap: 5px; }
+
+  /* pills */
+  .pill { font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 980px; background: var(--surface-3); color: var(--text-2); }
+  .pill-n  { background: var(--accent-soft); color: var(--accent); }
+  .pill-q  { background: var(--surface-3); color: var(--text-2); }
+  .pill-s  { background: #eef6ff; color: #1f6fd6; }
+  .pill-d1 { background: #eaf8ee; color: #2a8a43; }
+  .pill-d2 { background: #fff5e6; color: #9a6300; }
+  .pill-d3 { background: #fdecea; color: #c0392b; }
+
+  .empty { padding: 60px 20px; text-align: center; color: var(--text-3); font-size: 14px; }
+  .skel { height: 200px; border-radius: var(--radius); background: linear-gradient(90deg,var(--surface-3) 25%,var(--surface-2) 50%,var(--surface-3) 75%); background-size: 200% 100%; animation: shimmer 1.3s infinite; }
+  @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+  .state-error { background: var(--surface); border-radius: var(--radius); box-shadow: var(--sh); padding: 22px; color: var(--red); }
+  .state-error code { font-family: var(--mono); font-size: 12px; }
+
+  /* ── Modal (block detail) ───────────────────────────────────────── */
+  .modal-bg {
+    position: fixed; inset: 0; z-index: 100;
+    background: rgba(0,0,0,.34); backdrop-filter: blur(3px);
+    display: flex; align-items: flex-start; justify-content: center;
+    padding: 40px 20px; overflow-y: auto;
+    animation: fade .18s var(--ease);
+  }
+  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+  .modal-bg[hidden] { display: none; }
+  .modal {
+    width: 100%; max-width: 820px; background: var(--surface);
+    border-radius: 18px; box-shadow: var(--sh-lg); overflow: hidden;
+    animation: pop .2s var(--ease);
+  }
+  @keyframes pop { from { transform: translateY(10px) scale(.99); opacity: 0; } to { transform: none; opacity: 1; } }
+  .modal-head {
+    position: sticky; top: 0; z-index: 2;
+    display: flex; align-items: center; gap: 12px;
+    padding: 16px 20px; border-bottom: 1px solid var(--divider);
+    background: var(--surface);
+  }
+  .modal-head .m-title { font-size: 16px; font-weight: 700; flex: 1; }
+  .modal-head .m-sub { font-family: var(--mono); font-size: 11px; color: var(--text-3); }
+  .m-close { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; color: var(--text-2); background: var(--surface-3); }
+  .m-close:hover { background: var(--divider); color: var(--text); }
+  .m-close svg { width: 13px; height: 13px; }
+  .modal-body { padding: 18px 20px 24px; }
+
+  .enun {
+    border: 1px solid var(--divider); border-radius: var(--radius);
+    overflow: hidden; margin-bottom: 8px; background: var(--surface-2);
+  }
+  .enun-cap { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--text-3); padding: 9px 12px 0; }
+  .enun img { padding: 10px 12px 12px; }
+  .enun-note { font-size: 12px; color: var(--text-2); margin: 10px 2px 18px; }
+
+  .q { border-top: 1px solid var(--divider); padding-top: 18px; margin-top: 18px; }
+  .q-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .q-num { font-size: 14px; font-weight: 700; }
+  .q-img {
+    border: 1px solid var(--divider); border-radius: var(--radius-sm);
+    overflow: hidden; margin-bottom: 12px; background: var(--surface-2);
+  }
+  .q-img img { padding: 8px 10px; }
+
+  .opts { display: flex; flex-direction: column; gap: 6px; }
+  .opt { display: flex; gap: 10px; align-items: baseline; padding: 9px 12px; border-radius: var(--radius-sm); font-size: 13px; }
+  .opt-letter { font-weight: 700; flex: none; width: 58px; }
+  .opt.correct { background: var(--green-soft); }
+  .opt.correct .opt-letter { color: #2a8a43; }
+  .opt.correct .opt-txt { color: #2a8a43; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+  .opt.wrong { background: var(--surface-2); }
+  .opt.wrong .opt-letter { color: var(--text-3); }
+  .opt.wrong .opt-txt { color: var(--text-2); }
+  .opt-txt svg { width: 14px; height: 14px; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <h1>Banc d'ítems CB<span class="h-sub">· proves de competències bàsiques</span></h1>
+  <div class="spacer"></div>
+  <span class="count-pill" id="count"></span>
+  <a class="back" href="index.html">← Tornar al cercador</a>
+</header>
+
+<main class="layout">
+  <aside class="rail" id="rail" aria-label="Filtres"></aside>
+  <section>
+    <p class="lead">
+      Preguntes reals de les proves de competències bàsiques de Catalunya, agrupades pel seu
+      <strong>enunciat</strong> (el bloc és la unitat: les preguntes d'un mateix enunciat es mostren juntes).
+      Cada pregunta indica la resposta correcta i, per a cada opció incorrecta, l'error que sol revelar.
+    </p>
+    <div class="chip-row" id="chips" aria-live="polite"></div>
+    <div class="grid" id="results"></div>
+  </section>
+</main>
+
+<div class="modal-bg" id="modal-bg" hidden>
+  <div class="modal" id="modal" role="dialog" aria-modal="true"></div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   Banc d'ítems CB — vanilla JS, sense dependències.
+   La unitat és el BLOC (enunciat + la seva seqüència de preguntes).
+   ═══════════════════════════════════════════════════════════════════ */
+
+const DATA_URL = 'cb-items.json';
+
+/* Filtres. nivell/any filtren el bloc; sentit/dificultat el deixen passar
+   si ALGUNA de les seves preguntes hi coincideix (i es mostra el bloc sencer). */
+const GROUPS = [
+  { key: 'nivell',     label: 'Nivell',     level: 'block' },
+  { key: 'any',        label: 'Any',        level: 'block' },
+  { key: 'sentit',     label: 'Sentit',     level: 'question' },
+  { key: 'dificultat', label: 'Dificultat', level: 'question' },
+];
+const SENSE_ORDER = ['numeric', 'algebraic', 'espacial', 'mesura', 'estocastic'];
+const DIFF_LABELS = { '1': '1 · bàsica', '2': '2 · mitjana', '3': '3 · alta' };
+const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'];
+
+const state = {
+  data: null,
+  labels: {},
+  base: '',
+  filters: { nivell: new Set(), any: new Set(), sentit: new Set(), dificultat: new Set() },
+  openId: null,
+};
+
+const $ = id => document.getElementById(id);
+const els = { rail: $('rail'), chips: $('chips'), results: $('results'), count: $('count'),
+              modalBg: $('modal-bg'), modal: $('modal') };
+
+function escHtml(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+function label(v) { return state.labels[v] || String(v); }
+function diffLabel(d) { return DIFF_LABELS[String(d)] || String(d); }
+function imgUrl(path) { return state.base + path; }
+
+/* ─── Filtre: valors disponibles per grup ───────────────────────── */
+function valuesFor(key) {
+  const blocks = state.data.blocks;
+  if (key === 'nivell') {
+    const seen = []; for (const b of blocks) if (!seen.includes(b.nivell)) seen.push(b.nivell);
+    return seen.sort((a, b) => label(a).localeCompare(label(b)));
+  }
+  if (key === 'any') {
+    const seen = [...new Set(blocks.map(b => String(b.any)))];
+    return seen.sort();
+  }
+  if (key === 'sentit') {
+    const present = new Set();
+    for (const b of blocks) for (const q of b.questions) present.add(q.sentit);
+    return SENSE_ORDER.filter(s => present.has(s)).concat([...present].filter(s => !SENSE_ORDER.includes(s)));
+  }
+  if (key === 'dificultat') {
+    const present = new Set();
+    for (const b of blocks) for (const q of b.questions) present.add(String(q.dificultat));
+    return [...present].sort();
+  }
+  return [];
+}
+
+/* ─── Coincidència ──────────────────────────────────────────────── */
+function blockMatches(b) {
+  const F = state.filters;
+  if (F.nivell.size && !F.nivell.has(b.nivell)) return false;
+  if (F.any.size && !F.any.has(String(b.any))) return false;
+  if (F.sentit.size && !b.questions.some(q => F.sentit.has(q.sentit))) return false;
+  if (F.dificultat.size && !b.questions.some(q => F.dificultat.has(String(q.dificultat)))) return false;
+  return true;
+}
+function questionMatchesFacets(q) {
+  const F = state.filters;
+  if (F.sentit.size && !F.sentit.has(q.sentit)) return false;
+  if (F.dificultat.size && !F.dificultat.has(String(q.dificultat))) return false;
+  return true;
+}
+
+/* ─── Render: filtres ───────────────────────────────────────────── */
+function renderRail() {
+  const html = GROUPS.map(G => {
+    const values = valuesFor(G.key);
+    const sel = state.filters[G.key];
+    const items = values.map(v => {
+      const lbl = G.key === 'dificultat' ? diffLabel(v) : label(v);
+      return `
+        <label class="fitem">
+          <input type="checkbox" data-group="${G.key}" data-value="${escHtml(v)}" ${sel.has(String(v)) ? 'checked' : ''}>
+          <span>${escHtml(lbl)}</span>
+        </label>`;
+    }).join('');
+    return `
+      <details class="fgroup" open>
+        <summary>
+          <svg class="caret" viewBox="0 0 10 10" fill="currentColor"><path d="M3 1l4 4-4 4z"/></svg>
+          <h2>${escHtml(G.label)}</h2>
+          ${sel.size ? `<span class="gsel">${sel.size}</span>` : ''}
+        </summary>
+        <div class="flist">${items}</div>
+      </details>`;
+  }).join('');
+  els.rail.innerHTML = html + `<button class="rail-clear" id="rail-clear">Esborra-ho tot</button>`;
+  const c = $('rail-clear'); if (c) c.onclick = clearAll;
+}
+
+/* ─── Render: chips actius ──────────────────────────────────────── */
+function renderChips() {
+  const out = [];
+  for (const G of GROUPS) {
+    for (const v of state.filters[G.key]) {
+      const lbl = G.key === 'dificultat' ? diffLabel(v) : label(v);
+      out.push(`<span class="chip" data-group="${G.key}" data-value="${escHtml(v)}">
+        ${escHtml(lbl)}
+        <button title="Treu" aria-label="Treu el filtre">
+          <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 1l8 8M9 1l-8 8"/></svg>
+        </button></span>`);
+    }
+  }
+  els.chips.innerHTML = out.join('');
+}
+
+/* ─── Render: targetes de bloc ──────────────────────────────────── */
+function senseChips(senses) {
+  return senses.map(s => `<span class="pill pill-s">${escHtml(label(s))}</span>`).join('');
+}
+function diffChips(diffs) {
+  return diffs.map(d => `<span class="pill pill-d${d}">dif. ${escHtml(d)}</span>`).join('');
+}
+function renderResults() {
+  const blocks = state.data.blocks.filter(blockMatches);
+  els.count.textContent = `${blocks.length} bloc${blocks.length === 1 ? '' : 's'} · ${blocks.reduce((n, b) => n + b.questions.length, 0)} preguntes`;
+  if (!blocks.length) {
+    els.results.innerHTML = `<div class="empty">Cap bloc coincideix amb els filtres.</div>`;
+    return;
+  }
+  els.results.innerHTML = blocks.map(b => `
+    <button class="bcard" data-id="${escHtml(b.id)}">
+      <div class="bthumb"><img loading="lazy" src="${escHtml(imgUrl(b.enunciat))}" alt="Enunciat de ${escHtml(b.title)}"></div>
+      <div class="bbody">
+        <div class="btitle">${escHtml(b.title)}</div>
+        <div class="bmeta">
+          <span class="pill pill-n">${escHtml(label(b.nivell))} · ${escHtml(b.any)}</span>
+          <span class="pill pill-q">${b.questions.length} preg.</span>
+          ${senseChips(b.senses)}
+        </div>
+      </div>
+    </button>`).join('');
+}
+
+/* ─── Render: detall del bloc (modal) ───────────────────────────── */
+function openBlock(id) {
+  const b = state.data.blocks.find(x => x.id === id);
+  if (!b) return;
+  state.openId = id;
+
+  const anyFacet = state.filters.sentit.size || state.filters.dificultat.size;
+
+  const questionsHtml = b.questions.map((q, i) => {
+    const dim = anyFacet && !questionMatchesFacets(q) ? ' style="opacity:.5"' : '';
+    const opts = q.pistes.map((p, idx) => {
+      const letter = LETTERS[idx] || String(idx + 1);
+      if (idx === q.correcta) {
+        return `<div class="opt correct">
+          <span class="opt-letter">Opció ${letter}</span>
+          <span class="opt-txt"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg> Resposta correcta</span>
+        </div>`;
+      }
+      return `<div class="opt wrong">
+        <span class="opt-letter">Opció ${letter}</span>
+        <span class="opt-txt">${p && p.trim() ? escHtml(p) : '—'}</span>
+      </div>`;
+    }).join('');
+    return `
+      <div class="q"${dim}>
+        <div class="q-head">
+          <span class="q-num">Pregunta ${i + 1}</span>
+          <span class="pill pill-s">${escHtml(label(q.sentit))}</span>
+          <span class="pill pill-d${q.dificultat}">dif. ${escHtml(q.dificultat)}</span>
+        </div>
+        <div class="q-img"><img loading="lazy" src="${escHtml(imgUrl(q.img))}" alt="Pregunta ${i + 1}"></div>
+        <div class="opts">${opts}</div>
+      </div>`;
+  }).join('');
+
+  els.modal.innerHTML = `
+    <div class="modal-head">
+      <div class="m-title">${escHtml(b.title)}</div>
+      <span class="m-sub">${escHtml(b.id)}</span>
+      <button class="m-close" id="m-close" title="Tanca (Esc)">
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="enun">
+        <div class="enun-cap">Enunciat — context compartit</div>
+        <img src="${escHtml(imgUrl(b.enunciat))}" alt="Enunciat de ${escHtml(b.title)}">
+      </div>
+      <div class="enun-note">${b.questions.length} pregunta${b.questions.length === 1 ? '' : 'es'} sobre aquest enunciat. ${anyFacet ? 'Les que no coincideixen amb el filtre es mostren atenuades.' : ''}</div>
+      ${questionsHtml}
+    </div>`;
+  els.modalBg.hidden = false;
+  document.body.style.overflow = 'hidden';
+  $('m-close').onclick = closeBlock;
+  els.modal.scrollTop = 0;
+}
+function closeBlock() {
+  state.openId = null;
+  els.modalBg.hidden = true;
+  els.modal.innerHTML = '';
+  document.body.style.overflow = '';
+}
+
+/* ─── Glue ──────────────────────────────────────────────────────── */
+function renderAll() { renderRail(); renderChips(); renderResults(); }
+function clearAll() {
+  for (const G of GROUPS) state.filters[G.key].clear();
+  renderAll();
+}
+
+/* ─── Events ────────────────────────────────────────────────────── */
+els.rail.addEventListener('change', e => {
+  const cb = e.target.closest('input[type=checkbox][data-group]');
+  if (!cb) return;
+  const set = state.filters[cb.dataset.group];
+  if (cb.checked) set.add(cb.dataset.value); else set.delete(cb.dataset.value);
+  renderAll();
+});
+els.chips.addEventListener('click', e => {
+  const chip = e.target.closest('.chip'); if (!chip) return;
+  state.filters[chip.dataset.group].delete(chip.dataset.value);
+  renderAll();
+});
+els.results.addEventListener('click', e => {
+  const card = e.target.closest('.bcard'); if (!card) return;
+  openBlock(card.dataset.id);
+});
+els.modalBg.addEventListener('click', e => { if (e.target === els.modalBg) closeBlock(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && state.openId) closeBlock(); });
+
+/* ─── Init ──────────────────────────────────────────────────────── */
+function showLoading() { els.results.innerHTML = Array.from({ length: 8 }).map(() => `<div class="skel"></div>`).join(''); }
+function showError(msg) {
+  els.results.innerHTML = `<div class="state-error">
+    <p><strong>No s'ha pogut carregar el banc d'ítems.</strong></p>
+    <p>${escHtml(msg)}</p>
+    <p>Comprova que <code>${escHtml(DATA_URL)}</code> existeixi i sigui accessible.</p>
+  </div>`;
+}
+async function init() {
+  showLoading();
+  try {
+    const res = await fetch(DATA_URL, { cache: 'no-cache' });
+    if (!res.ok) throw new Error(`HTTP ${res.status} en carregar ${DATA_URL}`);
+    const data = await res.json();
+    if (!Array.isArray(data.blocks)) throw new Error('Format invàlid: falta "blocks".');
+    state.data = data;
+    state.labels = data.labels || {};
+    state.base = data.image_base || '';
+    renderAll();
+  } catch (err) {
+    console.error(err);
+    showError(err.message);
+  }
+}
+init();
+</script>
+</body>
+</html>
