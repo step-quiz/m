@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated": "2026-05-28",
+  "generated": "2026-06-02",
   "folder_url": "https://drive.google.com/drive/folders/1WjqddjN3uQhO7zUXzRKwDmBia6jqCUdy",
   "vocabulary": {
     "origin": [
@@ -554,6 +554,23 @@
         "ESO"
       ],
       "type": "dossier"
+    },
+    {
+      "title": "Problemes avançats de percentatges",
+      "id": "problemes-avancats-de-percentatges",
+      "drive_id": "1EFOIpd_rBLxnl7S11Tk6KlMmMpjpWZYCxHRvE63vW-8",
+      "format": "doc",
+      "origin": "propi",
+      "courses": [
+        "3ESO",
+        "4ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "percentatges",
+        "interes-simple-compost"
+      ],
+      "type": "exercici"
     }
   ],
   "basic": {
