@@ -10,17 +10,10 @@
       "florence",
       "reptes-mates",
       "bogdan",
-      "propi1",
-      "propi2",
-      "propi3",
-      "propi4",
-      "propi5",
-      "propi6",
-      "propi7",
-      "propi8",
       "repo1",
       "repo2",
-      "repo3"
+      "repo3",
+      "repo4"
     ],
     "format": [
       "pdf",
@@ -159,7 +152,7 @@
     "florence": "Florence",
     "reptes-mates": "Reptes",
     "bogdan": "Bogdan",
-    "propi1": "IMT-1",
+    "propi1": "nrich",
     "propi2": "IMT-2",
     "propi3": "IMT-3",
     "propi4": "IMT-4",
@@ -169,7 +162,7 @@
     "propi8": "IMT-8",
     "repo1": "G.Morales",
     "repo2": "INS Gelida",
-    "repo3": "Font 3",
+    "repo3": "nrich",
     "pdf": "PDF",
     "doc": "Google Doc",
     "1ESO": "1r ESO",
@@ -289,7 +282,8 @@
     "examen-estructura": "Estructura d'examen",
     "examen-correccio": "Correcció d'examen",
     "nombre-pi": "Ús del nombre Pi",
-    "circumferencia-cercle": "Circumferència i/o cercle"
+    "circumferencia-cercle": "Circumferència i/o cercle",
+    "repo4": "geogebra"
   },
   "files": [
     {
