@@ -291,6 +291,7 @@
       "activities": [
         "geometria-pla-cartesia"
       ],
+      "type": "teoria",
       "year": 2026,
       "notes": "Eixos de coordenades"
     },
@@ -384,6 +385,7 @@
       "courses": [
         "1ESO"
       ],
+      "math_sense": "numeric",
       "activities": [
         "nombres-naturals",
         "divisibilitat"
