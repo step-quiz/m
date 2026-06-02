@@ -192,7 +192,7 @@
     background: var(--surface-2);
   }
   .filter-rail h3 {
-    font-size: 11px;
+    font-size: 8.8px;
     font-weight: 700;
     letter-spacing: .06em;
     text-transform: uppercase;
@@ -213,7 +213,7 @@
   .mode-toggle button {
     padding: 6px 10px;
     border-radius: 980px;
-    font-size: 12px;
+    font-size: 9.6px;
     font-weight: 600;
     color: var(--text-2);
     transition: background .15s, color .15s, box-shadow .15s;
@@ -231,7 +231,7 @@
     background: var(--accent-soft);
     color: var(--accent);
     border-radius: var(--radius-sm);
-    font-size: 11px;
+    font-size: 8.8px;
     line-height: 1.4;
   }
 
@@ -244,7 +244,7 @@
     margin-top: 4px;
   }
   .filter-block-label {
-    font-size: 10px;
+    font-size: 8px;
     font-weight: 700;
     letter-spacing: .06em;
     text-transform: uppercase;
@@ -255,25 +255,29 @@
   .filter-group {
     background: var(--surface);
     border-radius: var(--radius);
-    padding: 4px 6px;
-    margin-bottom: 8px;
+    padding: 3.2px 6px;
+    margin-bottom: 6.4px;
     box-shadow: var(--sh);
   }
   .filter-group summary {
     list-style: none;
     cursor: pointer;
     display: flex; align-items: center; gap: 6px;
-    padding: 6px 10px;
+    padding: 4.8px 10px;
     border-radius: var(--radius-sm);
     font-weight: 600;
-    font-size: 15px;
+    font-size: 12px;
     user-select: none;
+    border: 1px solid transparent;
   }
   .filter-group summary::-webkit-details-marker { display: none; }
-  .filter-group summary:hover { background: var(--surface-3); }
+  .filter-group summary:hover {
+    background: #e2e2e7;
+    border-color: #1d1d1f;
+  }
   .filter-group .group-label { flex: 1; }
   .filter-group .group-count {
-    font-size: 10px;
+    font-size: 8px;
     font-weight: 700;
     color: var(--accent);
     background: var(--accent-soft);
@@ -290,16 +294,20 @@
   }
   .filter-group[open] .group-caret { transform: rotate(90deg); }
 
-  .filter-list { padding: 2px 4px 6px; }
+  .filter-list { padding: 1.6px 4px 4.8px; }
   .filter-item {
     display: flex; align-items: center; gap: 8px;
-    padding: 4px 8px;
+    padding: 3.2px 8px;
     border-radius: var(--radius-xs);
     cursor: pointer;
-    font-size: 15px;
-    transition: background .12s;
+    font-size: 12px;
+    transition: background .12s, border-color .12s;
+    border: 1px solid transparent;
   }
-  .filter-item:hover { background: var(--surface-3); }
+  .filter-item:hover {
+    background: #e2e2e7;
+    border-color: #1d1d1f;
+  }
   .filter-item input[type=checkbox] {
     width: 14px; height: 14px;
     accent-color: var(--accent);
@@ -308,7 +316,7 @@
   }
   .filter-item .fi-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .filter-item .fi-count {
-    font-size: 11px;
+    font-size: 8.8px;
     color: var(--text-3);
     font-variant-numeric: tabular-nums;
   }
@@ -320,7 +328,7 @@
     margin-top: 10px;
     padding: 9px;
     border-radius: var(--radius-sm);
-    font-size: 12px; font-weight: 600;
+    font-size: 9.6px; font-weight: 600;
     color: var(--text-2);
     background: var(--surface);
     box-shadow: var(--sh);
@@ -721,10 +729,10 @@
 const MANIFEST_URL = 'manifest.json';
 const FILTER_GROUPS = [
   { key: 'course',     label: 'Curs',              field: 'courses',    multi: true  },
-  { key: 'math_sense', label: 'Sentit matemàtic',  field: 'math_sense', multi: false },
+  { key: 'origin',     label: 'Origen',            field: 'origin',     multi: false },
+  { key: 'math_sense', label: 'Sentit',            field: 'math_sense', multi: false },
   { key: 'format',     label: 'Format',            field: 'format',     multi: false },
   { key: 'type',       label: 'Tipus',             field: 'type',       multi: false },
-  { key: 'origin',     label: 'Origen',            field: 'origin',     multi: false },
   { key: 'activity',   label: 'Activitat',         field: 'activities', multi: true  },
 ];
 const ESO_COURSES  = ['1ESO','2ESO','3ESO','4ESO'];
@@ -738,7 +746,7 @@ const state = {
   filters: {},                  // { groupKey: Set([values]) }
   openId: null,                 // card actualment expandida amb les dues accions
   previewing: false,            // si el panell lateral està obert mostrant l'iframe
-  filterCollapsed: {},
+  filterCollapsed: { format: true, type: true },
   uiMode: 'basic',              // 'basic' | 'advanced' — persistit a localStorage
 };
 FILTER_GROUPS.forEach(g => state.filters[g.key] = new Set());
