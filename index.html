@@ -192,7 +192,7 @@
     background: var(--surface-2);
   }
   .filter-rail h3 {
-    font-size: 8.8px;
+    font-size: 9.68px;
     font-weight: 700;
     letter-spacing: .06em;
     text-transform: uppercase;
@@ -213,7 +213,7 @@
   .mode-toggle button {
     padding: 6px 10px;
     border-radius: 980px;
-    font-size: 9.6px;
+    font-size: 10.56px;
     font-weight: 600;
     color: var(--text-2);
     transition: background .15s, color .15s, box-shadow .15s;
@@ -231,7 +231,7 @@
     background: var(--accent-soft);
     color: var(--accent);
     border-radius: var(--radius-sm);
-    font-size: 8.8px;
+    font-size: 9.68px;
     line-height: 1.4;
   }
 
@@ -244,7 +244,7 @@
     margin-top: 4px;
   }
   .filter-block-label {
-    font-size: 8px;
+    font-size: 8.8px;
     font-weight: 700;
     letter-spacing: .06em;
     text-transform: uppercase;
@@ -266,7 +266,7 @@
     padding: 4.8px 10px;
     border-radius: var(--radius-sm);
     font-weight: 600;
-    font-size: 12px;
+    font-size: 13.2px;
     user-select: none;
     border: 1px solid transparent;
   }
@@ -277,7 +277,7 @@
   }
   .filter-group .group-label { flex: 1; }
   .filter-group .group-count {
-    font-size: 8px;
+    font-size: 8.8px;
     font-weight: 700;
     color: var(--accent);
     background: var(--accent-soft);
@@ -300,7 +300,7 @@
     padding: 3.2px 8px;
     border-radius: var(--radius-xs);
     cursor: pointer;
-    font-size: 12px;
+    font-size: 13.2px;
     transition: background .12s, border-color .12s;
     border: 1px solid transparent;
   }
@@ -316,7 +316,7 @@
   }
   .filter-item .fi-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .filter-item .fi-count {
-    font-size: 8.8px;
+    font-size: 9.68px;
     color: var(--text-3);
     font-variant-numeric: tabular-nums;
   }
@@ -328,7 +328,7 @@
     margin-top: 10px;
     padding: 9px;
     border-radius: var(--radius-sm);
-    font-size: 9.6px; font-weight: 600;
+    font-size: 10.56px; font-weight: 600;
     color: var(--text-2);
     background: var(--surface);
     box-shadow: var(--sh);
@@ -1076,7 +1076,6 @@ function renderFilters() {
       <label class="filter-item ${zero ? 'is-zero' : ''}">
         <input type="checkbox" data-group="${G.key}" data-value="${escHtml(v)}" ${checked ? 'checked' : ''}>
         <span class="fi-label">${escHtml(label(v))}</span>
-        <span class="fi-count">${c}</span>
       </label>`;
   }
 
