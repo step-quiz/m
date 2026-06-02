@@ -31,13 +31,6 @@
     --ease:      cubic-bezier(.4,0,.2,1);
     --spring:    cubic-bezier(.34,1.56,.64,1);
     --mono:      ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
-
-    /* Category accents — used to color origin pills and card borders */
-    --c-propi:          #0071e3;  --c-propi-tint:          rgba(0,113,227,.10);
-    --c-florence:       #bf5af2;  --c-florence-tint:       rgba(191,90,242,.10);
-    --c-recursos-mates: #34c759;  --c-recursos-mates-tint: rgba(52,199,89,.12);
-    --c-edu365:         #ff9f0a;  --c-edu365-tint:         rgba(255,159,10,.12);
-    --c-altres:         #6e6e73;  --c-altres-tint:         rgba(110,110,115,.12);
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -417,7 +410,7 @@
   .card .card-icon {
     width: 30px; height: 36px;
     border-radius: 4px;
-    background: linear-gradient(135deg, var(--c-propi-tint), transparent);
+    background: linear-gradient(135deg, rgba(0,113,227,.10), transparent);
     display: flex; align-items: center; justify-content: center;
     font-family: var(--mono); font-size: 9px; font-weight: 700;
     letter-spacing: .04em;

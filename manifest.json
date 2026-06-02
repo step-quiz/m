@@ -4,16 +4,16 @@
   "folder_url": "https://drive.google.com/drive/folders/1WjqddjN3uQhO7zUXzRKwDmBia6jqCUdy",
   "vocabulary": {
     "origin": [
-      "mmaca",
-      "fem-matematiques",
-      "propi",
+      "miquel-tarradell",
       "florence",
-      "reptes-mates",
+      "nrich",
+      "geogebra",
       "bogdan",
-      "repo1",
-      "repo2",
-      "repo3",
-      "repo4"
+      "fem-matematiques",
+      "mmaca",
+      "g-morales",
+      "ins-gelida",
+      "reptes-mates"
     ],
     "format": [
       "pdf",
@@ -146,23 +146,16 @@
     ]
   },
   "vocabulary_labels": {
-    "mmaca": "MMACA",
-    "fem-matematiques": "Fem Mates",
-    "propi": "IMT",
+    "miquel-tarradell": "Miquel Tarradell",
     "florence": "Florence",
-    "reptes-mates": "Reptes",
+    "nrich": "NRICH",
+    "geogebra": "Geogebra",
     "bogdan": "Bogdan",
-    "propi1": "nrich",
-    "propi2": "IMT-2",
-    "propi3": "IMT-3",
-    "propi4": "IMT-4",
-    "propi5": "IMT-5",
-    "propi6": "IMT-6",
-    "propi7": "IMT-7",
-    "propi8": "IMT-8",
-    "repo1": "G.Morales",
-    "repo2": "INS Gelida",
-    "repo3": "nrich",
+    "fem-matematiques": "Fem Mates",
+    "mmaca": "MMACA",
+    "g-morales": "G.Morales",
+    "ins-gelida": "INS Gelida",
+    "reptes-mates": "Reptes wsp",
     "pdf": "PDF",
     "doc": "Google Doc",
     "1ESO": "1r ESO",
@@ -282,8 +275,7 @@
     "examen-estructura": "Estructura d'examen",
     "examen-correccio": "Correcció d'examen",
     "nombre-pi": "Ús del nombre Pi",
-    "circumferencia-cercle": "Circumferència i/o cercle",
-    "repo4": "geogebra"
+    "circumferencia-cercle": "Circumferència i/o cercle"
   },
   "files": [
     {
@@ -291,7 +283,7 @@
       "id": "eixos-1",
       "drive_id": "1-SkPJcxjULavYU8wayt_uri4hkMary6476BI-EZ_aFI",
       "format": "doc",
-      "origin": "propi",
+      "origin": "miquel-tarradell",
       "year": 2026,
       "notes": "Eixos de coordenades"
     },
@@ -300,7 +292,7 @@
       "id": "teorema-de-pitagores-1",
       "drive_id": "1BLWEO4wgCSTUOcMJ40a5SOpEmhJbx5TvtenNe9yX8QY",
       "format": "pdf",
-      "origin": "propi",
+      "origin": "miquel-tarradell",
       "courses": [
         "2ESO"
       ],
@@ -350,7 +342,7 @@
       "id": "potencies-i-arrels",
       "drive_id": "1oUImZr-o5ytNxO9l6erBvOKoWxb4FH_b",
       "format": "pdf",
-      "origin": "repo1",
+      "origin": "g-morales",
       "courses": [
         "1ESO"
       ],
@@ -366,7 +358,7 @@
       "id": "nombres-enters",
       "drive_id": "1aMWvL9Tp0PcZ8C1MyDTT4XD5vF6TuzkK",
       "format": "pdf",
-      "origin": "repo1",
+      "origin": "g-morales",
       "courses": [
         "1ESO"
       ],
@@ -381,7 +373,7 @@
       "id": "divisibilitat",
       "drive_id": "1qb3bl-YXQNr-89pWNKKhIjN4p-i_CJjx",
       "format": "pdf",
-      "origin": "repo1",
+      "origin": "g-morales",
       "courses": [
         "1ESO"
       ],
@@ -396,7 +388,7 @@
       "id": "fraccions",
       "drive_id": "1U8qyHQGMJ48y7yfXerkyg19WqBRD4upV",
       "format": "pdf",
-      "origin": "repo1",
+      "origin": "g-morales",
       "courses": [
         "1ESO"
       ],
@@ -413,7 +405,7 @@
       "id": "proporcionalitat-numerica",
       "drive_id": "1PWjyD5T9nFX6Wa-Nn1J551fd6P8D-Oma",
       "format": "pdf",
-      "origin": "repo1",
+      "origin": "g-morales",
       "courses": [
         "1ESO"
       ],
@@ -444,7 +436,7 @@
       "id": "perimetre-de-circumferencia-i-area-de-cercle",
       "drive_id": "1xBq1mfl_DuvI6UKbNS7xcY8mr0Cphf55byZZ87bFgFk",
       "format": "doc",
-      "origin": "propi",
+      "origin": "miquel-tarradell",
       "courses": [
         "2ESO"
       ],
@@ -461,7 +453,7 @@
       "id": "distancia-entre-2-rectes-que-es-creuen",
       "drive_id": "1lFO8DqN1tzXbOMyEAS5xJWI2jhljqeLJ",
       "format": "pdf",
-      "origin": "repo2",
+      "origin": "ins-gelida",
       "courses": [
         "2Bat"
       ],
@@ -554,7 +546,7 @@
       "id": "problemes-avancats-de-percentatges",
       "drive_id": "1EFOIpd_rBLxnl7S11Tk6KlMmMpjpWZYCxHRvE63vW-8",
       "format": "doc",
-      "origin": "propi",
+      "origin": "miquel-tarradell",
       "courses": [
         "3ESO",
         "4ESO"
@@ -568,6 +560,13 @@
     }
   ],
   "basic": {
+    "origin": [
+      "miquel-tarradell",
+      "florence",
+      "nrich",
+      "geogebra",
+      "bogdan"
+    ],
     "course": [
       "1ESO",
       "2ESO",
