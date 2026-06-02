@@ -668,6 +668,9 @@ const COMPLETENESS_WARN = [
   { field: 'activities', msg: 'Sense activitat' },
   { field: 'type',       msg: 'Sense tipus' },
 ];
+// Whole-test resources (proves CB) span many senses at once, so a single
+// sense/activity doesn't apply — those two warnings are skipped for them.
+const WHOLE_TEST_TYPES = new Set(['prova-cb']);
 
 function validateManifest() {
   const empty = { errors: [], warnings: [], all: [], byId: new Map() };
@@ -693,7 +696,7 @@ function validateManifest() {
     if (!f.id)                       push(f, 'error', 'id',       'Sense ID intern');
     else if (idCount.get(f.id) > 1)  push(f, 'error', 'id',       `ID duplicat: "${f.id}"`);
     if (!f.title)                    push(f, 'error', 'title',    'Sense títol');
-    if (!f.drive_id)                 push(f, 'error', 'drive_id', 'Sense Drive ID (no es podrà obrir)');
+    if (!f.drive_id && !f.url)       push(f, 'error', 'drive_id', 'Sense Drive ID ni URL (no es podrà obrir)');
 
     // Every tagged value must exist in the vocabulary, or its filter misses it.
     for (const F of VALIDATION_FIELDS) {
@@ -710,7 +713,9 @@ function validateManifest() {
     }
 
     // Incomplete-but-usable → warning, so the entry stays findable by every facet.
+    const wholeTest = WHOLE_TEST_TYPES.has(f.type);
     for (const W of COMPLETENESS_WARN) {
+      if (wholeTest && (W.field === 'math_sense' || W.field === 'activities')) continue;
       const raw = f[W.field];
       const isEmpty = Array.isArray(raw) ? raw.length === 0 : !raw;
       if (isEmpty) push(f, 'warn', W.field, W.msg);
@@ -1091,10 +1096,17 @@ function renderModal() {
         </div>
       </div>
       <div class="row">
-        <label for="f-drive">Drive ID <span class="req">*</span></label>
+        <label for="f-drive">Drive ID</label>
         <div class="field">
           <input id="f-drive" type="text" value="${attr(f.drive_id)}" placeholder="ex: 1AbCdEfGhIjKlMnOpQrStUv (de https://drive.google.com/file/d/…)">
-          <div class="hint">També acceptes l'URL completa, l'extreu automàticament.</div>
+          <div class="hint">Drive ID <strong>o</strong> URL (cal un dels dos). També acceptes l'URL de Drive completa, l'extreu automàticament.</div>
+        </div>
+      </div>
+      <div class="row">
+        <label for="f-url">URL</label>
+        <div class="field">
+          <input id="f-url" type="text" value="${attr(f.url || '')}" placeholder="ex: ../cb/test.html?p=1&amp;nivell=4eso&amp;any=2025">
+          <div class="hint">Per a recursos web (proves CB, GeoGebra…). Si l'omples, s'obre aquest enllaç en comptes del Drive.</div>
         </div>
       </div>
       <div class="row">
@@ -1237,6 +1249,7 @@ function readModal() {
   f.title    = $('f-title').value.trim();
   f.id       = $('f-id').value.trim() || slugify(f.title);
   f.drive_id = $('f-drive').value.trim();
+  f.url      = $('f-url').value.trim();
   f.format   = document.querySelector('input[name=f-format]:checked')?.value || '';
   f.origin   = document.querySelector('input[name=f-origin]:checked')?.value || '';
   f.courses  = [...document.querySelectorAll('input[name=f-courses]:checked')].map(x => x.value);
@@ -1257,7 +1270,7 @@ function saveModal() {
   if (!f.title) return (err.textContent = 'El títol és obligatori');
   if (!f.id)    return (err.textContent = 'L\'ID intern és obligatori');
   if (!/^[a-z0-9-]+$/.test(f.id)) return (err.textContent = 'L\'ID només pot tenir lletres minúscules, números i guions');
-  if (!f.drive_id) return (err.textContent = 'El Drive ID és obligatori');
+  if (!f.drive_id && !f.url) return (err.textContent = 'Cal un Drive ID o una URL');
   if (!f.format)   return (err.textContent = 'Tria un format');
 
   // Uniqueness
@@ -1272,6 +1285,7 @@ function saveModal() {
 
   // Clean empty values for tidiness
   if (!f.year) delete f.year;
+  if (!f.url) delete f.url;
   if (!f.math_sense) delete f.math_sense;
   if (!f.type) delete f.type;
   if (!f.notes) delete f.notes;

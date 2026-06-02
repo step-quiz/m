@@ -13,11 +13,13 @@
       "mmaca",
       "g-morales",
       "ins-gelida",
-      "reptes-mates"
+      "reptes-mates",
+      "proves-cb"
     ],
     "format": [
       "pdf",
-      "doc"
+      "doc",
+      "web"
     ],
     "course": [
       "1ESO",
@@ -142,7 +144,8 @@
       "examen-recuperacio-global",
       "teoria",
       "examen-estructura",
-      "examen-correccio"
+      "examen-correccio",
+      "prova-cb"
     ]
   },
   "vocabulary_labels": {
@@ -274,7 +277,10 @@
     "teoria": "Teoria",
     "examen-estructura": "Estructura d'examen",
     "examen-correccio": "Correcció d'examen",
-    "circumferencia-cercle": "Circumferència i/o cercle"
+    "circumferencia-cercle": "Circumferència i/o cercle",
+    "web": "Web",
+    "proves-cb": "Proves CB",
+    "prova-cb": "Prova CB"
   },
   "files": [
     {
@@ -291,7 +297,6 @@
       "activities": [
         "geometria-pla-cartesia"
       ],
-      "type": "teoria",
       "year": 2026,
       "notes": "Eixos de coordenades"
     },
@@ -385,7 +390,6 @@
       "courses": [
         "1ESO"
       ],
-      "math_sense": "numeric",
       "activities": [
         "nombres-naturals",
         "divisibilitat"
@@ -1021,6 +1025,78 @@
       "type": "exercici",
       "year": 2026,
       "notes": "NRICH: Shifting Times Tables"
+    },
+    {
+      "title": "Prova CB 2n ESO 2024 (pràctica)",
+      "id": "prova-cb-2eso-2024",
+      "format": "web",
+      "origin": "proves-cb",
+      "url": "../cb/test.html?p=1&nivell=2eso&any=2024",
+      "courses": [
+        "2ESO"
+      ],
+      "type": "prova-cb",
+      "notes": "Prova de competències bàsiques de Catalunya · mode pràctica (amb pistes)"
+    },
+    {
+      "title": "Prova CB 2n ESO 2025 (pràctica)",
+      "id": "prova-cb-2eso-2025",
+      "format": "web",
+      "origin": "proves-cb",
+      "url": "../cb/test.html?p=1&nivell=2eso&any=2025",
+      "courses": [
+        "2ESO"
+      ],
+      "type": "prova-cb",
+      "notes": "Prova de competències bàsiques de Catalunya · mode pràctica (amb pistes)"
+    },
+    {
+      "title": "Prova CB 4t ESO 2022 (pràctica)",
+      "id": "prova-cb-4eso-2022",
+      "format": "web",
+      "origin": "proves-cb",
+      "url": "../cb/test.html?p=1&nivell=4eso&any=2022",
+      "courses": [
+        "4ESO"
+      ],
+      "type": "prova-cb",
+      "notes": "Prova de competències bàsiques de Catalunya · mode pràctica (amb pistes)"
+    },
+    {
+      "title": "Prova CB 4t ESO 2023 (pràctica)",
+      "id": "prova-cb-4eso-2023",
+      "format": "web",
+      "origin": "proves-cb",
+      "url": "../cb/test.html?p=1&nivell=4eso&any=2023",
+      "courses": [
+        "4ESO"
+      ],
+      "type": "prova-cb",
+      "notes": "Prova de competències bàsiques de Catalunya · mode pràctica (amb pistes)"
+    },
+    {
+      "title": "Prova CB 4t ESO 2024 (pràctica)",
+      "id": "prova-cb-4eso-2024",
+      "format": "web",
+      "origin": "proves-cb",
+      "url": "../cb/test.html?p=1&nivell=4eso&any=2024",
+      "courses": [
+        "4ESO"
+      ],
+      "type": "prova-cb",
+      "notes": "Prova de competències bàsiques de Catalunya · mode pràctica (amb pistes)"
+    },
+    {
+      "title": "Prova CB 4t ESO 2025 (pràctica)",
+      "id": "prova-cb-4eso-2025",
+      "format": "web",
+      "origin": "proves-cb",
+      "url": "../cb/test.html?p=1&nivell=4eso&any=2025",
+      "courses": [
+        "4ESO"
+      ],
+      "type": "prova-cb",
+      "notes": "Prova de competències bàsiques de Catalunya · mode pràctica (amb pistes)"
     }
   ],
   "basic": {
@@ -1029,7 +1105,8 @@
       "florence",
       "nrich",
       "geogebra",
-      "bogdan"
+      "bogdan",
+      "proves-cb"
     ],
     "course": [
       "1ESO",
@@ -1051,11 +1128,13 @@
       "exercici-solucions",
       "dossier",
       "examen",
-      "teoria"
+      "teoria",
+      "prova-cb"
     ],
     "format": [
       "pdf",
-      "doc"
+      "doc",
+      "web"
     ]
   },
   "activity_blocks": [

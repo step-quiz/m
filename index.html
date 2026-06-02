@@ -1208,9 +1208,13 @@ function renderResults(filtered) {
     const courseChips = (f.courses || []).map(c =>
       `<span class="pill pill-course">${escHtml(label(c))}</span>`).join('');
 
-    const driveOpen = f.format === 'doc'
-      ? `https://docs.google.com/document/d/${encodeURIComponent(f.drive_id)}/edit`
-      : `https://drive.google.com/file/d/${encodeURIComponent(f.drive_id)}/view`;
+    const isLink = !!f.url;
+    const openHref = isLink
+      ? f.url
+      : (f.format === 'doc'
+          ? `https://docs.google.com/document/d/${encodeURIComponent(f.drive_id)}/edit`
+          : `https://drive.google.com/file/d/${encodeURIComponent(f.drive_id)}/view`);
+    const openLabel = isLink ? 'Obre la prova ↗' : 'Obre al Drive ↗';
 
     return `
       <li>
@@ -1228,7 +1232,7 @@ function renderResults(filtered) {
           </div>
           <div class="card-actions">
             <button class="btn-act btn-prim act-preview" data-id="${escHtml(f.id)}">Previsualitza</button>
-            <a class="btn-act act-drive" href="${driveOpen}" target="_blank" rel="noopener">Obre al Drive ↗</a>
+            <a class="btn-act act-drive" href="${openHref}" target="_blank" rel="noopener">${openLabel}</a>
           </div>
         </div>
       </li>`;
@@ -1249,7 +1253,9 @@ function renderPreview() {
   els.preview.hidden = false;
   els.layout.classList.add('has-preview');
 
-  const previewSrc = `https://drive.google.com/file/d/${encodeURIComponent(f.drive_id)}/preview`;
+  const previewSrc = f.url
+    ? f.url
+    : `https://drive.google.com/file/d/${encodeURIComponent(f.drive_id)}/preview`;
 
   els.preview.innerHTML = `
     <div class="preview-head">
