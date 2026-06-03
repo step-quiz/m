@@ -62,6 +62,16 @@
     font-size: 12px; font-weight: 600; color: var(--text-2);
     background: var(--surface-3); padding: 4px 11px; border-radius: 980px;
   }
+  .btn-export {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: var(--accent); color: #fff;
+    font-size: 13px; font-weight: 600; padding: 8px 15px;
+    border-radius: 980px; box-shadow: var(--sh);
+    transition: background .15s, opacity .15s;
+  }
+  .btn-export:hover:not(:disabled) { background: #0063c8; }
+  .btn-export:disabled { opacity: .45; cursor: default; }
+  .btn-export svg { width: 14px; height: 14px; }
 
   /* ── Layout ─────────────────────────────────────────────────────── */
   .layout { display: grid; grid-template-columns: 224px 1fr; gap: 24px; padding: 22px; max-width: 1500px; margin: 0 auto; }
@@ -198,6 +208,10 @@
 <header class="topbar">
   <h1>Banc d'ítems CB<span class="h-sub">· proves de competències bàsiques</span></h1>
   <div class="spacer"></div>
+  <button class="btn-export" id="btn-export" disabled title="Genera un PDF dels blocs filtrats per a l'alumnat">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M5 7l3 3 3-3"/><path d="M3 12.5v1A1.5 1.5 0 0 0 4.5 15h7a1.5 1.5 0 0 0 1.5-1.5v-1"/></svg>
+    Exporta PDF
+  </button>
   <span class="count-pill" id="count"></span>
   <a class="back" href="index.html">← Tornar al cercador</a>
 </header>
@@ -219,6 +233,7 @@
   <div class="modal" id="modal" role="dialog" aria-modal="true"></div>
 </div>
 
+<script src="lib/pdf-lib.min.js"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════
    Banc d'ítems CB — vanilla JS, sense dependències.
@@ -249,7 +264,7 @@ const state = {
 
 const $ = id => document.getElementById(id);
 const els = { rail: $('rail'), chips: $('chips'), results: $('results'), count: $('count'),
-              modalBg: $('modal-bg'), modal: $('modal') };
+              exportBtn: $('btn-export'), modalBg: $('modal-bg'), modal: $('modal') };
 
 function escHtml(s) {
   return String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
@@ -351,6 +366,7 @@ function diffChips(diffs) {
 function renderResults() {
   const blocks = state.data.blocks.filter(blockMatches);
   els.count.textContent = `${blocks.length} bloc${blocks.length === 1 ? '' : 's'} · ${blocks.reduce((n, b) => n + b.questions.length, 0)} preguntes`;
+  els.exportBtn.disabled = blocks.length === 0;
   if (!blocks.length) {
     els.results.innerHTML = `<div class="empty">Cap bloc coincideix amb els filtres.</div>`;
     return;
@@ -432,6 +448,85 @@ function closeBlock() {
   document.body.style.overflow = '';
 }
 
+/* ─── Exporta PDF (per a l'alumnat: enunciat + preguntes, SENSE respostes) ──
+   Treu els blocs filtrats, un per pàgina. NO inclou el panell de respostes
+   (resposta correcta + pistes): això només es veu aquí, al banc del professor. */
+async function exportPdf(btn) {
+  if (!window.PDFLib) { alert("La llibreria PDF (lib/pdf-lib.min.js) no s'ha carregat."); return; }
+  const blocks = state.data.blocks.filter(blockMatches);
+  if (!blocks.length) return;
+
+  const { PDFDocument, StandardFonts, rgb } = window.PDFLib;
+  const original = btn.innerHTML;
+  btn.disabled = true;
+
+  try {
+    const pdf  = await PDFDocument.create();
+    const font = await pdf.embedFont(StandardFonts.Helvetica);
+
+    const PW = 595.28, PH = 841.89, M = 40;   // A4 vertical + marges
+    const CW = PW - 2 * M;                      // amplada de contingut
+    const TOP = PH - M;
+
+    // Descarrega i incrusta cada imatge una sola vegada (cross-origin → cal CORS al cb).
+    const cache = new Map();
+    async function embed(path) {
+      if (cache.has(path)) return cache.get(path);
+      const url = imgUrl(path);
+      const res = await fetch(url, { mode: 'cors' });
+      if (!res.ok) throw new Error(`No s'ha pogut descarregar la imatge (HTTP ${res.status}): ${url}`);
+      const img = await pdf.embedPng(await res.arrayBuffer());
+      cache.set(path, img);
+      return img;
+    }
+
+    // Col·loca una imatge a amplada de contingut; passa de pàgina si no hi cap.
+    let page, y;
+    const place = (img, gap) => {
+      let w = CW, h = img.height * (CW / img.width);
+      const maxH = PH - 2 * M;
+      if (h > maxH) { const r = maxH / h; w *= r; h *= r; }
+      if (y - h < M) { page = pdf.addPage([PW, PH]); y = TOP; }
+      page.drawImage(img, { x: M + (CW - w) / 2, y: y - h, width: w, height: h });
+      y -= h + gap;
+    };
+
+    let done = 0;
+    for (const b of blocks) {
+      page = pdf.addPage([PW, PH]);            // pàgina nova per bloc
+      y = TOP;
+      page.drawText(`${label(b.nivell)} · ${b.any}`, { x: M, y: y - 11, size: 10, font, color: rgb(0.55, 0.55, 0.57) });
+      y -= 22;
+
+      place(await embed(b.enunciat), 18);      // enunciat (context compartit)
+      for (const q of b.questions) {           // preguntes oficials (opcions a/b/c/d dins la imatge)
+        place(await embed(q.img), 20);
+      }
+
+      done++;
+      btn.textContent = `Generant… ${done}/${blocks.length}`;
+    }
+
+    const bytes = await pdf.save();
+    const niv = [...new Set(blocks.map(x => x.nivell))];
+    const yrs = [...new Set(blocks.map(x => String(x.any)))];
+    const name = (niv.length === 1 && yrs.length === 1) ? `CB-${niv[0]}-${yrs[0]}.pdf` : 'CB-seleccio.pdf';
+
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
+    a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  } catch (err) {
+    console.error(err);
+    alert("No s'ha pogut generar el PDF.\n\n" + err.message +
+          "\n\nSi és un error de xarxa o CORS, comprova que el fitxer _headers estigui desplegat al cb.step-quiz.net.");
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = original;
+  }
+}
+
 /* ─── Glue ──────────────────────────────────────────────────────── */
 function renderAll() { renderRail(); renderChips(); renderResults(); }
 function clearAll() {
@@ -456,6 +551,7 @@ els.results.addEventListener('click', e => {
   const card = e.target.closest('.bcard'); if (!card) return;
   openBlock(card.dataset.id);
 });
+els.exportBtn.addEventListener('click', () => exportPdf(els.exportBtn));
 els.modalBg.addEventListener('click', e => { if (e.target === els.modalBg) closeBlock(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && state.openId) closeBlock(); });
 
