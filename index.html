@@ -104,7 +104,7 @@
     white-space: nowrap;
   }
   .recents-btn svg { width: 15px; height: 15px; }
-  .recents-btn:hover { background: var(--divider); color: var(--text); }
+  .recents-btn:hover { background: rgba(0,113,227,.18); color: var(--text); box-shadow: inset 0 0 0 2px #000; border-color: transparent; }
   .recents-wrap.is-open .recents-btn {
     background: var(--surface);
     border-color: var(--accent);
@@ -223,7 +223,11 @@
     color: var(--text);
     box-shadow: var(--sh);
   }
-  .mode-toggle button:not(.active):hover { color: var(--text); }
+  .mode-toggle button:hover {
+    background: rgba(0,113,227,.18);
+    color: var(--text);
+    box-shadow: inset 0 0 0 2px #000;
+  }
 
   .mode-hint {
     margin: 8px 4px 0;
@@ -558,6 +562,21 @@
   /* ── Top-right cluster (Configuració + Recents) ─────────────────── */
   .topbar-right { justify-self: end; display: flex; align-items: center; gap: 10px; }
 
+  /* Standalone topbar links (Repositori, Filtrar CB) — same pill as the dropdowns */
+  .link-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 14px;
+    border-radius: 980px;
+    font-size: 13px; font-weight: 600;
+    color: var(--text-2);
+    background: var(--surface-3);
+    border: 1px solid transparent;
+    text-decoration: none;
+    transition: background .12s, color .12s, box-shadow .12s;
+    white-space: nowrap;
+  }
+  .link-btn svg { width: 15px; height: 15px; }
+
   .config-wrap { position: relative; }
   .config-btn {
     display: inline-flex; align-items: center; gap: 6px;
@@ -571,7 +590,8 @@
     white-space: nowrap;
   }
   .config-btn svg { width: 15px; height: 15px; }
-  .config-btn:hover { background: var(--divider); color: var(--text); }
+  .config-btn:hover { background: rgba(0,113,227,.18); color: var(--text); box-shadow: inset 0 0 0 2px #000; border-color: transparent; }
+  .link-btn:hover   { background: rgba(0,113,227,.18); color: var(--text); box-shadow: inset 0 0 0 2px #000; text-decoration: none; }
   .config-wrap.is-open .config-btn {
     background: var(--surface);
     border-color: var(--accent);
@@ -582,7 +602,7 @@
     position: absolute;
     top: calc(100% + 8px);
     left: 0;
-    width: 252px; max-width: 90vw;
+    width: 280px; max-width: 90vw;
     background: var(--surface);
     border: 1px solid var(--divider);
     border-radius: var(--radius);
@@ -669,35 +689,31 @@
     <input id="search" type="search" placeholder="Cerca…" autocomplete="off" spellcheck="false">
   </div>
   <div class="topbar-right">
+    <a class="link-btn" id="repo-btn" target="_blank" rel="noopener" href="https://drive.google.com/drive/folders/1jTYNRPJrR9ToTuDkYNahEtZaOrUp-wQg?usp=drive_link" title="Obre el repositori">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1.8 4.2A1.2 1.2 0 0 1 3 3h3l1.5 1.6H13a1.2 1.2 0 0 1 1.2 1.2v6A1.2 1.2 0 0 1 13 13H3a1.2 1.2 0 0 1-1.2-1.2z"/></svg>
+      <span>Repositori ↗</span>
+    </a>
+    <a class="link-btn" id="cb-btn" href="banc-cb.html" title="Filtra les proves CB i exporta'n un PDF">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="2.5" width="11" height="11" rx="1.5"/><path d="M2.5 6h11M6 6v7.5"/></svg>
+      <span>Filtrar CB i obtenir PDF</span>
+    </a>
     <div class="config-wrap" id="config-wrap">
-      <button class="config-btn" id="config-btn" aria-haspopup="true" aria-expanded="false" title="Eines i configuració">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="8" cy="8" r="2.1"/>
-          <path d="M8 1.4v1.7M8 12.9v1.7M2.6 4.7l1.5.9M11.9 10.4l1.5.9M2.6 11.3l1.5-.9M11.9 5.6l1.5-.9"/>
-        </svg>
-        <span>Configuració</span>
+      <button class="config-btn" id="config-btn" aria-haspopup="true" aria-expanded="false" title="Edició del catàleg">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10.6 2.6l2.8 2.8M11.8 1.4a1.4 1.4 0 0 1 2 2L5 12.2 1.6 13l.8-3.4z"/></svg>
+        <span>Edició</span>
       </button>
       <div class="config-menu" id="config-menu" role="menu" hidden>
         <a class="config-item" role="menuitem" href="afegir-material.html">
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 3.5v9M3.5 8h9"/></svg>
-          <span>Afegir</span>
+          <span>Afegir i catalogar material</span>
         </a>
         <a class="config-item cfg-ai" role="menuitem" href="extreu-json.html">
           <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.5l1.4 3.4 3.6.3-2.7 2.3.8 3.5L8 12.9l-3.1 1.8.8-3.5L3 8.9l3.6-.3z"/></svg>
-          <span>Afegir amb IA</span>
+          <span>Catalogar material amb IA</span>
         </a>
         <a class="config-item" role="menuitem" href="eliminar-curs.html">
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3.5l3.5 3.5-5.5 5.5H3.5v-3.5z"/><path d="M7.5 5l3.5 3.5"/></svg>
-          <span>Eliminar curs</span>
-        </a>
-        <a class="config-item" role="menuitem" href="banc-cb.html">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="2.5" width="11" height="11" rx="1.5"/><path d="M2.5 6h11M6 6v7.5"/></svg>
-          <span>Banc d'ítems CB</span>
-        </a>
-        <div class="cfg-sep" aria-hidden="true"></div>
-        <a class="config-item" role="menuitem" target="_blank" rel="noopener" href="https://drive.google.com/drive/folders/1jTYNRPJrR9ToTuDkYNahEtZaOrUp-wQg?usp=drive_link">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1.8 4.2A1.2 1.2 0 0 1 3 3h3l1.5 1.6H13a1.2 1.2 0 0 1 1.2 1.2v6A1.2 1.2 0 0 1 13 13H3a1.2 1.2 0 0 1-1.2-1.2z"/></svg>
-          <span>Repositori ↗</span>
+          <span>Eliminar text d'un curs concret</span>
         </a>
       </div>
     </div>
