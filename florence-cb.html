@@ -48,7 +48,10 @@ body{margin:0;background:var(--bg);color:var(--ink);overflow:hidden;
  border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0;z-index:20}
 .legend{flex:0 0 auto;display:flex;flex-wrap:wrap;gap:10px 14px;padding:11px 16px;
  font-size:11px;color:var(--muted);border-bottom:1px solid var(--line)}
-.legend .pill{display:inline-block;width:22px;height:7px;border-radius:4px;vertical-align:middle;margin-right:4px;box-shadow:inset 0 0 0 1px rgba(31,58,95,.12)}
+.legend .pill{display:inline-block;width:22px;height:8px;border-radius:4px;vertical-align:middle;margin-right:4px;box-sizing:border-box}
+.legend .pill.p3{border:1px solid #e6b800}
+.legend .pill.p2{border:1px solid #111}
+.legend .pill.p1{border:0}
 .legend .src{font-size:10px;padding:1px 6px;border-radius:5px;font-weight:600}
 .list{flex:1 1 auto;overflow-y:auto;padding:8px}
 .srow{display:flex;align-items:flex-start;gap:10px;padding:9px 11px;border-radius:10px;cursor:pointer;
@@ -74,12 +77,16 @@ body{margin:0;background:var(--bg);color:var(--ink);overflow:hidden;
 .openpdf svg{width:17px;height:17px}
 .detail .nucli{font-size:13px;color:var(--muted);font-style:italic;margin-bottom:8px}
 .sectlab{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--hint);font-weight:700;margin:18px 0 8px}
-table.cb{width:100%;border-collapse:collapse;font-size:13px}
-table.cb th{background:var(--navy);color:#fff;font-weight:600;font-size:12px;padding:7px 9px;text-align:left}
+table.cb{width:100%;border-collapse:collapse;font-size:14.3px}
+table.cb th{background:var(--navy);color:#fff;font-weight:600;font-size:13.2px;padding:7px 9px;text-align:left}
 table.cb td{padding:6px 9px;border-bottom:1px solid var(--line)}
 table.cb tr:nth-child(even) td{background:#fafbfd}
-.pesbar{display:inline-block;width:34px;height:6px;border-radius:4px;vertical-align:middle;box-shadow:inset 0 0 0 1px rgba(31,58,95,.12)}
-.src{font-size:11px;padding:1px 7px;border-radius:5px;font-weight:600}
+.pestrack{display:inline-block;width:42px;vertical-align:middle;line-height:0}
+.pesbar{display:inline-block;height:8px;border-radius:4px;box-sizing:border-box}
+.pesbar.p3{width:100%;border:1px solid #e6b800}
+.pesbar.p2{width:85%;border:1px solid #111}
+.pesbar.p1{width:70%;border:0}
+.src{font-size:12.1px;padding:1px 7px;border-radius:5px;font-weight:600}
 .src.s2{background:var(--blue-bg);color:var(--blue-soft)}
 .src.s4{background:var(--teal-bg);color:var(--teal)}
 .urlbox{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
@@ -95,7 +102,7 @@ table.cb tr:nth-child(even) td{background:#fafbfd}
 .relchip{font-size:12px;padding:3px 10px;border:1px solid var(--line);border-radius:14px;color:var(--muted);cursor:pointer;background:var(--card)}
 .relchip:hover{border-color:var(--blue);color:var(--blue)}
 .dlhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.btn.dl{padding:4px 10px;font-size:11px}
+.btn.dl{padding:4px 10px;font-size:12.1px}
 .btn.dlall{padding:5px 12px;font-size:12px;text-transform:none;letter-spacing:0}
 table.cb td:last-child{text-align:left;width:100%}
 table.cb th:last-child{text-align:left}
@@ -219,8 +226,8 @@ let graf='2';
 // Sessions amb fitxa d'alumnat (PDF) disponible a florence-pdf/<ID>.pdf
 const FPDF=new Set(["F_2ESO_S01","F_2ESO_S02","F_2ESO_S03","F_2ESO_S04","F_2ESO_S05","F_2ESO_S06","F_2ESO_S07","F_2ESO_S08","F_2ESO_S09","F_2ESO_S010","F_2ESO_S11","F_3ESO_S01","F_3ESO_S02","F_3ESO_S03","F_3ESO_S04","F_3ESO_S05","F_3ESO_S06","F_3ESO_S07","F_3ESO_S08","F_3ESO_S09","F_3ESO_S10","F_3ESO_S11"]);
 function pdfFor(id){return FPDF.has(id)?('florence-pdf/'+id+'.pdf'):null;}
-const pesColor={'2':{3:'var(--p3-2)',2:'var(--p2-2)',1:'var(--p1-2)'},'3':{3:'var(--p3-3)',2:'var(--p2-3)',1:'var(--p1-3)'}};
-const pesTxt={3:'fort',2:'mitjà',1:'baix'};
+const pesColor={'2':{3:'var(--p3-2)',2:'var(--p2-2)',1:'var(--p1-2)'},'3':{3:'var(--p3-2)',2:'var(--p2-2)',1:'var(--p1-2)'}};
+const pesTxt={3:'fort',2:'mitjà',1:'dèbil'};
 function dataFor(){return graf==='2'?PAYLOAD.d2:PAYLOAD.d3;}
 function ffFor(){return graf==='2'?PAYLOAD.ff2:PAYLOAD.ff3;}
 function shortId(id){return id.replace(/^F_\dESO_/,'').replace('S010','S10').replace(/^S0/,'S');}
@@ -245,9 +252,9 @@ function setGraf(g,el){
 function renderLegend(){
  const pc=pesColor[graf];
  document.getElementById('legend').innerHTML=
-  `<span><span class="pill" style="background:${pc[3]}"></span>fort</span>
-   <span><span class="pill" style="background:${pc[2]}"></span>mitjà</span>
-   <span><span class="pill" style="background:${pc[1]}"></span>baix</span>
+  `<span><span class="pill p3" style="background:${pc[3]}"></span>fort</span>
+   <span><span class="pill p2" style="background:${pc[2]}"></span>mitjà</span>
+   <span><span class="pill p1" style="background:${pc[1]}"></span>dèbil</span>
    <span><span class="src s2">2ESO</span> / <span class="src s4">4ESO</span> font</span>`;
 }
 function renderList(){
@@ -277,7 +284,7 @@ function show(id,keepDrawer){
  document.querySelectorAll('.srow').forEach(c=>c.classList.toggle('sel',c.dataset.id===id));
  const n=dataFor().find(x=>x.id===id);const pc=pesColor[graf];
  let rows=n.cb.map(cb=>`<tr>
-   <td><span class="pesbar" style="background:${pc[cb.pes]}" title="${pesTxt[cb.pes]}"></span></td>
+   <td><span class="pestrack"><span class="pesbar p${cb.pes}" style="background:${pc[cb.pes]}" title="${pesTxt[cb.pes]}"></span></span></td>
    <td><b>CB ${cb.id}</b></td>
    <td><span class="src ${cb.src==='2ESO'?'s2':'s4'}">${cb.src}</span></td>
    <td class="veurecell"><button class="iconmini" title="Visualitza" onclick="previewPng(${cb.id})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg></button></td>
