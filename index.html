@@ -104,6 +104,8 @@
     white-space: nowrap;
   }
   .recents-btn svg { width: 15px; height: 15px; }
+  .recents-btn.icon-only { gap: 0; padding: 8px; width: 38px; height: 38px; justify-content: center; }
+  .recents-btn.icon-only svg { width: 17px; height: 17px; }
   .recents-btn:hover { background: rgba(0,113,227,.18); color: var(--text); box-shadow: inset 0 0 0 2px #000; border-color: transparent; }
   .recents-wrap.is-open .recents-btn {
     background: var(--surface);
@@ -689,14 +691,18 @@
     <input id="search" type="search" placeholder="Cerca…" autocomplete="off" spellcheck="false">
   </div>
   <div class="topbar-right">
+    <a class="link-btn" id="florence-cb-btn" target="_blank" rel="noopener" href="https://m.step-quiz.net/florence-cb" title="Mapa Florence → Competències Bàsiques">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="4" cy="4" r="2"/><circle cx="12" cy="5.5" r="1.6"/><circle cx="6.5" cy="12.5" r="1.6"/><path d="M5.7 5.4l5 0.6M5.3 5.9l1 5"/></svg>
+      <span>Florence-CB</span>
+    </a>
     <a class="link-btn" id="cb-btn" target="_blank" rel="noopener" href="banc-cb.html" title="Filtra les proves CB i exporta'n un PDF">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="2.5" width="11" height="11" rx="1.5"/><path d="M2.5 6h11M6 6v7.5"/></svg>
-      <span>Filtrar CB i obtenir PDF</span>
+      <span>Filtrar CB</span>
     </a>
     <div class="config-wrap" id="config-wrap">
       <button class="config-btn" id="config-btn" aria-haspopup="true" aria-expanded="false" title="Edició del catàleg">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10.6 2.6l2.8 2.8M11.8 1.4a1.4 1.4 0 0 1 2 2L5 12.2 1.6 13l.8-3.4z"/></svg>
-        <span>Edició</span>
+        <span>Editar</span>
       </button>
       <div class="config-menu" id="config-menu" role="menu" hidden>
         <a class="config-item" role="menuitem" target="_blank" rel="noopener" href="afegir-material.html">
@@ -715,14 +721,13 @@
     </div>
     <a class="link-btn" id="repo-btn" target="_blank" rel="noopener" href="https://drive.google.com/drive/folders/1jTYNRPJrR9ToTuDkYNahEtZaOrUp-wQg?usp=drive_link" title="Obre el repositori">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1.8 4.2A1.2 1.2 0 0 1 3 3h3l1.5 1.6H13a1.2 1.2 0 0 1 1.2 1.2v6A1.2 1.2 0 0 1 13 13H3a1.2 1.2 0 0 1-1.2-1.2z"/></svg>
-      <span>Repositori ↗</span>
+      <span>Drive ↗</span>
     </a>
     <div class="recents-wrap" id="recents-wrap">
-      <button class="recents-btn" id="recents-btn" aria-haspopup="true" aria-expanded="false" title="Documents oberts recentment">
+      <button class="recents-btn icon-only" id="recents-btn" aria-haspopup="true" aria-expanded="false" aria-label="Recents" title="Documents oberts recentment">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="8" cy="8" r="6.5"/><path d="M8 4.5V8l2.5 1.5"/>
         </svg>
-        <span>Recents</span>
       </button>
       <div class="recents-menu" id="recents-menu" hidden></div>
     </div>
