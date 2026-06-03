@@ -57,7 +57,18 @@
   .topbar h1 { font-size: 17px; font-weight: 700; letter-spacing: -.02em; }
   .topbar h1 .h-sub { font-weight: 500; color: var(--text-3); font-size: 13px; margin-left: 8px; }
   .spacer { flex: 1; }
-  .back { font-size: 13px; color: var(--text-2); font-weight: 600; }
+  .back {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 14px; border-radius: 980px;
+    font-size: 13px; font-weight: 600;
+    color: var(--text-2); background: var(--surface-3);
+    border: 1px solid transparent; white-space: nowrap;
+    transition: background .12s, color .12s, box-shadow .12s;
+  }
+  .back:hover {
+    background: rgba(0,113,227,.18); color: var(--text);
+    box-shadow: inset 0 0 0 2px #000; text-decoration: none;
+  }
   .count-pill {
     font-size: 12px; font-weight: 600; color: var(--text-2);
     background: var(--surface-3); padding: 4px 11px; border-radius: 980px;
@@ -206,7 +217,7 @@
 <body>
 
 <header class="topbar">
-  <h1>Banc d'ítems CB<span class="h-sub">· proves de competències bàsiques</span></h1>
+  <h1>Banc d'ítems CB<span class="h-sub">· Proves de competències bàsiques</span></h1>
   <div class="spacer"></div>
   <button class="btn-export" id="btn-export" disabled title="Genera un PDF dels blocs filtrats per a l'alumnat">
     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M5 7l3 3 3-3"/><path d="M3 12.5v1A1.5 1.5 0 0 0 4.5 15h7a1.5 1.5 0 0 0 1.5-1.5v-1"/></svg>

@@ -689,11 +689,7 @@
     <input id="search" type="search" placeholder="Cerca…" autocomplete="off" spellcheck="false">
   </div>
   <div class="topbar-right">
-    <a class="link-btn" id="repo-btn" target="_blank" rel="noopener" href="https://drive.google.com/drive/folders/1jTYNRPJrR9ToTuDkYNahEtZaOrUp-wQg?usp=drive_link" title="Obre el repositori">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1.8 4.2A1.2 1.2 0 0 1 3 3h3l1.5 1.6H13a1.2 1.2 0 0 1 1.2 1.2v6A1.2 1.2 0 0 1 13 13H3a1.2 1.2 0 0 1-1.2-1.2z"/></svg>
-      <span>Repositori ↗</span>
-    </a>
-    <a class="link-btn" id="cb-btn" href="banc-cb.html" title="Filtra les proves CB i exporta'n un PDF">
+    <a class="link-btn" id="cb-btn" target="_blank" rel="noopener" href="banc-cb.html" title="Filtra les proves CB i exporta'n un PDF">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="2.5" width="11" height="11" rx="1.5"/><path d="M2.5 6h11M6 6v7.5"/></svg>
       <span>Filtrar CB i obtenir PDF</span>
     </a>
@@ -703,20 +699,24 @@
         <span>Edició</span>
       </button>
       <div class="config-menu" id="config-menu" role="menu" hidden>
-        <a class="config-item" role="menuitem" href="afegir-material.html">
+        <a class="config-item" role="menuitem" target="_blank" rel="noopener" href="afegir-material.html">
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 3.5v9M3.5 8h9"/></svg>
           <span>Afegir i catalogar material</span>
         </a>
-        <a class="config-item cfg-ai" role="menuitem" href="extreu-json.html">
+        <a class="config-item cfg-ai" role="menuitem" target="_blank" rel="noopener" href="extreu-json.html">
           <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.5l1.4 3.4 3.6.3-2.7 2.3.8 3.5L8 12.9l-3.1 1.8.8-3.5L3 8.9l3.6-.3z"/></svg>
           <span>Catalogar material amb IA</span>
         </a>
-        <a class="config-item" role="menuitem" href="eliminar-curs.html">
+        <a class="config-item" role="menuitem" target="_blank" rel="noopener" href="eliminar-curs.html">
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3.5l3.5 3.5-5.5 5.5H3.5v-3.5z"/><path d="M7.5 5l3.5 3.5"/></svg>
           <span>Eliminar text d'un curs concret</span>
         </a>
       </div>
     </div>
+    <a class="link-btn" id="repo-btn" target="_blank" rel="noopener" href="https://drive.google.com/drive/folders/1jTYNRPJrR9ToTuDkYNahEtZaOrUp-wQg?usp=drive_link" title="Obre el repositori">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1.8 4.2A1.2 1.2 0 0 1 3 3h3l1.5 1.6H13a1.2 1.2 0 0 1 1.2 1.2v6A1.2 1.2 0 0 1 13 13H3a1.2 1.2 0 0 1-1.2-1.2z"/></svg>
+      <span>Repositori ↗</span>
+    </a>
     <div class="recents-wrap" id="recents-wrap">
       <button class="recents-btn" id="recents-btn" aria-haspopup="true" aria-expanded="false" title="Documents oberts recentment">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -1513,6 +1513,10 @@ els.recentsMenu.addEventListener('click', e => {
   openPreview(id);
   const card = document.querySelector(`.card[data-id="${CSS.escape(id)}"]`);
   if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+});
+// Clicking a menu item (now opens in a new tab) closes the Edició menu.
+els.configMenu.addEventListener('click', e => {
+  if (e.target.closest('.config-item')) toggleConfigMenu(false);
 });
 // Click outside closes the dropdowns.
 document.addEventListener('click', e => {
