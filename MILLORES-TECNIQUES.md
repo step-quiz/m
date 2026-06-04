@@ -37,7 +37,7 @@ afegeix una línia al **Registre de canvis** i —si la millora resol un punt de
 | A4 | Semàntica correcta del commutador Bàsic/Avançat | Baixa | S | Fet |
 | B1 | Avisar d'activitats òrfenes al validador (`afegir-material.html`) | Alta | S | Fet |
 | B2 | Resoldre l'activitat òrfena actual al `manifest.json` | Alta | S | Fet |
-| B3 | Centralitzar codi compartit en `common.js` | Mitjana | M | Pendent |
+| B3 | Centralitzar codi compartit en `common.js` | Mitjana | M | Fet |
 | B4 | Treure el codi mort de `saveModal()` | Baixa | S | Fet |
 | B5 | Homogeneïtzar `florence-cb.html` (sense `onclick` en línia) | Baixa | M | Fet |
 | C1 | Servir totes les llibreries en local (treure cdnjs) | Mitjana | S–M | Pendent |
@@ -121,7 +121,7 @@ afegeix una línia al **Registre de canvis** i —si la millora resol un punt de
   ```
 
 ### B3 — Centralitzar codi compartit en `common.js`
-- [ ] **Estat:** Pendent · **Prioritat:** Mitjana · **Esforç:** M
+- [x] **Estat:** Fet · **Prioritat:** Mitjana · **Esforç:** M
 - **Fitxers:** totes les pàgines
 - **Problema:** `escHtml`, `normalize`, `label`, `slugify`, `FILTER_GROUPS` i el vocabulari
   de reserva estan **copiats** a cada pàgina (documentat a `ARQUITECTURA.md` §1 i §6.5). Un
@@ -238,6 +238,7 @@ Afegeix una línia per cada millora aplicada (la més recent a dalt).
 
 | Data | ID | Canvi | Qui |
 |------|----|-------|-----|
+| 2026-06-04 | B3 | Creat `common.js` amb `escHtml`, `normalize`, `slugify`, `FILTER_GROUPS`, `ESO_COURSES`, `BATX_COURSES`, `FALLBACK_VOCAB`, `FALLBACK_LABELS`; eliminades les definicions locals de les 5 pàgines HTML | — |
 | 2026-06-04 | B5 | `florence-cb.html`: 12 `onclick` eliminats; gestors delegats; `esc()` per a tot l'innerHTML dinàmic | — |
 | 2026-06-04 | B4 | `saveModal()`: eliminada variable `others` no usada i bloc `if (!state.editingNew) {}` buit | — |
 | 2026-06-04 | B2 | `manifest.json`: `circumferencia-cercle` afegida al bloc Geometria sintètica (resolt manualment) | — |

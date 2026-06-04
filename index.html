@@ -760,6 +760,7 @@
   <aside class="preview-drawer" id="preview-drawer" hidden></aside>
 </main>
 
+<script src="common.js"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════
    Material finder — vanilla JS, no dependencies.
@@ -767,16 +768,6 @@
 
 /* ─── CONFIG ────────────────────────────────────────────────────── */
 const MANIFEST_URL = 'manifest.json';
-const FILTER_GROUPS = [
-  { key: 'course',     label: 'Curs',              field: 'courses',    multi: true  },
-  { key: 'origin',     label: 'Origen',            field: 'origin',     multi: false },
-  { key: 'math_sense', label: 'Sentit',            field: 'math_sense', multi: false },
-  { key: 'format',     label: 'Format',            field: 'format',     multi: false },
-  { key: 'type',       label: 'Tipus',             field: 'type',       multi: false },
-  { key: 'activity',   label: 'Activitat',         field: 'activities', multi: true  },
-];
-const ESO_COURSES  = ['1ESO','2ESO','3ESO','4ESO'];
-const BATX_COURSES = ['1Bat','2Bat'];
 
 /* ─── STATE ─────────────────────────────────────────────────────── */
 const state = {
@@ -915,16 +906,6 @@ function toggleConfigMenu(force) {
    UTIL — normalize, fuzzy match, labels
    ═══════════════════════════════════════════════════════════════════ */
 
-function normalize(s) {
-  if (!s) return '';
-  return String(s)
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^\w\s]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
 
 function damerauLevenshtein(a, b) {
   const m = a.length, n = b.length;
@@ -983,11 +964,6 @@ function label(value) {
   return String(value).replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 }
 
-function escHtml(s) {
-  return String(s ?? '').replace(/[&<>"']/g, c => ({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-  }[c]));
-}
 
 /* Course umbrella matching: a filter on '3ESO' matches files tagged
    ['3ESO'] or ['ESO']. A file with NO course tags matches every course

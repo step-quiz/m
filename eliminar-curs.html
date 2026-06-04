@@ -392,6 +392,7 @@
 
   </div>
 
+  <script src="common.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -458,7 +459,6 @@
     els.status.textContent = msg;
     els.status.className = 'status' + (kind ? ' ' + kind : '');
   }
-  function escHtml(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 
   function resetUI(){
     hide(els.panelDetect); hide(els.panelPreview); hide(els.panelActions);

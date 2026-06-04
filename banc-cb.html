@@ -253,6 +253,7 @@
   <div class="modal" id="modal" role="dialog" aria-modal="true"></div>
 </div>
 
+<script src="common.js"></script>
 <script src="lib/pdf-lib.min.js"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════
@@ -286,9 +287,6 @@ const $ = id => document.getElementById(id);
 const els = { rail: $('rail'), chips: $('chips'), results: $('results'), count: $('count'),
               exportBtn: $('btn-export'), modalBg: $('modal-bg'), modal: $('modal') };
 
-function escHtml(s) {
-  return String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
-}
 function label(v) { return state.labels[v] || String(v); }
 function diffLabel(d) { return DIFF_LABELS[String(d)] || String(d); }
 function imgUrl(path) { return state.base + path; }

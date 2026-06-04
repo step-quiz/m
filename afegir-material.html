@@ -566,19 +566,12 @@
 
 <div class="toast" id="toast" hidden></div>
 
+<script src="common.js"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════
    Manifest editor — vanilla JS, no dependencies.
    ═══════════════════════════════════════════════════════════════════ */
 
-const FILTER_GROUPS = [
-  { key: 'origin',     label: 'Origen',           field: 'origin',     multi: false, required: false },
-  { key: 'format',     label: 'Format',           field: 'format',     multi: false, required: true  },
-  { key: 'course',     label: 'Curs',             field: 'courses',    multi: true,  required: false },
-  { key: 'math_sense', label: 'Sentit matemàtic', field: 'math_sense', multi: false, required: false },
-  { key: 'activity',   label: 'Activitat',        field: 'activities', multi: true,  required: false },
-  { key: 'type',       label: 'Tipus',            field: 'type',       multi: false, required: false },
-];
 
 /* Default empty manifest scaffold */
 function emptyManifest() {
@@ -612,11 +605,6 @@ const state = {
 const $ = id => document.getElementById(id);
 
 /* ─── HELPERS ───────────────────────────────────────────────────── */
-function escHtml(s) {
-  return String(s ?? '').replace(/[&<>"']/g, c => ({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-  }[c]));
-}
 function attr(s) { return escHtml(s); }
 
 function label(value) {
@@ -625,14 +613,6 @@ function label(value) {
   return String(value).replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 }
 
-function slugify(s) {
-  return String(s)
-    .toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '')
-    .slice(0, 60);
-}
 
 function setDirty(flag = true) {
   state.dirty = flag;
