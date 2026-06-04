@@ -20,6 +20,8 @@ afegeix una línia al **Registre de canvis** i —si la millora resol un punt de
 **Prioritat:** `Alta` · `Mitjana` · `Baixa`
 **Esforç:** `S` (hores) · `M` (un dia) · `L` (diversos dies)
 
+**Output:** Proporciona com a output únicament els fitxers modificats, en un zip que respecta la jerarquia de directoris.
+
 > ⚠️ Les referències a línies són **aproximades**: el codi es mou a mesura que
 > s'edita. Fes servir-les com a punt de partida, no com a adreça exacta.
 
@@ -31,13 +33,13 @@ afegeix una línia al **Registre de canvis** i —si la millora resol un punt de
 |----|---------|-----------|--------|-------|
 | A1 | Targetes de resultat operables amb teclat (`index.html`) | Alta | S–M | Fet |
 | A2 | Estils `:focus-visible` coherents a tot el projecte | Mitjana | S | Fet |
-| A3 | Anunciar el nombre de resultats (regió `aria-live`) | Baixa | S | Pendent |
+| A3 | Anunciar el nombre de resultats (regió `aria-live`) | Baixa | S | Descartat |
 | A4 | Semàntica correcta del commutador Bàsic/Avançat | Baixa | S | Fet |
-| B1 | Avisar d'activitats òrfenes al validador (`afegir-material.html`) | Alta | S | Pendent |
-| B2 | Resoldre l'activitat òrfena actual al `manifest.json` | Alta | S | Pendent |
+| B1 | Avisar d'activitats òrfenes al validador (`afegir-material.html`) | Alta | S | Fet |
+| B2 | Resoldre l'activitat òrfena actual al `manifest.json` | Alta | S | Fet |
 | B3 | Centralitzar codi compartit en `common.js` | Mitjana | M | Pendent |
-| B4 | Treure el codi mort de `saveModal()` | Baixa | S | Pendent |
-| B5 | Homogeneïtzar `florence-cb.html` (sense `onclick` en línia) | Baixa | M | Pendent |
+| B4 | Treure el codi mort de `saveModal()` | Baixa | S | Fet |
+| B5 | Homogeneïtzar `florence-cb.html` (sense `onclick` en línia) | Baixa | M | Fet |
 | C1 | Servir totes les llibreries en local (treure cdnjs) | Mitjana | S–M | Pendent |
 | C2 | Allotjar en local les imatges del banc CB | Mitjana | M | Pendent |
 | D1 | Actualitzar la documentació desfasada | Alta | S | Pendent |
@@ -75,7 +77,7 @@ afegeix una línia al **Registre de canvis** i —si la millora resol un punt de
 - **Verificació:** Navegar tota una pàgina amb `Tab` i veure sempre on és el focus.
 
 ### A3 — Anunciar el nombre de resultats
-- [ ] **Estat:** Pendent · **Prioritat:** Baixa · **Esforç:** S
+- [x] **Estat:** Descartat · **Prioritat:** Baixa · **Esforç:** S
 - **Fitxers:** `index.html` (`renderResults`; l'`aria-live` actual és a `.chip-row` ~ln 741)
 - **Problema:** Quan canvia el llistat, els lectors de pantalla no anuncien quants resultats hi ha.
 - **Proposta:** Afegir una regió `aria-live="polite"` (visualment discreta) que digui «N materials» a cada render.
@@ -95,7 +97,7 @@ afegeix una línia al **Registre de canvis** i —si la millora resol un punt de
 ## B. Qualitat de codi i manteniment
 
 ### B1 — Avisar d'activitats òrfenes al validador
-- [ ] **Estat:** Pendent · **Prioritat:** Alta · **Esforç:** S
+- [x] **Estat:** Fet · **Prioritat:** Alta · **Esforç:** S
 - **Fitxers:** `afegir-material.html` (`validateManifest` ~ln 730)
 - **Problema:** Una activitat present a `vocabulary.activity` però absent de tots els
   `activity_blocks` **no és filtrable** al cercador, i el validador no avisa. És el parany
@@ -107,7 +109,7 @@ afegeix una línia al **Registre de canvis** i —si la millora resol un punt de
 - **Verificació:** Afegir una activitat nova sense posar-la a cap bloc → el validador l'assenyala.
 
 ### B2 — Resoldre l'activitat òrfena actual
-- [ ] **Estat:** Pendent · **Prioritat:** Alta · **Esforç:** S
+- [x] **Estat:** Fet · **Prioritat:** Alta · **Esforç:** S
 - **Fitxers:** `manifest.json` (`activity_blocks`)
 - **Problema:** `circumferencia-cercle` és al vocabulari i l'usa un fitxer, però no és a cap
   bloc → no es pot filtrar (confirmat).
@@ -130,7 +132,7 @@ afegeix una línia al **Registre de canvis** i —si la millora resol un punt de
   cercar `function escHtml` retorna una sola definició.
 
 ### B4 — Treure el codi mort de `saveModal()`
-- [ ] **Estat:** Pendent · **Prioritat:** Baixa · **Esforç:** S
+- [x] **Estat:** Fet · **Prioritat:** Baixa · **Esforç:** S
 - **Fitxers:** `afegir-material.html` (`saveModal` ~ln 1529–1534)
 - **Problema:** La variable `others` es calcula i no s'usa, i hi ha un bloc
   `if (!state.editingNew) { }` buit (documentat a §6.6). La comprovació de duplicats real
@@ -139,7 +141,7 @@ afegeix una línia al **Registre de canvis** i —si la millora resol un punt de
 - **Verificació:** Crear i editar fitxers amb IDs repetits segueix bloquejant-se correctament.
 
 ### B5 — Homogeneïtzar `florence-cb.html`
-- [ ] **Estat:** Pendent · **Prioritat:** Baixa · **Esforç:** M
+- [x] **Estat:** Fet · **Prioritat:** Baixa · **Esforç:** M
 - **Fitxers:** `florence-cb.html` (12 `onclick` en línia; `innerHTML` sense escapar)
 - **Problema:** És la pàgina menys robusta i l'única que no segueix el patró de la resta
   (events delegats + `escHtml`). Avui és segur perquè totes les dades del `PAYLOAD` són
@@ -220,6 +222,7 @@ afegeix una línia al **Registre de canvis** i —si la millora resol un punt de
 
 Es deixa constància de propostes valorades i **descartades a propòsit**, perquè no es tornin a obrir sense motiu.
 
+- **Anunciar el nombre de resultats (A3).** No es vol implementar. *(Estat: Descartat)*
 - **Publicar des de l'editor directament a GitHub (API + token).** Trencaria el model
   «descarrega → *commit*» que avui fa que l'eina **no pugui corrompre producció** (§7).
   Afegiria gestió de credencials i risc. Es manté el flux manual. *(Estat: Descartat)*
@@ -235,6 +238,11 @@ Afegeix una línia per cada millora aplicada (la més recent a dalt).
 
 | Data | ID | Canvi | Qui |
 |------|----|-------|-----|
+| 2026-06-04 | B5 | `florence-cb.html`: 12 `onclick` eliminats; gestors delegats; `esc()` per a tot l'innerHTML dinàmic | — |
+| 2026-06-04 | B4 | `saveModal()`: eliminada variable `others` no usada i bloc `if (!state.editingNew) {}` buit | — |
+| 2026-06-04 | B2 | `manifest.json`: `circumferencia-cercle` afegida al bloc Geometria sintètica (resolt manualment) | — |
+| 2026-06-04 | B1 | Validador d'activitats òrfenes ja estava implementat a `validateManifest()`; marcat com a Fet | — |
+| 2026-06-04 | doc | Instrucció d'output afegida a «Com fer servir»; A3 descartat; A3/B2 moguts a seccions corresponents | — |
 | 2026-06-04 | A4 | Commutador Bàsic/Avançat: eliminat `role=tablist/tab`, afegit `aria-pressed` sincronitzat | — |
 | 2026-06-04 | A2 | Estils `:focus-visible` afegits a tots els fitxers HTML (`box-shadow: 0 0 0 4px var(--accent-soft)`) | — |
 | 2026-06-04 | A1 | Targetes: `tabindex=0`, `role=button`, `aria-expanded`; keydown Enter/Espai; focus al primer botó en obrir; retorn de focus en tancar | — |

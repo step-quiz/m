@@ -1537,12 +1537,8 @@ function saveModal() {
   if (!f.format)   return (err.textContent = 'Tria un format');
 
   // Uniqueness
-  const others = state.manifest.files.filter(x => x !== state.editing && x.id === f.id);
   // When editing, state.editing is a clone — find original by reference instead via id
   const origId = state.editingNew ? null : state.editing.id;
-  if (!state.editingNew) {
-    // same-id okay if it's our original
-  }
   const conflict = state.manifest.files.find(x => x.id === f.id && x.id !== origId);
   if (conflict) return (err.textContent = `Ja existeix un fitxer amb ID "${f.id}"`);
 
