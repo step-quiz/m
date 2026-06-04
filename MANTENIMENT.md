@@ -101,8 +101,7 @@ surt sense les respostes. **Necessita connexió** (les imatges venen de `cb.step
 - **El camp `generated`** del manifest es posa sol a la data de cada descàrrega; no cal tocar-lo.
 - **Imatges de `florence-cb.html`:** són locals a `cb-img/` (`CB<id>.png`). Si una sessió
   recomana un CB del qual no hi ha el PNG, la previsualització/baixada d'aquella entrada
-  falla. Actualment en falten 7 (`CB24, CB54, CB56, CB58, CB59, CB155, CB157`, a les sessions
-  `F_3ESO_S01` i `F_3ESO_S10`); per resoldre-ho cal afegir aquests fitxers a `cb-img/`.
+  falla. Ara hi ha totes les 107 imatges referenciades (`CB1.png … CB157.png`), sense cap pendent.
 - **Llibreries:** algunes pàgines les carreguen de `cdnjs.cloudflare.com`. Si algun dia cdnjs
   no és accessible, `eliminar-curs.html` (pdf.js, pdf-lib, jszip) i `extreu-json.html`
   (mammoth) deixarien de funcionar. `banc-cb.html` ja porta `pdf-lib` en local i no en depèn.

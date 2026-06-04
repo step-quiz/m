@@ -31,7 +31,7 @@ Tot és **HTML + CSS + JavaScript pur (vanilla)**, sense framework, sense `npm` 
 |---|---|
 | `manifest.json` | El catàleg: vocabulari, etiquetes, configuració dels filtres i la llista de materials. **Font de veritat del cercador.** |
 | `cb-items.json` | El banc de proves CB que consumeix `banc-cb.html`. |
-| `cb-img/` | ~100 imatges PNG (`CB1.png … CB153.png`) que fa servir `florence-cb.html`. |
+| `cb-img/` | 107 imatges PNG (`CB1.png … CB157.png`) que fa servir `florence-cb.html`. |
 | `lib/pdf-lib.min.js` | Llibreria `pdf-lib` servida en local; la fa servir `banc-cb.html`. |
 
 ## Stack i desplegament

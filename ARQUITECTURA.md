@@ -200,10 +200,9 @@ documenten perquè se'n tingui constància.
    d'aquest cas. Com que l'editor no gestiona `activity_blocks`, l'efecte es repeteix cada
    cop que s'afegeix una activitat nova (vegeu `MANTENIMENT.md`).
 
-2. **`florence-cb.html` referencia 7 imatges que NO són al repositori:**
-   `CB24, CB54, CB56, CB58, CB59, CB155, CB157`. Apareixen a les sessions de 3r ESO
-   `F_3ESO_S01` i `F_3ESO_S10`; per a aquestes preguntes, els botons «Visualitza» i
-   «⬇ PNG» (i «Baixa-ho tot») fallen perquè la imatge no existeix a `cb-img/`.
+2. **Imatges de `florence-cb.html`:** les 107 imatges referenciades (`CB1.png … CB157.png`)
+   es troben totes a `cb-img/`. Les anteriorment mancants (`CB24, CB54, CB56, CB58, CB59,
+   CB155, CB157`) han estat afegides; les sessions `F_3ESO_S01` i `F_3ESO_S10` funcionen correctament.
 
 3. **El banc CB depèn d'imatges remotes.** `banc-cb.html` carrega les imatges de
    `cb.step-quiz.net` (no del repo); sense connexió, sense aquell host actiu o sense les

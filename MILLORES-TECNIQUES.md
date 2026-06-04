@@ -42,9 +42,9 @@ afegeix una línia al **Registre de canvis** i —si la millora resol un punt de
 | B5 | Homogeneïtzar `florence-cb.html` (sense `onclick` en línia) | Baixa | M | Fet |
 | C1 | Servir totes les llibreries en local (treure cdnjs) | Mitjana | S–M | Pendent |
 | C2 | Allotjar en local les imatges del banc CB | Mitjana | M | Pendent |
-| D1 | Actualitzar la documentació desfasada | Alta | S | Pendent |
+| D1 | Actualitzar la documentació desfasada | Alta | S | Fet |
 | E1 | Botó «comparteix aquesta cerca» (`index.html`) | Mitjana | S | Pendent |
-| E2 | Millorar el rànquing de la cerca (pes del títol) | Baixa | S | Pendent |
+| E2 | Millorar el rànquing de la cerca (pes del títol) | Baixa | S | Fet |
 
 ---
 
@@ -180,7 +180,7 @@ afegeix una línia al **Registre de canvis** i —si la millora resol un punt de
 ## D. Documentació
 
 ### D1 — Actualitzar la documentació desfasada
-- [ ] **Estat:** Pendent · **Prioritat:** Alta · **Esforç:** S
+- [x] **Estat:** Fet · **Prioritat:** Alta · **Esforç:** S
 - **Fitxers:** `ARQUITECTURA.md`, `MANTENIMENT.md`, `README.md`
 - **Problema:** La documentació, que és una fortalesa del projecte, té punts ja superats:
   - **`ARQUITECTURA.md` §6.2** i **`MANTENIMENT.md`** diuen que falten 7 imatges
@@ -207,7 +207,7 @@ afegeix una línia al **Registre de canvis** i —si la millora resol un punt de
 - **Verificació:** Filtrar, copiar, obrir l'enllaç en una altra pestanya → es restaura el mateix estat.
 
 ### E2 — Millorar el rànquing de la cerca
-- [ ] **Estat:** Pendent · **Prioritat:** Baixa · **Esforç:** S
+- [x] **Estat:** Fet · **Prioritat:** Baixa · **Esforç:** S
 - **Fitxers:** `index.html` (`loadManifest` construeix `_blob`; `scoreToken`/`computeFiltered`)
 - **Problema:** El `_blob` barreja tots els camps amb el mateix pes, així que una coincidència
   al títol no compta més que una a les notes.
@@ -238,6 +238,8 @@ Afegeix una línia per cada millora aplicada (la més recent a dalt).
 
 | Data | ID | Canvi | Qui |
 |------|----|-------|-----|
+| 2026-06-04 | E2 | `index.html`: `_blobTitle` i `_blobMain` per ponderar títol (×3) i camps principals (×2) vs notes (×1) en `matchesQuery()` | — |
+| 2026-06-04 | D1 | `ARQUITECTURA.md §6.2`, `MANTENIMENT.md`, `README.md`: actualitzades les referències a imatges de `cb-img/`; les 107 imatges ja hi són totes (`CB157.png` inclòs) | — |
 | 2026-06-04 | B3 | Creat `common.js` amb `escHtml`, `normalize`, `slugify`, `FILTER_GROUPS`, `ESO_COURSES`, `BATX_COURSES`, `FALLBACK_VOCAB`, `FALLBACK_LABELS`; eliminades les definicions locals de les 5 pàgines HTML | — |
 | 2026-06-04 | B5 | `florence-cb.html`: 12 `onclick` eliminats; gestors delegats; `esc()` per a tot l'innerHTML dinàmic | — |
 | 2026-06-04 | B4 | `saveModal()`: eliminada variable `others` no usada i bloc `if (!state.editingNew) {}` buit | — |

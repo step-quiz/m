@@ -951,9 +951,12 @@ function matchesQuery(file, queryTokens) {
   if (!queryTokens.length) return { ok: true, score: 0 };
   let total = 0;
   for (const t of queryTokens) {
-    const s = scoreToken(file._blob, t);
-    if (s === 0) return { ok: false, score: 0 };
-    total += s;
+    const sBlob  = scoreToken(file._blob, t);
+    if (sBlob === 0) return { ok: false, score: 0 };
+    // E2: ponderar per camp — títol (×3) > camps principals (×2) > notes/altres (×1)
+    const sTitle = scoreToken(file._blobTitle, t);
+    const sMain  = scoreToken(file._blobMain, t);
+    total += Math.max(sTitle * 3, sMain * 2, sBlob);
   }
   return { ok: true, score: total };
 }
@@ -1578,6 +1581,19 @@ async function loadManifest() {
       f.type || '', f.format || ''
     ];
     f._blob = normalize(parts.join(' '));
+    // Blobs parcials per ponderar el rànquing (E2): títol × 3, camps principals × 2, notes × 1
+    f._blobTitle = normalize(f.title || '');
+    f._blobMain  = normalize([
+      ...(f.courses || []).map(label),
+      label(f.origin || ''),
+      label(f.math_sense || ''),
+      ...(f.activities || []).map(label),
+      label(f.type || ''),
+      ...(f.courses || []),
+      f.origin || '', f.math_sense || '',
+      ...(f.activities || []),
+      f.type || '', f.format || ''
+    ].join(' '));
   }
   return data;
 }
