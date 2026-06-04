@@ -161,11 +161,43 @@ les agafa de `cb.step-quiz.net`). Es referencien 107 ids CB diferents.
 
 ---
 
+## 4b. Contracte de dades: `repartiment-data.js` i localStorage de seguiment
+
+`repartiment-data.js` és un fitxer JS (no JSON) carregat com a `<script src="...">` per
+`repartiment.html` i `seguiment.html`. Declara tres constants globals: `SENTITS`, `CLASSES`
+i `REPARTIMENT`. És la **font de veritat** del currículum: quan el departament revisa els
+continguts d'un curs, s'edita aquest fitxer i ambdues pàgines s'actualitzen soles.
+
+Estructura de `REPARTIMENT`:
+```
+CursData = { label, hores_any, hores_info, blocs: [ BlocData ] }
+BlocData = { sentit: "numeric"|…, hores, temes: [ TemaData ] }
+TemaData = { id, label, hores, continguts: string[] }
+```
+
+**Dades de seguiment** (localStorage, clau `dept-seguiment-2025-26`):
+```json
+{ "curs": "2025-26", "lastSaved": "…ISO…",
+  "classes": {
+    "3ESO-A": {
+      "numeric/nombres-enters": { "status": "parcial", "nota": "només op. combinades" }
+    }
+  }
+}
+```
+Valors de `status`: `""` (pendent) · `"fet"` · `"parcial"` · `"no-fet"` · `"no-ho-fare"`.
+La clau de cada tema és `"<sentit>/<tema.id>"`. L'exportació/importació JSON preserva
+exactament aquest esquema, cosa que permet compartir dades entre professors copiant el fitxer.
+
+---
+
 ## 5. Dependències per pàgina
 
 | Pàgina | Llibreries | Xarxa en execució |
 |---|---|---|
 | `index.html` | cap | `fetch('manifest.json')`; iframes de Google Drive a la previsualització |
+| `repartiment.html` | cap | cap (dades via `repartiment-data.js` local) |
+| `seguiment.html` | cap | cap (dades via `repartiment-data.js`; persistència localStorage) |
 | `afegir-material.html` | cap | `fetch('manifest.json')`; descàrrega del `manifest.json` editat |
 | `extreu-json.html` | **mammoth 1.8.0** (cdnjs) | `fetch('manifest.json')` per sincronitzar vocabulari; **Gemini API** (clau de l'usuari) |
 | `banc-cb.html` | **pdf-lib (local, `lib/`)** | `fetch('cb-items.json')`; imatges de `cb.step-quiz.net` (CORS) |
@@ -176,9 +208,10 @@ Hosts externs que apareixen al codi: `drive.google.com`, `docs.google.com`,
 `cb.step-quiz.net`, `m.step-quiz.net`, `cdnjs.cloudflare.com`,
 `generativelanguage.googleapis.com`.
 
-`localStorage` (només `index.html`):
-- `material:recents` — array `{id, ts}`, màxim 10 documents oberts recentment.
-- `material:uiMode` — `"basic"` o `"advanced"`.
+`localStorage`:
+- `material:recents` (`index.html`) — array `{id, ts}`, màxim 10 documents oberts recentment.
+- `material:uiMode` (`index.html`) — `"basic"` o `"advanced"`.
+- `dept-seguiment-2025-26` (`seguiment.html`) — objecte de seguiment (vegeu §4b).
 
 La clau de Gemini (`extreu-json.html`) s'introdueix a cada sessió i **no es desa** enlloc;
 s'envia a Google amb la capçalera `x-goog-api-key`. No queda incrustada al codi.

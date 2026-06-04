@@ -19,6 +19,8 @@ Tot és **HTML + CSS + JavaScript pur (vanilla)**, sense framework, sense `npm` 
 | Fitxer | Què és | Per a qui |
 |---|---|---|
 | `index.html` | **Cercador**. Cerca per paraula clau + filtres (curs, origen, sentit, format, tipus, activitat). Previsualització lateral del Drive i enllaços per obrir. | Tot el professorat |
+| `repartiment.html` | **Repartiment de continguts**. Consulta els continguts matemàtics assignats a cada curs de l'ESO (1r–4t), organitzats per sentit matemàtic. Document de referència immutable d'un curs a l'altre. | Tot el professorat |
+| `seguiment.html` | **Seguiment de continguts**. Cada professor/a marca l'estat (fet / parcial / no fet / no ho faré) de cada tema per a la seva classe i n'afegeix anotacions. Dades desades al navegador (localStorage) amb exportació/importació JSON. | Tot el professorat |
 | `afegir-material.html` | **Editor del manifest**. Afegeix, edita i elimina entrades del catàleg, gestiona el vocabulari, valida i descarrega el `manifest.json`. | Qui manté el catàleg |
 | `extreu-json.html` | **Catalogador amb IA**. Puja un PDF/DOCX i Gemini en proposa l'entrada de manifest (títol, curs, activitats…). Cal una clau de Gemini. | Qui manté el catàleg |
 | `banc-cb.html` | **Banc d'ítems CB**. Filtra blocs de preguntes de proves CB i exporta un PDF per a l'alumnat (sense respostes). | Tot el professorat |
@@ -30,6 +32,7 @@ Tot és **HTML + CSS + JavaScript pur (vanilla)**, sense framework, sense `npm` 
 | Fitxer / carpeta | Contingut |
 |---|---|
 | `manifest.json` | El catàleg: vocabulari, etiquetes, configuració dels filtres i la llista de materials. **Font de veritat del cercador.** |
+| `repartiment-data.js` | Dades del repartiment de continguts (estructura per curs, sentit, tema i ítems). **Font de veritat compartida** entre `repartiment.html` i `seguiment.html`. |
 | `cb-items.json` | El banc de proves CB que consumeix `banc-cb.html`. |
 | `cb-img/` | 107 imatges PNG (`CB1.png … CB157.png`) que fa servir `florence-cb.html`. |
 | `lib/pdf-lib.min.js` | Llibreria `pdf-lib` servida en local; la fa servir `banc-cb.html`. |
