@@ -83,6 +83,8 @@
   .btn-export:hover:not(:disabled) { background: #0063c8; }
   .btn-export:disabled { opacity: .45; cursor: default; }
   .btn-export svg { width: 14px; height: 14px; }
+  .btn-export-teacher { background: #3a3a3c; }
+  .btn-export-teacher:hover:not(:disabled) { background: #2c2c2e; }
 
   /* ── Layout ─────────────────────────────────────────────────────── */
   .layout { display: grid; grid-template-columns: 224px 1fr; gap: 24px; padding: 22px; max-width: 1500px; margin: 0 auto; }
@@ -228,9 +230,13 @@
 <header class="topbar">
   <h1>Banc d'ítems CB<span class="h-sub">· Proves de competències bàsiques</span></h1>
   <div class="spacer"></div>
-  <button class="btn-export" id="btn-export" disabled title="Genera un PDF dels blocs filtrats per a l'alumnat">
+  <button class="btn-export" id="btn-export" disabled title="Genera un PDF dels blocs filtrats per a l'alumnat (sense respostes)">
     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M5 7l3 3 3-3"/><path d="M3 12.5v1A1.5 1.5 0 0 0 4.5 15h7a1.5 1.5 0 0 0 1.5-1.5v-1"/></svg>
-    Exporta PDF
+    PDF alumnat
+  </button>
+  <button class="btn-export btn-export-teacher" id="btn-export-teacher" disabled title="Genera un PDF del professorat (enunciats + solucionari)">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M5 7l3 3 3-3"/><path d="M3 12.5v1A1.5 1.5 0 0 0 4.5 15h7a1.5 1.5 0 0 0 1.5-1.5v-1"/><circle cx="12.5" cy="3.5" r="2" fill="currentColor" stroke="none"/></svg>
+    PDF professorat
   </button>
   <span class="count-pill" id="count"></span>
   <a class="back" href="index.html">← Tornar al cercador</a>
@@ -285,7 +291,8 @@ const state = {
 
 const $ = id => document.getElementById(id);
 const els = { rail: $('rail'), chips: $('chips'), results: $('results'), count: $('count'),
-              exportBtn: $('btn-export'), modalBg: $('modal-bg'), modal: $('modal') };
+              exportBtn: $('btn-export'), exportBtnTeacher: $('btn-export-teacher'),
+              modalBg: $('modal-bg'), modal: $('modal') };
 
 function label(v) { return state.labels[v] || String(v); }
 function diffLabel(d) { return DIFF_LABELS[String(d)] || String(d); }
@@ -385,6 +392,7 @@ function renderResults() {
   const blocks = state.data.blocks.filter(blockMatches);
   els.count.textContent = `${blocks.length} bloc${blocks.length === 1 ? '' : 's'} · ${blocks.reduce((n, b) => n + b.questions.length, 0)} preguntes`;
   els.exportBtn.disabled = blocks.length === 0;
+  els.exportBtnTeacher.disabled = blocks.length === 0;
   if (!blocks.length) {
     els.results.innerHTML = `<div class="empty">Cap bloc coincideix amb els filtres.</div>`;
     return;
@@ -545,6 +553,171 @@ async function exportPdf(btn) {
   }
 }
 
+
+/* ─── Exporta PDF del professorat (enunciats + solucionari) ──── (CB3)
+   Mateixa estructura visual que la versió per a l'alumnat, seguida d'una
+   pàgina de solucionari en text: resposta correcta i pistes per opció. */
+async function exportPdfTeacher(btn) {
+  if (!window.PDFLib) { alert("La llibreria PDF (lib/pdf-lib.min.js) no s'ha carregat."); return; }
+  const blocks = state.data.blocks.filter(blockMatches);
+  if (!blocks.length) return;
+
+  const { PDFDocument, StandardFonts, rgb } = window.PDFLib;
+  const original = btn.innerHTML;
+  btn.disabled = true;
+  els.exportBtn.disabled = true;
+
+  try {
+    const pdf   = await PDFDocument.create();
+    const font  = await pdf.embedFont(StandardFonts.Helvetica);
+    const fontB = await pdf.embedFont(StandardFonts.HelveticaBold);
+
+    const PW = 595.28, PH = 841.89, M = 40;
+    const CW = PW - 2 * M;
+    const TOP = PH - M;
+
+    const cache = new Map();
+    async function embed(path) {
+      if (cache.has(path)) return cache.get(path);
+      const url = imgUrl(path);
+      const res = await fetch(url, { mode: 'cors' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}: ${url}`);
+      const img = await pdf.embedPng(await res.arrayBuffer());
+      cache.set(path, img);
+      return img;
+    }
+
+    let page, y;
+    function newPage() { page = pdf.addPage([PW, PH]); y = TOP; }
+
+    const place = (img, gap) => {
+      let w = CW, h = img.height * (CW / img.width);
+      const maxH = PH - 2 * M;
+      if (h > maxH) { const r = maxH / h; w *= r; h *= r; }
+      if (y - h < M) newPage();
+      page.drawImage(img, { x: M + (CW - w) / 2, y: y - h, width: w, height: h });
+      y -= h + gap;
+    };
+
+    // Trenca el text en línies que caben a maxW
+    function wrap(text, fnt, sz, maxW) {
+      const words = String(text).split(/\s+/);
+      const lines = [];
+      let cur = '';
+      for (const w of words) {
+        const test = cur ? `${cur} ${w}` : w;
+        if (fnt.widthOfTextAtSize(test, sz) <= maxW) { cur = test; }
+        else { if (cur) lines.push(cur); cur = w; }
+      }
+      if (cur) lines.push(cur);
+      return lines.length ? lines : [''];
+    }
+
+    // Dibuixa text amb salt de pàgina automàtic
+    function drawWrapped(text, fnt, sz, clr, x, maxW, lh) {
+      for (const l of wrap(text, fnt, sz, maxW)) {
+        if (y < M + lh) newPage();
+        page.drawText(l, { x, y, size: sz, font: fnt, color: clr });
+        y -= lh;
+      }
+    }
+
+    // ── Part 1: Enunciats (identics a la versio per a l'alumnat) ──
+    let done = 0;
+    for (const b of blocks) {
+      newPage();
+      page.drawText(`${label(b.nivell)} - ${b.any}`, { x: M, y: y - 11, size: 10, font, color: rgb(0.55, 0.55, 0.57) });
+      y -= 22;
+      place(await embed(b.enunciat), 18);
+      for (const q of b.questions) place(await embed(q.img), 20);
+      done++;
+      btn.textContent = `Generant... ${done}/${blocks.length}`;
+    }
+
+    // ── Part 2: Solucionari ──
+    newPage();
+    const dark  = rgb(0.11, 0.11, 0.12);
+    const mid   = rgb(0.43, 0.43, 0.45);
+    const divC  = rgb(0.80, 0.80, 0.82);
+    const green = rgb(0.12, 0.52, 0.20);
+
+    page.drawText('Solucionari', { x: M, y, size: 20, font: fontB, color: dark });
+    y -= 14;
+    page.drawText(`${blocks.length} bloc${blocks.length === 1 ? '' : 's'} - proves de competencies basiques`, { x: M, y, size: 10, font, color: mid });
+    y -= 32;
+
+    for (let bi = 0; bi < blocks.length; bi++) {
+      const b = blocks[bi];
+      if (y < M + 90) newPage();
+
+      // Separador horitzontal
+      page.drawLine({ start: { x: M, y }, end: { x: PW - M, y }, thickness: 0.4, color: divC });
+      y -= 16;
+
+      // Titol del bloc
+      drawWrapped(`Bloc ${bi + 1}  ${label(b.nivell)} - ${b.any}`, fontB, 11, dark, M, CW, 16);
+      if (b.senses && b.senses.length) {
+        drawWrapped(b.senses.map(s => label(s)).join(' - '), font, 9, mid, M + 12, CW - 12, 13);
+      }
+      y -= 6;
+
+      for (let qi = 0; qi < b.questions.length; qi++) {
+        const q = b.questions[qi];
+        if (y < M + 55) newPage();
+
+        // Resposta correcta
+        drawWrapped(`Pregunta ${qi + 1}   Resposta correcta: ${LETTERS[q.correcta]}`, fontB, 10, green, M + 14, CW - 14, 15);
+        y -= 2;
+
+        // Pistes per a cada opcio incorrecta
+        for (let oi = 0; oi < q.pistes.length; oi++) {
+          if (oi === q.correcta) continue;
+          const pista = q.pistes[oi];
+          if (!pista) continue;
+          if (y < M + 16) newPage();
+
+          const prefix = `Opcio ${LETTERS[oi]}:  `;
+          const prefW  = fontB.widthOfTextAtSize(prefix, 9);
+          const pistaLines = wrap(pista, font, 9, CW - 28 - prefW);
+
+          page.drawText(prefix, { x: M + 28, y, size: 9, font: fontB, color: mid });
+          if (pistaLines[0]) page.drawText(pistaLines[0], { x: M + 28 + prefW, y, size: 9, font, color: mid });
+          y -= 13;
+          for (let li = 1; li < pistaLines.length; li++) {
+            if (y < M + 12) newPage();
+            page.drawText(pistaLines[li], { x: M + 28 + prefW, y, size: 9, font, color: mid });
+            y -= 13;
+          }
+        }
+        y -= 8;
+      }
+      y -= 10;
+    }
+
+    const bytes = await pdf.save();
+    const niv = [...new Set(blocks.map(x => x.nivell))];
+    const yrs = [...new Set(blocks.map(x => String(x.any)))];
+    const name = (niv.length === 1 && yrs.length === 1)
+      ? `CB-${niv[0]}-${yrs[0]}-professorat.pdf`
+      : 'CB-seleccio-professorat.pdf';
+
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
+    a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  } catch (err) {
+    console.error(err);
+    alert("No s'ha pogut generar el PDF.\n\n" + err.message +
+          "\n\nSi es un error de xarxa o CORS, comprova que el fitxer _headers estigui desplegat al cb.step-quiz.net.");
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = original;
+    const bs = state.data ? state.data.blocks.filter(blockMatches).length : 0;
+    els.exportBtn.disabled = bs === 0;
+  }
+}
+
 /* ─── Glue ──────────────────────────────────────────────────────── */
 function renderAll() { renderRail(); renderChips(); renderResults(); }
 function clearAll() {
@@ -570,6 +743,7 @@ els.results.addEventListener('click', e => {
   openBlock(card.dataset.id);
 });
 els.exportBtn.addEventListener('click', () => exportPdf(els.exportBtn));
+els.exportBtnTeacher.addEventListener('click', () => exportPdfTeacher(els.exportBtnTeacher));
 els.modalBg.addEventListener('click', e => { if (e.target === els.modalBg) closeBlock(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && state.openId) closeBlock(); });
 
