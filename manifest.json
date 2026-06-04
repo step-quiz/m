@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated": "2026-06-02",
+  "generated": "2026-06-04",
   "folder_url": "https://drive.google.com/drive/folders/1WjqddjN3uQhO7zUXzRKwDmBia6jqCUdy",
   "vocabulary": {
     "origin": [
@@ -1097,6 +1097,24 @@
       ],
       "type": "prova-cb",
       "notes": "Prova de competències bàsiques de Catalunya · mode pràctica (amb pistes)"
+    },
+    {
+      "title": "Semblança de figures",
+      "id": "semblanca-de-figures",
+      "drive_id": "1hUZn-c8qpzsrge8yJ6vYpulzF5HTKJ4HfOKDGAXjDas",
+      "format": "doc",
+      "origin": "miquel-tarradell",
+      "courses": [
+        "1ESO",
+        "2ESO"
+      ],
+      "math_sense": "mesura",
+      "activities": [
+        "fraccions",
+        "figures-planes",
+        "semblanca"
+      ],
+      "type": "dossier"
     }
   ],
   "basic": {
