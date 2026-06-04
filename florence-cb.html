@@ -156,6 +156,17 @@ table.cb th:last-child{text-align:left}
  .hamb{display:none}
  .backdrop{display:none}
 }
+/* A2 — Anell de focus coherent (:focus-visible) */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+summary:focus-visible,
+[role="button"]:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(46,117,182,.15);
+}
 </style>
 </head>
 <body>

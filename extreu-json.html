@@ -242,6 +242,17 @@
   }
   .toast.is-err { background: var(--red); }
   .toast[hidden] { display: none; }
+  /* A2 — Anell de focus coherent (:focus-visible) */
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible,
+  summary:focus-visible,
+  [role="button"]:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 4px var(--accent-soft);
+  }
 </style>
 </head>
 <body>

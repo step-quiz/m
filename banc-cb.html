@@ -212,6 +212,15 @@
   .opt.wrong .opt-letter { color: var(--text-3); }
   .opt.wrong .opt-txt { color: var(--text-2); }
   .opt-txt svg { width: 14px; height: 14px; }
+  /* A2 — Anell de focus coherent (:focus-visible) */
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  summary:focus-visible,
+  [role="button"]:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 4px var(--accent-soft);
+  }
 </style>
 </head>
 <body>

@@ -29,10 +29,10 @@ afegeix una línia al **Registre de canvis** i —si la millora resol un punt de
 
 | ID | Millora | Prioritat | Esforç | Estat |
 |----|---------|-----------|--------|-------|
-| A1 | Targetes de resultat operables amb teclat (`index.html`) | Alta | S–M | Pendent |
-| A2 | Estils `:focus-visible` coherents a tot el projecte | Mitjana | S | Pendent |
+| A1 | Targetes de resultat operables amb teclat (`index.html`) | Alta | S–M | Fet |
+| A2 | Estils `:focus-visible` coherents a tot el projecte | Mitjana | S | Fet |
 | A3 | Anunciar el nombre de resultats (regió `aria-live`) | Baixa | S | Pendent |
-| A4 | Semàntica correcta del commutador Bàsic/Avançat | Baixa | S | Pendent |
+| A4 | Semàntica correcta del commutador Bàsic/Avançat | Baixa | S | Fet |
 | B1 | Avisar d'activitats òrfenes al validador (`afegir-material.html`) | Alta | S | Pendent |
 | B2 | Resoldre l'activitat òrfena actual al `manifest.json` | Alta | S | Pendent |
 | B3 | Centralitzar codi compartit en `common.js` | Mitjana | M | Pendent |
@@ -49,7 +49,7 @@ afegeix una línia al **Registre de canvis** i —si la millora resol un punt de
 ## A. Accessibilitat i teclat
 
 ### A1 — Targetes de resultat operables amb teclat
-- [ ] **Estat:** Pendent · **Prioritat:** Alta · **Esforç:** S–M
+- [x] **Estat:** Fet · **Prioritat:** Alta · **Esforç:** S–M
 - **Fitxers:** `index.html` (CSS `.card` / `.card-actions` ~ln 464–468; `toggleOpen` ~ln 1316; `keydown` ~ln 1491)
 - **Problema:** Les targetes són `<div class="card">` sense `tabindex`, i els botons
   «Previsualitza» i «Obre al Drive» viuen dins d'un contenidor amb `display:none` que
@@ -65,7 +65,7 @@ afegeix una línia al **Registre de canvis** i —si la millora resol un punt de
   `Tab` arriba a «Previsualitza» i «Obre al Drive» → `Esc` el tanca. Provar amb lector de pantalla que s'anuncia com a botó desplegable.
 
 ### A2 — Estils `:focus-visible` coherents
-- [ ] **Estat:** Pendent · **Prioritat:** Mitjana · **Esforç:** S
+- [x] **Estat:** Fet · **Prioritat:** Mitjana · **Esforç:** S
 - **Fitxers:** totes les pàgines (`*.html`)
 - **Problema:** No hi ha cap regla `:focus-visible`; el focus de teclat depèn només del
   contorn per defecte del navegador. L'efecte d'ombra negra interior que es veu en `:hover`
@@ -82,7 +82,7 @@ afegeix una línia al **Registre de canvis** i —si la millora resol un punt de
 - **Verificació:** Amb lector de pantalla, en filtrar se sent el recompte nou.
 
 ### A4 — Semàntica del commutador Bàsic/Avançat
-- [ ] **Estat:** Pendent · **Prioritat:** Baixa · **Esforç:** S
+- [x] **Estat:** Fet · **Prioritat:** Baixa · **Esforç:** S
 - **Fitxers:** `index.html` (`role="tablist"`/`role="tab"` ~ln 683–686)
 - **Problema:** Es fa servir patró de pestanyes (`tablist`/`tab`) però no és un conjunt de
   pestanyes amb panells, i no es gestiona `aria-selected` ni la tabulació entre opcions.
@@ -235,4 +235,7 @@ Afegeix una línia per cada millora aplicada (la més recent a dalt).
 
 | Data | ID | Canvi | Qui |
 |------|----|-------|-----|
+| 2026-06-04 | A4 | Commutador Bàsic/Avançat: eliminat `role=tablist/tab`, afegit `aria-pressed` sincronitzat | — |
+| 2026-06-04 | A2 | Estils `:focus-visible` afegits a tots els fitxers HTML (`box-shadow: 0 0 0 4px var(--accent-soft)`) | — |
+| 2026-06-04 | A1 | Targetes: `tabindex=0`, `role=button`, `aria-expanded`; keydown Enter/Espai; focus al primer botó en obrir; retorn de focus en tancar | — |
 | _(exemple)_ 2026-06-04 | — | Creació del document de millores | — |

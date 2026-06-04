@@ -675,14 +675,29 @@
     .filter-rail { display: none; }
     .preview-drawer { display: none !important; }
   }
+
+  /* A2 — Anell de focus coherent (:focus-visible) */
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  summary:focus-visible,
+  [role="button"]:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 4px var(--accent-soft);
+  }
+  /* A1: les targetes reutilitzen l'efecte d'hover + anell */
+  .card:focus-visible {
+    outline: none;
+    box-shadow: inset 6px 0 0 #000, 0 0 0 3px var(--accent-soft);
+  }
 </style>
 </head>
 <body>
 
 <header class="topbar">
-  <div class="mode-toggle" id="mode-toggle" role="tablist" aria-label="Mode de filtres">
-    <button id="mode-basic"    role="tab">Bàsic</button>
-    <button id="mode-advanced" role="tab">Avançat</button>
+  <div class="mode-toggle" id="mode-toggle" aria-label="Mode de filtres">
+    <button id="mode-basic"    aria-pressed="true">Bàsic</button>
+    <button id="mode-advanced" aria-pressed="false">Avançat</button>
   </div>
   <div class="search-wrap">
     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
@@ -1161,8 +1176,8 @@ function renderFilters() {
 
 function updateModeToggle() {
   const b = $('mode-basic'), a = $('mode-advanced');
-  if (b) b.classList.toggle('active', state.uiMode === 'basic');
-  if (a) a.classList.toggle('active', state.uiMode === 'advanced');
+  if (b) { b.classList.toggle('active', state.uiMode === 'basic');    b.setAttribute('aria-pressed', state.uiMode === 'basic'     ? 'true' : 'false'); }
+  if (a) { a.classList.toggle('active', state.uiMode === 'advanced'); a.setAttribute('aria-pressed', state.uiMode === 'advanced'  ? 'true' : 'false'); }
 }
 
 function setMode(m) {
@@ -1246,7 +1261,8 @@ function renderResults(filtered) {
         <div class="card ${isOpen ? 'is-open' : ''}"
              data-id="${escHtml(f.id)}" data-idx="${idx}"
              data-format="${escHtml(f.format || '')}"
-             data-origin="${escHtml(origin)}">
+             data-origin="${escHtml(origin)}"
+             tabindex="0" role="button" aria-expanded="${isOpen}">
           <div class="card-icon">${escHtml(fmtIcon)}</div>
           <div class="card-main">
             <div class="card-title">${escHtml(f.title)}</div>
@@ -1305,11 +1321,11 @@ function renderPreview() {
 function applyOpenState(prevId, newId) {
   if (prevId) {
     const el = els.results.querySelector(`.card[data-id="${CSS.escape(prevId)}"]`);
-    if (el) el.classList.remove('is-open');
+    if (el) { el.classList.remove('is-open'); el.setAttribute('aria-expanded', 'false'); }
   }
   if (newId) {
     const el = els.results.querySelector(`.card[data-id="${CSS.escape(newId)}"]`);
-    if (el) el.classList.add('is-open');
+    if (el) { el.classList.add('is-open'); el.setAttribute('aria-expanded', 'true'); }
   }
 }
 
@@ -1330,6 +1346,11 @@ function closeCard() {
   applyOpenState(prevId, null);
   renderPreview();
   syncToUrl(false);
+  // Retorna el focus a la targeta si l'usuari navega amb teclat.
+  if (prevId) {
+    const el = els.results.querySelector(`.card[data-id="${CSS.escape(prevId)}"]`);
+    if (el && el.contains(document.activeElement)) el.focus();
+  }
 }
 
 function openPreview(id) {
@@ -1486,6 +1507,21 @@ els.results.addEventListener('click', e => {
   // Click on the card body → toggle action buttons.
   const card = e.target.closest('.card');
   if (card) toggleOpen(card.dataset.id);
+});
+
+// A1 — Operació amb teclat: Enter/Espai obren la targeta enfocada.
+els.results.addEventListener('keydown', e => {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const card = e.target.closest('.card[role="button"]');
+  if (!card) return;
+  if (e.key === ' ') e.preventDefault(); // evita scroll de pàgina
+  const id = card.dataset.id;
+  toggleOpen(id);
+  // En obrir, mou el focus al primer botó d'acció.
+  if (state.openId === id) {
+    const firstBtn = card.querySelector('.card-actions .btn-act');
+    if (firstBtn) firstBtn.focus();
+  }
 });
 
 document.addEventListener('keydown', e => {
