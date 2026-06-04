@@ -227,6 +227,59 @@
   }
   .vchip-add:hover { background: var(--accent); color: #fff; }
 
+  /* ── Activity blocks editor ─────────────────────────────────────── */
+  .ablk {
+    border: 1px solid var(--divider); border-radius: var(--radius-sm);
+    background: var(--surface-2); padding: 9px 12px; margin-bottom: 9px;
+  }
+  .ablk-head { display: flex; align-items: center; gap: 7px; margin-bottom: 8px; }
+  .ablk-head .ablk-name { font-size: 12.5px; font-weight: 700; color: var(--text); }
+  .ablk-head .ablk-count {
+    font-size: 10px; font-weight: 600; color: var(--text-2);
+    background: var(--surface-3); border-radius: 980px; padding: 1px 7px;
+  }
+  .ablk-btn {
+    width: 22px; height: 22px; border-radius: 6px;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--text-3); background: var(--surface-3);
+    transition: background .12s, color .12s;
+  }
+  .ablk-btn:first-of-type { margin-left: auto; }
+  .ablk-btn:hover { background: var(--accent); color: #fff; }
+  .ablk-btn:disabled { opacity: .35; cursor: default; background: var(--surface-3); color: var(--text-3); }
+  .ablk-btn-del:hover { background: var(--red); }
+  .ablk-btn svg { width: 11px; height: 11px; }
+  .ablk-items { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
+  .ablk-empty { font-size: 11px; color: var(--text-3); font-style: italic; }
+  .vchip.ablk-chip { padding: 4px 4px 4px 9px; }
+  .ablk-rm {
+    width: 18px; height: 18px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--text-3); transition: background .12s, color .12s;
+  }
+  .ablk-rm:hover { background: var(--red); color: #fff; }
+  .ablk-rm svg { width: 9px; height: 9px; }
+  .ablk-warn {
+    width: 14px; height: 14px; border-radius: 50%; font-size: 10px; font-weight: 700;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--amber); color: #fff;
+  }
+  .ablk-orphans {
+    border: 1px solid var(--amber); border-radius: var(--radius-sm);
+    background: rgba(255,159,10,.07); padding: 10px 12px; margin-bottom: 12px;
+  }
+  .ablk-orphans-head {
+    display: flex; align-items: center; gap: 7px;
+    font-size: 12px; font-weight: 600; color: #92600a; margin-bottom: 6px;
+  }
+  .ablk-orphans-head svg { width: 15px; height: 15px; flex: none; color: var(--amber); }
+  .ablk-orphan-row { display: flex; align-items: center; gap: 8px; margin: 5px 0; flex-wrap: wrap; }
+  .ablk-assign {
+    font-size: 11px; padding: 3px 7px; border-radius: 6px;
+    border: 1px solid var(--divider); background: var(--surface); color: var(--text);
+  }
+  .ablk-assign:focus { outline: none; border-color: var(--accent); }
+
   /* ── Files table ────────────────────────────────────────────────── */
   .file-toolbar {
     display: flex; align-items: center; gap: 10px;
@@ -531,6 +584,7 @@ function emptyManifest() {
       type: ['exercici','exercici-solucions','dossier','examen','examen-recuperacio-trimestral','examen-recuperacio-global']
     },
     vocabulary_labels: {},
+    activity_blocks: [],
     files: []
   };
 }
@@ -598,6 +652,7 @@ function loadFromText(text, sourceName) {
   if (!data.vocabulary_labels || typeof data.vocabulary_labels !== 'object') {
     data.vocabulary_labels = {};
   }
+  if (!Array.isArray(data.activity_blocks)) data.activity_blocks = [];
   state.manifest = data;
   state.dirty = false;
   $('dirty-flag').hidden = true;
@@ -722,6 +777,30 @@ function validateManifest() {
     }
   }
 
+  // Manifest-level checks on the activity ↔ activity_blocks relationship.
+  // These aren't tied to a single file: they're about the vocabulary/grouping.
+  const vocabIssues = [];
+  const vpush = (field, msg) => vocabIssues.push({ level: 'warn', field, msg });
+  const acts = Array.isArray(vocab.activity) ? vocab.activity : [];
+  const blocks = Array.isArray(m.activity_blocks) ? m.activity_blocks : [];
+  const blockItems = [];
+  for (const b of blocks) for (const it of (b.items || [])) blockItems.push(it);
+  const blockSet = new Set(blockItems);
+  // (a) activity in the vocabulary but in no block → invisible in the advanced filter
+  for (const a of acts) {
+    if (!blockSet.has(a)) vpush('activitat', `"${a}" no és a cap bloc → no es podrà filtrar al cercador (mode Avançat)`);
+  }
+  // (b) a block references an activity that isn't in the vocabulary
+  for (const it of new Set(blockItems)) {
+    if (!acts.includes(it)) vpush('bloc', `un bloc conté "${it}", que no és al vocabulari d'activitats`);
+  }
+  // (c) the same activity listed in more than one block
+  const seen = {};
+  for (const it of blockItems) seen[it] = (seen[it] || 0) + 1;
+  for (const it of Object.keys(seen)) {
+    if (seen[it] > 1) vpush('bloc', `"${it}" és a ${seen[it]} blocs (sortirà repetida al filtre)`);
+  }
+
   const byId = new Map();
   for (const it of issues) {
     if (!byId.has(it.id)) byId.set(it.id, { error: 0, warn: 0 });
@@ -733,6 +812,7 @@ function validateManifest() {
     warnings: issues.filter(i => i.level === 'warn'),
     all:      issues,
     byId,
+    vocabIssues,
   };
 }
 
@@ -750,20 +830,21 @@ function groupIssuesByFile(list) {
    so it always reflects the current state. */
 function renderValidationPanel() {
   const v = validateManifest();
-  const nE = v.errors.length, nW = v.warnings.length;
+  const nE = v.errors.length, nW = v.warnings.length, nV = v.vocabIssues.length;
+  const totalW = nW + nV;   // file-level + manifest-level (activity/block) warnings
 
   let statusClass, statusText;
-  if (nE)      { statusClass = 'err';  statusText = `${nE} error${nE === 1 ? '' : 's'}` + (nW ? ` · ${nW} avís${nW === 1 ? '' : 'os'}` : ''); }
-  else if (nW) { statusClass = 'warn'; statusText = `${nW} avís${nW === 1 ? '' : 'os'}`; }
-  else         { statusClass = 'ok';   statusText = 'Tot correcte'; }
+  if (nE)          { statusClass = 'err';  statusText = `${nE} error${nE === 1 ? '' : 's'}` + (totalW ? ` · ${totalW} avís${totalW === 1 ? '' : 'os'}` : ''); }
+  else if (totalW) { statusClass = 'warn'; statusText = `${totalW} avís${totalW === 1 ? '' : 'os'}`; }
+  else             { statusClass = 'ok';   statusText = 'Tot correcte'; }
 
-  const open = (nE || nW) ? ' open' : '';   // expand only when there's something to fix
+  const open = (nE || totalW) ? ' open' : '';   // expand only when there's something to fix
 
   let body;
-  if (!nE && !nW) {
+  if (!nE && !totalW) {
     body = `<div class="v-ok-msg">
       <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg>
-      Cap ID duplicat, cap valor fora del vocabulari, i totes les entrades tenen curs, sentit, activitat i tipus.
+      Cap ID duplicat, cap valor fora del vocabulari, totes les entrades tenen curs, sentit, activitat i tipus, i cada activitat és dins d'un bloc.
     </div>`;
   } else {
     const section = (title, cls, list) => {
@@ -788,8 +869,25 @@ function renderValidationPanel() {
             </div>`).join('')}
         </div>`;
     };
+    const flatSection = (title, list) => {
+      if (!list.length) return '';
+      return `
+        <div class="v-section">
+          <div class="v-section-title warn">${escHtml(title)} · ${list.length}</div>
+          <div class="v-group">
+            <ul class="v-issues">
+              ${list.map(it => `
+                <li class="v-issue warn">
+                  <span class="v-field">${escHtml(it.field)}</span>
+                  <span>${escHtml(it.msg)}</span>
+                </li>`).join('')}
+            </ul>
+          </div>
+        </div>`;
+    };
     body = section('Errors — trenquen els filtres', 'err', v.errors)
-         + section('Avisos — entrades incompletes', 'warn', v.warnings);
+         + section('Avisos — entrades incompletes', 'warn', v.warnings)
+         + flatSection('Activitats i blocs', v.vocabIssues);
   }
 
   return `
@@ -875,6 +973,17 @@ function renderEditor() {
           Clica una etiqueta per editar el seu nom visible. El × la treu del vocabulari
           (els fitxers que la facin servir mantindran el valor, però sortirà sense format).
         </div>
+      </div>
+    </details>
+
+    <details class="panel">
+      <summary>
+        <svg class="caret" viewBox="0 0 10 10" fill="currentColor"><path d="M3 1l4 4-4 4z"/></svg>
+        <h2>Blocs d'activitats</h2>
+        <span class="panel-hint">Com s'agrupa el filtre d'activitats al cercador</span>
+      </summary>
+      <div class="panel-body" id="ablocks-body">
+        ${renderActivityBlocks()}
       </div>
     </details>
 
@@ -1036,8 +1145,151 @@ function removeVocabValue(groupKey, value) {
     if (!confirm(`Aquest valor s'usa a ${inUse.length} fitxer(s). Vols treure'l del vocabulari igualment?\n(els fitxers mantindran el valor però es mostrarà sense format)`)) return;
   }
   state.manifest.vocabulary[groupKey] = state.manifest.vocabulary[groupKey].filter(x => x !== value);
+  // Keep activity_blocks in sync: a removed activity must also leave any block.
+  if (groupKey === 'activity' && Array.isArray(state.manifest.activity_blocks)) {
+    for (const b of state.manifest.activity_blocks) b.items = (b.items || []).filter(x => x !== value);
+  }
   setDirty();
   render();
+}
+
+/* ─── ACTIVITY BLOCKS ───────────────────────────────────────────── */
+/* The activity filter in the search UI (advanced mode) is built ONLY from
+   activity_blocks[].items. An activity that's in the vocabulary but in no
+   block can't be filtered there — this editor is what keeps them in sync. */
+function activityBlocks() {
+  if (!Array.isArray(state.manifest.activity_blocks)) state.manifest.activity_blocks = [];
+  return state.manifest.activity_blocks;
+}
+function blockedActivitySet() {
+  const s = new Set();
+  for (const b of activityBlocks()) for (const it of (b.items || [])) s.add(it);
+  return s;
+}
+function orphanActivities() {
+  const blocked = blockedActivitySet();
+  return (state.manifest.vocabulary.activity || []).filter(v => !blocked.has(v));
+}
+
+function addActivityBlock() {
+  const name = prompt('Nom del bloc nou (ex: Geometria):')?.trim();
+  if (!name) return;
+  activityBlocks().push({ label: name, items: [] });
+  setDirty();
+  render();
+}
+function renameActivityBlock(i) {
+  const b = activityBlocks()[i];
+  if (!b) return;
+  const next = prompt('Nom del bloc:', b.label);
+  if (next === null) return;
+  if (!next.trim()) { toast('El nom no pot ser buit', true); return; }
+  b.label = next.trim();
+  setDirty();
+  render();
+}
+function deleteActivityBlock(i) {
+  const b = activityBlocks()[i];
+  if (!b) return;
+  const n = (b.items || []).length;
+  const warn = n ? `\nLes seves ${n} activitat${n === 1 ? '' : 's'} quedaran sense bloc (no filtrables fins que les reassignis).` : '';
+  if (!confirm(`Eliminar el bloc "${b.label}"?${warn}`)) return;
+  activityBlocks().splice(i, 1);
+  setDirty();
+  render();
+}
+function moveActivityBlock(i, dir) {
+  const blocks = activityBlocks();
+  const j = i + dir;
+  if (j < 0 || j >= blocks.length) return;
+  [blocks[i], blocks[j]] = [blocks[j], blocks[i]];
+  setDirty();
+  render();
+}
+function assignActivityToBlock(value, blockIdx) {
+  const blocks = activityBlocks();
+  const dest = blocks[blockIdx];
+  if (!dest) return;
+  // An activity lives in exactly one block: drop it from any other first.
+  for (const b of blocks) b.items = (b.items || []).filter(x => x !== value);
+  if (!Array.isArray(dest.items)) dest.items = [];
+  dest.items.push(value);
+  setDirty();
+  render();
+}
+function removeActivityFromBlock(value, blockIdx) {
+  const b = activityBlocks()[blockIdx];
+  if (!b) return;
+  b.items = (b.items || []).filter(x => x !== value);
+  setDirty();
+  render();
+}
+
+const ICON_PENCIL = '<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 8l1.5-.5L8 2l-1-1-5.5 5.5L1 8z"/></svg>';
+const ICON_UP     = '<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8V2.5M2.5 5L5 2.5 7.5 5"/></svg>';
+const ICON_DOWN   = '<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2v5.5M2.5 5L5 7.5 7.5 5"/></svg>';
+const ICON_XBTN   = '<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 2l6 6M8 2l-6 6"/></svg>';
+const ICON_XSM    = '<svg viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 1l6 6M7 1l-6 6"/></svg>';
+
+function renderActivityBlocks() {
+  const blocks = activityBlocks();
+  const orphans = orphanActivities();
+
+  const orphanBox = orphans.length ? `
+    <div class="ablk-orphans">
+      <div class="ablk-orphans-head">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1.5L15 14H1L8 1.5z"/><path d="M8 6.4v3.4M8 11.6v.2"/></svg>
+        ${orphans.length} activitat${orphans.length === 1 ? '' : 's'} sense bloc — no ${orphans.length === 1 ? 'apareixerà' : 'apareixeran'} al filtre d'Activitat del cercador
+      </div>
+      ${orphans.map(v => `
+        <div class="ablk-orphan-row">
+          <span class="vchip">
+            <span class="vchip-value"><code style="font-family:var(--mono);font-size:11px">${escHtml(v)}</code></span>
+            <span class="vchip-label">${escHtml(label(v))}</span>
+          </span>
+          <select class="ablk-assign" data-assign-activity="${attr(v)}">
+            <option value="">Assigna a bloc…</option>
+            ${blocks.map((b, bi) => `<option value="${bi}">${escHtml(b.label)}</option>`).join('')}
+          </select>
+        </div>`).join('')}
+      ${blocks.length ? '' : `<div class="hint" style="margin-top:8px">Encara no hi ha cap bloc. Crea'n un amb «+ bloc nou» i després assigna-hi les activitats.</div>`}
+    </div>` : '';
+
+  const blockList = blocks.map((b, i) => {
+    const items = b.items || [];
+    const chips = items.length
+      ? items.map(v => `
+          <span class="vchip ablk-chip">
+            <span class="vchip-value"><code style="font-family:var(--mono);font-size:11px">${escHtml(v)}</code></span>
+            ${state.manifest.vocabulary.activity.includes(v)
+              ? ''
+              : '<span class="ablk-warn" title="Aquest valor no és al vocabulari d&#39;activitats">!</span>'}
+            <button class="ablk-rm" data-ablk-idx="${i}" data-ablk-val="${attr(v)}" title="Treu d'aquest bloc">${ICON_XSM}</button>
+          </span>`).join('')
+      : '<span class="ablk-empty">Cap activitat en aquest bloc</span>';
+    return `
+      <div class="ablk">
+        <div class="ablk-head">
+          <span class="ablk-name">${escHtml(b.label)}</span>
+          <span class="ablk-count">${items.length}</span>
+          <button class="ablk-btn" data-ablk-rename="${i}" title="Reanomena el bloc">${ICON_PENCIL}</button>
+          <button class="ablk-btn" data-ablk-up="${i}" title="Amunt"${i === 0 ? ' disabled' : ''}>${ICON_UP}</button>
+          <button class="ablk-btn" data-ablk-down="${i}" title="Avall"${i === blocks.length - 1 ? ' disabled' : ''}>${ICON_DOWN}</button>
+          <button class="ablk-btn ablk-btn-del" data-ablk-del="${i}" title="Elimina el bloc">${ICON_XBTN}</button>
+        </div>
+        <div class="ablk-items">${chips}</div>
+      </div>`;
+  }).join('');
+
+  return `
+    ${orphanBox}
+    ${blockList}
+    <button class="btn btn-ghost" data-ablk-add="1" style="margin-top:2px">+ bloc nou</button>
+    <div class="hint" style="margin-top:10px">
+      Els blocs són com s'agrupa el filtre <strong>Activitat</strong> del cercador (mode Avançat).
+      Una activitat que no sigui en cap bloc no s'hi podrà filtrar. Cada activitat va en un sol bloc;
+      per moure-la, treu-la del bloc actual (×) i torna a assignar-la des de la llista de dalt.
+    </div>`;
 }
 
 /* ─── FILE MODAL ────────────────────────────────────────────────── */
@@ -1376,6 +1628,19 @@ document.addEventListener('click', e => {
     removeVocabValue(chip.dataset.vchipGroup, chip.dataset.vchipValue);
     return;
   }
+  // Activity blocks: add / rename / move / delete
+  if (e.target.closest('[data-ablk-add]')) { addActivityBlock(); return; }
+  const abRename = e.target.closest('[data-ablk-rename]');
+  if (abRename) { renameActivityBlock(+abRename.dataset.ablkRename); return; }
+  const abUp = e.target.closest('[data-ablk-up]');
+  if (abUp) { moveActivityBlock(+abUp.dataset.ablkUp, -1); return; }
+  const abDown = e.target.closest('[data-ablk-down]');
+  if (abDown) { moveActivityBlock(+abDown.dataset.ablkDown, +1); return; }
+  const abDel = e.target.closest('[data-ablk-del]');
+  if (abDel) { deleteActivityBlock(+abDel.dataset.ablkDel); return; }
+  // Activity blocks: remove an item from a block
+  const abRm = e.target.closest('.ablk-rm');
+  if (abRm) { removeActivityFromBlock(abRm.dataset.ablkVal, +abRm.dataset.ablkIdx); return; }
   // File: edit
   const editRow = e.target.closest('.file-table tbody button.edit');
   if (editRow) {
@@ -1404,6 +1669,14 @@ document.addEventListener('click', e => {
     const f = state.manifest.files.find(x => x.id === id);
     if (f) openModal(f);
     return;
+  }
+});
+
+// Activity-block assignment via the orphan dropdowns
+document.addEventListener('change', e => {
+  const sel = e.target.closest('select[data-assign-activity]');
+  if (sel && sel.value !== '') {
+    assignActivityToBlock(sel.dataset.assignActivity, +sel.value);
   }
 });
 
