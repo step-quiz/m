@@ -27,15 +27,34 @@ Tot és **HTML + CSS + JavaScript pur (vanilla)**, sense framework, sense `npm` 
 | `eliminar-curs.html` | **Eliminador de curs**. Treu la referència a un curs acadèmic (p. ex. `2024-25`) d'un PDF o DOCX, tot client-side. | Tot el professorat |
 | `florence-cb.html` | **Mapa Florence → CB**. Per a cada sessió Florence de 2n/3r ESO, recomana preguntes CB i en deixa baixar els PNG. | Tot el professorat |
 
-## Els fitxers de dades
+## Els fitxers de dades i utilitats compartides
 
 | Fitxer / carpeta | Contingut |
 |---|---|
 | `manifest.json` | El catàleg: vocabulari, etiquetes, configuració dels filtres i la llista de materials. **Font de veritat del cercador.** |
 | `repartiment-data.js` | Dades del repartiment de continguts (estructura per curs, sentit, tema i ítems). **Font de veritat compartida** entre `repartiment.html` i `seguiment.html`. |
+| `auth.js` | Portal d'accés per contrasenya per a `repartiment.html` i `seguiment.html`. Carregat al final del `<body>` de cada pàgina protegida. Vegeu §&nbsp;[Canviar la contrasenya](#canviar-la-contrasenya) més avall. |
 | `cb-items.json` | El banc de proves CB que consumeix `banc-cb.html`. |
 | `cb-img/` | 107 imatges PNG (`CB1.png … CB157.png`) que fa servir `florence-cb.html`. |
 | `lib/pdf-lib.min.js` | Llibreria `pdf-lib` servida en local; la fa servir `banc-cb.html`. |
+
+## Canviar la contrasenya
+
+`repartiment.html` i `seguiment.html` estan protegits per contrasenya. La contrasenya no s'emmagatzema en clar: `auth.js` en guarda el **hash SHA-256** a la constant `AUTH_HASH`.
+
+Per canviar-la:
+
+1. Obriu qualsevol pàgina del projecte al navegador (no cal que sigui una pàgina protegida).
+2. Obriu la consola de desenvolupador (`F12` → pestanya *Console*).
+3. Executeu:
+   ```
+   authHash('nova-contrasenya').then(console.log)
+   ```
+4. Copieu el hash de 64 caràcters que apareix a la consola.
+5. Obriu `auth.js` i substituïu el valor de `AUTH_HASH` (línia ~26) pel hash obtingut.
+6. Feu *commit* de `auth.js` al repositori.
+
+> **Nota:** `authHash` és una funció global que `auth.js` exposa expressament per a aquest ús. Utilitza l'API nativa `crypto.subtle` del navegador (SHA-256); no cal cap eina externa.
 
 ## Stack i desplegament
 

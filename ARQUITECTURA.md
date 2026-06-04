@@ -211,10 +211,80 @@ Hosts externs que apareixen al codi: `drive.google.com`, `docs.google.com`,
 `localStorage`:
 - `material:recents` (`index.html`) — array `{id, ts}`, màxim 10 documents oberts recentment.
 - `material:uiMode` (`index.html`) — `"basic"` o `"advanced"`.
+- `dept-auth-token` (`auth.js`) — objecte de sessió `{expires}` (vegeu §4c).
 - `dept-seguiment-2025-26` (`seguiment.html`) — objecte de seguiment (vegeu §4b).
 
 La clau de Gemini (`extreu-json.html`) s'introdueix a cada sessió i **no es desa** enlloc;
 s'envia a Google amb la capçalera `x-goog-api-key`. No queda incrustada al codi.
+
+---
+
+## 4c. Autenticació per contrasenya: `auth.js`
+
+`auth.js` protegeix `repartiment.html` i `seguiment.html` mostrant una pantalla de
+contrasenya mentre no hi hagi una sessió vàlida al navegador.
+
+### Mecanisme
+
+La contrasenya **no s'emmagatzema en clar**. `auth.js` conté una constant `AUTH_HASH` amb
+el seu hash SHA-256. Quan l'usuari introdueix la contrasenya, es calcula el hash al navegador
+mitjançant l'API nativa `crypto.subtle.digest` (sense cap llibreria externa) i es compara
+amb `AUTH_HASH`. Si coincideix, s'emmagatzema un token de sessió a `localStorage`:
+
+```js
+// Clau: 'dept-auth-token'
+{ expires: <timestamp ms> }  // Date.now() + 30 dies
+```
+
+En visites posteriors, el token es comprova sincrònament al `<head>` (snippet anti-flash)
+i al cos del IIFE. Si és vàlid, la porta no es mostra mai.
+
+### Canviar la contrasenya
+
+1. Obriu qualsevol pàgina del projecte al navegador.
+2. Obriu la consola (`F12` → *Console*) i executeu:
+   ```
+   authHash('nova-contrasenya').then(console.log)
+   ```
+   (`authHash` és una funció global que `auth.js` exposa expressament per a aquest ús.)
+3. Copieu el hash de 64 caràcters resultant.
+4. Obriu `auth.js`, localitzeu la constant `AUTH_HASH` (~línia 26) i substituïu-ne el valor.
+5. Feu *commit* de `auth.js`.
+
+### Snippet anti-flash
+
+Per evitar un parpelleig del contingut protegit mentre `auth.js` (al final del `<body>`) no
+s'ha executat encara, el `<head>` de cada pàgina protegida inclou aquest fragment síncron:
+
+```html
+<script>
+try {
+  var _s = JSON.parse(localStorage.getItem('dept-auth-token') || 'null');
+  if (!_s || Date.now() > _s.expires)
+    document.documentElement.classList.add('auth-locked');
+} catch(e) { document.documentElement.classList.add('auth-locked'); }
+</script>
+<style>.auth-locked body { visibility: hidden; }</style>
+```
+
+S'executa abans que el navegador pinti cap píxel. `auth.js` elimina la classe
+`auth-locked` en carregar, tant si mostra la porta (sessió invàlida) com si no (sessió
+vàlida).
+
+### Globals exposades
+
+| Funció | Ús |
+|---|---|
+| `authHash(str)` | Retorna una `Promise<string>` amb el SHA-256 de `str`. Per generar nous hashes des de la consola. |
+| `clearAuth()` | Elimina el token de sessió i recarrega la pàgina. Per tancar la sessió manualment. |
+
+### Limitacions conegudes
+
+- La seguretat és client-side: un usuari determinat pot llegir `AUTH_HASH` del codi font i
+  fer un atac de diccionari offline. Per al cas d'ús (accés informal al professorat), és suficient.
+- No hi ha mecanisme de bloqueig per intents fallits.
+- La sessió és per navegador: qualsevol persona amb accés a l'equip pot
+  utilitzar la sessió guardada fins que expiri o es tanqui manualment.
 
 ---
 
