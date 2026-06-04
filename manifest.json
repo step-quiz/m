@@ -297,6 +297,7 @@
       "activities": [
         "geometria-pla-cartesia"
       ],
+      "type": "dossier",
       "year": 2026,
       "notes": "Eixos de coordenades"
     },
@@ -390,6 +391,7 @@
       "courses": [
         "1ESO"
       ],
+      "math_sense": "numeric",
       "activities": [
         "nombres-naturals",
         "divisibilitat"
@@ -1209,7 +1211,8 @@
         "semblanca",
         "moviments-pla",
         "cossos-geometrics",
-        "volums-arees-cossos"
+        "volums-arees-cossos",
+        "circumferencia-cercle"
       ]
     },
     {
