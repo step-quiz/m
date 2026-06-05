@@ -99,12 +99,12 @@
   .fgroup > summary::-webkit-details-marker { display: none; }
   .fgroup > summary .caret { width: 10px; height: 10px; color: var(--text-3); transition: transform .15s; }
   .fgroup[open] > summary .caret { transform: rotate(90deg); }
-  .fgroup > summary h2 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--text-2); flex: 1; }
+  .fgroup > summary h2 { font-size: 13.2px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--text-2); flex: 1; }
   .fgroup > summary .gsel { font-size: 11px; color: var(--accent); font-weight: 600; }
   .flist { padding: 2px 8px 10px; }
   .fitem {
     display: flex; align-items: center; gap: 9px; padding: 6px 8px;
-    border-radius: var(--radius-xs); cursor: pointer; font-size: 13px;
+    border-radius: var(--radius-xs); cursor: pointer; font-size: 13.2px;
   }
   .fitem:hover { background: var(--surface-2); }
   .fitem input { accent-color: var(--accent); width: 15px; height: 15px; }
@@ -127,6 +127,35 @@
   .chip svg { width: 9px; height: 9px; }
 
   .lead { font-size: 13px; color: var(--text-2); margin-bottom: 14px; max-width: 70ch; }
+
+  /* ── Empty-state hint (no filters active) ──────────────────────── */
+  .state-hint {
+    position: relative;
+    min-height: min(60vh, 460px);
+    padding: 6px 0;
+  }
+  .hint-bubble {
+    position: absolute;
+    display: inline-flex; align-items: flex-start;
+    gap: 11px;
+    max-width: 280px;
+    padding: 13px 17px;
+    background: var(--surface);
+    border: 1px solid var(--divider);
+    border-radius: var(--radius);
+    box-shadow: var(--sh-md);
+    font-size: 13.5px; font-weight: 500;
+    color: var(--text);
+    line-height: 1.4;
+  }
+  .hint-bubble .hint-arrow {
+    flex-shrink: 0; width: 22px; height: 22px;
+    color: var(--accent); margin-top: 1px;
+  }
+  .hint-bubble--filters { top: 20px; left: 2px; }
+  .hint-bubble--filters .hint-arrow { animation: nudge-left 1s var(--ease) infinite; }
+  @keyframes nudge-left { 0%,100% { transform: translateX(0); } 50% { transform: translateX(-5px); } }
+  @media (prefers-reduced-motion: reduce) { .hint-bubble .hint-arrow { animation: none; } }
 
   /* ── Results grid ───────────────────────────────────────────────── */
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
@@ -245,11 +274,6 @@
 <main class="layout">
   <aside class="rail" id="rail" aria-label="Filtres"></aside>
   <section>
-    <p class="lead">
-      Preguntes reals de les proves de competències bàsiques de Catalunya, agrupades pel seu
-      <strong>enunciat</strong> (el bloc és la unitat: les preguntes d'un mateix enunciat es mostren juntes).
-      Cada pregunta indica la resposta correcta i, per a cada opció incorrecta, l'error que sol revelar.
-    </p>
     <div class="chip-row" id="chips" aria-live="polite"></div>
     <div class="grid" id="results"></div>
   </section>
@@ -389,6 +413,21 @@ function diffChips(diffs) {
   return diffs.map(d => `<span class="pill pill-d${d}">dif. ${escHtml(d)}</span>`).join('');
 }
 function renderResults() {
+  // No filters active → show hint
+  const anyFilter = GROUPS.some(G => state.filters[G.key].size > 0);
+  if (!anyFilter) {
+    els.count.textContent = '';
+    els.exportBtn.disabled = true;
+    els.exportBtnTeacher.disabled = true;
+    els.results.innerHTML = `
+      <div class="state-hint">
+        <div class="hint-bubble hint-bubble--filters">
+          <svg class="hint-arrow" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 11H3M8 6l-5 5 5 5"/></svg>
+          <span>Escolliu els filtres que us convenen</span>
+        </div>
+      </div>`;
+    return;
+  }
   const blocks = state.data.blocks.filter(blockMatches);
   els.count.textContent = `${blocks.length} bloc${blocks.length === 1 ? '' : 's'} · ${blocks.reduce((n, b) => n + b.questions.length, 0)} preguntes`;
   els.exportBtn.disabled = blocks.length === 0;

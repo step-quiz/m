@@ -47,7 +47,7 @@ html, body {
   background: var(--bg);
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
-  font-size: 15px;
+  font-size: 16.5px;
   line-height: 1.5;
 }
 button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
@@ -69,7 +69,7 @@ a:hover { text-decoration: underline; }
 .pill-btn {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 5px 13px; border-radius: 20px;
-  border: 1px solid var(--line); font-size: 13px; font-weight: 600;
+  border: 1px solid var(--line); font-size: 14.3px; font-weight: 600;
   color: var(--muted); background: var(--card); transition: .12s;
   white-space: nowrap; text-decoration: none;
 }
@@ -77,16 +77,9 @@ a:hover { text-decoration: underline; }
 .pill-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
 .pill-btn.accent { border-color: var(--blue); color: var(--blue); }
 .pill-btn.accent:hover { background: var(--blue); color: #fff; }
-.brand { font-size: 15px; font-weight: 800; color: var(--navy); flex: 1;
+.brand { font-size: 16.5px; font-weight: 800; color: var(--navy); flex: 1;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.brand small { font-weight: 400; color: var(--muted); font-size: 12px; margin-left: 6px; }
-.badge-immut {
-  font-size: 11px; padding: 3px 10px;
-  background: #fff8e0; border: 1px solid #e8c840;
-  border-radius: 20px; color: #7a6010; font-weight: 700;
-  white-space: nowrap;
-}
-
+.brand small { font-weight: 400; color: var(--muted); font-size: 13.2px; margin-left: 6px; }
 /* ── Tabs bar ──────────────────────────────────────────────────────── */
 .tabs-bar {
   flex: 0 0 auto;
@@ -99,7 +92,7 @@ a:hover { text-decoration: underline; }
 .tabs-bar::-webkit-scrollbar { height: 0; }
 .ctab {
   padding: 11px 18px;
-  font-size: 13.5px; font-weight: 600;
+  font-size: 14.85px; font-weight: 600;
   color: var(--muted);
   border-bottom: 2.5px solid transparent;
   cursor: pointer; transition: .12s; white-space: nowrap;
@@ -108,7 +101,7 @@ a:hover { text-decoration: underline; }
 .ctab:hover { color: var(--navy); }
 .ctab.active { color: var(--navy); border-bottom-color: var(--navy); }
 .ctab .h-badge {
-  font-size: 11px; font-weight: 400; color: var(--hint);
+  font-size: 12.1px; font-weight: 400; color: var(--hint);
   margin-left: 4px;
 }
 
@@ -122,8 +115,8 @@ a:hover { text-decoration: underline; }
   margin-bottom: 20px; padding-bottom: 14px;
   border-bottom: 2px solid var(--line);
 }
-.cview-header h2 { font-size: 21px; color: var(--navy); }
-.cview-header .meta { font-size: 12.5px; color: var(--muted); }
+.cview-header h2 { font-size: 23.1px; color: var(--navy); }
+.cview-header .meta { font-size: 13.75px; color: var(--muted); }
 
 /* ── Sentit section ────────────────────────────────────────────────── */
 .s-section {
@@ -138,9 +131,9 @@ a:hover { text-decoration: underline; }
 }
 .s-header:hover { filter: brightness(.97); }
 .s-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-.s-label { font-size: 11.5px; text-transform: uppercase; letter-spacing: .07em; font-weight: 800; flex: 1; }
-.s-hores { font-size: 12px; font-weight: 700; opacity: .7; }
-.s-chevron { font-size: 10px; color: rgba(0,0,0,.35); transition: transform .15s; margin-left: 4px; }
+.s-label { font-size: 12.65px; text-transform: uppercase; letter-spacing: .07em; font-weight: 800; flex: 1; }
+.s-hores { font-size: 13.2px; font-weight: 700; opacity: .7; }
+.s-chevron { font-size: 11px; color: rgba(0,0,0,.35); transition: transform .15s; margin-left: 4px; }
 .s-section.open .s-chevron { transform: rotate(90deg); }
 
 .s-body { background: var(--card); display: none; }
@@ -152,7 +145,7 @@ a:hover { text-decoration: underline; }
 .tema-table colgroup col:last-child  { width: 56px; }
 
 .tema-table thead th {
-  text-align: left; font-size: 11px; font-weight: 700;
+  text-align: left; font-size: 12.1px; font-weight: 700;
   text-transform: uppercase; letter-spacing: .05em; color: var(--hint);
   padding: 7px 14px 5px; border-bottom: 1px solid var(--line);
 }
@@ -173,37 +166,40 @@ a:hover { text-decoration: underline; }
   flex-shrink: 0; transition: transform .12s;
 }
 .tema-toggle.open .tema-caret { transform: rotate(90deg); }
-.tema-name { font-size: 14px; font-weight: 600; color: var(--ink); line-height: 1.35; }
+.tema-name { font-size: 15.4px; font-weight: 600; color: var(--ink); line-height: 1.35; }
 
-.hores-td { font-size: 13px; color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; padding-top: 10px; }
+.hores-td { font-size: 14.3px; color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; padding-top: 10px; }
 
 /* ── Continguts list ───────────────────────────────────────────────── */
-.cont-list { display: none; margin-top: 8px; padding-left: 20px; }
+.cont-list { display: none; margin-top: 8px; padding-left: 4px; }
 .cont-list.open { display: block; }
 .cont-list li {
-  font-size: 12.5px; color: var(--muted);
-  padding: 2px 0; line-height: 1.4;
+  position: relative;
+  font-size: 13.75px; color: var(--muted);
+  padding: 2px 0 2px 22px; /* left gutter for bullet / icon */
+  line-height: 1.4;
   list-style: none; display: flex; gap: 7px;
 }
 .cont-list li::before {
   content: '';
-  display: inline-block; width: 4px; height: 4px; border-radius: 50%;
-  background: var(--hint); flex-shrink: 0; margin-top: 5.5px;
+  position: absolute; left: 8px; top: 6px;
+  width: 4px; height: 4px; border-radius: 50%;
+  background: var(--hint);
 }
-.cont-num { color: var(--hint); font-size: 11px; flex-shrink: 0; margin-top: 1px; }
+.cont-list li.has-mat::before { display: none; }
+.cont-num { color: var(--hint); font-size: 12.1px; flex-shrink: 0; margin-top: 1px; }
 
 /* Icona "veure material al catàleg" a l'esquerra d'un contingut (injectada per JS) */
 .cont-mat {
-  display: inline-flex; align-items: center; gap: 3px;
-  flex-shrink: 0; margin-top: 0.5px; margin-left: -3px;
+  position: absolute; left: 1px; top: 2px;
+  display: inline-flex; align-items: center;
+  flex-shrink: 0;
   color: var(--blue); text-decoration: none;
-  border-radius: 5px; padding: 1px 3px;
+  border-radius: 5px; padding: 1px 2px;
   transition: background .12s, color .12s;
 }
-.cont-mat:hover { background: var(--blue-bg); }
 .cont-mat svg { width: 13px; height: 13px; display: block; }
-.cont-mat-n { font-size: 10px; font-weight: 700; line-height: 1; }
-.cont-list li.has-mat::before { display: none; }
+.cont-mat:hover { background: var(--blue-bg); }
 
 /* ── Sentit themes (header BG + dot color + border) ────────────────── */
 .s-header.comprensio { background: var(--s-comprensio-bg); }
@@ -236,22 +232,9 @@ a:hover { text-decoration: underline; }
 .s-header.estocastic .s-label { color: var(--s-estocastic); }
 .s-section.estocastic{ border-color: var(--s-estocastic-bd); }
 
-/* ── Summary footer ─────────────────────────────────────────────────── */
-.hores-summary {
-  margin-top: 20px; padding: 12px 16px;
-  background: var(--card); border: 1px solid var(--line);
-  border-radius: 10px; display: flex; flex-wrap: wrap; gap: 10px;
-}
-.hsum-item {
-  display: flex; align-items: center; gap: 6px;
-  font-size: 12.5px; color: var(--muted);
-}
-.hsum-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-.hsum-total { font-weight: 700; color: var(--ink); }
-
 /* ── Print ───────────────────────────────────────────────────────────── */
 @media print {
-  .topbar, .tabs-bar, .pill-btn, .badge-immut { display: none !important; }
+  .topbar, .tabs-bar, .pill-btn { display: none !important; }
   .cview { padding: 0; }
   .s-body { display: block !important; }
   .cont-list { display: block !important; }
@@ -261,7 +244,6 @@ a:hover { text-decoration: underline; }
 /* ── Responsive ─────────────────────────────────────────────────────── */
 @media (max-width: 600px) {
   .brand small { display: none; }
-  .badge-immut { display: none; }
   .cview { padding: 14px 12px 50px; }
 }
 </style>
@@ -275,7 +257,6 @@ a:hover { text-decoration: underline; }
       Inici
     </a>
     <div class="brand">Repartiment de continguts <small>ESO · 2025-26</small></div>
-    <div class="badge-immut">◉ Document immutable</div>
     <a class="pill-btn accent" data-seguiment-doc href="https://docs.google.com/document/d/POSA-AQUI-EL-TEU-DOC-ID/edit" target="_blank" rel="noopener">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="2.5" width="11" height="11" rx="1.5"/><path d="M5 8.5l2 2 4-4"/></svg>
       Seguiment
@@ -351,21 +332,6 @@ function buildCursView(curs) {
       </div>
     </div>`;
   }
-
-  // Hours summary
-  const totals = {};
-  for (const bloc of d.blocs) totals[bloc.sentit] = (totals[bloc.sentit]||0) + bloc.hores;
-  html += `<div class="hores-summary">
-    ${Object.entries(totals).map(([s,h]) => `
-      <div class="hsum-item">
-        <div class="hsum-dot" style="background:var(--s-${s})"></div>
-        <span>${escHtml(SENTITS[s].short)}</span>
-        <strong>${h}h</strong>
-      </div>`).join('')}
-    <div class="hsum-item" style="margin-left:auto">
-      Total: <strong class="hsum-total">${d.hores_any}h</strong>
-    </div>
-  </div>`;
 
   div.innerHTML = html;
   return div;
@@ -454,7 +420,6 @@ function applyMaterialLinks(manifest) {
       `<a class="cont-mat" href="${url}" target="_blank" rel="noopener" title="${escHtml(lbl)}" aria-label="${escHtml(lbl)}">`
       + `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">`
       + `<path d="M4 2.5h4.5L12.5 6.5v6a1 1 0 0 1-1 1h-7a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1z"/><path d="M8.5 2.5v4h4"/></svg>`
-      + (n > 1 ? `<span class="cont-mat-n">${n}</span>` : '')
       + `</a>`);
   });
 }

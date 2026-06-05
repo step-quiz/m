@@ -215,7 +215,7 @@
   .mode-toggle button {
     padding: 6px 10px;
     border-radius: 980px;
-    font-size: 10.56px;
+    font-size: 13px;
     font-weight: 600;
     color: var(--text-2);
     transition: background .15s, color .15s, box-shadow .15s;
@@ -628,6 +628,41 @@
   .config-item.cfg-ai svg { color: var(--accent); }
   .cfg-sep { height: 1px; background: var(--divider); margin: 5px 8px; }
 
+  /* ── Continguts dropdown (same pattern as Edició) ────────────────── */
+  .continguts-wrap { position: relative; }
+  .continguts-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 14px;
+    border-radius: 980px;
+    font-size: 13px; font-weight: 600;
+    color: var(--text-2);
+    background: var(--surface-3);
+    border: 1px solid transparent;
+    transition: background .12s, color .12s, border-color .12s;
+    white-space: nowrap;
+  }
+  .continguts-btn svg { width: 15px; height: 15px; }
+  .continguts-btn:hover { background: rgba(0,113,227,.18); color: var(--text); box-shadow: inset 0 0 0 2px #000; border-color: transparent; }
+  .continguts-wrap.is-open .continguts-btn {
+    background: var(--surface);
+    border-color: var(--accent);
+    color: var(--text);
+  }
+  .continguts-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    width: 220px; max-width: 90vw;
+    background: var(--surface);
+    border: 1px solid var(--divider);
+    border-radius: var(--radius);
+    box-shadow: var(--sh-md);
+    padding: 6px;
+    z-index: 60;
+    animation: fade-up .18s var(--ease);
+  }
+  .continguts-menu[hidden] { display: none; }
+
   /* ── Pristine hint state (no filter, no search) ─────────────────── */
   .results > .state-hint { align-self: stretch; width: 100%; }
   .state-hint {
@@ -706,26 +741,34 @@
     <input id="search" type="search" placeholder="Cerca…" autocomplete="off" spellcheck="false">
   </div>
   <div class="topbar-right">
-    <a class="link-btn" id="repartiment-btn" href="repartiment.html" title="Repartiment de continguts per curs">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="2.5" width="11" height="11" rx="1.5"/><path d="M5 6h6M5 9h4M5 12h3"/></svg>
-      <span>Repartiment</span>
-    </a>
-    <a class="link-btn" id="seguiment-btn" data-seguiment-doc href="https://docs.google.com/document/d/POSA-AQUI-EL-TEU-DOC-ID/edit" target="_blank" rel="noopener" title="Seguiment del curs (Google Doc)">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="2.5" width="11" height="11" rx="1.5"/><path d="M5 8.5l2 2 4-4"/></svg>
-      <span>Seguiment</span>
-    </a>
+    <div class="continguts-wrap" id="continguts-wrap">
+      <button class="continguts-btn" id="continguts-btn" aria-haspopup="true" aria-expanded="false" title="Continguts del curs">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="2.5" width="11" height="11" rx="1.5"/><path d="M5 6h6M5 9h4M5 12h3"/></svg>
+        <span>Continguts</span>
+      </button>
+      <div class="continguts-menu" id="continguts-menu" role="menu" hidden>
+        <a class="config-item" role="menuitem" href="repartiment.html">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="2.5" width="11" height="11" rx="1.5"/><path d="M5 6h6M5 9h4M5 12h3"/></svg>
+          <span>Repartiment</span>
+        </a>
+        <a class="config-item" role="menuitem" id="seguiment-btn" data-seguiment-doc href="https://docs.google.com/document/d/POSA-AQUI-EL-TEU-DOC-ID/edit" target="_blank" rel="noopener">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="2.5" width="11" height="11" rx="1.5"/><path d="M5 8.5l2 2 4-4"/></svg>
+          <span>Seguiment</span>
+        </a>
+      </div>
+    </div>
     <a class="link-btn" id="florence-cb-btn" target="_blank" rel="noopener" href="florence-cb.html" title="Mapa Florence → Competències Bàsiques">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="4" cy="4" r="2"/><circle cx="12" cy="5.5" r="1.6"/><circle cx="6.5" cy="12.5" r="1.6"/><path d="M5.7 5.4l5 0.6M5.3 5.9l1 5"/></svg>
-      <span>Florence-CB</span>
+      <span>Florence CB</span>
     </a>
-    <a class="link-btn" id="cb-btn" target="_blank" rel="noopener" href="banc-cb.html" title="Filtra les proves CB i exporta'n un PDF">
+    <a class="link-btn" id="cb-btn" target="_blank" rel="noopener" href="https://m.step-quiz.net/banc-cb" title="Filtra les proves CB i exporta'n un PDF">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="2.5" width="11" height="11" rx="1.5"/><path d="M2.5 6h11M6 6v7.5"/></svg>
-      <span>Filtrar CB</span>
+      <span>CB</span>
     </a>
     <div class="config-wrap" id="config-wrap">
       <button class="config-btn" id="config-btn" aria-haspopup="true" aria-expanded="false" title="Edició del catàleg">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10.6 2.6l2.8 2.8M11.8 1.4a1.4 1.4 0 0 1 2 2L5 12.2 1.6 13l.8-3.4z"/></svg>
-        <span>Editar</span>
+        <span>Edició</span>
       </button>
       <div class="config-menu" id="config-menu" role="menu" hidden>
         <a class="config-item" role="menuitem" target="_blank" rel="noopener" href="afegir-material.html">
@@ -805,6 +848,9 @@ const els = {
   configWrap:    $('config-wrap'),
   configBtn:     $('config-btn'),
   configMenu:    $('config-menu'),
+  continguts:    $('continguts-wrap'),
+  contingutsBt:  $('continguts-btn'),
+  contigutsMen:  $('continguts-menu'),
 };
 
 /* ─── RECENTS (localStorage) ────────────────────────────────────── */
@@ -885,6 +931,7 @@ function toggleRecentsMenu(force) {
   const open = force !== undefined ? force : els.recentsMenu.hidden;
   if (open) {
     toggleConfigMenu(false);
+    toggleContingutsMenu(false);
     renderRecentsMenu();
     els.recentsMenu.hidden = false;
     els.recentsWrap.classList.add('is-open');
@@ -900,6 +947,7 @@ function toggleConfigMenu(force) {
   const open = force !== undefined ? force : els.configMenu.hidden;
   if (open) {
     toggleRecentsMenu(false);
+    toggleContingutsMenu(false);
     els.configMenu.hidden = false;
     els.configWrap.classList.add('is-open');
     els.configBtn.setAttribute('aria-expanded', 'true');
@@ -907,6 +955,21 @@ function toggleConfigMenu(force) {
     els.configMenu.hidden = true;
     els.configWrap.classList.remove('is-open');
     els.configBtn.setAttribute('aria-expanded', 'false');
+  }
+}
+
+function toggleContingutsMenu(force) {
+  const open = force !== undefined ? force : els.contigutsMen.hidden;
+  if (open) {
+    toggleRecentsMenu(false);
+    toggleConfigMenu(false);
+    els.contigutsMen.hidden = false;
+    els.continguts.classList.add('is-open');
+    els.contingutsBt.setAttribute('aria-expanded', 'true');
+  } else {
+    els.contigutsMen.hidden = true;
+    els.continguts.classList.remove('is-open');
+    els.contingutsBt.setAttribute('aria-expanded', 'false');
   }
 }
 
@@ -1518,8 +1581,9 @@ els.results.addEventListener('keydown', e => {
 document.addEventListener('keydown', e => {
   // Escape closes the side preview first; on a second press, collapses the card.
   if (e.key === 'Escape') {
-    if (!els.configMenu.hidden)  { toggleConfigMenu(false); return; }
-    if (!els.recentsMenu.hidden) { toggleRecentsMenu(false); return; }
+    if (!els.configMenu.hidden)   { toggleConfigMenu(false); return; }
+    if (!els.contigutsMen.hidden) { toggleContingutsMenu(false); return; }
+    if (!els.recentsMenu.hidden)  { toggleRecentsMenu(false); return; }
     if (state.previewing) closePreview();
     else if (state.openId) closeCard();
   }
@@ -1529,6 +1593,16 @@ document.addEventListener('keydown', e => {
 els.configBtn.addEventListener('click', e => {
   e.stopPropagation();
   toggleConfigMenu();
+});
+
+/* Continguts button + dropdown */
+els.contingutsBt.addEventListener('click', e => {
+  e.stopPropagation();
+  toggleContingutsMenu();
+});
+// Close continguts menu when an item is clicked
+els.contigutsMen.addEventListener('click', e => {
+  if (e.target.closest('.config-item')) toggleContingutsMenu(false);
 });
 
 /* Recents button + dropdown */
@@ -1557,6 +1631,9 @@ document.addEventListener('click', e => {
   }
   if (!els.configMenu.hidden && !els.configWrap.contains(e.target)) {
     toggleConfigMenu(false);
+  }
+  if (!els.contigutsMen.hidden && !els.continguts.contains(e.target)) {
+    toggleContingutsMenu(false);
   }
 });
 
