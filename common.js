@@ -69,21 +69,24 @@ const FALLBACK_LABELS = {
 };
 
 /* ─── ENLLAÇ AL SEGUIMENT (Google Doc) ───────────────────────────────
- * El seguiment del curs vigent ja no es porta amb la pàgina estàtica
- * seguiment.html (que es conserva al repo per si es vol recuperar), sinó
- * amb un Google Doc al Drive. Aquesta és la ÚNICA font de veritat de
- * l'enllaç: canvia el valor d'aquí sota i s'actualitza a totes les
- * pàgines (index.html i repartiment.html) que tinguin un element amb
- * l'atribut data-seguiment-doc.
+ * L'adreça es llegeix de "seguiment-link.txt" (un fitxer de text pla
+ * amb únicament la URL). Per canviar l'adreça, edita només aquell fitxer;
+ * no cal tocar cap línia de codi.
  *
- *   ▸▸▸ ENGANXA AQUÍ L'ENLLAÇ DEL TEU GOOGLE DOC ◂◂◂
+ * S'aplica a tots els elements amb l'atribut data-seguiment-doc
+ * (index.html, repartiment.html, etc.).
  */
-const SEGUIMENT_DOC_URL = 'https://drive.google.com/drive/folders/1THsw8FED5PGaKxsARp_hyx3o9dusD3fO?usp=drive_link';
-
 document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('[data-seguiment-doc]').forEach(a => {
-    a.href = SEGUIMENT_DOC_URL;
-    a.target = '_blank';
-    a.rel = 'noopener';
-  });
+  fetch('seguiment-link.txt')
+    .then(r => r.ok ? r.text() : Promise.reject(r.status))
+    .then(text => {
+      const url = text.trim();
+      if (!url) return;
+      document.querySelectorAll('[data-seguiment-doc]').forEach(a => {
+        a.href = url;
+        a.target = '_blank';
+        a.rel = 'noopener';
+      });
+    })
+    .catch(err => console.warn('seguiment-link.txt no s\'ha pogut carregar:', err));
 });
