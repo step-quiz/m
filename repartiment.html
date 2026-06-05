@@ -4,7 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Repartiment de continguts · ESO 2025-26</title>
-<!-- Anti-flash: amaga el body si no hi ha sessió, auth.js la torna a mostrar -->
+<!-- AUTENTICACIÓ DESACTIVADA per a repartiment.html (juny 2026).
+     El codi es conserva intacte. Per tornar a demanar contrasenya:
+       1) descomenta el bloc d'aquí sota (snippet anti-flash), i
+       2) descomenta <script src="auth.js"></script> al final del <body>.
+     auth.js segueix al repositori sense canvis. -->
+<!--
 <script>
 try {
   var _s = JSON.parse(localStorage.getItem('dept-auth-token') || 'null');
@@ -12,6 +17,7 @@ try {
 } catch(e) { document.documentElement.classList.add('auth-locked'); }
 </script>
 <style>.auth-locked body { visibility: hidden; }</style>
+-->
 <script src="repartiment-data.js"></script>
 <script src="common.js"></script>
 <style>
@@ -257,7 +263,7 @@ a:hover { text-decoration: underline; }
     </a>
     <div class="brand">Repartiment de continguts <small>ESO · 2025-26</small></div>
     <div class="badge-immut">◉ Document immutable</div>
-    <a class="pill-btn accent" href="seguiment.html">
+    <a class="pill-btn accent" data-seguiment-doc href="https://docs.google.com/document/d/POSA-AQUI-EL-TEU-DOC-ID/edit" target="_blank" rel="noopener">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="2.5" width="11" height="11" rx="1.5"/><path d="M5 8.5l2 2 4-4"/></svg>
       Seguiment
     </a>
@@ -412,6 +418,6 @@ renderMain();
 REPARTIMENT[activeCurs].blocs.forEach(b =>
   document.getElementById(`ss-${activeCurs}__${b.sentit}`)?.classList.add('open'));
 </script>
-<script src="auth.js"></script>
+<!-- <script src="auth.js"></script> --> <!-- AUTENTICACIÓ DESACTIVADA: descomenta aquesta línia (i el bloc anti-flash del <head>) per reactivar-la -->
 </body>
 </html>
