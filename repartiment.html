@@ -246,6 +246,90 @@ a:hover { text-decoration: underline; }
   .brand small { display: none; }
   .cview { padding: 14px 12px 50px; }
 }
+
+/* ── MODE EDICIÓ ─────────────────────────────────────────────────────── */
+.edit-banner {
+  flex: 0 0 auto;
+  display: none; align-items: center; gap: 10px;
+  padding: 8px 16px; font-size: 14px; font-weight: 600; color: #7a6010;
+  background: #fff8e0; border-bottom: 2px solid #e8c840;
+}
+body.is-editing .edit-banner { display: flex; }
+.edit-banner-note { font-weight: 400; font-size: 13px; color: #a07820; }
+/* show/hide topbar buttons by mode */
+.pill-btn.edit-stop,
+.pill-btn.edit-dl { display: none; }
+body.is-editing .pill-btn.edit-start { display: none; }
+body.is-editing .pill-btn.edit-stop  { display: inline-flex; border-color: #c0392b; color: #c0392b; }
+body.is-editing .pill-btn.edit-stop:hover { background: #c0392b; color: #fff; border-color: #c0392b; }
+body.is-editing .pill-btn.edit-dl    { display: inline-flex; background: var(--blue-bg); border-color: var(--blue); color: var(--blue); }
+body.is-editing .pill-btn.edit-dl:hover { background: var(--blue); color: #fff; }
+/* edit text inputs */
+.edit-tema-head {
+  display: flex; align-items: center; gap: 8px; width: 100%; cursor: default;
+}
+.tema-label-inp {
+  flex: 1; min-width: 60px; padding: 2px 4px; font-family: inherit;
+  font-size: 15.4px; font-weight: 600; color: var(--ink);
+  border: none; border-bottom: 1.5px solid var(--blue); background: transparent;
+}
+.tema-label-inp:focus { outline: none; border-bottom-color: var(--navy); }
+.cont-inp {
+  flex: 1; min-width: 0; padding: 3px 7px; font-family: inherit;
+  font-size: 13.75px; color: var(--ink);
+  border: 1px solid var(--line); border-radius: 4px; background: #fff;
+}
+.cont-inp:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 2px rgba(46,117,182,.15); }
+.hores-inp {
+  width: 46px; padding: 2px 5px; text-align: right; font-family: inherit;
+  font-size: 13.5px; color: var(--muted);
+  border: 1px solid var(--line); border-radius: 4px; background: #fff;
+}
+.hores-inp:focus { outline: none; border-color: var(--blue); }
+/* action buttons */
+.edit-mini-btns { display: flex; gap: 3px; flex-shrink: 0; }
+.edit-mini-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 24px; height: 24px; padding: 0; border-radius: 5px; flex-shrink: 0;
+  font-size: 11px; color: var(--muted); border: 1px solid var(--line); background: var(--card);
+  cursor: pointer; transition: .1s; font-family: inherit;
+}
+.edit-mini-btn:hover:not([disabled]) { border-color: var(--blue); color: var(--blue); background: var(--blue-bg); }
+.edit-mini-btn.del:hover:not([disabled]) { border-color: #c0392b; color: #c0392b; background: #fde8ef; }
+.edit-mini-btn.move:hover:not([disabled]) { border-color: #b56010; color: #b56010; background: #fdf3e5; }
+.edit-mini-btn[disabled] { opacity: .3; cursor: default; }
+.edit-add-btn {
+  display: inline-flex; align-items: center; gap: 5px; margin-top: 7px;
+  padding: 4px 12px; border-radius: 6px; font-size: 13px; font-weight: 600;
+  color: var(--blue); border: 1.5px dashed #8bbfe0;
+  background: transparent; cursor: pointer; transition: .12s; font-family: inherit;
+}
+.edit-add-btn:hover { background: var(--blue-bg); }
+.edit-cont-row {
+  display: flex; align-items: center; gap: 6px; width: 100%; padding: 2px 0;
+}
+/* move modal */
+.move-modal-bg {
+  position: fixed; inset: 0; background: rgba(0,0,0,.35);
+  display: flex; align-items: center; justify-content: center; z-index: 200;
+}
+.move-modal-bg[hidden] { display: none; }
+.move-modal {
+  background: #fff; border-radius: 14px; padding: 22px 26px;
+  min-width: 300px; max-width: 90vw; box-shadow: 0 12px 40px rgba(0,0,0,.18);
+}
+.move-modal h3 { font-size: 16px; color: var(--navy); margin-bottom: 4px; }
+.move-modal .move-sub { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
+.move-modal label { display: block; font-size: 13px; color: var(--muted); font-weight: 600; margin: 12px 0 5px; }
+.move-modal select {
+  width: 100%; padding: 7px 10px; border: 1px solid var(--line);
+  border-radius: 7px; font: inherit; font-size: 14.5px; background: #fff; color: var(--ink);
+}
+.move-modal select:focus { outline: none; border-color: var(--blue); }
+.move-modal-btns { display: flex; gap: 8px; justify-content: flex-end; margin-top: 18px; }
+@media print {
+  .edit-banner, .pill-btn.edit-start, .pill-btn.edit-stop, .pill-btn.edit-dl { display: none !important; }
+}
 </style>
 </head>
 <body>
@@ -265,12 +349,41 @@ a:hover { text-decoration: underline; }
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="10" height="6" rx="1"/><path d="M5 7V3.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 .5.5V7M5 13v-2h6v2"/></svg>
       Imprimir
     </button>
+    <button class="pill-btn edit-start" id="btn-edit-start" title="Activar mode edició">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10.6 2.6l2.8 2.8M11.8 1.4a1.4 1.4 0 0 1 2 2L5 12.2 1.6 13l.8-3.4z"/></svg>
+      Edició
+    </button>
+    <button class="pill-btn edit-dl" id="btn-edit-dl" title="Descarrega el fitxer modificat">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M5 7l3 3 3-3"/><path d="M3 13h10"/></svg>
+      Descarrega repartiment-data.js
+    </button>
+    <button class="pill-btn edit-stop" id="btn-edit-stop" title="Sortir del mode edició">
+      ✕ Sortir d'edició
+    </button>
   </header>
+
+  <div class="edit-banner">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;flex-shrink:0"><path d="M10.6 2.6l2.8 2.8M11.8 1.4a1.4 1.4 0 0 1 2 2L5 12.2 1.6 13l.8-3.4z"/></svg>
+    Mode edició actiu
+    <span class="edit-banner-note">— Els canvis s'aplicaran quan descarregueu el fitxer i el pugeu al repo.</span>
+  </div>
 
   <div class="tabs-bar" id="tabsBar"></div>
   <main class="main" id="main"></main>
 
 </div><!-- /.app -->
+
+<!-- Modal: moure tema a un altre curs/sentit -->
+<div class="move-modal-bg" id="move-modal-bg" hidden>
+  <div class="move-modal">
+    <h3>Mou tema a…</h3>
+    <div id="move-modal-body"></div>
+    <div class="move-modal-btns">
+      <button class="pill-btn" id="move-cancel-btn">Cancel·la</button>
+      <button class="pill-btn accent" id="move-confirm-btn">Mou</button>
+    </div>
+  </div>
+</div>
 
 <script>
 /* ─── CONFIG ──────────────────────────────────────────────────────── */
@@ -387,10 +500,22 @@ document.getElementById('tabsBar').addEventListener('click', e => {
 });
 
 document.getElementById('main').addEventListener('click', e => {
+  // Edit mode: intercept action buttons before anything else
+  if (isEditing && handleEditClick(e)) return;
+
+  // Section header toggle (ignore clicks on inputs / buttons)
   const hdr = e.target.closest('.s-header');
-  if (hdr) { toggleSection(hdr.dataset.sid); return; }
-  const tog = e.target.closest('.tema-toggle');
-  if (tog) { toggleTema(tog.dataset.rid); }
+  if (hdr && !e.target.closest('input, button')) { toggleSection(hdr.dataset.sid); return; }
+
+  // Tema expand/collapse (read mode only — in edit mode continguts are always visible)
+  if (!isEditing) {
+    const tog = e.target.closest('.tema-toggle');
+    if (tog) { toggleTema(tog.dataset.rid); }
+  }
+});
+
+document.getElementById('main').addEventListener('input', e => {
+  if (isEditing) handleEditInput(e);
 });
 
 /* ─── ENLLAÇOS AL CATÀLEG ─────────────────────────────────────────────
@@ -424,7 +549,348 @@ function applyMaterialLinks(manifest) {
   });
 }
 
-/* ─── INIT ────────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════
+   MODE EDICIÓ — estat, operacions, renderització i descàrrega
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── Estat ───────────────────────────────────────────────────────── */
+let editData = null;   // còpia mutable de REPARTIMENT durant l'edició
+let isEditing = false;
+let _movePending = null; // { curs, sentit, tid } mentre el modal està obert
+
+/* ─── Start / stop ────────────────────────────────────────────────── */
+function startEdit() {
+  editData = JSON.parse(JSON.stringify(REPARTIMENT));
+  isEditing = true;
+  document.body.classList.add('is-editing');
+  renderMainEdit();
+}
+
+function stopEdit() {
+  const dirty = JSON.stringify(editData) !== JSON.stringify(REPARTIMENT);
+  if (dirty && !confirm('Hi ha canvis que no heu descarregat. Sortir igualment?')) return;
+  editData = null;
+  isEditing = false;
+  document.body.classList.remove('is-editing');
+  renderMain();
+  REPARTIMENT[activeCurs].blocs.forEach(b =>
+    document.getElementById(`ss-${activeCurs}__${b.sentit}`)?.classList.add('open'));
+  fetch('manifest.json').then(r => r.ok ? r.json() : null)
+    .then(m => { if (m) applyMaterialLinks(m); }).catch(() => {});
+}
+
+/* ─── Helpers d'accés ─────────────────────────────────────────────── */
+function eBloc(curs, sentit) {
+  return editData[curs]?.blocs.find(b => b.sentit === sentit) || null;
+}
+function eTema(curs, sentit, tid) {
+  return eBloc(curs, sentit)?.temes.find(t => t.id === tid) || null;
+}
+
+/* ─── Operacions sobre continguts ────────────────────────────────── */
+function eCont_Move(curs, sentit, tid, ci, dir) {
+  const t = eTema(curs, sentit, tid); if (!t) return;
+  const ni = ci + dir;
+  if (ni < 0 || ni >= t.continguts.length) return;
+  [t.continguts[ci], t.continguts[ni]] = [t.continguts[ni], t.continguts[ci]];
+  rerenderCurs(curs);
+}
+function eCont_Del(curs, sentit, tid, ci) {
+  const t = eTema(curs, sentit, tid); if (!t) return;
+  if (!confirm(`Suprimir "${t.continguts[ci]}"?`)) return;
+  t.continguts.splice(ci, 1);
+  rerenderCurs(curs);
+}
+function eCont_Add(curs, sentit, tid) {
+  const t = eTema(curs, sentit, tid); if (!t) return;
+  t.continguts.push('Nou contingut');
+  rerenderCurs(curs);
+}
+// Actualitza el text d'un contingut sense re-renderitzar (l'input ja mostra el valor)
+function eCont_Update(curs, sentit, tid, ci, value) {
+  const t = eTema(curs, sentit, tid);
+  if (t) t.continguts[ci] = value;
+}
+
+/* ─── Operacions sobre temes ──────────────────────────────────────── */
+function eTema_Move(curs, sentit, tid, dir) {
+  const bloc = eBloc(curs, sentit); if (!bloc) return;
+  const i = bloc.temes.findIndex(t => t.id === tid);
+  const ni = i + dir;
+  if (ni < 0 || ni >= bloc.temes.length) return;
+  [bloc.temes[i], bloc.temes[ni]] = [bloc.temes[ni], bloc.temes[i]];
+  rerenderCurs(curs);
+}
+function eTema_Del(curs, sentit, tid) {
+  const bloc = eBloc(curs, sentit); if (!bloc) return;
+  const i = bloc.temes.findIndex(t => t.id === tid); if (i < 0) return;
+  if (!confirm(`Suprimir el tema "${bloc.temes[i].label}" i tots els seus continguts?`)) return;
+  bloc.temes.splice(i, 1);
+  rerenderCurs(curs);
+}
+function eTema_Add(curs, sentit) {
+  const bloc = eBloc(curs, sentit); if (!bloc) return;
+  bloc.temes.push({ id: 'tema-' + Date.now(), label: 'Tema nou', hores: 0, continguts: ['Contingut 1'] });
+  rerenderCurs(curs);
+}
+function eTema_UpdateLabel(curs, sentit, tid, value) {
+  const t = eTema(curs, sentit, tid); if (t) t.label = value;
+}
+function eTema_UpdateHores(curs, sentit, tid, value) {
+  const t = eTema(curs, sentit, tid); if (t) t.hores = parseInt(value) || 0;
+}
+function eTema_MoveTo(srcCurs, srcSentit, tid, dstCurs, dstSentit) {
+  if (srcCurs === dstCurs && srcSentit === dstSentit) return;
+  const srcBloc = eBloc(srcCurs, srcSentit);
+  const dstBloc = eBloc(dstCurs, dstSentit);
+  if (!dstBloc) { alert(`No existeix el sentit "${dstSentit}" a ${dstCurs}.`); return; }
+  const i = srcBloc.temes.findIndex(t => t.id === tid); if (i < 0) return;
+  const [tema] = srcBloc.temes.splice(i, 1);
+  dstBloc.temes.push(tema);
+  rerenderCurs(srcCurs);
+  if (dstCurs !== srcCurs) rerenderCurs(dstCurs);
+}
+
+/* ─── Operació sobre blocs ────────────────────────────────────────── */
+function eBloc_UpdateHores(curs, sentit, value) {
+  const b = eBloc(curs, sentit); if (b) b.hores = parseInt(value) || 0;
+}
+
+/* ─── Re-renderitzar un curs (preservant la pestanya activa) ──────── */
+function rerenderCurs(curs) {
+  const el = document.getElementById('cv-' + curs); if (!el) return;
+  const newEl = buildCursViewEdit(curs);
+  newEl.className = el.className;
+  el.replaceWith(newEl);
+  // En mode edició deixa tots els blocs oberts
+  editData[curs].blocs.forEach(b =>
+    document.getElementById(`ss-${curs}__${b.sentit}`)?.classList.add('open'));
+}
+
+/* ─── Render principal (mode edició) ──────────────────────────────── */
+function renderMainEdit() {
+  const main = document.getElementById('main');
+  main.innerHTML = '';
+  for (const curs of CURS_ORDER) main.appendChild(buildCursViewEdit(curs));
+  // Obre tots els blocs del curs actiu per defecte
+  editData[activeCurs].blocs.forEach(b =>
+    document.getElementById(`ss-${activeCurs}__${b.sentit}`)?.classList.add('open'));
+}
+
+function buildCursViewEdit(curs) {
+  const d = editData[curs];
+  const div = document.createElement('div');
+  div.className = 'cview' + (curs === activeCurs ? ' active' : '');
+  div.id = 'cv-' + curs;
+
+  let html = `<div class="cview-header">
+    <h2>${escHtml(d.label)}</h2>
+    <span class="meta">${d.hores_any}h anuals &mdash; ${escHtml(d.hores_info)}</span>
+  </div>`;
+
+  for (const bloc of d.blocs) {
+    const sm = SENTITS[bloc.sentit];
+    const sid = `${curs}__${bloc.sentit}`;
+    html += `
+    <div class="s-section ${escHtml(bloc.sentit)}" id="ss-${sid}">
+      <div class="s-header ${escHtml(bloc.sentit)}" data-sid="${sid}">
+        <div class="s-dot"></div>
+        <div class="s-label">${escHtml(sm.label)}</div>
+        <input class="hores-inp" type="number" min="0" max="999" value="${bloc.hores}"
+          data-edit="bloc-hores" data-curs="${escHtml(curs)}" data-sentit="${escHtml(bloc.sentit)}"
+          title="Hores del bloc">
+        <span style="font-size:12px;color:var(--muted);margin-right:4px">h</span>
+        <span class="s-chevron">▶</span>
+      </div>
+      <div class="s-body">
+        <table class="tema-table">
+          <colgroup><col/><col style="width:82px"/></colgroup>
+          <thead><tr><th>Tema</th><th style="text-align:right">Hores</th></tr></thead>
+          <tbody>
+          ${bloc.temes.map((t, ti) => buildTemaRowEdit(curs, bloc.sentit, t, ti, bloc.temes.length)).join('')}
+          </tbody>
+        </table>
+        <button class="edit-add-btn"
+          data-edit="add-tema" data-curs="${escHtml(curs)}" data-sentit="${escHtml(bloc.sentit)}">
+          + Afegir tema
+        </button>
+      </div>
+    </div>`;
+  }
+  div.innerHTML = html;
+  return div;
+}
+
+function buildTemaRowEdit(curs, sentit, t, ti, total) {
+  const rid = `${escHtml(curs)}__${escHtml(sentit)}__${escHtml(t.id)}`;
+  const first = ti === 0, last = ti === total - 1;
+
+  const contItems = t.continguts.map((c, ci) => `
+    <li>
+      <div class="edit-cont-row">
+        <span class="cont-num">${ci + 1}.</span>
+        <input class="cont-inp" type="text" value="${escHtml(c)}"
+          data-edit="cont" data-curs="${escHtml(curs)}" data-sentit="${escHtml(sentit)}"
+          data-tid="${escHtml(t.id)}" data-ci="${ci}">
+        <div class="edit-mini-btns">
+          <button class="edit-mini-btn" title="Amunt"
+            data-edit="cont-up" data-curs="${escHtml(curs)}" data-sentit="${escHtml(sentit)}"
+            data-tid="${escHtml(t.id)}" data-ci="${ci}" ${ci === 0 ? 'disabled' : ''}>▲</button>
+          <button class="edit-mini-btn" title="Avall"
+            data-edit="cont-down" data-curs="${escHtml(curs)}" data-sentit="${escHtml(sentit)}"
+            data-tid="${escHtml(t.id)}" data-ci="${ci}" ${ci === t.continguts.length - 1 ? 'disabled' : ''}>▼</button>
+          <button class="edit-mini-btn del" title="Suprimeix contingut"
+            data-edit="cont-del" data-curs="${escHtml(curs)}" data-sentit="${escHtml(sentit)}"
+            data-tid="${escHtml(t.id)}" data-ci="${ci}">✕</button>
+        </div>
+      </div>
+    </li>`).join('');
+
+  return `
+  <tr class="tema-row">
+    <td>
+      <div class="edit-tema-head">
+        <span class="tema-caret">▶</span>
+        <input class="tema-label-inp" type="text" value="${escHtml(t.label)}"
+          data-edit="tema-label" data-curs="${escHtml(curs)}" data-sentit="${escHtml(sentit)}"
+          data-tid="${escHtml(t.id)}">
+        <div class="edit-mini-btns">
+          <button class="edit-mini-btn" title="Amunt dins del bloc"
+            data-edit="tema-up" data-curs="${escHtml(curs)}" data-sentit="${escHtml(sentit)}"
+            data-tid="${escHtml(t.id)}" ${first ? 'disabled' : ''}>▲</button>
+          <button class="edit-mini-btn" title="Avall dins del bloc"
+            data-edit="tema-down" data-curs="${escHtml(curs)}" data-sentit="${escHtml(sentit)}"
+            data-tid="${escHtml(t.id)}" ${last ? 'disabled' : ''}>▼</button>
+          <button class="edit-mini-btn move" title="Mou a un altre curs o sentit"
+            data-edit="tema-move" data-curs="${escHtml(curs)}" data-sentit="${escHtml(sentit)}"
+            data-tid="${escHtml(t.id)}">↔</button>
+          <button class="edit-mini-btn del" title="Suprimeix tema"
+            data-edit="tema-del" data-curs="${escHtml(curs)}" data-sentit="${escHtml(sentit)}"
+            data-tid="${escHtml(t.id)}">✕</button>
+        </div>
+      </div>
+      <ul class="cont-list open" id="cl-${rid}">
+        ${contItems}
+        <li style="list-style:none">
+          <button class="edit-add-btn"
+            data-edit="add-cont" data-curs="${escHtml(curs)}" data-sentit="${escHtml(sentit)}"
+            data-tid="${escHtml(t.id)}">+ Afegir contingut</button>
+        </li>
+      </ul>
+    </td>
+    <td class="hores-td" style="vertical-align:top;padding-top:9px">
+      <input class="hores-inp" type="number" min="0" max="999" value="${t.hores}"
+        data-edit="tema-hores" data-curs="${escHtml(curs)}" data-sentit="${escHtml(sentit)}"
+        data-tid="${escHtml(t.id)}">h
+    </td>
+  </tr>`;
+}
+
+/* ─── Dispatch de clics en mode edició ────────────────────────────── */
+function handleEditClick(e) {
+  const btn = e.target.closest('[data-edit]'); if (!btn) return false;
+  const { edit: act, curs, sentit, tid, ci } = btn.dataset;
+  const idx = parseInt(ci ?? '0');
+  switch (act) {
+    case 'cont-up':   eCont_Move(curs, sentit, tid, idx, -1); break;
+    case 'cont-down': eCont_Move(curs, sentit, tid, idx, +1); break;
+    case 'cont-del':  eCont_Del(curs, sentit, tid, idx);      break;
+    case 'add-cont':  eCont_Add(curs, sentit, tid);           break;
+    case 'tema-up':   eTema_Move(curs, sentit, tid, -1);      break;
+    case 'tema-down': eTema_Move(curs, sentit, tid, +1);      break;
+    case 'tema-del':  eTema_Del(curs, sentit, tid);           break;
+    case 'add-tema':  eTema_Add(curs, sentit);                break;
+    case 'tema-move': openMoveModal(curs, sentit, tid);       break;
+    default: return false;
+  }
+  return true;
+}
+
+/* ─── Dispatch d'inputs en mode edició ────────────────────────────── */
+function handleEditInput(e) {
+  const el = e.target; if (!el.dataset.edit) return;
+  const { edit: act, curs, sentit, tid, ci } = el.dataset;
+  switch (act) {
+    case 'cont':       eCont_Update(curs, sentit, tid, parseInt(ci), el.value); break;
+    case 'tema-label': eTema_UpdateLabel(curs, sentit, tid, el.value);          break;
+    case 'tema-hores': eTema_UpdateHores(curs, sentit, tid, el.value);          break;
+    case 'bloc-hores': eBloc_UpdateHores(curs, sentit, el.value);               break;
+  }
+}
+
+/* ─── Modal: moure tema ───────────────────────────────────────────── */
+function openMoveModal(curs, sentit, tid) {
+  const tema = eTema(curs, sentit, tid); if (!tema) return;
+  _movePending = { curs, sentit, tid };
+  const cursOpts = CURS_ORDER.map(c =>
+    `<option value="${c}"${c===curs?' selected':''}>${escHtml(CURS_LABELS[c])}</option>`).join('');
+  const sentitOpts = Object.entries(SENTITS).map(([k, v]) =>
+    `<option value="${k}"${k===sentit?' selected':''}>${escHtml(v.label)}</option>`).join('');
+  document.getElementById('move-modal-body').innerHTML = `
+    <p class="move-sub">Tema: <strong>${escHtml(tema.label)}</strong></p>
+    <label>Curs destí</label>
+    <select id="move-dst-curs">${cursOpts}</select>
+    <label>Sentit destí</label>
+    <select id="move-dst-sentit">${sentitOpts}</select>`;
+  document.getElementById('move-modal-bg').hidden = false;
+}
+function closeMoveModal(confirmed) {
+  if (confirmed && _movePending) {
+    eTema_MoveTo(
+      _movePending.curs, _movePending.sentit, _movePending.tid,
+      document.getElementById('move-dst-curs').value,
+      document.getElementById('move-dst-sentit').value
+    );
+  }
+  document.getElementById('move-modal-bg').hidden = true;
+  _movePending = null;
+}
+
+/* ─── Descàrrega de repartiment-data.js ──────────────────────────── */
+function downloadData() {
+  const ca = typeof CONTINGUTS_ACTIVITATS !== 'undefined' ? CONTINGUTS_ACTIVITATS : {};
+  const date = new Date().toLocaleDateString('ca-ES', {day:'2-digit',month:'2-digit',year:'numeric'});
+  const js = [
+    `/* repartiment-data.js — Repartiment de continguts matemàtics ESO 2025-26`,
+    ` * Compartit entre repartiment.html i seguiment.html.`,
+    ` * No modifiqueu els noms de les constants (SENTITS, CLASSES, REPARTIMENT).`,
+    ` * Generat per l'editor integrat de repartiment.html el ${date}.`,
+    ` */`,
+    ``,
+    `/* ─── SENTITS ───────────────────────────────────────────────────────── */`,
+    `const SENTITS = ${JSON.stringify(SENTITS, null, 2)};`,
+    ``,
+    `/* ─── CLASSES DEL DEPARTAMENT ───────────────────────────────────────── */`,
+    `const CLASSES = ${JSON.stringify(CLASSES, null, 2)};`,
+    ``,
+    `/* ─── REPARTIMENT DE CONTINGUTS ──────────────────────────────────────── */`,
+    `const REPARTIMENT = ${JSON.stringify(editData, null, 2)};`,
+    ``,
+    `/* ════════════════════════════════════════════════════════════════════`,
+    ` * CONTINGUTS_ACTIVITATS — pont entre el repartiment i el catàleg.`,
+    ` * ATENCIÓ: si heu reordenat o eliminat continguts d'un tema, reviseu`,
+    ` * les posicions numèriques d'aquest objecte.`,
+    ` * ════════════════════════════════════════════════════════════════════ */`,
+    `const CONTINGUTS_ACTIVITATS = ${JSON.stringify(ca, null, 2)};`,
+  ].join('\n');
+
+  const blob = new Blob([js], { type: 'application/javascript' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'repartiment-data.js';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+}
+
+/* ─── Wire-up dels botons d'edició ───────────────────────────────── */
+document.getElementById('btn-edit-start').onclick  = startEdit;
+document.getElementById('btn-edit-stop').onclick   = stopEdit;
+document.getElementById('btn-edit-dl').onclick     = downloadData;
+document.getElementById('move-confirm-btn').onclick = () => closeMoveModal(true);
+document.getElementById('move-cancel-btn').onclick  = () => closeMoveModal(false);
+document.getElementById('move-modal-bg').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeMoveModal(false);
+});
 renderTabs();
 renderMain();
 // Open all sentit sections of the active course by default
