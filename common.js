@@ -78,7 +78,7 @@ const FALLBACK_LABELS = {
  *
  *   ▸▸▸ ENGANXA AQUÍ L'ENLLAÇ DEL TEU GOOGLE DOC ◂◂◂
  */
-const SEGUIMENT_DOC_URL = 'https://docs.google.com/document/d/POSA-AQUI-EL-TEU-DOC-ID/edit';
+const SEGUIMENT_DOC_URL = 'https://drive.google.com/drive/folders/1THsw8FED5PGaKxsARp_hyx3o9dusD3fO?usp=drive_link';
 
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('[data-seguiment-doc]').forEach(a => {
