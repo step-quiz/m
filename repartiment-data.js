@@ -553,3 +553,69 @@ const REPARTIMENT = {
   },
 
 }; // end REPARTIMENT
+
+/* ════════════════════════════════════════════════════════════════════
+ * CONTINGUTS_ACTIVITATS — pont entre el repartiment i el catàleg
+ * ════════════════════════════════════════════════════════════════════
+ * Relaciona un contingut concret d'un tema amb una o més ACTIVITATS del
+ * vocabulari de manifest.json. repartiment.html ho fa servir per posar,
+ * a l'esquerra d'aquell contingut, una petita icona que obre el cercador
+ * (index.html) ja filtrat per aquelles activitats — PERÒ NOMÉS si el
+ * catàleg té de debò algun material d'aquelles activitats. Si no n'hi ha,
+ * no apareix cap icona.
+ *
+ * FORMAT:
+ *   "<sentit>/<tema.id>": { <posició>: ["activitat-slug", ...], ... }
+ *
+ *   - <sentit>/<tema.id>  = la mateixa clau que fa servir el seguiment
+ *                           (p. ex. "numeric/nombres-naturals").
+ *   - <posició>           = el número que es veu al davant del contingut
+ *                           (1, 2, 3…), és a dir la seva posició dins de
+ *                           tema.continguts (començant per 1).
+ *   - els slugs han d'existir a vocabulary.activity de manifest.json.
+ *
+ * COM AFEGIR-NE:
+ *   1. Mira el número del contingut a repartiment.html (l'"1.", "2."…).
+ *   2. Afegeix-hi els slugs d'activitat que li corresponen.
+ *   El comentari del costat de cada línia és només per llegir-ho millor.
+ *
+ * NOTA: la clau és la POSICIÓ. Si algun dia reordenes o insereixes
+ * continguts dins d'un tema, recorda renumerar aquí.
+ *
+ * Això d'aquí sota és un punt de partida (1r ESO) perquè es vegi
+ * funcionant; amplia'l tema a tema segons el material que tingueu.
+ */
+const CONTINGUTS_ACTIVITATS = {
+  "numeric/nombres-naturals": {
+    4: ["potencies"]                                  // 4. Potències de base i exponents naturals
+  },
+  "numeric/divisibilitat": {
+    1: ["divisibilitat"],                             // 1. Divisibilitat
+    2: ["divisibilitat"],                             // 2. Múltiples
+    3: ["divisibilitat"],                             // 3. Divisors
+    4: ["divisibilitat"],                             // 4. Criteris de divisibilitat
+    5: ["divisibilitat"],                             // 5. Nombres primers i compostos
+    6: ["divisibilitat"],                             // 6. Factorització en nombres primers
+    7: ["divisibilitat"]                              // 7. MCD i mcm
+  },
+  "numeric/fraccions": {
+    1: ["fraccions"],                                 // 1. Definició i representació d'una fracció
+    3: ["fraccions"],                                 // 3. Fraccions equivalents
+    4: ["fraccions"],                                 // 4. Simplificació de fraccions
+    8: ["fraccions"]                                  // 8. Fracció d'un nombre
+  },
+  "algebraic/llenguatge-algebraic": {
+    1: ["llenguatge-algebraic"]                       // 1. Traduir al llenguatge algebraic
+  },
+  "mesura/calcul-perimetres": {
+    1: ["arees-perimetres"],                          // 1. Definició de perímetre
+    2: ["arees-perimetres"],                          // 2. Càlcul del perímetre (quadrat, rectangle, polígon)
+    3: ["arees-perimetres", "circumferencia-cercle"]  // 3. Perímetre d'una circumferència
+  },
+  "mesura/calcul-arees": {
+    1: ["arees-perimetres"],                          // 1. Definició de superfície
+    2: ["arees-perimetres"],                          // 2. Àrea (quadrat, rectangle, triangle)
+    3: ["arees-perimetres", "circumferencia-cercle"], // 3. Àrea d'un cercle
+    4: ["arees-perimetres"]                           // 4. Àrea de figures que es poden descompondre
+  }
+};

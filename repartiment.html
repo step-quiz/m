@@ -192,6 +192,19 @@ a:hover { text-decoration: underline; }
 }
 .cont-num { color: var(--hint); font-size: 11px; flex-shrink: 0; margin-top: 1px; }
 
+/* Icona "veure material al catàleg" a l'esquerra d'un contingut (injectada per JS) */
+.cont-mat {
+  display: inline-flex; align-items: center; gap: 3px;
+  flex-shrink: 0; margin-top: 0.5px; margin-left: -3px;
+  color: var(--blue); text-decoration: none;
+  border-radius: 5px; padding: 1px 3px;
+  transition: background .12s, color .12s;
+}
+.cont-mat:hover { background: var(--blue-bg); }
+.cont-mat svg { width: 13px; height: 13px; display: block; }
+.cont-mat-n { font-size: 10px; font-weight: 700; line-height: 1; }
+.cont-list li.has-mat::before { display: none; }
+
 /* ── Sentit themes (header BG + dot color + border) ────────────────── */
 .s-header.comprensio { background: var(--s-comprensio-bg); }
 .s-header.comprensio .s-dot   { background: var(--s-comprensio); }
@@ -360,9 +373,12 @@ function buildCursView(curs) {
 
 function buildTemaRow(curs, sentit, t) {
   const rid = `${curs}__${sentit}__${t.id}`;
-  const items = t.continguts.map((c, i) =>
-    `<li><span class="cont-num">${i+1}.</span><span>${escHtml(c)}</span></li>`
-  ).join('');
+  const linkMap = (typeof CONTINGUTS_ACTIVITATS !== 'undefined' ? CONTINGUTS_ACTIVITATS : {})[`${sentit}/${t.id}`] || {};
+  const items = t.continguts.map((c, i) => {
+    const acts = linkMap[i + 1] || [];
+    const da = acts.length ? ` data-act="${escHtml(acts.join(','))}"` : '';
+    return `<li${da}><span class="cont-num">${i+1}.</span><span>${escHtml(c)}</span></li>`;
+  }).join('');
   return `<tr class="tema-row">
     <td>
       <div class="tema-toggle" data-rid="${rid}">
@@ -411,12 +427,47 @@ document.getElementById('main').addEventListener('click', e => {
   if (tog) { toggleTema(tog.dataset.rid); }
 });
 
+/* ─── ENLLAÇOS AL CATÀLEG ─────────────────────────────────────────────
+ * Per a cada contingut amb activitats mapades (data-act), mira si el
+ * catàleg (manifest.json) té materials d'aquelles activitats i, si en té,
+ * hi posa una icona que obre el cercador filtrat. Si el manifest no es pot
+ * carregar (p. ex. obrint amb file://), no apareix cap icona i la pàgina
+ * continua funcionant igual. */
+function applyMaterialLinks(manifest) {
+  const byAct = {};
+  for (const f of (manifest.files || [])) {
+    for (const a of (f.activities || [])) {
+      (byAct[a] = byAct[a] || new Set()).add(f.id);
+    }
+  }
+  document.querySelectorAll('#main li[data-act]').forEach(li => {
+    const acts = li.dataset.act.split(',').filter(Boolean);
+    const ids = new Set();
+    acts.forEach(a => { if (byAct[a]) byAct[a].forEach(id => ids.add(id)); });
+    const n = ids.size;
+    if (!n) return;                       // cap material al catàleg → cap icona
+    const qs = new URLSearchParams({ mode: 'advanced', activity: acts.join(',') });
+    const url = 'index.html?' + qs.toString();
+    const lbl = `${n} ${n === 1 ? 'material' : 'materials'} al catàleg · obre el cercador filtrat`;
+    li.classList.add('has-mat');
+    li.insertAdjacentHTML('afterbegin',
+      `<a class="cont-mat" href="${url}" target="_blank" rel="noopener" title="${escHtml(lbl)}" aria-label="${escHtml(lbl)}">`
+      + `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">`
+      + `<path d="M4 2.5h4.5L12.5 6.5v6a1 1 0 0 1-1 1h-7a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1z"/><path d="M8.5 2.5v4h4"/></svg>`
+      + (n > 1 ? `<span class="cont-mat-n">${n}</span>` : '')
+      + `</a>`);
+  });
+}
+
 /* ─── INIT ────────────────────────────────────────────────────────── */
 renderTabs();
 renderMain();
 // Open all sentit sections of the active course by default
 REPARTIMENT[activeCurs].blocs.forEach(b =>
   document.getElementById(`ss-${activeCurs}__${b.sentit}`)?.classList.add('open'));
+
+// Enllaços al catàleg (best-effort): carrega el manifest i posa les icones.
+fetch('manifest.json').then(r => r.ok ? r.json() : null).then(m => { if (m) applyMaterialLinks(m); }).catch(() => {});
 </script>
 <!-- <script src="auth.js"></script> --> <!-- AUTENTICACIÓ DESACTIVADA: descomenta aquesta línia (i el bloc anti-flash del <head>) per reactivar-la -->
 </body>

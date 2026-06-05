@@ -1408,6 +1408,10 @@ function syncFromUrl() {
     if (v) v.split(',').forEach(x => x && state.filters[G.key].add(x));
   }
   state.openId = p.get('open') || null;
+  // Deep links (p. ex. des de repartiment.html) poden forçar el mode amb ?mode=advanced.
+  // Només per a aquesta càrrega; no es desa a localStorage, així no canvia la preferència.
+  const mode = p.get('mode');
+  if (mode === 'basic' || mode === 'advanced') state.uiMode = mode;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
