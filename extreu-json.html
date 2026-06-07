@@ -242,17 +242,6 @@
   }
   .toast.is-err { background: var(--red); }
   .toast[hidden] { display: none; }
-  /* A2 — Anell de focus coherent (:focus-visible) */
-  button:focus-visible,
-  a:focus-visible,
-  input:focus-visible,
-  textarea:focus-visible,
-  select:focus-visible,
-  summary:focus-visible,
-  [role="button"]:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 4px var(--accent-soft);
-  }
 </style>
 </head>
 <body>
@@ -344,15 +333,33 @@
 
   <div class="toast" id="toast" hidden></div>
 
-<script src="common.js"></script>
-<!-- mammoth 1.8.0 servit en local des de lib/ (abans des de cdnjs) -->
-<script src="lib/mammoth.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js"></script>
 <script>
 "use strict";
 
-/* ─── VOCABULARI DE RESERVA (des de common.js) ──────────────────── */
-let VOCAB   = Object.assign({}, FALLBACK_VOCAB);
-let LABELS  = Object.assign({}, FALLBACK_LABELS);
+/* ─── FALLBACK VOCABULARY ───────────────────────────────────────────────
+   This is NOT the source of truth. The real vocabulary lives in manifest.json.
+   Served over HTTP, this page fetches manifest.json on load and the working
+   copy `vocab` below is overwritten with it (see the sync near the bottom).
+   These baked-in values are only a fallback for when that fetch can't run
+   (e.g. opening the file via file://); don't assume they're up to date. */
+const FALLBACK_VOCAB = {
+  origin: ["miquel-tarradell","florence","nrich","geogebra","bogdan","fem-matematiques","mmaca","g-morales","ins-gelida","reptes-mates"],
+  format: ["pdf","doc"],
+  course: ["1ESO","2ESO","3ESO","4ESO","1Bat","2Bat","ESO","Bat","primaria","SIEI","aula-acollida"],
+  math_sense: ["algebraic","mesura","espacial","estocastic","numeric","analitic","socio-emocional"],
+  activity: ["nombres-naturals","nombres-enters","divisibilitat","fraccions","nombres-decimals","nombres-racionals","potencies","arrels-radicals","notacio-cientifica","percentatges","proporcionalitat","interes-simple-compost","llenguatge-algebraic","monomis-polinomis","identitats-notables","factoritzacio","equacions","equacions-segon-grau","sistemes-equacions","inequacions","figures-planes","poligons","arees-perimetres","pitagores","tales","semblanca","cossos-geometrics","volums-arees-cossos","moviments-pla","geometria-pla-cartesia","concepte-funcio","funcio-lineal","recta-afi","funcio-quadratica","creixement-decreixement","trigonometria","triangles-rectangles","estadistica-descriptiva","mesures-centralitzacio","mesures-dispersio","taules-grafics-estadistics","probabilitat-basica","combinatoria","nombres-reals","nombres-complexos","logaritmes-exponencials","successions","progressions","identitats-trigonometriques","equacions-trigonometriques","sinus-cosinus","funcions-trigonometriques","vectors-pla","geometria-analitica-pla","rectes-pla","coniques","funcio-exponencial-logaritmica","funcions-racionals","funcio-valor-absolut","funcions-trossos","limits","continuitat","asimptotes","estudi-funcio","derivades","regla-cadena","derivades-successives","aplicacions-derivada","optimitzacio","integrals","metodes-integracio","integral-definida","calcul-arees","matrius","determinants","sistemes-lineals-gauss","rouche-frobenius","vectors-espai","producte-escalar","producte-vectorial-mixt","rectes-plans-espai","distancies-angles","probabilitat-condicionada","teorema-bayes","variables-aleatories","distribucio-binomial","distribucio-normal","inferencia-estadistica","contrast-hipotesis"],
+  type: ["exercici","exercici-solucions","dossier","examen","examen-recuperacio-trimestral","examen-recuperacio-global","teoria","examen-estructura","examen-correccio"]
+};
+// Working copy: starts as the fallback, replaced by manifest.json when synced.
+let vocab = JSON.parse(JSON.stringify(FALLBACK_VOCAB));
+
+/* Baked-in fallback labels (same story as FALLBACK_VOCAB above). */
+const FALLBACK_LABELS = {
+  "miquel-tarradell":"Miquel Tarradell","florence":"Florence","nrich":"NRICH","geogebra":"Geogebra","bogdan":"Bogdan","fem-matematiques":"Fem Mates","mmaca":"MMACA","g-morales":"G.Morales","ins-gelida":"INS Gelida","reptes-mates":"Reptes wsp","pdf":"PDF","doc":"Google Doc","1ESO":"1r ESO","2ESO":"2n ESO","3ESO":"3r ESO","4ESO":"4t ESO","1Bat":"1r Bat","2Bat":"2n Bat","ESO":"ESO","Bat":"Bat","primaria":"Primària","SIEI":"SIEI","aula-acollida":"Aula d'acollida","algebraic":"Algebraic","mesura":"Mesura","espacial":"Espacial","estocastic":"Estocàstic","numeric":"Numèric","analitic":"Analític","socio-emocional":"Socioemocional","nombres-naturals":"Nombres naturals","nombres-enters":"Nombres enters","divisibilitat":"Divisibilitat","fraccions":"Fraccions","nombres-decimals":"Nombres decimals","nombres-racionals":"Nombres racionals","potencies":"Potències","arrels-radicals":"Arrels i radicals","notacio-cientifica":"Notació científica","percentatges":"Percentatges","proporcionalitat":"Proporcionalitat","interes-simple-compost":"Interès simple i compost","llenguatge-algebraic":"Llenguatge algebraic","monomis-polinomis":"Monomis i polinomis","identitats-notables":"Identitats notables","factoritzacio":"Factorització","equacions":"Equacions","equacions-segon-grau":"Equacions de segon grau","sistemes-equacions":"Sistemes d'equacions","inequacions":"Inequacions","figures-planes":"Figures planes","poligons":"Polígons","arees-perimetres":"Àrees i perímetres","pitagores":"Teorema de Pitàgores","tales":"Teorema de Tales","semblanca":"Semblança","cossos-geometrics":"Cossos geomètrics","volums-arees-cossos":"Volums i àrees de cossos","moviments-pla":"Moviments al pla","geometria-pla-cartesia":"Geometria al pla cartesià","concepte-funcio":"Concepte de funció","funcio-lineal":"Funció lineal","recta-afi":"Recta afí","funcio-quadratica":"Funció quadràtica","creixement-decreixement":"Creixement i decreixement","trigonometria":"Trigonometria","triangles-rectangles":"Resolució de triangles rectangles","estadistica-descriptiva":"Estadística descriptiva","mesures-centralitzacio":"Mesures de centralització","mesures-dispersio":"Mesures de dispersió","taules-grafics-estadistics":"Taules i gràfics estadístics","probabilitat-basica":"Probabilitat bàsica","combinatoria":"Combinatòria","nombres-reals":"Nombres reals","nombres-complexos":"Nombres complexos","logaritmes-exponencials":"Logaritmes i exponencials","successions":"Successions","progressions":"Progressions aritmètiques i geomètriques","identitats-trigonometriques":"Identitats trigonomètriques","equacions-trigonometriques":"Equacions trigonomètriques","sinus-cosinus":"Teorema del sinus i del cosinus","funcions-trigonometriques":"Funcions trigonomètriques","vectors-pla":"Vectors al pla","geometria-analitica-pla":"Geometria analítica al pla","rectes-pla":"Rectes al pla","coniques":"Còniques","funcio-exponencial-logaritmica":"Funció exponencial i logarítmica","funcions-racionals":"Funcions racionals","funcio-valor-absolut":"Funció valor absolut","funcions-trossos":"Funcions a trossos","limits":"Límits de funcions","continuitat":"Continuïtat","asimptotes":"Asímptotes","estudi-funcio":"Estudi de funció","derivades":"Derivades","regla-cadena":"Regla de la cadena","derivades-successives":"Derivades successives","aplicacions-derivada":"Aplicacions de la derivada","optimitzacio":"Optimització","integrals":"Integrals","metodes-integracio":"Mètodes d'integració","integral-definida":"Integral definida","calcul-arees":"Càlcul d'àrees","matrius":"Matrius","determinants":"Determinants","sistemes-lineals-gauss":"Sistemes lineals (Gauss)","rouche-frobenius":"Teorema de Rouché-Frobenius","vectors-espai":"Vectors a l'espai","producte-escalar":"Producte escalar","producte-vectorial-mixt":"Producte vectorial i mixt","rectes-plans-espai":"Rectes i plans a l'espai","distancies-angles":"Distàncies i angles","probabilitat-condicionada":"Probabilitat condicionada","teorema-bayes":"Teorema de Bayes","variables-aleatories":"Variables aleatòries","distribucio-binomial":"Distribució binomial","distribucio-normal":"Distribució normal","inferencia-estadistica":"Inferència estadística","contrast-hipotesis":"Contrast d'hipòtesis","exercici":"Exercici","exercici-solucions":"Exercici amb solucions","dossier":"Dossier","examen":"Examen","examen-recuperacio-trimestral":"Recuperació trimestral","examen-recuperacio-global":"Recuperació global","teoria":"Teoria","examen-estructura":"Estructura d'examen","examen-correccio":"Correcció d'examen"
+};
+// Working copy: starts as the fallback, merged with manifest.json when synced.
+let labels = Object.assign({}, FALLBACK_LABELS);
 
 /* ─── STATE ─────────────────────────────────────────────────────── */
 const state = {
@@ -365,7 +372,17 @@ const state = {
 
 /* ─── DOM HELPERS ───────────────────────────────────────────────── */
 const $ = id => document.getElementById(id);
-function label(v) { return LABELS[v] || String(v).replace(/-/g,' ').replace(/\b\w/g, c => c.toUpperCase()); }
+function escHtml(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function label(v) { return labels[v] || String(v).replace(/-/g,' ').replace(/\b\w/g, c => c.toUpperCase()); }
+function slugify(s) {
+  return String(s).toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z0-9]+/g,'-')
+    .replace(/^-|-$/g,'')
+    .slice(0,60);
+}
 function toast(msg, isErr=false, dur=2200) {
   const t = $('toast');
   t.textContent = msg; t.classList.toggle('is-err', isErr); t.hidden = false;
@@ -454,11 +471,11 @@ function fileToBase64(file) {
 
 function buildInstruction() {
   const vocabForModel = {
-    origin: VOCAB.origin.map(v => ({ slug: v, label: label(v) })),
-    course: VOCAB.course.map(v => ({ slug: v, label: label(v) })),
-    math_sense: VOCAB.math_sense.map(v => ({ slug: v, label: label(v) })),
-    activity: VOCAB.activity.map(v => ({ slug: v, label: label(v) })),
-    type: VOCAB.type.map(v => ({ slug: v, label: label(v) })),
+    origin: vocab.origin.map(v => ({ slug: v, label: label(v) })),
+    course: vocab.course.map(v => ({ slug: v, label: label(v) })),
+    math_sense: vocab.math_sense.map(v => ({ slug: v, label: label(v) })),
+    activity: vocab.activity.map(v => ({ slug: v, label: label(v) })),
+    type: vocab.type.map(v => ({ slug: v, label: label(v) })),
   };
   return [
     "Ets un assistent que cataloga documents de matemàtiques de secundària (en català) per a un repositori escolar.",
@@ -527,12 +544,12 @@ function buildResponseSchema() {
       title:      { type: 'STRING' },
       id:         { type: 'STRING' },
       drive_id:   { type: 'STRING' },
-      format:     { type: 'STRING', enum: VOCAB.format },
-      origin:     { type: 'STRING', enum: VOCAB.origin },
-      courses:    { type: 'ARRAY', items: { type: 'STRING', enum: VOCAB.course } },
-      math_sense: { type: 'STRING', enum: VOCAB.math_sense },
-      activities: { type: 'ARRAY', items: { type: 'STRING', enum: VOCAB.activity } },
-      type:       { type: 'STRING', enum: VOCAB.type },
+      format:     { type: 'STRING', enum: vocab.format },
+      origin:     { type: 'STRING', enum: vocab.origin },
+      courses:    { type: 'ARRAY', items: { type: 'STRING', enum: vocab.course } },
+      math_sense: { type: 'STRING', enum: vocab.math_sense },
+      activities: { type: 'ARRAY', items: { type: 'STRING', enum: vocab.activity } },
+      type:       { type: 'STRING', enum: vocab.type },
     },
     required: ['title', 'id', 'drive_id', 'format'],
     propertyOrdering: ['title','id','drive_id','format','origin','courses','math_sense','activities','type'],
@@ -591,7 +608,7 @@ function normaliseEntry(raw) {
   out.title = (raw.title || '').toString().trim() || 'Sense títol';
   out.id = slugify(raw.id && /^[a-z0-9-]+$/.test(raw.id) ? raw.id : out.title) || slugify(out.title) || 'sense-titol';
   out.drive_id = '';                       // mai deduïble del contingut
-  out.format = VOCAB.format.includes(state.format) ? state.format : 'pdf';
+  out.format = vocab.format.includes(state.format) ? state.format : 'pdf';
 
   const single = (val, list, name) => {
     if (val == null || val === '') return undefined;
@@ -609,19 +626,19 @@ function normaliseEntry(raw) {
     return ok;
   };
 
-  const origin = single(raw.origin, VOCAB.origin, 'origin');
+  const origin = single(raw.origin, vocab.origin, 'origin');
   if (origin) out.origin = origin;
 
-  const courses = multi(raw.courses || raw.course, VOCAB.course, 'course');
+  const courses = multi(raw.courses || raw.course, vocab.course, 'course');
   if (courses.length) out.courses = courses;
 
-  const ms = single(raw.math_sense, VOCAB.math_sense, 'math_sense');
+  const ms = single(raw.math_sense, vocab.math_sense, 'math_sense');
   if (ms) out.math_sense = ms;
 
-  const acts = multi(raw.activities || raw.activity, VOCAB.activity, 'activity');
+  const acts = multi(raw.activities || raw.activity, vocab.activity, 'activity');
   if (acts.length) out.activities = acts;
 
-  const type = single(raw.type, VOCAB.type, 'type');
+  const type = single(raw.type, vocab.type, 'type');
   if (type) out.type = type;
 
   return { entry: out, warnings };
@@ -744,7 +761,7 @@ async function run() {
   }
 }
 
-/* ─── VOCAB SYNC (optional) ─────────────────────────────────────── */
+/* ─── SYNC VOCABULARY FROM MANIFEST (optional) ──────────────────── */
 async function loadModels() {
   const key = $('api-key').value.trim();
   if (!key) { toast('Posa primer la clau de Gemini', true); return; }
@@ -783,16 +800,16 @@ async function loadModels() {
 
 function applyManifest(m) {
   if (m?.vocabulary) {
-    VOCAB = {
-      origin: m.vocabulary.origin || VOCAB.origin,
-      format: m.vocabulary.format || VOCAB.format,
-      course: m.vocabulary.course || VOCAB.course,
-      math_sense: m.vocabulary.math_sense || VOCAB.math_sense,
-      activity: m.vocabulary.activity || VOCAB.activity,
-      type: m.vocabulary.type || VOCAB.type,
+    vocab = {
+      origin: m.vocabulary.origin || vocab.origin,
+      format: m.vocabulary.format || vocab.format,
+      course: m.vocabulary.course || vocab.course,
+      math_sense: m.vocabulary.math_sense || vocab.math_sense,
+      activity: m.vocabulary.activity || vocab.activity,
+      type: m.vocabulary.type || vocab.type,
     };
   }
-  if (m?.vocabulary_labels) LABELS = Object.assign({}, LABELS, m.vocabulary_labels);
+  if (m?.vocabulary_labels) labels = Object.assign({}, labels, m.vocabulary_labels);
   $('vocab-note').innerHTML = 'Vocabulari carregat des de <code>manifest.json</code> (sincronitzat).';
 }
 

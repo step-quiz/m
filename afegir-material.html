@@ -525,17 +525,6 @@
   }
   .ft-badge.err  { background: rgba(255,59,48,.12);  color: var(--red); }
   .ft-badge.warn { background: rgba(255,159,10,.16); color: #9a6300;     }
-  /* A2 — Anell de focus coherent (:focus-visible) */
-  button:focus-visible,
-  a:focus-visible,
-  input:focus-visible,
-  textarea:focus-visible,
-  select:focus-visible,
-  summary:focus-visible,
-  [role="button"]:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 4px var(--accent-soft);
-  }
 </style>
 </head>
 <body>
@@ -566,26 +555,37 @@
 
 <div class="toast" id="toast" hidden></div>
 
-<script src="common.js"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════
    Manifest editor — vanilla JS, no dependencies.
    ═══════════════════════════════════════════════════════════════════ */
 
+const FILTER_GROUPS = [
+  { key: 'origin',     label: 'Origen',           field: 'origin',     multi: false, required: false },
+  { key: 'format',     label: 'Format',           field: 'format',     multi: false, required: true  },
+  { key: 'course',     label: 'Curs',             field: 'courses',    multi: true,  required: false },
+  { key: 'math_sense', label: 'Sentit matemàtic', field: 'math_sense', multi: false, required: false },
+  { key: 'activity',   label: 'Activitat',        field: 'activities', multi: true,  required: false },
+  { key: 'type',       label: 'Tipus',            field: 'type',       multi: false, required: false },
+];
 
-/* Default empty manifest scaffold */
+/* Scaffold used ONLY by "Comença des de zero" (when there's no manifest to load).
+   It is intentionally almost empty: the real vocabulary lives in manifest.json,
+   so this must not carry a second, drifting copy. Only `format` is seeded,
+   because it's the one required field and the modal needs at least one option;
+   everything else you build as you go (or, normally, you just load the manifest). */
 function emptyManifest() {
   return {
     version: 1,
     generated: new Date().toISOString().slice(0, 10),
     folder_url: '',
     vocabulary: {
-      origin: ['miquel-tarradell', 'florence', 'nrich', 'geogebra', 'bogdan', 'fem-matematiques', 'mmaca', 'g-morales', 'ins-gelida', 'reptes-mates'],
-      format: ['pdf', 'doc'],
-      course: ['1ESO','2ESO','3ESO','4ESO','1Bat','2Bat','ESO','Bat','generic'],
-      math_sense: ['algebraic','mesura','espacial','estocastic','numeric','analitic'],
+      origin: [],
+      format: ['pdf', 'doc', 'web'],
+      course: [],
+      math_sense: [],
       activity: [],
-      type: ['exercici','exercici-solucions','dossier','examen','examen-recuperacio-trimestral','examen-recuperacio-global']
+      type: []
     },
     vocabulary_labels: {},
     activity_blocks: [],
@@ -605,6 +605,11 @@ const state = {
 const $ = id => document.getElementById(id);
 
 /* ─── HELPERS ───────────────────────────────────────────────────── */
+function escHtml(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
 function attr(s) { return escHtml(s); }
 
 function label(value) {
@@ -613,6 +618,14 @@ function label(value) {
   return String(value).replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 }
 
+function slugify(s) {
+  return String(s)
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 60);
+}
 
 function setDirty(flag = true) {
   state.dirty = flag;
@@ -1517,8 +1530,12 @@ function saveModal() {
   if (!f.format)   return (err.textContent = 'Tria un format');
 
   // Uniqueness
+  const others = state.manifest.files.filter(x => x !== state.editing && x.id === f.id);
   // When editing, state.editing is a clone — find original by reference instead via id
   const origId = state.editingNew ? null : state.editing.id;
+  if (!state.editingNew) {
+    // same-id okay if it's our original
+  }
   const conflict = state.manifest.files.find(x => x.id === f.id && x.id !== origId);
   if (conflict) return (err.textContent = `Ja existeix un fitxer amb ID "${f.id}"`);
 
