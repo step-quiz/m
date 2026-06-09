@@ -1117,6 +1117,390 @@
         "semblanca"
       ],
       "type": "dossier"
+    },
+    {
+      "title": "Nombres naturals",
+      "id": "mt-1eso-1-nombres-naturals",
+      "format": "pdf",
+      "origin": "miquel-tarradell",
+      "courses": [
+        "1ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "nombres-naturals",
+        "divisibilitat"
+      ],
+      "type": "dossier",
+      "local_path": "mt-pdf/1ESO-1_Nombres_naturals.pdf",
+      "notes": "Dossier 1r ESO · Unitat 1"
+    },
+    {
+      "title": "Fraccions i decimals",
+      "id": "mt-1eso-2-fraccions-i-decimals",
+      "format": "pdf",
+      "origin": "miquel-tarradell",
+      "courses": [
+        "1ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "fraccions",
+        "nombres-decimals"
+      ],
+      "type": "dossier",
+      "local_path": "mt-pdf/1ESO-2_Fraccions_i_decimals.pdf",
+      "notes": "Dossier 1r ESO · Unitat 2"
+    },
+    {
+      "title": "Llenguatge algebraic",
+      "id": "mt-1eso-3-llenguatge-algebraic",
+      "format": "pdf",
+      "origin": "miquel-tarradell",
+      "courses": [
+        "1ESO"
+      ],
+      "math_sense": "algebraic",
+      "activities": [
+        "llenguatge-algebraic"
+      ],
+      "type": "dossier",
+      "local_path": "mt-pdf/1ESO-3_Llenguatge_algebraic.pdf",
+      "notes": "Dossier 1r ESO · Unitat 3"
+    },
+    {
+      "title": "Nombres enters i equacions",
+      "id": "mt-1eso-4-nombres-enters-i-equacions",
+      "format": "pdf",
+      "origin": "miquel-tarradell",
+      "courses": [
+        "1ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "nombres-enters",
+        "equacions"
+      ],
+      "type": "dossier",
+      "local_path": "mt-pdf/1ESO-4_Nombres_enters_i_equacions.pdf",
+      "notes": "Dossier 1r ESO · Unitat 4"
+    },
+    {
+      "title": "Geometria en el pla",
+      "id": "mt-1eso-5-geometria-en-el-pla",
+      "format": "pdf",
+      "origin": "miquel-tarradell",
+      "courses": [
+        "1ESO"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "figures-planes",
+        "poligons",
+        "arees-perimetres"
+      ],
+      "type": "dossier",
+      "local_path": "mt-pdf/1ESO-5_Geometria_en_el_pla.pdf",
+      "notes": "Dossier 1r ESO · Unitat 5"
+    },
+    {
+      "title": "Proporcionalitat",
+      "id": "mt-2eso-1-proporcionalitat",
+      "format": "pdf",
+      "origin": "miquel-tarradell",
+      "courses": [
+        "2ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "proporcionalitat",
+        "percentatges"
+      ],
+      "type": "dossier",
+      "local_path": "mt-pdf/2ESO-1_Proporcionalitat.pdf",
+      "notes": "Dossier 2n ESO · Unitat 1"
+    },
+    {
+      "title": "Funcions",
+      "id": "mt-2eso-2-funcions",
+      "format": "pdf",
+      "origin": "miquel-tarradell",
+      "courses": [
+        "2ESO"
+      ],
+      "math_sense": "analitic",
+      "activities": [
+        "concepte-funcio",
+        "funcio-lineal"
+      ],
+      "type": "dossier",
+      "local_path": "mt-pdf/2ESO-2_Funcions.pdf",
+      "notes": "Dossier 2n ESO · Unitat 2"
+    },
+    {
+      "title": "Nombres racionals i àlgebra",
+      "id": "mt-2eso-3-nombres-racionals-i-algebra",
+      "format": "pdf",
+      "origin": "miquel-tarradell",
+      "courses": [
+        "2ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "nombres-racionals",
+        "llenguatge-algebraic",
+        "equacions"
+      ],
+      "type": "dossier",
+      "local_path": "mt-pdf/2ESO-3_Nombres_racionals_i_algebra.pdf",
+      "notes": "Dossier 2n ESO · Unitat 3"
+    },
+    {
+      "title": "Geometria del pla a l’espai",
+      "id": "mt-2eso-4-geometria-del-pla-a-lespai",
+      "format": "pdf",
+      "origin": "miquel-tarradell",
+      "courses": [
+        "2ESO"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "figures-planes",
+        "cossos-geometrics",
+        "volums-arees-cossos"
+      ],
+      "type": "dossier",
+      "local_path": "mt-pdf/2ESO-4_Geometria_del_pla_a_l_espai.pdf",
+      "notes": "Dossier 2n ESO · Unitat 4"
+    },
+    {
+      "title": "Probabilitat",
+      "id": "mt-2eso-5-probabilitat",
+      "format": "pdf",
+      "origin": "miquel-tarradell",
+      "courses": [
+        "2ESO"
+      ],
+      "math_sense": "estocastic",
+      "activities": [
+        "probabilitat-basica"
+      ],
+      "type": "dossier",
+      "local_path": "mt-pdf/2ESO-5_Probabilitat.pdf",
+      "notes": "Dossier 2n ESO · Unitat 5"
+    },
+    {
+      "title": "Estadística",
+      "id": "mt-2eso-6-estadistica",
+      "format": "pdf",
+      "origin": "miquel-tarradell",
+      "courses": [
+        "2ESO"
+      ],
+      "math_sense": "estocastic",
+      "activities": [
+        "estadistica-descriptiva",
+        "taules-grafics-estadistics",
+        "mesures-centralitzacio"
+      ],
+      "type": "dossier",
+      "local_path": "mt-pdf/2ESO-6_Estadistica.pdf",
+      "notes": "Dossier 2n ESO · Unitat 6"
+    },
+    {
+      "title": "Nombres enters",
+      "id": "mt-2eso-7-nombres-enters",
+      "format": "pdf",
+      "origin": "miquel-tarradell",
+      "courses": [
+        "2ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "nombres-enters"
+      ],
+      "type": "dossier",
+      "local_path": "mt-pdf/2ESO-7_Nombres_enters.pdf",
+      "notes": "Dossier 2n ESO · Unitat 7"
+    },
+    {
+      "title": "Nombres reals",
+      "id": "mt-3eso-1-nombres-reals",
+      "format": "pdf",
+      "origin": "miquel-tarradell",
+      "courses": [
+        "3ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "nombres-reals",
+        "potencies",
+        "arrels-radicals",
+        "notacio-cientifica"
+      ],
+      "type": "dossier",
+      "local_path": "mt-pdf/3ESO-1_Nombres_reals.pdf",
+      "notes": "Dossier 3r ESO · Unitat 1"
+    },
+    {
+      "title": "Successions i progressions",
+      "id": "mt-3eso-2-successions-i-progressions",
+      "format": "pdf",
+      "origin": "miquel-tarradell",
+      "courses": [
+        "3ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "successions",
+        "progressions"
+      ],
+      "type": "dossier",
+      "local_path": "mt-pdf/3ESO-2_Successions_i_progressions.pdf",
+      "notes": "Dossier 3r ESO · Unitat 2"
+    },
+    {
+      "title": "Polinomis i funcions quadràtiques",
+      "id": "mt-3eso-3-polinomis-i-funcions-quadratiques",
+      "format": "pdf",
+      "origin": "miquel-tarradell",
+      "courses": [
+        "3ESO"
+      ],
+      "math_sense": "algebraic",
+      "activities": [
+        "monomis-polinomis",
+        "factoritzacio",
+        "funcio-quadratica",
+        "equacions-segon-grau"
+      ],
+      "type": "dossier",
+      "local_path": "mt-pdf/3ESO-3_Polinomis_i_funcions_quadratiques.pdf",
+      "notes": "Dossier 3r ESO · Unitat 3"
+    },
+    {
+      "title": "Transformacions geomètriques",
+      "id": "mt-3eso-4-transformacions-geometriques",
+      "format": "pdf",
+      "origin": "miquel-tarradell",
+      "courses": [
+        "3ESO"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "moviments-pla",
+        "semblanca"
+      ],
+      "type": "dossier",
+      "local_path": "mt-pdf/3ESO-4_Transformacions_geometriques.pdf",
+      "notes": "Dossier 3r ESO · Unitat 4"
+    },
+    {
+      "title": "Estadística",
+      "id": "mt-3eso-5-estadistica",
+      "format": "pdf",
+      "origin": "miquel-tarradell",
+      "courses": [
+        "3ESO"
+      ],
+      "math_sense": "estocastic",
+      "activities": [
+        "estadistica-descriptiva",
+        "taules-grafics-estadistics",
+        "mesures-centralitzacio",
+        "mesures-dispersio"
+      ],
+      "type": "dossier",
+      "local_path": "mt-pdf/3ESO-5_Estadistica.pdf",
+      "notes": "Dossier 3r ESO · Unitat 5"
+    },
+    {
+      "title": "Combinatòria i Probabilitat",
+      "id": "mt-4eso-1-combinatoria-i-probabilitat",
+      "format": "pdf",
+      "origin": "miquel-tarradell",
+      "courses": [
+        "4ESO"
+      ],
+      "math_sense": "estocastic",
+      "activities": [
+        "combinatoria",
+        "probabilitat-basica"
+      ],
+      "type": "dossier",
+      "local_path": "mt-pdf/4ESO-1_Combinatoria_i_Probabilitat.pdf",
+      "notes": "Dossier 4t ESO · Unitat 1"
+    },
+    {
+      "title": "Trigonometria",
+      "id": "mt-4eso-2-trigonometria",
+      "format": "pdf",
+      "origin": "miquel-tarradell",
+      "courses": [
+        "4ESO"
+      ],
+      "math_sense": "mesura",
+      "activities": [
+        "trigonometria",
+        "triangles-rectangles"
+      ],
+      "type": "dossier",
+      "local_path": "mt-pdf/4ESO-2_Trigonometria.pdf",
+      "notes": "Dossier 4t ESO · Unitat 2"
+    },
+    {
+      "title": "Funcions",
+      "id": "mt-4eso-3-funcions",
+      "format": "pdf",
+      "origin": "miquel-tarradell",
+      "courses": [
+        "4ESO"
+      ],
+      "math_sense": "analitic",
+      "activities": [
+        "concepte-funcio",
+        "funcio-lineal",
+        "funcio-quadratica",
+        "creixement-decreixement"
+      ],
+      "type": "dossier",
+      "local_path": "mt-pdf/4ESO-3_Funcions.pdf",
+      "notes": "Dossier 4t ESO · Unitat 3"
+    },
+    {
+      "title": "Funció exponencial i logarítmica",
+      "id": "mt-4eso-4-funcio-exponencial-i-logaritmica",
+      "format": "pdf",
+      "origin": "miquel-tarradell",
+      "courses": [
+        "4ESO"
+      ],
+      "math_sense": "analitic",
+      "activities": [
+        "logaritmes-exponencials",
+        "funcio-exponencial-logaritmica"
+      ],
+      "type": "dossier",
+      "local_path": "mt-pdf/4ESO-4_Exponencial_i_logaritmica.pdf",
+      "notes": "Dossier 4t ESO · Unitat 4"
+    },
+    {
+      "title": "Geometria analítica",
+      "id": "mt-4eso-5-geometria-analitica",
+      "format": "pdf",
+      "origin": "miquel-tarradell",
+      "courses": [
+        "4ESO"
+      ],
+      "math_sense": "analitic",
+      "activities": [
+        "vectors-pla",
+        "geometria-analitica-pla",
+        "rectes-pla"
+      ],
+      "type": "dossier",
+      "local_path": "mt-pdf/4ESO-5_Geometria_analitica.pdf",
+      "notes": "Dossier 4t ESO · Unitat 5"
     }
   ],
   "basic": {
