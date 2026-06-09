@@ -1917,7 +1917,7 @@
     {
       "title": "Àlgebra",
       "id": "bg-algebra-eso",
-      "local_path": "bogdan-pdf/algebra-apunts-i-problemes-eso-videos.pdf",
+      "drive_id": "1psaps76jnp18u6jUN7wpUuWfnWsDvgEP",
       "format": "pdf",
       "origin": "bogdan",
       "courses": [
@@ -1935,7 +1935,7 @@
     {
       "title": "Equacions 1r i 2n grau",
       "id": "bg-equacions-1r2n-grau",
-      "local_path": "bogdan-pdf/equacions-1r2n-grau-apunts-i-problemes-eso-videos.pdf",
+      "drive_id": "1-ElM8UIj5BVC-6R0AgU6BZbuNcp7lguC",
       "format": "pdf",
       "origin": "bogdan",
       "courses": [
@@ -1952,7 +1952,7 @@
     {
       "title": "Equacions 4t ESO",
       "id": "bg-equacions-4eso",
-      "local_path": "bogdan-pdf/equacions-4t-eso-apunts-i-problemes-eso-videos.pdf",
+      "drive_id": "1xbw3t88sw47oPOKJGsOXLcSN854Xdb5O",
       "format": "pdf",
       "origin": "bogdan",
       "courses": [
@@ -1969,7 +1969,7 @@
     {
       "title": "Funcions",
       "id": "bg-funcions-eso",
-      "local_path": "bogdan-pdf/funcions-apunts-i-problemes-eso-videos.pdf",
+      "drive_id": "1mnaE0n-aMTCOyWrTj7y2lVZV9_k6b5UV",
       "format": "pdf",
       "origin": "bogdan",
       "courses": [
@@ -1988,7 +1988,7 @@
     {
       "title": "Geometria",
       "id": "bg-geometria-eso",
-      "local_path": "bogdan-pdf/geometria-apunts-i-problemes-eso-videos.pdf",
+      "drive_id": "1drK6WarAcAOX-behdGyD4PhBllnJ6S7z",
       "format": "pdf",
       "origin": "bogdan",
       "courses": [
@@ -1998,16 +1998,16 @@
       "activities": [
         "figures-planes",
         "arees-perimetres",
+        "pitagores",
         "cossos-geometrics",
-        "volums-arees-cossos",
-        "pitagores"
+        "volums-arees-cossos"
       ],
       "type": "dossier"
     },
     {
       "title": "Nombres reals",
       "id": "bg-nombres-reals",
-      "local_path": "bogdan-pdf/nombres-reals-apunts-i-problemes-eso-videos.pdf",
+      "drive_id": "1W1hhLJIxyq-vy0dVRtuDqRDDMirGvLQa",
       "format": "pdf",
       "origin": "bogdan",
       "courses": [
@@ -2016,9 +2016,9 @@
       ],
       "math_sense": "numeric",
       "activities": [
-        "nombres-reals",
-        "arrels-radicals",
         "potencies",
+        "arrels-radicals",
+        "nombres-reals",
         "logaritmes-exponencials"
       ],
       "type": "dossier"
@@ -2026,7 +2026,7 @@
     {
       "title": "Polinomis (ESO)",
       "id": "bg-polinomis-eso",
-      "local_path": "bogdan-pdf/polinomis-apunts-i-problemes-eso-videos.pdf",
+      "drive_id": "1AeN32mw0LUmtixGlRZQxItiasGPVY9Mr",
       "format": "pdf",
       "origin": "bogdan",
       "courses": [
@@ -2035,15 +2035,15 @@
       "math_sense": "algebraic",
       "activities": [
         "monomis-polinomis",
-        "factoritzacio",
-        "identitats-notables"
+        "identitats-notables",
+        "factoritzacio"
       ],
       "type": "dossier"
     },
     {
       "title": "Semblança",
       "id": "bg-semblanca",
-      "local_path": "bogdan-pdf/semblanca-apunts-i-problemes-eso-videos.pdf",
+      "drive_id": "1EjeNWkNWl0I5W6W5KjUhnMivuVrUUdQX",
       "format": "pdf",
       "origin": "bogdan",
       "courses": [
@@ -2052,16 +2052,16 @@
       ],
       "math_sense": "espacial",
       "activities": [
-        "semblanca",
+        "pitagores",
         "tales",
-        "pitagores"
+        "semblanca"
       ],
       "type": "dossier"
     },
     {
       "title": "Sistemes 2×2",
       "id": "bg-sistemes-2x2",
-      "local_path": "bogdan-pdf/sistemes-2x2-apunts-i-problemes-eso-videos.pdf",
+      "drive_id": "1KIzZCEpbMuzpGTg2A1dMazH0aFueiHVx",
       "format": "pdf",
       "origin": "bogdan",
       "courses": [
@@ -2076,7 +2076,7 @@
     {
       "title": "Sistemes 3×3 i no lineals",
       "id": "bg-sistemes-3x3",
-      "local_path": "bogdan-pdf/sistemes-3x3-i-no-lineals-apunts-i-problemes-eso-videos.pdf",
+      "drive_id": "1mi4vrHnS-f6CoXFL1-Y5x1aK6jImMSIW",
       "format": "pdf",
       "origin": "bogdan",
       "courses": [
@@ -2093,7 +2093,7 @@
     {
       "title": "Vectors",
       "id": "bg-vectors-eso",
-      "local_path": "bogdan-pdf/vectors-apunts-i-problemes-eso-videos.pdf",
+      "drive_id": "1j3pcKOM2P0cdhm2c9mfPPIpBosK0poXG",
       "format": "pdf",
       "origin": "bogdan",
       "courses": [
@@ -2101,8 +2101,8 @@
       ],
       "math_sense": "espacial",
       "activities": [
-        "vectors-pla",
-        "geometria-pla-cartesia"
+        "geometria-pla-cartesia",
+        "vectors-pla"
       ],
       "type": "dossier"
     }
