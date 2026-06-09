@@ -1913,6 +1913,198 @@
         "combinatoria"
       ],
       "type": "exercici"
+    },
+    {
+      "title": "Àlgebra",
+      "id": "bg-algebra-eso",
+      "local_path": "bogdan-pdf/algebra-apunts-i-problemes-eso-videos.pdf",
+      "format": "pdf",
+      "origin": "bogdan",
+      "courses": [
+        "ESO"
+      ],
+      "math_sense": "algebraic",
+      "activities": [
+        "llenguatge-algebraic",
+        "monomis-polinomis",
+        "identitats-notables",
+        "factoritzacio"
+      ],
+      "type": "dossier"
+    },
+    {
+      "title": "Equacions 1r i 2n grau",
+      "id": "bg-equacions-1r2n-grau",
+      "local_path": "bogdan-pdf/equacions-1r2n-grau-apunts-i-problemes-eso-videos.pdf",
+      "format": "pdf",
+      "origin": "bogdan",
+      "courses": [
+        "3ESO",
+        "4ESO"
+      ],
+      "math_sense": "algebraic",
+      "activities": [
+        "equacions",
+        "equacions-segon-grau"
+      ],
+      "type": "dossier"
+    },
+    {
+      "title": "Equacions 4t ESO",
+      "id": "bg-equacions-4eso",
+      "local_path": "bogdan-pdf/equacions-4t-eso-apunts-i-problemes-eso-videos.pdf",
+      "format": "pdf",
+      "origin": "bogdan",
+      "courses": [
+        "4ESO"
+      ],
+      "math_sense": "algebraic",
+      "activities": [
+        "equacions",
+        "equacions-segon-grau",
+        "inequacions"
+      ],
+      "type": "dossier"
+    },
+    {
+      "title": "Funcions",
+      "id": "bg-funcions-eso",
+      "local_path": "bogdan-pdf/funcions-apunts-i-problemes-eso-videos.pdf",
+      "format": "pdf",
+      "origin": "bogdan",
+      "courses": [
+        "ESO"
+      ],
+      "math_sense": "analitic",
+      "activities": [
+        "concepte-funcio",
+        "funcio-lineal",
+        "recta-afi",
+        "funcio-quadratica",
+        "creixement-decreixement"
+      ],
+      "type": "dossier"
+    },
+    {
+      "title": "Geometria",
+      "id": "bg-geometria-eso",
+      "local_path": "bogdan-pdf/geometria-apunts-i-problemes-eso-videos.pdf",
+      "format": "pdf",
+      "origin": "bogdan",
+      "courses": [
+        "ESO"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "figures-planes",
+        "arees-perimetres",
+        "cossos-geometrics",
+        "volums-arees-cossos",
+        "pitagores"
+      ],
+      "type": "dossier"
+    },
+    {
+      "title": "Nombres reals",
+      "id": "bg-nombres-reals",
+      "local_path": "bogdan-pdf/nombres-reals-apunts-i-problemes-eso-videos.pdf",
+      "format": "pdf",
+      "origin": "bogdan",
+      "courses": [
+        "4ESO",
+        "1Bat"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "nombres-reals",
+        "arrels-radicals",
+        "potencies",
+        "logaritmes-exponencials"
+      ],
+      "type": "dossier"
+    },
+    {
+      "title": "Polinomis (ESO)",
+      "id": "bg-polinomis-eso",
+      "local_path": "bogdan-pdf/polinomis-apunts-i-problemes-eso-videos.pdf",
+      "format": "pdf",
+      "origin": "bogdan",
+      "courses": [
+        "ESO"
+      ],
+      "math_sense": "algebraic",
+      "activities": [
+        "monomis-polinomis",
+        "factoritzacio",
+        "identitats-notables"
+      ],
+      "type": "dossier"
+    },
+    {
+      "title": "Semblança",
+      "id": "bg-semblanca",
+      "local_path": "bogdan-pdf/semblanca-apunts-i-problemes-eso-videos.pdf",
+      "format": "pdf",
+      "origin": "bogdan",
+      "courses": [
+        "3ESO",
+        "4ESO"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "semblanca",
+        "tales",
+        "pitagores"
+      ],
+      "type": "dossier"
+    },
+    {
+      "title": "Sistemes 2×2",
+      "id": "bg-sistemes-2x2",
+      "local_path": "bogdan-pdf/sistemes-2x2-apunts-i-problemes-eso-videos.pdf",
+      "format": "pdf",
+      "origin": "bogdan",
+      "courses": [
+        "ESO"
+      ],
+      "math_sense": "algebraic",
+      "activities": [
+        "sistemes-equacions"
+      ],
+      "type": "dossier"
+    },
+    {
+      "title": "Sistemes 3×3 i no lineals",
+      "id": "bg-sistemes-3x3",
+      "local_path": "bogdan-pdf/sistemes-3x3-i-no-lineals-apunts-i-problemes-eso-videos.pdf",
+      "format": "pdf",
+      "origin": "bogdan",
+      "courses": [
+        "4ESO",
+        "1Bat"
+      ],
+      "math_sense": "algebraic",
+      "activities": [
+        "sistemes-equacions",
+        "sistemes-lineals-gauss"
+      ],
+      "type": "dossier"
+    },
+    {
+      "title": "Vectors",
+      "id": "bg-vectors-eso",
+      "local_path": "bogdan-pdf/vectors-apunts-i-problemes-eso-videos.pdf",
+      "format": "pdf",
+      "origin": "bogdan",
+      "courses": [
+        "ESO"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "vectors-pla",
+        "geometria-pla-cartesia"
+      ],
+      "type": "dossier"
     }
   ],
   "basic": {
