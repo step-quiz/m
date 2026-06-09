@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated": "2026-06-04",
+  "generated": "2026-06-09",
   "folder_url": "https://drive.google.com/drive/folders/1WjqddjN3uQhO7zUXzRKwDmBia6jqCUdy",
   "vocabulary": {
     "origin": [
@@ -14,7 +14,8 @@
       "g-morales",
       "ins-gelida",
       "reptes-mates",
-      "proves-cb"
+      "proves-cb",
+      "math-bits"
     ],
     "format": [
       "pdf",
@@ -280,7 +281,8 @@
     "circumferencia-cercle": "Circumferència i/o cercle",
     "web": "P.competencial",
     "proves-cb": "Proves CB",
-    "prova-cb": "Prova CB"
+    "prova-cb": "Prova CB",
+    "math-bits": "Math-Bits"
   },
   "files": [
     {
@@ -1121,8 +1123,9 @@
     {
       "title": "Nombres naturals",
       "id": "mt-1eso-1-nombres-naturals",
+      "drive_id": "1YW1jP7WegWjwYOeKTJ8ifx85GPAMJsUn",
       "format": "pdf",
-      "origin": "miquel-tarradell",
+      "origin": "math-bits",
       "courses": [
         "1ESO"
       ],
@@ -1132,7 +1135,6 @@
         "divisibilitat"
       ],
       "type": "dossier",
-      "local_path": "mt-pdf/1ESO-1_Nombres_naturals.pdf",
       "notes": "Dossier 1r ESO · Unitat 1"
     },
     {
