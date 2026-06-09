@@ -1503,6 +1503,416 @@
       ],
       "type": "dossier",
       "notes": "Dossier 4t ESO · Unitat 5"
+    },
+    {
+      "title": "Perímetre i àrea: una relació conflictiva",
+      "id": "fl-2eso-s01-perimetre-area",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "2ESO"
+      ],
+      "math_sense": "mesura",
+      "activities": [
+        "figures-planes",
+        "arees-perimetres"
+      ],
+      "type": "exercici",
+      "local_path": "Florence (2025-26)/ESO2 S01. Fitxa Alumnat. Perímetre i àrea un relació conflictiva.pdf"
+    },
+    {
+      "title": "Podem construir-ho",
+      "id": "fl-2eso-s02-podem-construir-ho",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "2ESO"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "figures-planes",
+        "cossos-geometrics"
+      ],
+      "type": "exercici",
+      "local_path": "Florence (2025-26)/ESO2 S02. Podem construir-ho.pdf"
+    },
+    {
+      "title": "Veure per créixer: percentatges en acció",
+      "id": "fl-2eso-s03-percentatges-accio",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "2ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "percentatges",
+        "proporcionalitat"
+      ],
+      "type": "exercici",
+      "local_path": "Florence (2025-26)/ESO2 S03. Fitxa alumnat. Veure per créixer_ percentatges en acció.pdf"
+    },
+    {
+      "title": "Fem matemàtiques (2ESO)",
+      "id": "fl-2eso-s04-fem-matematiques",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "2ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "fraccions",
+        "percentatges",
+        "proporcionalitat"
+      ],
+      "type": "exercici",
+      "local_path": "Florence (2025-26)/ESO2 S04. Fitxa alumnat. Fem matemàtiques.pdf"
+    },
+    {
+      "title": "El cas del riu: dades a judici",
+      "id": "fl-2eso-s05-cas-del-riu",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "2ESO"
+      ],
+      "math_sense": "estocastic",
+      "activities": [
+        "estadistica-descriptiva",
+        "taules-grafics-estadistics"
+      ],
+      "type": "exercici",
+      "local_path": "Florence (2025-26)/ESO2 S05. Fitxa alumnat. El cas del riu_ dades a judici.pdf"
+    },
+    {
+      "title": "El cas del riu: dades a judici (pautada)",
+      "id": "fl-2eso-s05-cas-del-riu-pautada",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "2ESO"
+      ],
+      "math_sense": "estocastic",
+      "activities": [
+        "estadistica-descriptiva",
+        "taules-grafics-estadistics"
+      ],
+      "type": "exercici",
+      "local_path": "Florence (2025-26)/ESO2 S05. Fitxa alumnat (pautada). El cas del riu_ dades a judici.pdf"
+    },
+    {
+      "title": "Un tangram diferent",
+      "id": "fl-2eso-s06-tangram-diferent",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "2ESO"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "figures-planes",
+        "arees-perimetres",
+        "semblanca"
+      ],
+      "type": "exercici",
+      "local_path": "Florence (2025-26)/ESO2 S06. Fitxa alumnat. Un tangram diferent.pdf"
+    },
+    {
+      "title": "Ruta a l'infinit",
+      "id": "fl-2eso-s07-ruta-a-linfinit",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "2ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "successions",
+        "progressions"
+      ],
+      "type": "exercici",
+      "local_path": "Florence (2025-26)/ESO2 S07. Fitxa alumnat. Ruta a l_infinit.docx.pdf"
+    },
+    {
+      "title": "El lleó i el pastís",
+      "id": "fl-2eso-s08-lleo-i-el-pastis",
+      "format": "doc",
+      "origin": "florence",
+      "courses": [
+        "2ESO"
+      ],
+      "math_sense": "algebraic",
+      "activities": [
+        "concepte-funcio",
+        "funcio-lineal"
+      ],
+      "type": "exercici",
+      "local_path": "Florence (2025-26)/ESO2 S08. Fitxa alumnat. El lleó i el pastís.docx"
+    },
+    {
+      "title": "Fent el prèssec",
+      "id": "fl-2eso-s09-fent-el-pressec",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "2ESO"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "figures-planes",
+        "arees-perimetres"
+      ],
+      "type": "exercici",
+      "local_path": "Florence (2025-26)/ESO2 S09. Fitxa alumnat (grup). Fent el prèssec.pdf"
+    },
+    {
+      "title": "Més enllà de la sort",
+      "id": "fl-2eso-s10-mes-enlla-de-la-sort",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "2ESO"
+      ],
+      "math_sense": "estocastic",
+      "activities": [
+        "probabilitat-basica",
+        "combinatoria"
+      ],
+      "type": "exercici",
+      "local_path": "Florence (2025-26)/ESO2 S010. Fitxa alumnat. Més enllà de la sort.pdf"
+    },
+    {
+      "title": "Més enllà de la sort (estacions)",
+      "id": "fl-2eso-s10-mes-enlla-de-la-sort-estacions",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "2ESO"
+      ],
+      "math_sense": "estocastic",
+      "activities": [
+        "probabilitat-basica",
+        "combinatoria"
+      ],
+      "type": "exercici",
+      "local_path": "Florence (2025-26)/ESO2 S010. Estacions alumnat. Més enllà de la sort.pdf"
+    },
+    {
+      "title": "Del paper a la gràfica: explorant rectangles",
+      "id": "fl-2eso-s11-del-paper-a-la-grafica",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "2ESO"
+      ],
+      "math_sense": "algebraic",
+      "activities": [
+        "concepte-funcio",
+        "funcio-quadratica",
+        "arees-perimetres"
+      ],
+      "type": "exercici",
+      "local_path": "Florence (2025-26)/ESO2 S11. Fitxa alumnat. Del paper a la gràfica_explorant rectangles.pdf"
+    },
+    {
+      "title": "Construir per pensar: capses i models",
+      "id": "fl-3eso-s01-capses-i-models",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "3ESO"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "cossos-geometrics",
+        "volums-arees-cossos"
+      ],
+      "type": "exercici",
+      "local_path": "Florence (2025-26)/ESO3 S01. Fitxa alumnat. Construir per pensar_ capses i models.docx.pdf"
+    },
+    {
+      "title": "Quadrats inclinats",
+      "id": "fl-3eso-s02-quadrats-inclinats",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "3ESO"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "figures-planes",
+        "arees-perimetres",
+        "pitagores"
+      ],
+      "type": "exercici",
+      "local_path": "Florence (2025-26)/ESO3 S02. Fitxa Alumnat. Quadrats inclinats.docx.pdf"
+    },
+    {
+      "title": "Pujant escales",
+      "id": "fl-3eso-s03-pujant-escales",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "3ESO"
+      ],
+      "math_sense": "algebraic",
+      "activities": [
+        "successions",
+        "progressions",
+        "funcio-lineal"
+      ],
+      "type": "exercici",
+      "local_path": "Florence (2025-26)/ESO3 S03. Fitxa alumnat. Pujant escales.pdf"
+    },
+    {
+      "title": "Fem matemàtiques (3ESO)",
+      "id": "fl-3eso-s04-fem-matematiques",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "3ESO"
+      ],
+      "math_sense": "algebraic",
+      "activities": [
+        "equacions",
+        "sistemes-equacions",
+        "funcio-lineal"
+      ],
+      "type": "exercici",
+      "local_path": "Florence (2025-26)/ESO3 S04. Fitxa alumnat. Fem matemàtiques.pdf"
+    },
+    {
+      "title": "Es poden menjar els peixos dels nostres llacs? (Part 1)",
+      "id": "fl-3eso-s05-peixos-llacs-part1",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "3ESO"
+      ],
+      "math_sense": "estocastic",
+      "activities": [
+        "estadistica-descriptiva",
+        "taules-grafics-estadistics",
+        "mesures-centralitzacio"
+      ],
+      "type": "exercici",
+      "local_path": "Florence (2025-26)/ESO3 S05. Fitxa alumnat. Es poden menjar els peixos dels nostres llacs_ Part1.docx.pdf"
+    },
+    {
+      "title": "Fake news. Es poden menjar els peixos dels nostres llacs?",
+      "id": "fl-3eso-s06-fake-news-peixos-llacs",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "3ESO"
+      ],
+      "math_sense": "estocastic",
+      "activities": [
+        "estadistica-descriptiva",
+        "taules-grafics-estadistics",
+        "mesures-dispersio"
+      ],
+      "type": "exercici",
+      "local_path": "Florence (2025-26)/ESO3 S06. Fitxa alumnat 2. Fake news. Es poden menjar els peixos dels nostres llacs_.docx.pdf"
+    },
+    {
+      "title": "Qui en dona més?",
+      "id": "fl-3eso-s07-qui-en-dona-mes",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "3ESO"
+      ],
+      "math_sense": "algebraic",
+      "activities": [
+        "funcio-lineal",
+        "funcio-quadratica",
+        "creixement-decreixement"
+      ],
+      "type": "exercici",
+      "local_path": "Florence (2025-26)/ESO3 S07. Fitxa alumnat. Qui en dona mes.docx.pdf"
+    },
+    {
+      "title": "Qui en dona més? (editable)",
+      "id": "fl-3eso-s07-qui-en-dona-mes-doc",
+      "format": "doc",
+      "origin": "florence",
+      "courses": [
+        "3ESO"
+      ],
+      "math_sense": "algebraic",
+      "activities": [
+        "funcio-lineal",
+        "funcio-quadratica",
+        "creixement-decreixement"
+      ],
+      "type": "exercici",
+      "local_path": "Florence (2025-26)/ESO3 S07. Fitxa alumnat. Qui en dona mes.docx"
+    },
+    {
+      "title": "Com podem construir-ho?",
+      "id": "fl-3eso-s08-com-podem-construir-ho",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "3ESO"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "cossos-geometrics",
+        "volums-arees-cossos"
+      ],
+      "type": "exercici",
+      "local_path": "Florence (2025-26)/ESO3 S08. Fitxa alumne. Com podem construir-ho_.docx.pdf"
+    },
+    {
+      "title": "Quadrat d'una suma: notable o excel·lent?",
+      "id": "fl-3eso-s09-quadrat-suma",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "3ESO"
+      ],
+      "math_sense": "algebraic",
+      "activities": [
+        "identitats-notables",
+        "monomis-polinomis"
+      ],
+      "type": "exercici",
+      "local_path": "Florence (2025-26)/ESO3 S09. Fitxa alumne. Quadrat d´una suma_ notable o excel.lent_.docx (1).pdf"
+    },
+    {
+      "title": "Quadrat d'una suma: notable o excel·lent? (adaptada)",
+      "id": "fl-3eso-s09-quadrat-suma-adaptada",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "3ESO"
+      ],
+      "math_sense": "algebraic",
+      "activities": [
+        "identitats-notables",
+        "monomis-polinomis"
+      ],
+      "type": "exercici",
+      "local_path": "Florence (2025-26)/ESO3 S09. Fitxa alumne (adaptada). Quadrat d´una suma_ notable o excel.lent_.docx.pdf"
+    },
+    {
+      "title": "Daus intransitius",
+      "id": "fl-3eso-s11-daus-intransitius",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "3ESO"
+      ],
+      "math_sense": "estocastic",
+      "activities": [
+        "probabilitat-basica",
+        "combinatoria"
+      ],
+      "type": "exercici",
+      "local_path": "Florence (2025-26)/ESO3 S11. Fitxa alumnat (grup). Daus intransitius.pdf"
     }
   ],
   "basic": {
