@@ -2105,6 +2105,137 @@
         "vectors-pla"
       ],
       "type": "dossier"
+    },
+    {
+      "title": "Recull de problemes de selectivitat sobre geometria afi i mètrica (BLOC II 2016-2024)",
+      "id": "gelida-geometria-afimetrica-pau",
+      "drive_id": "1pC52f_LMRW4BiTBRV4L4jft_ZpXd6xt4",
+      "format": "pdf",
+      "origin": "ins-gelida",
+      "courses": [
+        "2Bat"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "vectors-espai",
+        "producte-escalar",
+        "producte-vectorial-mixt",
+        "rectes-plans-espai",
+        "distancies-angles"
+      ],
+      "type": "exercici-solucions",
+      "notes": "Problemes PAU (BLOC II, 2016-2024) amb solució. Institut Gelida."
+    },
+    {
+      "title": "Recull de problemes de selectivitat sobre integrals (BLOC II 2016-)",
+      "id": "gelida-integrals-pau",
+      "drive_id": "1zOxTZ2Exvl19Kt6SUy85nE0aGIqHRtDN",
+      "format": "pdf",
+      "origin": "ins-gelida",
+      "courses": [
+        "2Bat"
+      ],
+      "math_sense": "analitic",
+      "activities": [
+        "integrals",
+        "metodes-integracio",
+        "integral-definida",
+        "calcul-arees"
+      ],
+      "type": "exercici-solucions",
+      "notes": "Problemes PAU (BLOC II, des de 2016) amb solució. Institut Gelida."
+    },
+    {
+      "title": "Recull de problemes de vectors en els exàmens de selectiu PAU",
+      "id": "gelida-vectors-pau",
+      "drive_id": "18NoZdz2uMuLOjSGrLzBRNh2BYn1umFEC",
+      "format": "pdf",
+      "origin": "ins-gelida",
+      "courses": [
+        "2Bat"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "vectors-espai",
+        "producte-escalar",
+        "producte-vectorial-mixt"
+      ],
+      "type": "exercici-solucions",
+      "notes": "Problemes PAU sobre vectors, amb solució. Institut Gelida."
+    },
+    {
+      "title": "Recull de problemes i qüestions de selectivitat sobre derivades (BLOC II 2016-2024)",
+      "id": "gelida-derivades-pau",
+      "drive_id": "1Wj4GpHjU5U6oIMuVxoig_GLmz_UB-te3",
+      "format": "pdf",
+      "origin": "ins-gelida",
+      "courses": [
+        "2Bat"
+      ],
+      "math_sense": "analitic",
+      "activities": [
+        "derivades",
+        "regla-cadena",
+        "aplicacions-derivada",
+        "optimitzacio"
+      ],
+      "type": "exercici-solucions",
+      "notes": "Problemes PAU (BLOC II, 2016-2024) amb solució. Institut Gelida."
+    },
+    {
+      "title": "Recull de problemes i qüestions de selectivitat sobre límits i continuïtat",
+      "id": "gelida-limits-continuitat-pau",
+      "drive_id": "1cY_uevuydDe2pQ1gzv1H38FI5U7GHOYW",
+      "format": "pdf",
+      "origin": "ins-gelida",
+      "courses": [
+        "2Bat"
+      ],
+      "math_sense": "analitic",
+      "activities": [
+        "limits",
+        "continuitat",
+        "asimptotes"
+      ],
+      "type": "exercici-solucions",
+      "notes": "Problemes PAU sobre límits i continuïtat, amb solució. Institut Gelida."
+    },
+    {
+      "title": "Recull de problemes sobre matrius en els exàmens de selectivitat PAU",
+      "id": "gelida-matrius-pau",
+      "drive_id": "1TpRu6XIPoPC2FwL-8oyX4LbmnbH1r7me",
+      "format": "pdf",
+      "origin": "ins-gelida",
+      "courses": [
+        "2Bat"
+      ],
+      "math_sense": "algebraic",
+      "activities": [
+        "matrius",
+        "determinants",
+        "sistemes-lineals-gauss",
+        "rouche-frobenius"
+      ],
+      "type": "exercici-solucions",
+      "notes": "Problemes PAU sobre matrius, amb solució. Institut Gelida."
+    },
+    {
+      "title": "Recull de problemes sobre sistemes d'equacions a les PAU",
+      "id": "gelida-sistemes-equacions-pau",
+      "drive_id": "1SiiSTZCWyxatAnWnBtlafnZGrRxO_A-B",
+      "format": "pdf",
+      "origin": "ins-gelida",
+      "courses": [
+        "2Bat"
+      ],
+      "math_sense": "algebraic",
+      "activities": [
+        "sistemes-equacions",
+        "sistemes-lineals-gauss",
+        "rouche-frobenius"
+      ],
+      "type": "exercici-solucions",
+      "notes": "Problemes PAU sobre sistemes d'equacions, amb solució. Institut Gelida."
     }
   ],
   "basic": {
@@ -2115,7 +2246,8 @@
       "geogebra",
       "bogdan",
       "proves-cb",
-      "math-bits"
+      "math-bits",
+      "ins-gelida"
     ],
     "course": [
       "1ESO",
