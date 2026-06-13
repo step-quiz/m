@@ -2352,6 +2352,173 @@
       ],
       "type": "dossier",
       "notes": "Resum visual: producte vectorial, propietats i àrees de paral·lelogram i triangle. Las mates de Mariel."
+    },
+    {
+      "title": "Encuentra y colorea los ángulos según su tamaño",
+      "id": "mariel-mates-angulos-colorear",
+      "drive_id": "1RAnDKYZVbR9AoTEH_HQBqqLmar3g9oc9",
+      "format": "pdf",
+      "origin": "mariel-mates",
+      "courses": [
+        "1ESO"
+      ],
+      "math_sense": "mesura",
+      "activities": [
+        "figures-planes"
+      ],
+      "type": "dossier",
+      "notes": "Activitat: localitzar angles en una composició i acolorir-los segons siguin aguts, rectes o obtusos. Las mates de Mariel."
+    },
+    {
+      "title": "Dibuja y mide los ángulos",
+      "id": "mariel-mates-angulos-dibujar-medir",
+      "drive_id": "1qtqFsG5HPdWRTCHHfKwv8EgnbroZVRTW",
+      "format": "pdf",
+      "origin": "mariel-mates",
+      "courses": [
+        "1ESO"
+      ],
+      "math_sense": "mesura",
+      "activities": [
+        "figures-planes"
+      ],
+      "type": "dossier",
+      "notes": "Fitxes amb transportador per mesurar i dibuixar angles donats. Las mates de Mariel."
+    },
+    {
+      "title": "Áreas. Cuaderno de geometría",
+      "id": "mariel-mates-areas-cuaderno",
+      "drive_id": "16F-qNXE7tRDdQg34jwbm9U4x5PJH-fSi",
+      "format": "pdf",
+      "origin": "mariel-mates",
+      "courses": [
+        "ESO"
+      ],
+      "math_sense": "mesura",
+      "activities": [
+        "arees-perimetres",
+        "figures-planes"
+      ],
+      "type": "dossier",
+      "notes": "Exercicis de càlcul d'àrees de figures planes i àrees acolorides (composades). Las mates de Mariel."
+    },
+    {
+      "title": "Áreas de figuras planas (formulario)",
+      "id": "mariel-mates-areas-figuras-planas",
+      "drive_id": "1woXt3uiPowxjMqarHAwgf_mMus7BYbZP",
+      "format": "pdf",
+      "origin": "mariel-mates",
+      "courses": [
+        "ESO"
+      ],
+      "math_sense": "mesura",
+      "activities": [
+        "arees-perimetres",
+        "figures-planes"
+      ],
+      "type": "dossier",
+      "notes": "Resum visual de les fórmules d'àrea: rectangle, rombe, trapezi, triangle, cercle, quadrat i polígon regular. Las mates de Mariel."
+    },
+    {
+      "title": "Áreas y volúmenes de cuerpos geométricos",
+      "id": "mariel-mates-areas-volumenes-3eso",
+      "drive_id": "1TMr7oo3jzrYsBYNlcfV_MeuFWtAwfrmD",
+      "format": "pdf",
+      "origin": "mariel-mates",
+      "courses": [
+        "3ESO"
+      ],
+      "math_sense": "mesura",
+      "activities": [
+        "volums-arees-cossos",
+        "cossos-geometrics"
+      ],
+      "type": "dossier",
+      "notes": "Exemples resolts d'àrea i volum de cilindre, prisma, esfera, con i piràmide, amb desenvolupaments plans. Las mates de Mariel."
+    },
+    {
+      "title": "Demostración de fórmulas de áreas",
+      "id": "mariel-mates-demos-formulas-areas",
+      "drive_id": "1g98qWmhEb4e3iPacHxHe_Df5wQN2kju4",
+      "format": "pdf",
+      "origin": "mariel-mates",
+      "courses": [
+        "ESO"
+      ],
+      "math_sense": "mesura",
+      "activities": [
+        "arees-perimetres",
+        "figures-planes"
+      ],
+      "type": "dossier",
+      "notes": "Material manipulatiu per deduir les fórmules d'àrea (triangle, romboide, rombe, trapezi) retallant i recomponent peces. Las mates de Mariel."
+    },
+    {
+      "title": "Juego de cartas de triángulos",
+      "id": "mariel-mates-juego-cartas-triangulos",
+      "drive_id": "1mDn1TJJ5baH1HE70r09GKT2Pfv6SEU9J",
+      "format": "pdf",
+      "origin": "mariel-mates",
+      "courses": [
+        "1ESO"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "figures-planes",
+        "poligons"
+      ],
+      "type": "dossier",
+      "notes": "Joc de cartes per classificar triangles segons costats, angles i eixos de simetria. Las mates de Mariel."
+    },
+    {
+      "title": "Mide y clasifica los ángulos",
+      "id": "mariel-mates-mide-clasifica-angulos",
+      "drive_id": "1_r3Goo2xIKXUW4UkeCXGVUvoj-pO8K_r",
+      "format": "pdf",
+      "origin": "mariel-mates",
+      "courses": [
+        "1ESO"
+      ],
+      "math_sense": "mesura",
+      "activities": [
+        "figures-planes"
+      ],
+      "type": "dossier",
+      "notes": "Activitat: mesurar amb transportador i classificar angles representats com a sectors de colors. Las mates de Mariel."
+    },
+    {
+      "title": "Teorema de Pitágoras",
+      "id": "mariel-mates-teorema-pitagoras",
+      "drive_id": "1Roxb7aGflD-FJrmAoz33JBU1wibiKhJK",
+      "format": "pdf",
+      "origin": "mariel-mates",
+      "courses": [
+        "2ESO"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "pitagores"
+      ],
+      "type": "dossier",
+      "notes": "Resum del teorema de Pitàgores amb dos exemples resolts (càlcul d'hipotenusa i de catet). Las mates de Mariel."
+    },
+    {
+      "title": "Teorema de Tales",
+      "id": "mariel-mates-teorema-tales",
+      "drive_id": "1Z1ciBkynawGa334Y-LYYEbn-uqdcB8Qj",
+      "format": "pdf",
+      "origin": "mariel-mates",
+      "courses": [
+        "3ESO"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "tales",
+        "semblanca",
+        "proporcionalitat"
+      ],
+      "type": "dossier",
+      "notes": "Resum del teorema de Tales i triangles en posició de Tales, amb dos exemples resolts. Las mates de Mariel."
     }
   ],
   "basic": {
