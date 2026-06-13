@@ -2700,6 +2700,65 @@
       ],
       "type": "dossier",
       "notes": "Trencaclosques de Naoki Inaba: completar els signes d'operacions perquè dues equacions bessones siguin correctes. Inclou solucions. Las mates de Mariel."
+    },
+    {
+      "title": "Realidad aumentada con GeoGebra",
+      "id": "geogebra-realidad-aumentada",
+      "drive_id": "1tCma0vMWm-GN_BJn9ZuBZHJsemXJN8rF",
+      "format": "pdf",
+      "origin": "geogebra",
+      "courses": [
+        "ESO",
+        "Bat"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "cossos-geometrics",
+        "volums-arees-cossos"
+      ],
+      "type": "teoria",
+      "year": 2019,
+      "notes": "Article de Suma (José Luis Muñoz Casado). Ús de la realitat augmentada de GeoGebra (app AR i Calculadora Gràfica 3D) per visualitzar i modelar cossos geomètrics i objectes quotidians (poliedres, desenvolupament del cub, paraboloide del macetero). Inclou activitats."
+    },
+    {
+      "title": "Realidades de GeoGebra",
+      "id": "geogebra-realidades",
+      "drive_id": "1Y1HwosMgnwDFE3EiOdQkkqPY_btxFQTO",
+      "format": "pdf",
+      "origin": "geogebra",
+      "courses": [
+        "ESO",
+        "Bat"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "pitagores",
+        "moviments-pla",
+        "figures-planes",
+        "arees-perimetres"
+      ],
+      "type": "teoria",
+      "year": 2011,
+      "notes": "Article de Suma (Arranz, Losada, Mora i Sada). Modelització de diverses realitats amb GeoGebra: Pitàgores, optimització, lloc geomètric, projeccions de poliedres, mosaics nazaríes i d'Escher, isometries i art matemàtic. Amb activitats per descobriment gradual."
+    },
+    {
+      "title": "Superficies con GeoGebra 3D",
+      "id": "geogebra-superficies-3d",
+      "drive_id": "1UlO_KtF9gtojC72NLaMsQe88YZFEddYi",
+      "format": "pdf",
+      "origin": "geogebra",
+      "courses": [
+        "Bat"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "cossos-geometrics",
+        "volums-arees-cossos",
+        "coniques"
+      ],
+      "type": "teoria",
+      "year": 2019,
+      "notes": "Taller JAEM (Ancochea, Arranz, Muñoz). Construcció de superfícies a la vista 3D de GeoGebra: superfícies de revolució, reglades, de Bézier, Spline bicúbiques, implícites/explícites i paramètriques. 27 activitats guiades."
     }
   ],
   "basic": {
