@@ -2519,6 +2519,54 @@
       ],
       "type": "dossier",
       "notes": "Resum del teorema de Tales i triangles en posició de Tales, amb dos exemples resolts. Las mates de Mariel."
+    },
+    {
+      "title": "Trama isométrica de puntos (10 mm)",
+      "id": "mariel-mates-trama-isometrica-10mm",
+      "drive_id": "11qrVUW9XpjvRMbl7mFtElyPxCrZor5Ff",
+      "format": "pdf",
+      "origin": "mariel-mates",
+      "courses": [
+        "ESO"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "cossos-geometrics"
+      ],
+      "type": "dossier",
+      "notes": "Plantilla imprimible de trama isomètrica de punts (10 mm) per dibuixar cossos en perspectiva. Original NRICH / University of Cambridge."
+    },
+    {
+      "title": "Trama de puntos A4 (1 cm)",
+      "id": "mariel-mates-trama-puntos-a4",
+      "drive_id": "1oVxdNuiOBXF-_tshghvNWjU0lspYnHvK",
+      "format": "pdf",
+      "origin": "mariel-mates",
+      "courses": [
+        "ESO"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "cossos-geometrics"
+      ],
+      "type": "dossier",
+      "notes": "Plantilla imprimible A4 de trama de punts (1 cm) per a construccions geomètriques. Las mates de Mariel."
+    },
+    {
+      "title": "Plantilla isométrica A4",
+      "id": "mariel-mates-plantilla-isometrica-a4",
+      "drive_id": "1TpzXZZazLRomM6646-QhlbNbU0ObkgJd",
+      "format": "pdf",
+      "origin": "mariel-mates",
+      "courses": [
+        "ESO"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "cossos-geometrics"
+      ],
+      "type": "dossier",
+      "notes": "Plantilla imprimible A4 de trama isomètrica per dibuixar cossos en perspectiva. Las mates de Mariel."
     }
   ],
   "basic": {
