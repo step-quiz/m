@@ -2634,6 +2634,72 @@
       ],
       "type": "dossier",
       "notes": "Resum complet: unitat imaginària, formes binòmica, cartesiana, polar i trigonomètrica, operacions, potències i arrels n-èsimes. Las mates de Mariel."
+    },
+    {
+      "title": "Puzzles Sankaku: área de triángulos (Naoki Inaba)",
+      "id": "mariel-mates-sankaku-area-triangulos",
+      "drive_id": "1rI3XgFxOSZ7y933_CRXV0CEq6u1HiQTC",
+      "format": "pdf",
+      "origin": "mariel-mates",
+      "courses": [
+        "ESO"
+      ],
+      "math_sense": "mesura",
+      "activities": [
+        "arees-perimetres",
+        "figures-planes"
+      ],
+      "type": "dossier",
+      "notes": "Trencaclosques de Naoki Inaba: connectar tres punts d'una trama per formar un triangle de l'àrea indicada. Las mates de Mariel."
+    },
+    {
+      "title": "Juego de triángulos (dictado)",
+      "id": "mariel-mates-dictat-triangles",
+      "drive_id": "1w5zxKYmPLHznMlYmYFmg0x7Jb4Yz1ESO",
+      "format": "pdf",
+      "origin": "mariel-mates",
+      "courses": [
+        "ESO"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "figures-planes",
+        "poligons"
+      ],
+      "type": "dossier",
+      "notes": "Joc de cartes per classificar triangles segons costats, angles i eixos de simetria. Las mates de Mariel."
+    },
+    {
+      "title": "Dictado de formas geométricas (Palabras con forma)",
+      "id": "mariel-mates-dictat-formes-geometriques",
+      "drive_id": "1qG9B4eICnydqHhpwja9Jvlxp6nTuwu4f",
+      "format": "pdf",
+      "origin": "mariel-mates",
+      "courses": [
+        "ESO"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "figures-planes"
+      ],
+      "type": "dossier",
+      "notes": "Joc de descripció i dibuix de cartes amb formes geomètriques, amb regles i sistema de puntuació. Las mates de Mariel."
+    },
+    {
+      "title": "Rompecabezas gemelos de operaciones (Naoki Inaba)",
+      "id": "mariel-mates-inaba-operaciones-gemelas",
+      "drive_id": "14NYc2pIPTeF2tQugs3VlSSzYrHX7eVMA",
+      "format": "pdf",
+      "origin": "mariel-mates",
+      "courses": [
+        "ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "nombres-naturals"
+      ],
+      "type": "dossier",
+      "notes": "Trencaclosques de Naoki Inaba: completar els signes d'operacions perquè dues equacions bessones siguin correctes. Inclou solucions. Las mates de Mariel."
     }
   ],
   "basic": {
