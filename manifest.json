@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated": "2026-06-09",
+  "generated": "2026-06-13",
   "folder_url": "https://drive.google.com/drive/folders/1WjqddjN3uQhO7zUXzRKwDmBia6jqCUdy",
   "vocabulary": {
     "origin": [
@@ -15,7 +15,8 @@
       "ins-gelida",
       "reptes-mates",
       "proves-cb",
-      "math-bits"
+      "math-bits",
+      "mariel-mates"
     ],
     "format": [
       "pdf",
@@ -282,7 +283,8 @@
     "web": "P.competencial",
     "proves-cb": "Proves CB",
     "prova-cb": "Prova CB",
-    "math-bits": "Math-Bits"
+    "math-bits": "Math-Bits",
+    "mariel-mates": "Mariel Mates"
   },
   "files": [
     {
@@ -2236,6 +2238,120 @@
       ],
       "type": "exercici-solucions",
       "notes": "Problemes PAU sobre sistemes d'equacions, amb solució. Institut Gelida."
+    },
+    {
+      "title": "VECTORES. Geometría del espacio",
+      "id": "mariel-mates-vectores-espacio",
+      "drive_id": "1dQBkCYrv4WVwIyQZoNXKysWv3Aqv416l",
+      "format": "pdf",
+      "origin": "mariel-mates",
+      "courses": [
+        "2Bat"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "vectors-espai",
+        "producte-escalar"
+      ],
+      "type": "dossier",
+      "notes": "Resum visual: vectors fixos i lliures, operacions, combinació lineal, bases de R³, producte escalar i projecció. Las mates de Mariel."
+    },
+    {
+      "title": "Geometría en el espacio. Ecuaciones de la recta y el plano",
+      "id": "mariel-mates-ecuaciones-recta-plano",
+      "drive_id": "1ZfX-XN1DLGIhf1LFPVETp_u0v6gw5kd9",
+      "format": "pdf",
+      "origin": "mariel-mates",
+      "courses": [
+        "2Bat"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "rectes-plans-espai"
+      ],
+      "type": "dossier",
+      "notes": "Resum visual: equacions vectorial, paramètrica, contínua i implícita de la recta i el pla. Las mates de Mariel."
+    },
+    {
+      "title": "Geometría en el espacio: ejemplo (recta y plano)",
+      "id": "mariel-mates-geometria-espacio-ejemplo",
+      "drive_id": "13vwk_ocVlXvN3Asyw9en5_Yllsh1dsEt",
+      "format": "pdf",
+      "origin": "mariel-mates",
+      "courses": [
+        "2Bat"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "rectes-plans-espai"
+      ],
+      "type": "dossier",
+      "notes": "Exemple resolt de les equacions de la recta i el pla amb valors numèrics. Las mates de Mariel."
+    },
+    {
+      "title": "Geometría en el espacio: posiciones relativas y ángulos (1)",
+      "id": "mariel-mates-posiciones-relativas-1",
+      "drive_id": "16owpUSA-NoiZUgAC3pyXHru2C2jJ4Bia",
+      "format": "pdf",
+      "origin": "mariel-mates",
+      "courses": [
+        "2Bat"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "rectes-plans-espai",
+        "distancies-angles"
+      ],
+      "type": "dossier",
+      "notes": "Posicions relatives de rectes, plans i tres plans, i angles entre rectes/plans. Las mates de Mariel."
+    },
+    {
+      "title": "Posiciones relativas de dos rectas y planos (2)",
+      "id": "mariel-mates-posiciones-relativas-2",
+      "drive_id": "1bF4iIClw3t6EF_-MVJJLIoMZ6f9ZbSS5",
+      "format": "pdf",
+      "origin": "mariel-mates",
+      "courses": [
+        "2Bat"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "rectes-plans-espai"
+      ],
+      "type": "dossier",
+      "notes": "Posicions relatives de dues rectes, de dos plans i de recta-pla amb discussió de sistemes. Las mates de Mariel."
+    },
+    {
+      "title": "PRODUCTO MIXTO",
+      "id": "mariel-mates-producto-mixto",
+      "drive_id": "1jx9qsrj7Wei3n2xBe0cPD-p__mFHpl0e",
+      "format": "pdf",
+      "origin": "mariel-mates",
+      "courses": [
+        "2Bat"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "producte-vectorial-mixt"
+      ],
+      "type": "dossier",
+      "notes": "Resum visual: producte mixt, propietats, volum del paral·lelepípede i del tetraedre. Las mates de Mariel."
+    },
+    {
+      "title": "PRODUCTO VECTORIAL",
+      "id": "mariel-mates-producto-vectorial",
+      "drive_id": "1S-lqEWP4a84NQpGsTC_daAj5xNayt2Ay",
+      "format": "pdf",
+      "origin": "mariel-mates",
+      "courses": [
+        "2Bat"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "producte-vectorial-mixt"
+      ],
+      "type": "dossier",
+      "notes": "Resum visual: producte vectorial, propietats i àrees de paral·lelogram i triangle. Las mates de Mariel."
     }
   ],
   "basic": {
@@ -2247,7 +2363,8 @@
       "bogdan",
       "proves-cb",
       "math-bits",
-      "ins-gelida"
+      "ins-gelida",
+      "mariel-mates"
     ],
     "course": [
       "1ESO",
