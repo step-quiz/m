@@ -2567,6 +2567,73 @@
       ],
       "type": "dossier",
       "notes": "Plantilla imprimible A4 de trama isomètrica per dibuixar cossos en perspectiva. Las mates de Mariel."
+    },
+    {
+      "title": "Teoría de conjuntos y fórmula de la unión de probabilidades",
+      "id": "mariel-mates-conjuntos-y-union",
+      "drive_id": "1U5kqHbNHDYx6BI3ij8OopbfoweBzPEU2",
+      "format": "pdf",
+      "origin": "mariel-mates",
+      "courses": [
+        "ESO",
+        "Bat"
+      ],
+      "math_sense": "estocastic",
+      "activities": [
+        "probabilitat-basica"
+      ],
+      "type": "dossier",
+      "notes": "Unió i intersecció de conjunts (representació amb boles) i fórmula P(A∪B)=P(A)+P(B)−P(A∩B). Las mates de Mariel."
+    },
+    {
+      "title": "Probabilidad: operaciones con sucesos en diagramas de Venn",
+      "id": "mariel-mates-probabilidad-venn-operaciones",
+      "drive_id": "1Mcx0V2UwjdNtJx06HjTxZLX_A_-Zutve",
+      "format": "pdf",
+      "origin": "mariel-mates",
+      "courses": [
+        "ESO",
+        "Bat"
+      ],
+      "math_sense": "estocastic",
+      "activities": [
+        "probabilitat-basica"
+      ],
+      "type": "dossier",
+      "notes": "Seqüència de diagrames de Venn: P(A), P(B), intersecció, unió, complementaris i lleis de De Morgan. Las mates de Mariel."
+    },
+    {
+      "title": "Probabilidad total y probabilidad condicionada",
+      "id": "mariel-mates-probabilidad-total-y-condicionada",
+      "drive_id": "1G_6gBIoZJML0HJ9jRfqFH6Z4PpuNC3tS",
+      "format": "pdf",
+      "origin": "mariel-mates",
+      "courses": [
+        "Bat"
+      ],
+      "math_sense": "estocastic",
+      "activities": [
+        "probabilitat-condicionada",
+        "teorema-bayes"
+      ],
+      "type": "dossier",
+      "notes": "Teorema de la probabilitat total, arbre de probabilitat condicionada i problema resolt de Venn. Las mates de Mariel."
+    },
+    {
+      "title": "Números complejos",
+      "id": "mariel-mates-numeros-complejos",
+      "drive_id": "1RabX5RxzYJUo6VBxnmEhuzn8Q42o_Znk",
+      "format": "pdf",
+      "origin": "mariel-mates",
+      "courses": [
+        "1Bat"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "nombres-complexos"
+      ],
+      "type": "dossier",
+      "notes": "Resum complet: unitat imaginària, formes binòmica, cartesiana, polar i trigonomètrica, operacions, potències i arrels n-èsimes. Las mates de Mariel."
     }
   ],
   "basic": {
