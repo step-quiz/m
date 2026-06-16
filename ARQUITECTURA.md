@@ -8,7 +8,7 @@ detalls que convé tenir presents abans de tocar res).
 
 ## 1. Forma general
 
-Sis pàgines HTML independents, cadascuna autocontinguda (el seu CSS i el seu JS dins del
+Vuit pàgines HTML independents, cadascuna autocontinguda (el seu CSS i el seu JS dins del
 mateix fitxer). No hi ha codi compartit entre fitxers: utilitats com `escHtml`, `slugify`,
 `label` o `normalize` i constants com `FILTER_GROUPS` estan **copiades** a cada pàgina que
 les necessita. És un compromís deliberat per evitar un pas de compilació; el cost és que un
@@ -18,11 +18,12 @@ Cada pàgina segueix la mateixa estructura interna: `CONFIG → STATE → utilit
 render → accions → events → init`, amb separadors de comentari. El codi està ben comentat,
 sobretot a les parts no evidents.
 
-Les dades viuen en tres contractes separats:
+Les dades viuen en quatre contractes separats:
 
 - `manifest.json` → el cercador i l'editor.
 - `cb-items.json` → el banc d'ítems CB.
 - un objecte `PAYLOAD` incrustat dins de `florence-cb.html` → el mapa Florence.
+- `recuperacio-items.json` → el banc de recuperació (generador d'exàmens + alimentador).
 
 ---
 
@@ -161,6 +162,65 @@ les agafa de `cb.step-quiz.net`). Es referencien 107 ids CB diferents.
 
 ---
 
+## 4d. Contracte de dades: banc de recuperació (`recuperacio-items.json`)
+
+Banc de preguntes per a la recuperació de matemàtiques del **curs anterior** (1r/2n/3r ESO;
+no n'hi ha de 4t, perquè un alumne o gradua o repeteix). El consumeixen dues pàgines:
+`examen-recuperacio.html` (genera l'examen) i `alimentar-banc.html` (l'amplia).
+
+**Principi clau:** cada pregunta **és una imatge**. No hi ha text d'enunciat al JSON; la
+imatge (figura geomètrica, equació, enunciat sencer) ho conté tot. Això evita el problema de
+renderitzar notació matemàtica (`√`, exponents, fraccions) amb fonts.
+
+```jsonc
+{
+  "_comentari": "…",                 // opcional, ignorat pel codi
+  "preguntes": [
+    {
+      "id":         "rec-2eso-04231-0001",  // únic, [a-z0-9-]
+      "curs":       "2ESO",                 // 1ESO | 2ESO | 3ESO
+      "sentit":     "espacial",             // numeric|mesura|espacial|algebraic|estocastic|comprensio
+      "tema":       "triangles",            // id de tema (coherent amb repartiment-data.js)
+      "dificultat": "basic",                // basic | normal
+      "figura":     "rec-2eso-04231-0001.png"  // fitxer a recuperacio-img/
+    }
+  ]
+}
+```
+
+- Les imatges es resolen en **local** com `recuperacio-img/<figura>` (com Florence, no com el
+  banc CB que les agafa remotes).
+- `sentit`, `tema` i les etiquetes de curs són un mirall de `repartiment-data.js`; cada
+  pàgina en porta una còpia de la taxonomia (patró «sense codi compartit»).
+- El JSON pot dur comentaris `//`; `examen-recuperacio.html` els retira abans de parsejar.
+
+### Flux de les dues eines (es complementen)
+
+```
+alimentar-banc.html                          examen-recuperacio.html
+─────────────────────                        ────────────────────────
+foto(s) → Gemini detecta+classifica          fetch(recuperacio-items.json)
+  → retall a PNG (canvas) → revisió manual      → filtra curs/sentit/tema/dificultat
+  → export .zip:                                → el professor marca preguntes
+      recuperacio-img/<id>.png                  → carrega recuperacio-img/<figura>
+      preguntes-noves.json                      → munta .docx (OOXML a mà + jszip):
+  ───────────────────────────────────              · llista numerada NATIVA de Word
+  el professor copia els PNG a recuperacio-img/    · una imatge inline per pregunta
+  i enganxa els ítems dins "preguntes": [ ]        · paràgrafs buits = espai de resposta
+  i fa commit                                      → descàrrega .docx
+```
+
+- `alimentar-banc.html` demana **clau de Gemini** (només en memòria; botó «Carrega models»
+  que llista els models compatibles de la clau). La detecció fa servir *structured output*:
+  Gemini retorna `box_2d` `[ymin,xmin,ymax,xmax]` normalitzat 0-1000 + classificació; l'eina
+  reescala a píxels i retalla. El retall és **revisable** (slider de marge) abans d'exportar.
+- `examen-recuperacio.html` **no** depèn de Gemini ni de xarxa externa: només llegeix el banc
+  i les imatges locals. El `.docx` es construeix sense llibreria de docx (OOXML cru + jszip).
+- L'`id` de cada pregunta i el nom del seu PNG es deriven del **mateix** identificador base,
+  de manera que sempre coincideixen.
+
+---
+
 ## 4b. Contracte de dades: `repartiment-data.js` i localStorage de seguiment
 
 `repartiment-data.js` és un fitxer JS (no JSON) carregat com a `<script src="...">` per
@@ -203,6 +263,8 @@ exactament aquest esquema, cosa que permet compartir dades entre professors copi
 | `banc-cb.html` | **pdf-lib (local, `lib/`)** | `fetch('cb-items.json')`; imatges de `cb.step-quiz.net` (CORS) |
 | `eliminar-curs.html` | **pdf.js 3.11.174 + pdf-lib 1.17.1 + jszip 3.10.1** (cdnjs) | cap (tot el processament és al navegador) |
 | `florence-cb.html` | cap | imatges locals `cb-img/`; enllaços a `cb.step-quiz.net` |
+| `examen-recuperacio.html` | **jszip (local, `lib/`)** | `fetch('recuperacio-items.json')`; imatges locals `recuperacio-img/` |
+| `alimentar-banc.html` | **jszip (local, `lib/`)** | **Gemini API** (clau de l'usuari): `models` (llistar) + `generateContent` (detecció) |
 
 Hosts externs que apareixen al codi: `drive.google.com`, `docs.google.com`,
 `cb.step-quiz.net`, `m.step-quiz.net`, `cdnjs.cloudflare.com`,
@@ -214,8 +276,10 @@ Hosts externs que apareixen al codi: `drive.google.com`, `docs.google.com`,
 - `dept-auth-token` (`auth.js`) — objecte de sessió `{expires}` (vegeu §4c).
 - `dept-seguiment-2025-26` (`seguiment.html`) — objecte de seguiment (vegeu §4b).
 
-La clau de Gemini (`extreu-json.html`) s'introdueix a cada sessió i **no es desa** enlloc;
-s'envia a Google amb la capçalera `x-goog-api-key`. No queda incrustada al codi.
+La clau de Gemini (`extreu-json.html` i `alimentar-banc.html`) s'introdueix a cada sessió i
+**no es desa** enlloc; s'envia directament a `generativelanguage.googleapis.com`. No queda
+incrustada al codi. Com que les pàgines són públiques, cada usuari hi posa la seva pròpia
+clau; convé restringir-la a l'API de Gemini a la consola de Google.
 
 ---
 

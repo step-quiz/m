@@ -26,6 +26,8 @@ Tot és **HTML + CSS + JavaScript pur (vanilla)**, sense framework, sense `npm` 
 | `banc-cb.html` | **Banc d'ítems CB**. Filtra blocs de preguntes de proves CB i exporta un PDF per a l'alumnat (sense respostes). | Tot el professorat |
 | `eliminar-curs.html` | **Eliminador de curs**. Treu la referència a un curs acadèmic (p. ex. `2024-25`) d'un PDF o DOCX, tot client-side. | Tot el professorat |
 | `florence-cb.html` | **Mapa Florence → CB**. Per a cada sessió Florence de 2n/3r ESO, recomana preguntes CB i en deixa baixar els PNG. | Tot el professorat |
+| `examen-recuperacio.html` | **Generador d'exàmens de recuperació** del curs anterior (1r/2n/3r ESO). Filtra el banc de recuperació per curs, sentit/tema i dificultat, el professor marca les preguntes i descarrega un `.docx` amb una imatge per pregunta (numeració nativa de Word + espai de resposta configurable). | Tot el professorat |
+| `alimentar-banc.html` | **Alimentador del banc** (amb IA). Puja fotos d'exercicis; Gemini en detecta cadascun, el classifica i en proposa el retall. El professor revisa i exporta un `.zip` amb els PNG i el JSON per ampliar el banc de recuperació. Cal una clau de Gemini. | Qui manté el banc de recuperació |
 
 ## Els fitxers de dades i utilitats compartides
 
@@ -36,6 +38,9 @@ Tot és **HTML + CSS + JavaScript pur (vanilla)**, sense framework, sense `npm` 
 | `auth.js` | Portal d'accés per contrasenya per a `repartiment.html` i `seguiment.html`. Carregat al final del `<body>` de cada pàgina protegida. Vegeu §&nbsp;[Canviar la contrasenya](#canviar-la-contrasenya) més avall. |
 | `cb-items.json` | El banc de proves CB que consumeix `banc-cb.html`. |
 | `cb-img/` | 107 imatges PNG (`CB1.png … CB157.png`) que fa servir `florence-cb.html`. |
+| `recuperacio-items.json` | El banc de preguntes de recuperació que consumeixen `examen-recuperacio.html` i `alimentar-banc.html`. Cada pregunta és **una imatge**. |
+| `recuperacio-img/` | Els PNG de les preguntes de recuperació (un per pregunta), referenciats pel camp `figura` de cada ítem. |
+| `lib/jszip.min.js` | Llibreria `jszip` servida en local; la fan servir `florence-cb.html`, `examen-recuperacio.html` i `alimentar-banc.html`. |
 | `lib/pdf-lib.min.js` | Llibreria `pdf-lib` servida en local; la fa servir `banc-cb.html`. |
 
 ## Canviar la contrasenya

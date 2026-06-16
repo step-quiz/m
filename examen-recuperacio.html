@@ -7,18 +7,23 @@
 <!--
   examen-recuperacio.html — Generador d'exàmens de recuperació del curs anterior (1r/2n/3r ESO).
   El professor filtra el banc (recuperacio-items.json) per curs + sentit/tema + dificultat,
-  marca manualment les preguntes que vol, i descarrega un .docx amb un PNG per pregunta.
+  marca manualment les preguntes que vol, i descarrega un .docx amb una imatge per pregunta.
+
+  Cada pregunta del banc ÉS UNA IMATGE (camp `figura`, a recuperacio-img/). El generador
+  carrega aquests PNG i els incrusta al .docx; no renderitza cap text.
 
   · El número de pregunta és una llista numerada NATIVA de Word (reordenable al Doc).
-  · Cada PNG conté NOMÉS l'enunciat (sense número, sense espai de resposta).
+  · Cada imatge és la figura/enunciat sencer de la pregunta.
   · L'espai per respondre s'insereix al .docx (configurable) com a paràgrafs buits.
   · Sense capçalera: el professor la posa després al Google Doc.
+
+  Esquema d'ítem esperat: { id, curs, sentit, tema, dificultat, figura }
 
   Stack idèntic a la resta del projecte: HTML+CSS+JS vanilla, sense build.
   Dependència única: lib/jszip.min.js (ja present al projecte; el fa servir florence-cb.html).
   El .docx es construeix com a OOXML a mà (un .docx és un .zip d'XML) — zero dependències noves.
 
-  Estructura: CONFIG → STATE → utils → càlcul → render PNG → render UI → accions → events → init
+  Estructura: CONFIG → STATE → utils → càlcul → càrrega figures → render UI → accions → events → init
 -->
 <style>
   :root {
@@ -167,6 +172,15 @@
   .pregunta-card.selected .pregunta-check svg { display: block; }
   .pregunta-body { flex: 1; min-width: 0; }
   .pregunta-enunciat { font-size: 13.5px; color: var(--text); line-height: 1.5; }
+  .pregunta-fig {
+    background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px;
+    padding: 6px; display: flex; align-items: center; justify-content: center; min-height: 60px;
+  }
+  .pregunta-fig img { max-width: 100%; max-height: 180px; display: block; }
+  .sel-thumb {
+    flex: 1; min-width: 0; max-height: 46px; object-fit: contain; object-position: left center;
+    border-radius: 4px; background: #fff; border: 1px solid var(--border);
+  }
   .pregunta-meta { margin-top: 5px; display: flex; gap: 7px; align-items: center; }
   .badge {
     font-size: 10.5px; font-weight: 600; padding: 2px 8px; border-radius: 980px;
@@ -243,15 +257,14 @@
 
 <div id="app"></div>
 
-<!-- Canvas ocult per renderitzar cada enunciat a PNG -->
-<canvas id="render-canvas" style="display:none"></canvas>
-
 <script src="lib/jszip.min.js"></script>
 <script>
 /* ══════════════════════════════════════════════════════════════════════
    CONFIG
    ══════════════════════════════════════════════════════════════════════ */
 const DATA_URL = 'recuperacio-items.json';
+// Carpeta on viuen els PNG de les preguntes (camp `figura` de cada ítem).
+const IMG_DIR = 'recuperacio-img/';
 
 // Etiquetes de sentit (mirall de SENTITS a repartiment-data.js; copiades a propòsit,
 // el projecte no comparteix codi entre pàgines).
@@ -264,21 +277,8 @@ const DIFF_LABELS = { basic: 'Bàsica', normal: 'Normal' };
 const CURS_LABELS = { '1ESO': "1r d'ESO", '2ESO': "2n d'ESO", '3ESO': "3r d'ESO" };
 const CURSOS = ['1ESO', '2ESO', '3ESO'];
 
-// Render PNG: amplada útil d'un A4 amb marges d'1" ≈ 16 cm. A 96 dpi lògics → ~605 px.
-// Escala 2× per nitidesa en imprimir.
-const PNG = {
-  cssWidth: 700,     // amplada lògica del bitmap (px), generosa per a text gran
-  scale: 2,          // retina
-  padX: 6, padY: 4,  // marge interior (px lògics) — petit a dalt perquè el número de Word quedi alineat amb la 1a línia
-  fontSize: 22,      // px lògics (~ cos d'examen)
-  lineHeight: 31,
-  font: '22px -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-  color: '#111111',
-  bg: '#ffffff',
-};
-
 // Amplada al .docx, en EMU (1 inch = 914400 EMU). Ample útil A4 1" marges = 6.5".
-// Mantenim relació d'aspecte del bitmap.
+// Cada figura es col·loca a aquesta amplada fixa; l'alçada surt de la relació d'aspecte del PNG.
 const DOCX_IMG_WIDTH_EMU = Math.round(6.5 * 914400); // 5943600
 
 // Espai de resposta: nombre de paràgrafs buits inserits sota cada pregunta.
@@ -344,55 +344,23 @@ function selectedOrdered() {
 }
 
 /* ══════════════════════════════════════════════════════════════════════
-   RENDER PNG — un enunciat → PNG (Blob), notació Unicode nítida
+   CÀRREGA DE FIGURES — cada pregunta és un PNG a recuperacio-img/
    ══════════════════════════════════════════════════════════════════════ */
-// Word-wrap d'un text a una amplada màxima (px lògics), sobre un context 2D.
-function wrapText(ctx, text, maxW) {
-  const words = text.split(/\s+/);
-  const lines = [];
-  let cur = '';
-  for (const w of words) {
-    const test = cur ? cur + ' ' + w : w;
-    if (ctx.measureText(test).width > maxW && cur) {
-      lines.push(cur); cur = w;
-    } else {
-      cur = test;
-    }
-  }
-  if (cur) lines.push(cur);
-  return lines;
-}
+// Carrega el PNG d'una pregunta i en mesura les dimensions reals.
+// Retorna { blob, wEmu, hEmu } per incrustar-lo al .docx mantenint la relació d'aspecte.
+async function loadFiguraPng(pregunta) {
+  const url = IMG_DIR + pregunta.figura;
+  const res = await fetch(url, { cache: 'no-cache' });
+  if (!res.ok) throw new Error(`No s'ha trobat la figura: ${pregunta.figura}`);
+  const blob = await res.blob();
 
-// Renderitza un enunciat a un PNG. Retorna { blob, wEmu, hEmu }.
-async function renderEnunciatPng(enunciat) {
-  const canvas = $('render-canvas');
-  const ctx = canvas.getContext('2d');
-  const W = PNG.cssWidth;
-  const maxTextW = W - PNG.padX * 2;
+  // Mesura les dimensions del PNG per calcular la relació d'aspecte.
+  const bmp = await createImageBitmap(blob);
+  const ratio = bmp.height / bmp.width;
+  bmp.close && bmp.close();
 
-  ctx.font = PNG.font;
-  const lines = wrapText(ctx, enunciat, maxTextW);
-  const H = PNG.padY * 2 + lines.length * PNG.lineHeight;
-
-  // Bitmap a escala 2×.
-  canvas.width = W * PNG.scale;
-  canvas.height = H * PNG.scale;
-  ctx.setTransform(PNG.scale, 0, 0, PNG.scale, 0, 0);
-
-  ctx.fillStyle = PNG.bg;
-  ctx.fillRect(0, 0, W, H);
-  ctx.fillStyle = PNG.color;
-  ctx.font = PNG.font;
-  ctx.textBaseline = 'top';
-  lines.forEach((ln, i) => {
-    ctx.fillText(ln, PNG.padX, PNG.padY + i * PNG.lineHeight);
-  });
-
-  const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
-
-  // Mida al .docx: amplada fixa, alçada proporcional al bitmap.
   const wEmu = DOCX_IMG_WIDTH_EMU;
-  const hEmu = Math.round(wEmu * (H / W));
+  const hEmu = Math.round(wEmu * ratio);
   return { blob, wEmu, hEmu };
 }
 
@@ -405,11 +373,11 @@ async function renderEnunciatPng(enunciat) {
 async function buildDocx(items, spacingLines) {
   const zip = new JSZip();
 
-  // 1) Renderitza tots els PNG.
+  // 1) Carrega el PNG de cada pregunta.
   const imgs = [];
   for (let i = 0; i < items.length; i++) {
-    setStatus(`Renderitzant pregunta ${i + 1} de ${items.length}…`, true);
-    const png = await renderEnunciatPng(items[i].enunciat);
+    setStatus(`Carregant figura ${i + 1} de ${items.length}…`, true);
+    const png = await loadFiguraPng(items[i]);
     imgs.push(png);
     zip.file(`word/media/image${i + 1}.png`, png.blob);
   }
@@ -630,7 +598,9 @@ function renderCard(p) {
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 4"/></svg>
       </div>
       <div class="pregunta-body">
-        <div class="pregunta-enunciat">${escHtml(p.enunciat)}</div>
+        <div class="pregunta-fig">
+          <img src="${IMG_DIR}${escHtml(p.figura)}" alt="pregunta ${escHtml(p.id)}" loading="lazy">
+        </div>
         <div class="pregunta-meta">
           <span class="badge diff-${p.dificultat}">${DIFF_LABELS[p.dificultat]}</span>
         </div>
@@ -649,7 +619,7 @@ function renderExamPanel() {
     list = `<div class="sel-list">` + ordered.map((p, i) => `
       <div class="sel-item">
         <span class="sel-num">${i + 1}</span>
-        <span class="sel-txt" title="${escHtml(p.enunciat)}">${escHtml(p.enunciat)}</span>
+        <img class="sel-thumb" src="${IMG_DIR}${escHtml(p.figura)}" alt="" loading="lazy">
         <span class="sel-rm" data-rm="${escHtml(p.id)}">×</span>
       </div>`).join('') + `</div>`;
   }
