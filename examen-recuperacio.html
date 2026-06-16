@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Examen de recuperació — Material de matemàtiques</title>
+<!--
+  examen-recuperacio.html — Generador d'exàmens de recuperació del curs anterior (1r/2n/3r ESO).
+  El professor filtra el banc (recuperacio-items.json) per curs + sentit/tema + dificultat,
+  marca manualment les preguntes que vol, i descarrega un .docx amb un PNG per pregunta.
+
+  · El número de pregunta és una llista numerada NATIVA de Word (reordenable al Doc).
+  · Cada PNG conté NOMÉS l'enunciat (sense número, sense espai de resposta).
+  · L'espai per respondre s'insereix al .docx (configurable) com a paràgrafs buits.
+  · Sense capçalera: el professor la posa després al Google Doc.
+
+  Stack idèntic a la resta del projecte: HTML+CSS+JS vanilla, sense build.
+  Dependència única: lib/jszip.min.js (ja present al projecte; el fa servir florence-cb.html).
+  El .docx es construeix com a OOXML a mà (un .docx és un .zip d'XML) — zero dependències noves.
+
+  Estructura: CONFIG → STATE → utils → càlcul → render PNG → render UI → accions → events → init
+-->
+<style>
+  :root {
+    --bg:        #f5f5f7;
+    --surface:   #ffffff;
+    --surface-2: #fbfbfd;
+    --surface-3: #f0f0f3;
+    --text:      #1d1d1f;
+    --text-2:    #6e6e73;
+    --text-3:    #aeaeb2;
+    --accent:    #0071e3;
+    --accent-soft: rgba(0,113,227,.10);
+    --border:    #e3e3e6;
+    --ok:        #1a8a4a;
+    --radius:    12px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    -webkit-font-smoothing: antialiased; font-size: 14px; line-height: 1.5;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ── Topbar ─────────────────────────────────────────────── */
+  .topbar {
+    position: sticky; top: 0; z-index: 20;
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 22px;
+    background: rgba(255,255,255,.82);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .topbar h1 { font-size: 17px; font-weight: 600; margin: 0; }
+  .topbar h1 .h-sub { font-weight: 500; color: var(--text-3); font-size: 13px; margin-left: 8px; }
+  .back {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 13px; padding: 7px 12px; border-radius: 980px;
+    color: var(--text-2); background: var(--surface-3);
+  }
+  .back:hover { background: var(--accent-soft); color: var(--text); text-decoration: none; }
+  .back svg { width: 13px; height: 13px; }
+  .spacer { flex: 1; }
+  .btn-export {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 13px; font-weight: 600; padding: 9px 18px; border: none;
+    border-radius: 980px; background: var(--accent); color: #fff; cursor: pointer;
+    transition: background .15s, opacity .15s;
+  }
+  .btn-export:hover:not(:disabled) { background: #0063c8; }
+  .btn-export:disabled { opacity: .4; cursor: default; }
+  .btn-export svg { width: 15px; height: 15px; }
+
+  /* ── Layout ─────────────────────────────────────────────── */
+  .wrap {
+    display: grid;
+    grid-template-columns: 230px minmax(0,1fr) 290px;
+    gap: 18px; align-items: start;
+    max-width: 1280px; margin: 22px auto; padding: 0 22px;
+  }
+  .panel {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px;
+  }
+  .panel.sticky { position: sticky; top: 78px; }
+  .panel-title {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .06em; color: var(--text-2); margin: 0 0 12px;
+  }
+  .panel-title:not(:first-child) { margin-top: 22px; }
+
+  /* ── Curs selector ──────────────────────────────────────── */
+  .curs-list { display: flex; flex-direction: column; gap: 6px; }
+  .curs-btn {
+    display: flex; align-items: center; gap: 9px; width: 100%;
+    padding: 9px 11px; border: 1px solid var(--border); border-radius: 9px;
+    background: var(--surface-2); cursor: pointer; font-size: 13px; font-weight: 500;
+    text-align: left; color: var(--text); transition: all .12s;
+  }
+  .curs-btn:hover { border-color: var(--text-3); }
+  .curs-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .curs-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-3); flex: none; }
+  .curs-btn.active .curs-dot { background: #fff; }
+
+  /* ── Filtres (checkbox) ─────────────────────────────────── */
+  .filter-list { display: flex; flex-direction: column; gap: 1px; }
+  .filter-item {
+    display: flex; align-items: center; gap: 9px;
+    padding: 7px 8px; border-radius: 7px; cursor: pointer; font-size: 13px;
+    transition: background .12s;
+  }
+  .filter-item:hover { background: var(--surface-3); }
+  .filter-item input[type=checkbox] {
+    width: 15px; height: 15px; accent-color: var(--accent); cursor: pointer; flex: none;
+  }
+  .filter-item .fi-label { color: var(--text); }
+  .filter-item .fi-count {
+    margin-left: auto; font-size: 11px; color: var(--text-3); font-variant-numeric: tabular-nums;
+  }
+  .filter-all-none { display: flex; gap: 6px; margin-top: 8px; }
+  .filter-all-none button {
+    flex: 1; font-size: 11px; padding: 5px; border: 1px solid var(--border);
+    border-radius: 7px; background: var(--surface-2); color: var(--text-2); cursor: pointer;
+  }
+  .filter-all-none button:hover { background: var(--accent-soft); color: var(--accent); }
+
+  /* ── Llista de preguntes (centre) ───────────────────────── */
+  .results-head {
+    display: flex; align-items: baseline; gap: 10px; margin: 0 0 12px; padding: 0 2px;
+  }
+  .results-head .rh-title { font-size: 15px; font-weight: 600; }
+  .results-head .rh-count { font-size: 12px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+  .results-head .rh-actions { margin-left: auto; display: flex; gap: 6px; }
+  .rh-actions button {
+    font-size: 12px; padding: 5px 11px; border: 1px solid var(--border);
+    border-radius: 980px; background: var(--surface); color: var(--text-2); cursor: pointer;
+  }
+  .rh-actions button:hover { background: var(--surface-3); color: var(--text); }
+
+  .sense-group { margin-bottom: 18px; }
+  .sense-group-head {
+    display: flex; align-items: center; gap: 8px; margin: 0 2px 8px;
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em;
+    color: var(--text-3);
+  }
+  .sense-group-head::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+
+  .pregunta-card {
+    display: flex; align-items: flex-start; gap: 11px;
+    padding: 12px 14px; margin-bottom: 7px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    cursor: pointer; transition: border-color .12s, background .12s;
+  }
+  .pregunta-card:hover { border-color: var(--text-3); }
+  .pregunta-card.selected { border-color: var(--accent); background: var(--accent-soft); }
+  .pregunta-check {
+    width: 19px; height: 19px; border-radius: 6px; flex: none; margin-top: 1px;
+    border: 1.5px solid var(--text-3); background: var(--surface);
+    display: flex; align-items: center; justify-content: center; transition: all .12s;
+  }
+  .pregunta-card.selected .pregunta-check { background: var(--accent); border-color: var(--accent); }
+  .pregunta-check svg { width: 11px; height: 11px; color: #fff; display: none; }
+  .pregunta-card.selected .pregunta-check svg { display: block; }
+  .pregunta-body { flex: 1; min-width: 0; }
+  .pregunta-enunciat { font-size: 13.5px; color: var(--text); line-height: 1.5; }
+  .pregunta-meta { margin-top: 5px; display: flex; gap: 7px; align-items: center; }
+  .badge {
+    font-size: 10.5px; font-weight: 600; padding: 2px 8px; border-radius: 980px;
+    background: var(--surface-3); color: var(--text-2);
+  }
+  .badge.diff-basic { background: #e7f5ec; color: #1a8a4a; }
+  .badge.diff-normal { background: #fff1e0; color: #b76e00; }
+
+  .empty-state {
+    text-align: center; padding: 60px 20px; color: var(--text-2);
+  }
+  .empty-state svg { width: 44px; height: 44px; color: var(--text-3); margin: 0 auto 14px; display: block; }
+  .empty-state p { font-size: 13px; color: var(--text-3); margin: 0; }
+
+  /* ── Examen muntat (dreta) ──────────────────────────────── */
+  .sel-title {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .06em; color: var(--text-2); margin: 0 0 4px;
+  }
+  .sel-sub { font-size: 12px; color: var(--text-3); margin: 0 0 12px; }
+  .sel-list { display: flex; flex-direction: column; gap: 5px; margin-bottom: 16px; }
+  .sel-item {
+    display: flex; align-items: center; gap: 8px; font-size: 12px;
+    padding: 6px 8px; border-radius: 7px; background: var(--surface-2); border: 1px solid var(--border);
+  }
+  .sel-item .sel-num {
+    font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; flex: none;
+    min-width: 16px;
+  }
+  .sel-item .sel-txt {
+    flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-2);
+  }
+  .sel-item .sel-rm {
+    flex: none; cursor: pointer; color: var(--text-3); font-size: 15px; line-height: 1; padding: 0 2px;
+  }
+  .sel-item .sel-rm:hover { color: #d4453a; }
+  .sel-empty { font-size: 12px; color: var(--text-3); padding: 8px 0 16px; }
+
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-size: 12px; font-weight: 600; color: var(--text-2); margin-bottom: 6px; }
+  .field select {
+    width: 100%; font-size: 13px; padding: 8px 10px; border: 1px solid var(--border);
+    border-radius: 9px; background: var(--surface-2); color: var(--text);
+    font-family: inherit; cursor: pointer;
+  }
+
+  .status { font-size: 12px; color: var(--text-2); margin-top: 10px; min-height: 16px; text-align: center; }
+  .status.busy { color: var(--accent); }
+
+  /* ── Loading / error global ─────────────────────────────── */
+  .global-msg { max-width: 600px; margin: 80px auto; text-align: center; color: var(--text-2); }
+  .global-msg.err { color: #d4453a; }
+
+  @media (max-width: 980px) {
+    .wrap { grid-template-columns: 1fr; }
+    .panel.sticky { position: static; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="back" href="index.html">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3L5 8l5 5"/></svg>
+    Material
+  </a>
+  <h1>Examen de recuperació<span class="h-sub" id="curs-sub"></span></h1>
+  <div class="spacer"></div>
+  <button class="btn-export" id="btn-export" disabled>
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v8M4 8l4 4 4-4"/><path d="M3 13h10"/></svg>
+    Genera .docx
+  </button>
+</div>
+
+<div id="app"></div>
+
+<!-- Canvas ocult per renderitzar cada enunciat a PNG -->
+<canvas id="render-canvas" style="display:none"></canvas>
+
+<script src="lib/jszip.min.js"></script>
+<script>
+/* ══════════════════════════════════════════════════════════════════════
+   CONFIG
+   ══════════════════════════════════════════════════════════════════════ */
+const DATA_URL = 'recuperacio-items.json';
+
+// Etiquetes de sentit (mirall de SENTITS a repartiment-data.js; copiades a propòsit,
+// el projecte no comparteix codi entre pàgines).
+const SENTIT_LABELS = {
+  comprensio: 'Comprensió', numeric: 'Numèric', espacial: 'Espacial',
+  mesura: 'Mesura', algebraic: 'Algebraic', estocastic: 'Estocàstic',
+};
+const SENTIT_ORDER = ['numeric', 'mesura', 'espacial', 'algebraic', 'estocastic', 'comprensio'];
+const DIFF_LABELS = { basic: 'Bàsica', normal: 'Normal' };
+const CURS_LABELS = { '1ESO': "1r d'ESO", '2ESO': "2n d'ESO", '3ESO': "3r d'ESO" };
+const CURSOS = ['1ESO', '2ESO', '3ESO'];
+
+// Render PNG: amplada útil d'un A4 amb marges d'1" ≈ 16 cm. A 96 dpi lògics → ~605 px.
+// Escala 2× per nitidesa en imprimir.
+const PNG = {
+  cssWidth: 700,     // amplada lògica del bitmap (px), generosa per a text gran
+  scale: 2,          // retina
+  padX: 6, padY: 4,  // marge interior (px lògics) — petit a dalt perquè el número de Word quedi alineat amb la 1a línia
+  fontSize: 22,      // px lògics (~ cos d'examen)
+  lineHeight: 31,
+  font: '22px -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+  color: '#111111',
+  bg: '#ffffff',
+};
+
+// Amplada al .docx, en EMU (1 inch = 914400 EMU). Ample útil A4 1" marges = 6.5".
+// Mantenim relació d'aspecte del bitmap.
+const DOCX_IMG_WIDTH_EMU = Math.round(6.5 * 914400); // 5943600
+
+// Espai de resposta: nombre de paràgrafs buits inserits sota cada pregunta.
+const SPACING_OPTIONS = [
+  { id: 'none',   label: 'Cap (preguntes seguides)', lines: 0 },
+  { id: 'small',  label: 'Petit (2 línies)',         lines: 2 },
+  { id: 'medium', label: 'Mitjà (4 línies)',         lines: 4 },
+  { id: 'large',  label: 'Gran (7 línies)',          lines: 7 },
+];
+
+/* ══════════════════════════════════════════════════════════════════════
+   STATE
+   ══════════════════════════════════════════════════════════════════════ */
+const state = {
+  data:        null,            // { preguntes: [...] }
+  curs:        '2ESO',          // curs actiu
+  sentits:     new Set(),       // sentits filtrats (buit = tots)
+  difficulties: new Set(['basic', 'normal']),
+  selected:    new Set(),       // ids de preguntes triades (ordre d'inserció ≈ ordre examen)
+  spacing:     'medium',
+};
+
+/* ══════════════════════════════════════════════════════════════════════
+   UTILS
+   ══════════════════════════════════════════════════════════════════════ */
+const $ = id => document.getElementById(id);
+
+function escHtml(s) {
+  return String(s).replace(/[&<>"']/g, c =>
+    ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+function escXml(s) {
+  return String(s).replace(/[&<>"']/g, c =>
+    ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;' }[c]));
+}
+
+// Totes les preguntes del curs actiu.
+function preguntesPerCurs(curs) {
+  return (state.data?.preguntes || []).filter(p => p.curs === curs);
+}
+
+// Preguntes que passen TOTS els filtres actius del curs.
+function preguntesVisible() {
+  const base = preguntesPerCurs(state.curs);
+  return base.filter(p => {
+    if (state.sentits.size && !state.sentits.has(p.sentit)) return false;
+    if (!state.difficulties.has(p.dificultat)) return false;
+    return true;
+  });
+}
+
+// Sentits realment presents al curs, en l'ordre canònic.
+function sentitsDelCurs() {
+  const present = new Set(preguntesPerCurs(state.curs).map(p => p.sentit));
+  return SENTIT_ORDER.filter(s => present.has(s));
+}
+
+// Preguntes triades, en l'ordre canònic per sentit (= ordre d'examen).
+function selectedOrdered() {
+  const sel = (state.data?.preguntes || []).filter(p => state.selected.has(p.id));
+  const rank = s => { const i = SENTIT_ORDER.indexOf(s); return i < 0 ? 99 : i; };
+  return sel.sort((a, b) => rank(a.sentit) - rank(b.sentit));
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   RENDER PNG — un enunciat → PNG (Blob), notació Unicode nítida
+   ══════════════════════════════════════════════════════════════════════ */
+// Word-wrap d'un text a una amplada màxima (px lògics), sobre un context 2D.
+function wrapText(ctx, text, maxW) {
+  const words = text.split(/\s+/);
+  const lines = [];
+  let cur = '';
+  for (const w of words) {
+    const test = cur ? cur + ' ' + w : w;
+    if (ctx.measureText(test).width > maxW && cur) {
+      lines.push(cur); cur = w;
+    } else {
+      cur = test;
+    }
+  }
+  if (cur) lines.push(cur);
+  return lines;
+}
+
+// Renderitza un enunciat a un PNG. Retorna { blob, wEmu, hEmu }.
+async function renderEnunciatPng(enunciat) {
+  const canvas = $('render-canvas');
+  const ctx = canvas.getContext('2d');
+  const W = PNG.cssWidth;
+  const maxTextW = W - PNG.padX * 2;
+
+  ctx.font = PNG.font;
+  const lines = wrapText(ctx, enunciat, maxTextW);
+  const H = PNG.padY * 2 + lines.length * PNG.lineHeight;
+
+  // Bitmap a escala 2×.
+  canvas.width = W * PNG.scale;
+  canvas.height = H * PNG.scale;
+  ctx.setTransform(PNG.scale, 0, 0, PNG.scale, 0, 0);
+
+  ctx.fillStyle = PNG.bg;
+  ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = PNG.color;
+  ctx.font = PNG.font;
+  ctx.textBaseline = 'top';
+  lines.forEach((ln, i) => {
+    ctx.fillText(ln, PNG.padX, PNG.padY + i * PNG.lineHeight);
+  });
+
+  const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+
+  // Mida al .docx: amplada fixa, alçada proporcional al bitmap.
+  const wEmu = DOCX_IMG_WIDTH_EMU;
+  const hEmu = Math.round(wEmu * (H / W));
+  return { blob, wEmu, hEmu };
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   GENERACIÓ .docx (OOXML a mà + JSZip)
+   Un .docx és un .zip amb: [Content_Types].xml, _rels/.rels,
+   word/document.xml, word/_rels/document.xml.rels, word/numbering.xml,
+   word/media/imageN.png. Construïm el mínim vàlid.
+   ══════════════════════════════════════════════════════════════════════ */
+async function buildDocx(items, spacingLines) {
+  const zip = new JSZip();
+
+  // 1) Renderitza tots els PNG.
+  const imgs = [];
+  for (let i = 0; i < items.length; i++) {
+    setStatus(`Renderitzant pregunta ${i + 1} de ${items.length}…`, true);
+    const png = await renderEnunciatPng(items[i].enunciat);
+    imgs.push(png);
+    zip.file(`word/media/image${i + 1}.png`, png.blob);
+  }
+  setStatus('Muntant el document…', true);
+
+  // 2) [Content_Types].xml
+  zip.file('[Content_Types].xml',
+`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+  <Default Extension="xml" ContentType="application/xml"/>
+  <Default Extension="png" ContentType="image/png"/>
+  <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+  <Override PartName="/word/numbering.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml"/>
+</Types>`);
+
+  // 3) _rels/.rels
+  zip.file('_rels/.rels',
+`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+</Relationships>`);
+
+  // 4) word/numbering.xml — una llista decimal "%1."
+  zip.file('word/numbering.xml',
+`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:numbering xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:abstractNum w:abstractNumId="0">
+    <w:lvl w:ilvl="0">
+      <w:start w:val="1"/>
+      <w:numFmt w:val="decimal"/>
+      <w:lvlText w:val="%1."/>
+      <w:lvlJc w:val="left"/>
+      <w:pPr><w:ind w:left="397" w:hanging="397"/></w:pPr>
+    </w:lvl>
+  </w:abstractNum>
+  <w:num w:numId="1"><w:abstractNumId w:val="0"/></w:num>
+</w:numbering>`);
+
+  // 5) word/_rels/document.xml.rels — numbering + una rel per imatge
+  let rels =
+`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rIdNum" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/numbering" Target="numbering.xml"/>`;
+  imgs.forEach((_, i) => {
+    rels += `\n  <Relationship Id="rIdImg${i + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/image${i + 1}.png"/>`;
+  });
+  rels += `\n</Relationships>`;
+  zip.file('word/_rels/document.xml.rels', rels);
+
+  // 6) word/document.xml
+  const body = items.map((it, i) => paragraphForItem(i, imgs[i], spacingLines)).join('\n');
+  zip.file('word/document.xml',
+`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+            xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+            xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
+            xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
+            xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">
+  <w:body>
+${body}
+    <w:sectPr>
+      <w:pgSz w:w="11906" w:h="16838"/>
+      <w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440" w:header="708" w:footer="708" w:gutter="0"/>
+    </w:sectPr>
+  </w:body>
+</w:document>`);
+
+  return await zip.generateAsync({ type: 'blob' });
+}
+
+// Un paràgraf de llista numerada amb la imatge inline + N paràgrafs buits de resposta.
+function paragraphForItem(i, img, spacingLines) {
+  const rid = `rIdImg${i + 1}`;
+  const docPrId = i + 1;
+  const pic =
+`      <w:r>
+        <w:drawing>
+          <wp:inline distT="0" distB="0" distL="0" distR="0">
+            <wp:extent cx="${img.wEmu}" cy="${img.hEmu}"/>
+            <wp:docPr id="${docPrId}" name="Pregunta ${docPrId}"/>
+            <a:graphic>
+              <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">
+                <pic:pic>
+                  <pic:nvPicPr>
+                    <pic:cNvPr id="${docPrId}" name="Pregunta ${docPrId}"/>
+                    <pic:cNvPicPr/>
+                  </pic:nvPicPr>
+                  <pic:blipFill>
+                    <a:blip r:embed="${rid}"/>
+                    <a:stretch><a:fillRect/></a:stretch>
+                  </pic:blipFill>
+                  <pic:spPr>
+                    <a:xfrm><a:off x="0" y="0"/><a:ext cx="${img.wEmu}" cy="${img.hEmu}"/></a:xfrm>
+                    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
+                  </pic:spPr>
+                </pic:pic>
+              </a:graphicData>
+            </a:graphic>
+          </wp:inline>
+        </w:drawing>
+      </w:r>`;
+  // Paràgraf de llista numerada que conté la imatge.
+  let out =
+`    <w:p>
+      <w:pPr>
+        <w:numPr><w:ilvl w:val="0"/><w:numId w:val="1"/></w:numPr>
+        <w:spacing w:before="120" w:after="60"/>
+      </w:pPr>
+${pic}
+    </w:p>`;
+  // Espai de resposta: paràgrafs buits SENSE numeració.
+  for (let k = 0; k < spacingLines; k++) {
+    out += `\n    <w:p/>`;
+  }
+  return out;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   RENDER UI
+   ══════════════════════════════════════════════════════════════════════ */
+function render() {
+  $('curs-sub').textContent = 'curs anterior · ' + CURS_LABELS[state.curs];
+  $('app').innerHTML = `
+    <div class="wrap">
+      <div class="panel sticky">
+        ${renderCursPanel()}
+        ${renderFiltersPanel()}
+      </div>
+      <div class="panel" style="padding:18px 18px 22px">
+        ${renderResults()}
+      </div>
+      <div class="panel sticky">
+        ${renderExamPanel()}
+      </div>
+    </div>`;
+  bindEvents();
+}
+
+function renderCursPanel() {
+  const btns = CURSOS.map(c => `
+    <button class="curs-btn ${c === state.curs ? 'active' : ''}" data-curs="${c}">
+      <span class="curs-dot"></span>${CURS_LABELS[c]}
+    </button>`).join('');
+  return `<p class="panel-title" style="margin-top:0">Curs a recuperar</p>
+    <div class="curs-list">${btns}</div>`;
+}
+
+function renderFiltersPanel() {
+  const senses = sentitsDelCurs();
+  const cntBy = {};
+  for (const p of preguntesPerCurs(state.curs)) cntBy[p.sentit] = (cntBy[p.sentit] || 0) + 1;
+  const senseItems = senses.map(s => `
+    <label class="filter-item">
+      <input type="checkbox" data-sentit="${s}" ${state.sentits.size === 0 || state.sentits.has(s) ? 'checked' : ''}>
+      <span class="fi-label">${SENTIT_LABELS[s] || s}</span>
+      <span class="fi-count">${cntBy[s] || 0}</span>
+    </label>`).join('');
+
+  const diffItems = ['basic', 'normal'].map(d => `
+    <label class="filter-item">
+      <input type="checkbox" data-diff="${d}" ${state.difficulties.has(d) ? 'checked' : ''}>
+      <span class="fi-label">${DIFF_LABELS[d]}</span>
+    </label>`).join('');
+
+  return `
+    <p class="panel-title">Sentit matemàtic</p>
+    <div class="filter-list" id="fl-sentit">${senseItems}</div>
+    <div class="filter-all-none">
+      <button data-sel-all="sentit">Tots</button>
+      <button data-sel-none="sentit">Cap</button>
+    </div>
+    <p class="panel-title">Dificultat</p>
+    <div class="filter-list">${diffItems}</div>`;
+}
+
+function renderResults() {
+  const vis = preguntesVisible();
+  const head = `
+    <div class="results-head">
+      <span class="rh-title">Preguntes</span>
+      <span class="rh-count">${vis.length} disponibles · ${state.selected.size} triades</span>
+      <div class="rh-actions">
+        <button id="sel-all-visible">Tria totes</button>
+        <button id="sel-clear">Buida</button>
+      </div>
+    </div>`;
+
+  if (!vis.length) {
+    return head + `
+      <div class="empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+        <p>Cap pregunta amb aquests filtres.</p>
+      </div>`;
+  }
+
+  // Agrupa per sentit (ordre canònic).
+  const groups = {};
+  for (const p of vis) (groups[p.sentit] ||= []).push(p);
+  const order = SENTIT_ORDER.filter(s => groups[s]);
+
+  const body = order.map(s => {
+    const cards = groups[s].map(renderCard).join('');
+    return `<div class="sense-group">
+      <div class="sense-group-head">${SENTIT_LABELS[s] || s}</div>
+      ${cards}
+    </div>`;
+  }).join('');
+
+  return head + body;
+}
+
+function renderCard(p) {
+  const sel = state.selected.has(p.id);
+  return `
+    <div class="pregunta-card ${sel ? 'selected' : ''}" data-id="${escHtml(p.id)}">
+      <div class="pregunta-check">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 4"/></svg>
+      </div>
+      <div class="pregunta-body">
+        <div class="pregunta-enunciat">${escHtml(p.enunciat)}</div>
+        <div class="pregunta-meta">
+          <span class="badge diff-${p.dificultat}">${DIFF_LABELS[p.dificultat]}</span>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderExamPanel() {
+  const ordered = selectedOrdered();
+  const n = ordered.length;
+
+  let list;
+  if (!n) {
+    list = `<p class="sel-empty">Encara no has triat cap pregunta. Marca'n a la llista del centre.</p>`;
+  } else {
+    list = `<div class="sel-list">` + ordered.map((p, i) => `
+      <div class="sel-item">
+        <span class="sel-num">${i + 1}</span>
+        <span class="sel-txt" title="${escHtml(p.enunciat)}">${escHtml(p.enunciat)}</span>
+        <span class="sel-rm" data-rm="${escHtml(p.id)}">×</span>
+      </div>`).join('') + `</div>`;
+  }
+
+  const spacingOpts = SPACING_OPTIONS.map(o =>
+    `<option value="${o.id}" ${o.id === state.spacing ? 'selected' : ''}>${o.label}</option>`).join('');
+
+  return `
+    <p class="sel-title">Examen muntat</p>
+    <p class="sel-sub">${n} pregunt${n === 1 ? 'a' : 'es'} · ordre per sentit</p>
+    ${list}
+    <div class="field">
+      <label>Espai per respondre entre preguntes</label>
+      <select id="spacing-select">${spacingOpts}</select>
+    </div>
+    <button class="btn-export" id="btn-export-side" style="width:100%; justify-content:center" ${n ? '' : 'disabled'}>
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v8M4 8l4 4 4-4"/><path d="M3 13h10"/></svg>
+      Genera .docx
+    </button>
+    <div class="status" id="status"></div>`;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   ACCIONS
+   ══════════════════════════════════════════════════════════════════════ */
+function setCurs(c) {
+  state.curs = c;
+  state.sentits.clear();        // reinicia filtre de sentit (els sentits depenen del curs)
+  render();
+  syncExportButtons();
+}
+
+function toggleSelect(id) {
+  if (state.selected.has(id)) state.selected.delete(id);
+  else state.selected.add(id);
+  render();
+  syncExportButtons();
+}
+
+function setStatus(msg, busy) {
+  const el = $('status');
+  if (el) { el.textContent = msg || ''; el.classList.toggle('busy', !!busy); }
+}
+
+function syncExportButtons() {
+  const n = state.selected.size;
+  const top = $('btn-export'), side = $('btn-export-side');
+  if (top) top.disabled = n === 0;
+  if (side) side.disabled = n === 0;
+}
+
+async function doExport() {
+  const ordered = selectedOrdered();
+  if (!ordered.length) return;
+  if (!window.JSZip) { alert("La llibreria JSZip (lib/jszip.min.js) no s'ha carregat."); return; }
+
+  $('btn-export').disabled = true;
+  const side = $('btn-export-side'); if (side) side.disabled = true;
+
+  try {
+    const lines = (SPACING_OPTIONS.find(o => o.id === state.spacing) || {}).lines || 0;
+    const blob = await buildDocx(ordered, lines);
+    const fname = `examen-recuperacio-${state.curs}-${new Date().toISOString().slice(0,10)}.docx`;
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = fname;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    setStatus(`✓ Descarregat (${ordered.length} preguntes). Puja'l a Drive per editar-lo.`, false);
+  } catch (e) {
+    console.error(e);
+    setStatus('Error generant el document. Mira la consola.', false);
+  } finally {
+    syncExportButtons();
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   EVENTS
+   ══════════════════════════════════════════════════════════════════════ */
+function bindEvents() {
+  // Curs
+  document.querySelectorAll('[data-curs]').forEach(b =>
+    b.addEventListener('click', () => setCurs(b.dataset.curs)));
+
+  // Filtres de sentit
+  document.querySelectorAll('[data-sentit]').forEach(cb =>
+    cb.addEventListener('change', () => {
+      const checked = [...document.querySelectorAll('[data-sentit]')].filter(x => x.checked).map(x => x.dataset.sentit);
+      const all = sentitsDelCurs();
+      state.sentits = (checked.length === all.length) ? new Set() : new Set(checked);
+      render(); syncExportButtons();
+    }));
+  const selAll = document.querySelector('[data-sel-all="sentit"]');
+  const selNone = document.querySelector('[data-sel-none="sentit"]');
+  if (selAll) selAll.addEventListener('click', () => { state.sentits = new Set(); render(); syncExportButtons(); });
+  if (selNone) selNone.addEventListener('click', () => { state.sentits = new Set(['__none__']); render(); syncExportButtons(); });
+
+  // Filtres de dificultat
+  document.querySelectorAll('[data-diff]').forEach(cb =>
+    cb.addEventListener('change', () => {
+      if (cb.checked) state.difficulties.add(cb.dataset.diff);
+      else state.difficulties.delete(cb.dataset.diff);
+      render(); syncExportButtons();
+    }));
+
+  // Targetes de pregunta
+  document.querySelectorAll('.pregunta-card').forEach(c =>
+    c.addEventListener('click', () => toggleSelect(c.dataset.id)));
+
+  // Accions de capçalera de resultats
+  const allVis = $('sel-all-visible');
+  if (allVis) allVis.addEventListener('click', () => {
+    preguntesVisible().forEach(p => state.selected.add(p.id));
+    render(); syncExportButtons();
+  });
+  const clr = $('sel-clear');
+  if (clr) clr.addEventListener('click', () => { state.selected.clear(); render(); syncExportButtons(); });
+
+  // Treure de la selecció (panell dret)
+  document.querySelectorAll('[data-rm]').forEach(x =>
+    x.addEventListener('click', e => { e.stopPropagation(); state.selected.delete(x.dataset.rm); render(); syncExportButtons(); }));
+
+  // Espai de resposta
+  const sp = $('spacing-select');
+  if (sp) sp.addEventListener('change', () => { state.spacing = sp.value; });
+
+  // Exportar
+  const exTop = $('btn-export'); if (exTop) exTop.onclick = doExport;
+  const exSide = $('btn-export-side'); if (exSide) exSide.onclick = doExport;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   INIT
+   ══════════════════════════════════════════════════════════════════════ */
+async function init() {
+  try {
+    const res = await fetch(DATA_URL, { cache: 'no-cache' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    // El JSON conté comentaris //; els retirem abans de parsejar.
+    let raw = await res.text();
+    raw = raw.replace(/^\s*\/\/.*$/gm, '');
+    state.data = JSON.parse(raw);
+  } catch (e) {
+    console.error(e);
+    $('app').innerHTML = `<div class="global-msg err">No s'ha pogut carregar <code>${DATA_URL}</code>.<br>Cal servir la pàgina per HTTP(S), no obrir-la amb file://.</div>`;
+    return;
+  }
+  // Tria el primer curs amb preguntes.
+  if (!preguntesPerCurs(state.curs).length) {
+    const first = CURSOS.find(c => preguntesPerCurs(c).length);
+    if (first) state.curs = first;
+  }
+  render();
+  syncExportButtons();
+}
+
+init();
+</script>
+</body>
+</html>
