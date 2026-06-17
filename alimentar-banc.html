@@ -94,6 +94,13 @@
   .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;
         display:flex;flex-direction:column}
   .card.dropped{opacity:.5}
+  .card.sel-group{outline:2px solid var(--accent);outline-offset:-1px}
+  .card-sel{display:flex;align-items:center;gap:7px;padding:8px 10px;font-size:11.5px;color:var(--text-2);
+    cursor:pointer;border-bottom:1px solid var(--border);background:var(--surface-2)}
+  .card-sel input{width:15px;height:15px;accent-color:var(--accent);cursor:pointer}
+  .fig-info{font-size:12px;color:var(--text-2);background:var(--surface-3);padding:7px 10px;border-radius:7px}
+  .btn.group{background:#eef6ec;color:var(--ok)}
+  .btn.group:hover:not(:disabled){background:#dcefd6}
   .card-img{background:var(--surface-3);display:flex;align-items:center;justify-content:center;min-height:120px;border-bottom:1px solid var(--border)}
   .card-img img{max-width:100%;max-height:220px;display:block}
   .card-body{padding:12px;display:flex;flex-direction:column;gap:9px}
@@ -179,6 +186,7 @@
 <!-- barra d'exportació -->
 <div class="export-bar hidden" id="export-bar">
   <span class="count" id="export-count">0 preguntes a punt</span>
+  <button class="btn group hidden" id="group-btn">Agrupa</button>
   <div class="spacer"></div>
   <button class="btn ghost" id="btn-clear-all">Buida-ho tot</button>
   <button class="btn" id="btn-export">Exporta .zip (PNGs + JSON)</button>
@@ -248,10 +256,11 @@ const RENDER = {
    STATE
    ══════════════════════════════════════════════════════════════════════ */
 const state = {
-  // { id, srcBitmap, enunciat, teFigura, boxFig[ymin,xmin,ymax,xmax],
-  //   curs, sentit, tema, dificultat, dropped, pngBlob, pngUrl }
+  // { id, srcBitmap, enunciat, teFigura, boxFig[…], figures[], curs, sentit, tema,
+  //   dificultat, dropped, pngBlob, pngUrl }
   candidates: [],
   seq: 0,
+  selForGroup: new Set(),   // ids marcats per agrupar
 };
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -398,7 +407,15 @@ function wrapText(ctx, text, maxW){
   return out;
 }
 
-// Construeix el PNG final d'una pregunta. Retorna un Blob.
+// Llista normalitzada de figures d'una pregunta: [{bitmap, box}].
+// Suporta el format antic (teFigura+boxFig) i el nou (figures[]).
+function figuresOf(cand){
+  if(Array.isArray(cand.figures)) return cand.figures.filter(f=>f && f.bitmap && f.box);
+  if(cand.teFigura && cand.srcBitmap && cand.boxFig) return [{bitmap:cand.srcBitmap, box:cand.boxFig}];
+  return [];
+}
+
+// Construeix el PNG final d'una pregunta (text + 1..N figures). Retorna un Blob.
 function renderPregunta(cand){
   const W=RENDER.width, maxTextW=W-RENDER.padX*2;
   const canvas=$('work');
@@ -408,16 +425,16 @@ function renderPregunta(cand){
   const lines = cand.enunciat.trim() ? wrapText(ctx, cand.enunciat.trim(), maxTextW) : [];
   const textH = lines.length ? RENDER.padY + lines.length*RENDER.lineHeight : 0;
 
-  // Figura (si n'hi ha), escalada a figMaxW.
-  let fig=null, figW=0, figH=0;
-  if(cand.teFigura){
-    fig=cropFigura(cand.srcBitmap, cand.boxFig);
-    if(fig){
-      figW=Math.min(RENDER.figMaxW, fig.width);
-      figH=Math.round(fig.height*(figW/fig.width));
-    }
+  // Retalla cada figura i calcula la seva mida a l'amplada de render.
+  const figs=[];
+  for(const f of figuresOf(cand)){
+    const c=cropFigura(f.bitmap, f.box);
+    if(!c) continue;
+    const fw=Math.min(RENDER.figMaxW, c.width);
+    const fh=Math.round(c.height*(fw/c.width));
+    figs.push({canvas:c, w:fw, h:fh});
   }
-  const figBlockH = fig ? RENDER.figGap + figH : 0;
+  const figBlockH = figs.reduce((s,f)=>s+RENDER.figGap+f.h, 0);
   const H = Math.max(RENDER.lineHeight, RENDER.padY + textH + figBlockH) + RENDER.padY;
 
   // Pinta a escala 2×.
@@ -430,11 +447,12 @@ function renderPregunta(cand){
   let y=RENDER.padY;
   for(const ln of lines){ ctx.fillText(ln, RENDER.padX, y); y+=RENDER.lineHeight; }
 
-  // Figura centrada sota el text.
-  if(fig){
-    y += (lines.length ? RENDER.figGap : 0);
-    const fx=Math.round((W-figW)/2);
-    ctx.drawImage(fig, 0,0,fig.width,fig.height, fx,y,figW,figH);
+  // Figures centrades, apilades sota el text.
+  for(const f of figs){
+    y += RENDER.figGap;
+    const fx=Math.round((W-f.w)/2);
+    ctx.drawImage(f.canvas, 0,0,f.canvas.width,f.canvas.height, fx,y,f.w,f.h);
+    y += f.h;
   }
 
   return new Promise(r=>canvas.toBlob(r,'image/png'));
@@ -506,8 +524,11 @@ function renderCandidates(){
 
   wrap.innerHTML=state.candidates.map(c=>{
     if(c.dropped) return '';
+    const nFigs = figuresOf(c).length;
+    const grouped = Array.isArray(c.figures);
     return `
-    <div class="card" data-id="${c.id}">
+    <div class="card ${state.selForGroup.has(c.id)?'sel-group':''}" data-id="${c.id}">
+      <label class="card-sel"><input type="checkbox" data-act="selgroup" ${state.selForGroup.has(c.id)?'checked':''}><span>Selecciona per agrupar</span></label>
       <div class="card-img"><img src="${c.pngUrl}" alt="pregunta"></div>
       <div class="card-body">
         <div class="field-row">
@@ -526,26 +547,62 @@ function renderCandidates(){
           <label>Enunciat (editable · es re-renderitza)</label>
           <textarea data-f="enunciat" rows="3" class="enunciat-edit">${escHtml(c.enunciat)}</textarea>
         </div>
-        <label class="fig-toggle">
-          <input type="checkbox" data-f="teFigura" ${c.teFigura?'checked':''}>
-          Inclou la figura retallada
-        </label>
+        ${grouped
+          ? `<div class="fig-info">${nFigs} ${nFigs===1?'figura agrupada':'figures agrupades'}</div>`
+          : `<label class="fig-toggle">
+               <input type="checkbox" data-f="teFigura" ${c.teFigura?'checked':''}>
+               Inclou la figura retallada
+             </label>`}
         <div class="card-actions">
-          ${c.teFigura?'<button class="recrop" data-act="recrop">Ajusta figura</button>':''}
+          ${(!grouped && c.teFigura)?'<button class="recrop" data-act="recrop">Ajusta figura</button>':''}
           <button class="drop" data-act="drop">Descarta</button>
         </div>
       </div>
     </div>`;
   }).join('');
 
-  // barra d'exportació
+  // barra d'exportació + barra d'agrupar
+  const nSel=state.selForGroup.size;
   $('export-bar').classList.toggle('hidden', live.length===0);
   $('export-count').textContent=`${live.length} pregunt${live.length===1?'a':'es'} a punt`;
+  const gb=$('group-btn');
+  if(gb){ gb.classList.toggle('hidden', nSel<2); gb.textContent=`Agrupa ${nSel} en una pregunta`; }
 
   bindCandidateEvents();
 }
 
 function findCand(id){ return state.candidates.find(c=>c.id===id); }
+
+// Agrupa els candidats marcats (selForGroup) en UNA sola pregunta:
+// enunciat del primer + totes les figures apilades. Els originals es fusionen.
+async function groupSelected(){
+  // candidats marcats, en l'ordre en què apareixen a la llista
+  const chosen=state.candidates.filter(c=>!c.dropped && state.selForGroup.has(c.id));
+  if(chosen.length<2) return;
+
+  // recull totes les figures (format antic o nou)
+  const figures=[];
+  for(const c of chosen) for(const f of figuresOf(c)) figures.push({bitmap:f.bitmap, box:[...f.box]});
+
+  const first=chosen[0];
+  const merged={
+    id:'c'+(++state.seq),
+    srcBitmap:first.srcBitmap,         // referència principal (per a l'editor de requadre)
+    enunciat:first.enunciat,           // enunciat del primer (editable)
+    figures,                           // totes les figures juntes
+    curs:first.curs, sentit:first.sentit, tema:first.tema, dificultat:first.dificultat,
+    dropped:false, pngBlob:null, pngUrl:null,
+  };
+  await rebuildPng(merged);
+
+  // marca els originals com a fusionats i insereix la nova al lloc del primer
+  const idx=state.candidates.indexOf(first);
+  for(const c of chosen){ c.dropped=true; if(c.pngUrl) URL.revokeObjectURL(c.pngUrl); }
+  state.candidates.splice(idx,0,merged);
+  state.selForGroup.clear();
+  renderCandidates();
+  setStatus(`✓ ${chosen.length} preguntes agrupades en una.`,'');
+}
 
 
 function bindCandidateEvents(){
@@ -562,6 +619,14 @@ function bindCandidateEvents(){
                        temaSel.innerHTML=temaOptions(c.curs,c.tema); }
         }
       });
+    });
+
+    const selChk=card.querySelector('input[data-act="selgroup"]');
+    if(selChk) selChk.addEventListener('change',()=>{
+      if(selChk.checked) state.selForGroup.add(c.id); else state.selForGroup.delete(c.id);
+      card.classList.toggle('sel-group', selChk.checked);
+      const nSel=state.selForGroup.size, gb=$('group-btn');
+      if(gb){ gb.classList.toggle('hidden', nSel<2); gb.textContent=`Agrupa ${nSel} en una pregunta`; }
     });
 
     // re-render del PNG (compartit per enunciat i figura)
@@ -769,13 +834,15 @@ function init(){
   // listeners de drag de l'editor de requadre (registrats un sol cop)
 
   const dz=$('dropzone'), fi=$('file-input');
-  dz.addEventListener('click',()=>fi.click());
+  // El dropzone és un <label for> que ja obre l'input nativament; NO afegim fi.click() o
+  // el diàleg sortiria dues vegades.
   fi.addEventListener('change',()=>{ if(fi.files.length) handleFiles(fi.files); fi.value=''; });
   ['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add('drag');}));
   ['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove('drag');}));
   dz.addEventListener('drop',e=>{ if(e.dataTransfer.files.length) handleFiles(e.dataTransfer.files); });
 
   $('btn-export').onclick=exportZip;
+  $('group-btn').onclick=groupSelected;
   $('btn-clear-all').onclick=()=>{ state.candidates.forEach(c=>c.pngUrl&&URL.revokeObjectURL(c.pngUrl)); state.candidates=[]; renderCandidates(); setStatus('',''); };
 
   renderCandidates();
