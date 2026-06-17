@@ -50,7 +50,7 @@ Cada fila correspon a una hora lectiva (60 min). Les hores marcades amb ⁺ són
 
 ## Hora 1 — Diagnosi inicial i benvinguda a la matèria
 
-**Durada:** 1 hora (60 min) · **Agrupament:** individual + gran grup · **Objectius/criteris:** transversal, prepara O1-O3 · **Correspon a:** fase de diagnòstic inicial prevista a les observacions de temporalització.
+**Agrupament:** individual + gran grup · **Objectius/criteris:** transversal, prepara O1-O3 · **Correspon a:** fase de diagnòstic inicial prevista a les observacions de temporalització.
 
 **Materials:** fitxa de diagnosi (elaborada pel docent), llapis, llibreta nova.
 
@@ -70,7 +70,7 @@ Cada fila correspon a una hora lectiva (60 min). Les hores marcades amb ⁺ són
 
 ## Hora 2 — Conjunts numèrics i la recta real
 
-**Durada:** 1 hora (60 min) · **Agrupament:** grups aleatoris (pissarres verticals) + individual · **Objectius/criteris:** base per a O1 i C2 · **Correspon a:** hora de connexió ESO–Batxillerat, prèvia a l'Activitat 1.
+**Agrupament:** grups aleatoris (pissarres verticals) + individual · **Objectius/criteris:** base per a O1 i C2 · **Correspon a:** hora de connexió ESO–Batxillerat, prèvia a l'Activitat 1.
 
 **Materials:** pissarres verticals i retoladors, llibreta, calculadora científica.
 
@@ -88,7 +88,7 @@ Cada fila correspon a una hora lectiva (60 min). Les hores marcades amb ⁺ són
 
 ## Hora 3 — El bo social elèctric: descoberta dels intervals
 
-**Durada:** 1 hora (60 min) · **Agrupament:** grups aleatoris de 3, pissarres verticals · **Objectius/criteris:** O2 / C2 i C3 (de manera emergent) · **Correspon a:** Activitat 1 de la programació — fase d'aules pensants.
+**Agrupament:** grups aleatoris de 3, pissarres verticals · **Objectius/criteris:** O2 / C2 i C3 (de manera emergent) · **Correspon a:** Activitat 1 de la programació — fase d'aules pensants.
 
 **Materials:** fragment imprès real de la normativa del bo social elèctric (llindars segons l'IPREM), 4-5 perfils ficticis de nòmines familiars, pissarres verticals.
 
@@ -106,7 +106,7 @@ Cada fila correspon a una hora lectiva (60 min). Les hores marcades amb ⁺ són
 
 ## Hora 4 — Formalització d'intervals i inequacions
 
-**Durada:** 1 hora (60 min) · **Agrupament:** gran grup + parelles · **Objectius/criteris:** O2 / C2 · **Correspon a:** Activitat 1 de la programació — fase de consolidació.
+**Agrupament:** gran grup + parelles · **Objectius/criteris:** O2 / C2 · **Correspon a:** Activitat 1 de la programació — fase de consolidació.
 
 **Materials:** llibreta, pissarra, full de l'Activitat 1 de l'hora anterior.
 
@@ -124,7 +124,7 @@ Cada fila correspon a una hora lectiva (60 min). Les hores marcades amb ⁺ són
 
 ## Hora 5 — La frontera dels 18: extrems oberts i tancats
 
-**Durada:** 1 hora (60 min) · **Agrupament:** parelles + gran grup · **Objectius/criteris:** O2 / C2, amb una primera aproximació informal a C3 · **Correspon a:** Activitat 2 de la programació.
+**Agrupament:** parelles + gran grup · **Objectius/criteris:** O2 / C2, amb una primera aproximació informal a C3 · **Correspon a:** Activitat 2 de la programació.
 
 **Materials:** full de l'activitat (casos d'extinció d'ajuts en complir 18 anys), llibreta.
 
@@ -144,7 +144,7 @@ Cada fila correspon a una hora lectiva (60 min). Les hores marcades amb ⁺ són
 
 ## Hora 6 — El parany del signe negatiu: com es resolen les inequacions
 
-**Durada:** 1 hora (60 min) · **Agrupament:** grups aleatoris (pissarres) + individual · **Objectius/criteris:** O1 / C1 · **Correspon a:** hora prèvia necessària a l'Activitat 3 (mecanització).
+**Agrupament:** grups aleatoris (pissarres) + individual · **Objectius/criteris:** O1 / C1 · **Correspon a:** hora prèvia necessària a l'Activitat 3 (mecanització).
 
 **Materials:** pissarres verticals, llibreta, calculadora científica.
 
@@ -162,7 +162,7 @@ Cada fila correspon a una hora lectiva (60 min). Les hores marcades amb ⁺ són
 
 ## Hora 7 — Gimnàstica d'inequacions: mecanització i verificació
 
-**Durada:** 1 hora (60 min) · **Agrupament:** parelles · **Objectius/criteris:** O1 / C1, C2 · **Correspon a:** Activitat 3 de la programació.
+**Agrupament:** parelles · **Objectius/criteris:** O1 / C1, C2 · **Correspon a:** Activitat 3 de la programació.
 
 **Materials:** fitxa d'exercicis, llibreta o pissarres verticals, calculadora científica.
 
@@ -191,7 +191,7 @@ Al tancament, el docent facilita les solucions per a l'autocorrecció en parelle
 
 ## Hora 8 — Consolidació d'inequacions: casos difícils i errors típics
 
-**Durada:** 1 hora (60 min) · **Agrupament:** parelles + individual · **Objectius/criteris:** O1 / C1, C2 · **Correspon a:** hora de consolidació afegida en ampliar la unitat a 16 hores, pensada per a l'alumnat amb mancances de l'ESO. Reforça la mecanització iniciada a l'hora 7 abans de passar a contextos amb diverses condicions.
+**Agrupament:** parelles + individual · **Objectius/criteris:** O1 / C1, C2 · **Correspon a:** hora de consolidació afegida en ampliar la unitat a 16 hores, pensada per a l'alumnat amb mancances de l'ESO. Reforça la mecanització iniciada a l'hora 7 abans de passar a contextos amb diverses condicions.
 
 **Materials:** fitxa d'errors típics, llibreta o pissarres verticals, calculadora científica.
 
@@ -211,7 +211,7 @@ Al tancament, el docent facilita les solucions per a l'autocorrecció en parelle
 
 ## Hora 9 — Diverses condicions alhora: sistemes d'inequacions i interseccions d'intervals
 
-**Durada:** 1 hora (60 min) · **Agrupament:** grups aleatoris + parelles · **Objectius/criteris:** O1, O2 / C1, C2, C3 · **Correspon a:** ampliació necessària per cobrir el criteri C3 («sistema d'inequacions»), aprofitant el fragment del DOGC sobre l'ajut al lloguer jove ja previst com a material de la unitat.
+**Agrupament:** grups aleatoris + parelles · **Objectius/criteris:** O1, O2 / C1, C2, C3 · **Correspon a:** ampliació necessària per cobrir el criteri C3 («sistema d'inequacions»), aprofitant el fragment del DOGC sobre l'ajut al lloguer jove ja previst com a material de la unitat.
 
 **Materials:** fragment real del DOGC sobre l'ajut al lloguer jove, llibreta, pissarra.
 
@@ -229,7 +229,7 @@ Al tancament, el docent facilita les solucions per a l'autocorrecció en parelle
 
 ## Hora 10 — Cas real complet: resolem una convocatòria sencera
 
-**Durada:** 1 hora (60 min) · **Agrupament:** parelles · **Objectius/criteris:** O1, O2 / C2, C3 · **Correspon a:** hora d'aprofundiment afegida en ampliar la unitat a 16 hores. Porta el criteri C3 fins a la lectura integral d'unes bases reals, més enllà de l'extracció d'una sola condició treballada a l'hora 9.
+**Agrupament:** parelles · **Objectius/criteris:** O1, O2 / C2, C3 · **Correspon a:** hora d'aprofundiment afegida en ampliar la unitat a 16 hores. Porta el criteri C3 fins a la lectura integral d'unes bases reals, més enllà de l'extracció d'una sola condició treballada a l'hora 9.
 
 **Materials:** dossier amb les bases reals (o lleugerament adaptades) d'un ajut social amb diverses condicions (per exemple, l'ajut al lloguer jove o una beca de menjador), fitxa de perfils d'usuaris, llibreta.
 
@@ -247,7 +247,7 @@ Al tancament, el docent facilita les solucions per a l'autocorrecció en parelle
 
 ## Hora 11 — Per què necessitem la notació científica? Descobrim-ho amb pressupostos reals
 
-**Durada:** 1 hora (60 min) · **Agrupament:** grups aleatoris + gran grup · **Objectius/criteris:** O3 / C4 · **Correspon a:** Activitat 4 de la programació — fase de descoberta.
+**Agrupament:** grups aleatoris + gran grup · **Objectius/criteris:** O3 / C4 · **Correspon a:** Activitat 4 de la programació — fase de descoberta.
 
 **Materials:** dades reals del pressupost del Departament de Drets Socials i de l'Idescat sobre població en risc d'exclusió, calculadora científica.
 
@@ -265,7 +265,7 @@ Al tancament, el docent facilita les solucions per a l'autocorrecció en parelle
 
 ## Hora 12 — Tocant pressupostos gegants: operacions i interpretació
 
-**Durada:** 1 hora (60 min) · **Agrupament:** parelles · **Objectius/criteris:** O3 / C4 · **Correspon a:** Activitat 4 de la programació — fase de pràctica.
+**Agrupament:** parelles · **Objectius/criteris:** O3 / C4 · **Correspon a:** Activitat 4 de la programació — fase de pràctica.
 
 **Materials:** les mateixes dades reals de l'hora anterior, calculadora científica, llibreta.
 
@@ -283,7 +283,7 @@ Al tancament, el docent facilita les solucions per a l'autocorrecció en parelle
 
 ## Hora 13 — Notació científica: ampliació i ordre de magnitud
 
-**Durada:** 1 hora (60 min) · **Agrupament:** parelles + individual · **Objectius/criteris:** O3 / C4 · **Correspon a:** hora de consolidació afegida en ampliar la unitat a 16 hores. Reforça el criteri C4, que als exemples originals quedava concentrat en una sola activitat.
+**Agrupament:** parelles + individual · **Objectius/criteris:** O3 / C4 · **Correspon a:** hora de consolidació afegida en ampliar la unitat a 16 hores. Reforça el criteri C4, que als exemples originals quedava concentrat en una sola activitat.
 
 **Materials:** fitxa amb dades reals diverses (pressupostos, població, xifres demogràfiques), calculadora científica, llibreta.
 
@@ -303,7 +303,7 @@ Al tancament, el docent facilita les solucions per a l'autocorrecció en parelle
 
 ## Hora 14 — Repàs global i síntesi de la unitat
 
-**Durada:** 1 hora (60 min) · **Agrupament:** grups aleatoris (estacions) + gran grup · **Objectius/criteris:** O1, O2, O3 / C1, C2, C3, C4 · **Correspon a:** tancament de la unitat, previ a la prova escrita.
+**Agrupament:** grups aleatoris (estacions) + gran grup · **Objectius/criteris:** O1, O2, O3 / C1, C2, C3, C4 · **Correspon a:** tancament de la unitat, previ a la prova escrita.
 
 **Materials:** pissarres verticals, 4 fitxes d'estació, retoladors.
 
@@ -321,7 +321,7 @@ Al tancament, el docent facilita les solucions per a l'autocorrecció en parelle
 
 ## Hora 15 — Taller de preparació de la prova
 
-**Durada:** 1 hora (60 min) · **Agrupament:** parelles + individual · **Objectius/criteris:** O1, O2, O3 / C1, C2, C3, C4 · **Correspon a:** hora afegida en ampliar la unitat a 16 hores. Pont entre el repàs (hora 14) i la prova escrita (hora 16), pensada per reduir l'ansietat davant l'examen i fer explícits els criteris de correcció.
+**Agrupament:** parelles + individual · **Objectius/criteris:** O1, O2, O3 / C1, C2, C3, C4 · **Correspon a:** hora afegida en ampliar la unitat a 16 hores. Pont entre el repàs (hora 14) i la prova escrita (hora 16), pensada per reduir l'ansietat davant l'examen i fer explícits els criteris de correcció.
 
 **Materials:** model de prova (simulacre) equivalent en estructura a la prova real, rúbrica simplificada, llibreta, calculadora científica.
 
@@ -341,7 +341,7 @@ Al tancament, el docent facilita les solucions per a l'autocorrecció en parelle
 
 ## Hora 16 — Prova escrita de la Unitat 1
 
-**Durada:** 1 hora (60 min) · **Agrupament:** individual · **Avalua:** O1, O2, O3 / C1, C2, C3, C4 · **Correspon a:** instrument «Proves escrites per unitat didàctica» (60% de la nota trimestral).
+**Agrupament:** individual · **Avalua:** O1, O2, O3 / C1, C2, C3, C4 · **Correspon a:** instrument «Proves escrites per unitat didàctica» (60% de la nota trimestral).
 
 **Materials:** enunciat de la prova, calculadora científica.
 
