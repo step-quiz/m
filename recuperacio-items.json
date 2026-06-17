@@ -1,4 +1,5 @@
 {
+  "versio": "1.0",
   "_comentari": "Banc de preguntes de recuperació del curs anterior. Cada pregunta és UNA IMATGE (camp figura, a recuperacio-img/). Aquests 5 ítems són de PROVA, generats a partir de fotos d'exemple; esborra'ls quan tinguis el banc real.",
   "preguntes": [
     { "id": "test-2eso-quadrat",    "curs": "2ESO", "sentit": "espacial",  "tema": "calcul-arees",         "dificultat": "basic",  "figura": "test-2eso-quadrat.png" },

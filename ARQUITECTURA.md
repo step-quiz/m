@@ -174,6 +174,7 @@ renderitzar notació matemàtica (`√`, exponents, fraccions) amb fonts.
 
 ```jsonc
 {
+  "versio":     "1.4",              // l'incrementa alimentar-banc.html en actualitzar
   "_comentari": "…",                 // opcional, ignorat pel codi
   "preguntes": [
     {
@@ -199,25 +200,34 @@ renderitzar notació matemàtica (`√`, exponents, fraccions) amb fonts.
 ```
 alimentar-banc.html                          examen-recuperacio.html
 ─────────────────────                        ────────────────────────
-foto(s) → Gemini detecta+classifica          fetch(recuperacio-items.json)
-  → retall a PNG (canvas) → revisió manual      → filtra curs/sentit/tema/dificultat
-  → export .zip:                                → el professor marca preguntes
-      recuperacio-img/<id>.png                  → carrega recuperacio-img/<figura>
-      preguntes-noves.json                      → munta .docx (OOXML a mà + jszip):
-  ───────────────────────────────────              · llista numerada NATIVA de Word
-  el professor copia els PNG a recuperacio-img/    · una imatge inline per pregunta
-  i enganxa els ítems dins "preguntes": [ ]        · paràgrafs buits = espai de resposta
-  i fa commit                                      → descàrrega .docx
+foto(s) → Gemini: text + box figura          fetch(recuperacio-items.json)
+  → RE-RENDER uniforme (text+figura) → PNG      → filtra curs/sentit/tema/dificultat
+  → revisió: editar text, ajustar requadre,     → el professor marca preguntes
+    agrupar N preguntes en una                   → carrega recuperacio-img/<figura>
+  → exporta:                                     → munta .docx (OOXML a mà + jszip):
+     A) "Exporta .zip": fragment + PNG nous         · llista numerada NATIVA de Word
+     B) "Actualitza JSON": cal el banc actual        · una imatge inline per pregunta
+        carregat → banc sencer v(x+1) + PNG          · paràgrafs buits = espai resposta
+                                                    → descàrrega .docx
 ```
 
-- `alimentar-banc.html` demana **clau de Gemini** (només en memòria; botó «Carrega models»
-  que llista els models compatibles de la clau). La detecció fa servir *structured output*:
-  Gemini retorna `box_2d` `[ymin,xmin,ymax,xmax]` normalitzat 0-1000 + classificació; l'eina
-  reescala a píxels i retalla. El retall és **revisable** (slider de marge) abans d'exportar.
+- **Principi anti-Frankenstein:** `alimentar-banc.html` no retalla l'exercici sencer de la
+  foto (tipografies/fons heterogenis). Re-renderitza el **text** en una font uniforme i només
+  reaprofita la **figura** com a imatge retallada. Així totes les preguntes es veuen iguals.
+- Gemini fa *structured output*: per cada exercici retorna `enunciat` (text Unicode net),
+  `te_figura` (bool) i, si escau, `box_figura` `[ymin,xmin,ymax,xmax]` (0-1000). La notació
+  és Unicode (2⁵, √, −, ×, ≈), no LaTeX; cobreix aritmètica i àlgebra senzilla.
+- **Revisió:** el text de cada targeta és editable (re-render en directe); les figures tenen
+  un editor de requadre arrossegable; i es poden **agrupar** diverses preguntes atòmiques en
+  una de sola (enunciat comú + figures apilades) — útil quan Gemini separa a/b/c d'un mateix
+  exercici.
+- **Dos camins d'exportació:** *(A)* fragment de preguntes noves per enganxar a mà; *(B)*
+  cicle de versions tancat — l'usuari carrega el `recuperacio-items.json` actual (l'eina no el
+  pot llegir sola del repo), l'eina hi fusiona les noves i torna el banc sencer amb `versio`
+  incrementada (1.x → 1.(x+1)), llest per substituir al repo sense edició manual.
 - `examen-recuperacio.html` **no** depèn de Gemini ni de xarxa externa: només llegeix el banc
   i les imatges locals. El `.docx` es construeix sense llibreria de docx (OOXML cru + jszip).
-- L'`id` de cada pregunta i el nom del seu PNG es deriven del **mateix** identificador base,
-  de manera que sempre coincideixen.
+- L'`id` de cada pregunta i el nom del seu PNG es deriven del **mateix** identificador base.
 
 ---
 

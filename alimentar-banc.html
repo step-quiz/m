@@ -84,6 +84,9 @@
   .dropzone svg{width:38px;height:38px;color:var(--text-3);margin-bottom:10px}
   .dropzone b{color:var(--text);font-weight:600}
   .dropzone input{display:none}
+  .dropzone.small{padding:18px 20px}
+  .dropzone.small svg{width:26px;height:26px;margin-bottom:6px}
+  .dropzone.loaded{border-style:solid;border-color:var(--ok);background:#f2faf4;color:var(--ok)}
 
   .status{font-size:13px;color:var(--text-2);margin-top:12px;min-height:18px}
   .status.busy{color:var(--accent)}
@@ -116,7 +119,7 @@
 
   .export-bar{position:sticky;bottom:0;background:rgba(255,255,255,.9);backdrop-filter:blur(12px);
               border-top:1px solid var(--border);padding:14px 22px;display:flex;align-items:center;gap:14px;margin-top:18px}
-  .export-bar .count{font-size:13px;color:var(--text-2)}
+  .export-bar .count{font-size:13px;color:var(--text-2);margin-left:6px}
   .hidden{display:none !important}
   .empty{text-align:center;color:var(--text-3);padding:30px;font-size:13px}
 
@@ -142,7 +145,7 @@
     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3L5 8l5 5"/></svg>
     Material
   </a>
-  <h1>Alimentar el banc<span class="h-sub">recuperació · des de fotos</span></h1>
+  <h1>Crear preguntes a partir d'imatges</h1>
   <div class="spacer"></div>
 </div>
 
@@ -152,19 +155,29 @@
   <div class="panel">
     <p class="panel-title">1 · Clau de Gemini i model</p>
     <div class="key-row">
-      <input type="password" id="key" placeholder="Enganxa la teva API-key de Gemini (de Google AI Studio)">
       <button class="btn ghost" id="key-load">Carrega models</button>
+      <input type="password" id="key" placeholder="Enganxa la teva API-key de Gemini (de Google AI Studio)">
     </div>
     <div class="key-row" id="model-row" style="margin-top:10px">
       <label style="font-size:12px;color:var(--text-2);font-weight:600">Model</label>
       <select id="model" disabled><option>— carrega els models primer —</option></select>
     </div>
-    <div class="key-note" id="key-note">La clau de <b>Google AI Studio</b> es fa servir només en memòria i s'envia directament a <code>generativelanguage.googleapis.com</code>; mai es desa. Prem <b>Carrega models</b> per llistar només els que la teva clau pot fer servir.<br><b>Avís:</b> si publiques aquesta pàgina, qualsevol que la visiti hi posa la seva pròpia clau; restringeix la teva clau a l'API de Gemini a la consola de Google.</div>
   </div>
 
-  <!-- 2. FOTOS -->
+  <!-- 2. BANC ACTUAL -->
   <div class="panel">
-    <p class="panel-title">2 · Fotos d'exercicis</p>
+    <p class="panel-title">2 · Banc actual (opcional)</p>
+    <label class="dropzone small" id="json-zone">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+      <div id="json-zone-label"><b>Arrossega el <code>recuperacio-items.json</code> actual</b> o fes clic</div>
+      <div style="font-size:12px;margin-top:6px">Necessari per a «Actualitza JSON». Si no en carregues cap, es parteix d'un banc buit (v1.0).</div>
+      <input type="file" id="json-input" accept="application/json,.json">
+    </label>
+  </div>
+
+  <!-- 3. FOTOS -->
+  <div class="panel">
+    <p class="panel-title">3 · Fotos d'exercicis</p>
     <label class="dropzone" id="dropzone">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
       <div><b>Arrossega fotos aquí</b> o fes clic per triar-les</div>
@@ -174,22 +187,23 @@
     <div class="status" id="status"></div>
   </div>
 
-  <!-- 3. CANDIDATS -->
+  <!-- 4. CANDIDATS -->
   <div class="panel" id="candidates-panel">
-    <p class="panel-title">3 · Preguntes detectades · revisa i confirma</p>
+    <p class="panel-title">4 · Preguntes detectades · revisa i confirma</p>
     <div id="candidates" class="grid"></div>
     <div class="empty" id="candidates-empty">Encara no hi ha preguntes. Puja una foto i prem «Analitza».</div>
   </div>
 
 </div>
 
-<!-- barra d'exportació -->
+<!-- barra d'exportació: tots els botons seguits -->
 <div class="export-bar hidden" id="export-bar">
-  <span class="count" id="export-count">0 preguntes a punt</span>
-  <button class="btn group hidden" id="group-btn">Agrupa</button>
-  <div class="spacer"></div>
+  <button class="btn" id="btn-export">Exporta .zip</button>
+  <button class="btn" id="btn-update" disabled title="Carrega el banc actual al pas 2 per activar-ho">Actualitza JSON i exporta PNGs</button>
   <button class="btn ghost" id="btn-clear-all">Buida-ho tot</button>
-  <button class="btn" id="btn-export">Exporta .zip (PNGs + JSON)</button>
+  <button class="btn group hidden" id="group-btn">Agrupa</button>
+  <span class="count" id="export-count">0 preguntes a punt</span>
+  <div class="spacer"></div>
 </div>
 
 <canvas id="work" class="hidden"></canvas>
@@ -261,6 +275,7 @@ const state = {
   candidates: [],
   seq: 0,
   selForGroup: new Set(),   // ids marcats per agrupar
+  bank: null,               // banc actual carregat: { versio, preguntes:[…] } o null
 };
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -286,18 +301,36 @@ async function loadModels(){
       throw new Error(`No s'han pogut carregar (${res.status}): ${d||res.statusText}`);
     }
     const json=await res.json();
-    // Només models que suporten generateContent, preferint flash/pro i 'latest' a dalt.
-    const names=(json.models||[])
+    // Models que suporten generateContent (capaços de visió/text).
+    const all=(json.models||[])
       .filter(m=>(m.supportedGenerationMethods||[]).includes('generateContent'))
       .map(m=>m.name.replace(/^models\//,''))
       .filter(n=>/gemini/i.test(n));
-    if(!names.length) throw new Error('Cap model compatible amb aquesta clau.');
-    const rank=n=>(/flash/.test(n)?0:/pro/.test(n)?1:2)+(/latest/.test(n)?-0.5:0);
-    names.sort((a,b)=>rank(a)-rank(b)||a.localeCompare(b));
+    if(!all.length) throw new Error('Cap model compatible amb aquesta clau.');
+
+    // Tria curada: els més representatius per a aquesta tasca (visió + classificació).
+    // Patrons preferits en ordre; ens quedem amb els que existeixin a la clau, màx 6.
+    const PREFERRED=[
+      /^gemini-flash-latest$/, /^gemini-pro-latest$/,
+      /^gemini-3\.5-flash$/, /^gemini-3\.1-flash$/, /^gemini-3-flash-preview$/,
+      /^gemini-3\.1-pro-preview$/, /^gemini-3-pro-preview$/,
+      /^gemini-2\.5-flash$/, /^gemini-2\.5-pro$/,
+    ];
+    let names=[];
+    for(const re of PREFERRED){
+      const hit=all.find(n=>re.test(n));
+      if(hit && !names.includes(hit)) names.push(hit);
+      if(names.length>=6) break;
+    }
+    // Si la clau no té cap dels preferits, oferim els 3 primers que hi hagi (excloent imatge/tts).
+    if(names.length<3){
+      const extra=all.filter(n=>!/image|tts|computer-use|robotics|lite|embedding/.test(n) && !names.includes(n));
+      while(names.length<3 && extra.length) names.push(extra.shift());
+    }
     const sel=$('model');
     sel.innerHTML=names.map(n=>`<option value="${n}">${n}</option>`).join('');
     sel.disabled=false;
-    setStatus(`✓ ${names.length} models carregats. Ja pots pujar fotos.`,'');
+    setStatus(`✓ ${names.length} models a triar. Ja pots pujar fotos.`,'');
   }catch(e){ setStatus(e.message,'err'); }
 }
 
@@ -567,6 +600,8 @@ function renderCandidates(){
   $('export-count').textContent=`${live.length} pregunt${live.length===1?'a':'es'} a punt`;
   const gb=$('group-btn');
   if(gb){ gb.classList.toggle('hidden', nSel<2); gb.textContent=`Agrupa ${nSel} en una pregunta`; }
+  const bu=$('btn-update');
+  if(bu) bu.disabled = (live.length===0 || !state.bank);
 
   bindCandidateEvents();
 }
@@ -778,50 +813,121 @@ function bindCropEditor(){
 }
 
 /* ══════════════════════════════════════════════════════════════════════
-   EXPORT — .zip amb PNGs + fragment JSON
+   EXPORT
    ══════════════════════════════════════════════════════════════════════ */
 function pad4(n){ return String(n).padStart(4,'0'); }
 
-async function exportZip(){
-  const live=state.candidates.filter(c=>!c.dropped);
-  if(!live.length) return;
-  const zip=new JSZip();
-  const imgDir=zip.folder('recuperacio-img');
+// Genera els ítems nous (amb id/figura) i afegeix els PNG a imgDir. Retorna els ítems.
+function buildItems(live, imgDir){
   const items=[];
-  // Segell comú per a tot el lot (estable durant l'export) → ids únics i llegibles,
-  // sense xocar amb ids existents. id i nom de fitxer es deriven del MATEIX id base.
-  const stamp=pad4(Date.now()%100000);
+  const stamp=pad4(Date.now()%100000);  // segell comú del lot → ids únics i estables
   const counters={'1ESO':0,'2ESO':0,'3ESO':0};
   for(const c of live){
     counters[c.curs]++;
     const id=`rec-${c.curs.toLowerCase()}-${stamp}-${pad4(counters[c.curs])}`;
     const fname=`${id}.png`;
     imgDir.file(fname, c.pngBlob);
-    items.push({
-      id, curs:c.curs, sentit:c.sentit, tema:c.tema, dificultat:c.dificultat, figura:fname,
-    });
+    items.push({ id, curs:c.curs, sentit:c.sentit, tema:c.tema, dificultat:c.dificultat, figura:fname });
   }
-  // fragment JSON llest per enganxar dins "preguntes": [ ... ]
+  return items;
+}
+
+function triggerDownload(blob, filename){
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+}
+
+// Incrementa una versió "1.x" → "1.(x+1)". Si no és vàlida, comença a 1.0.
+function bumpVersion(v){
+  const m=/^(\d+)\.(\d+)$/.exec(String(v||'').trim());
+  if(!m) return '1.0';
+  return `${m[1]}.${parseInt(m[2],10)+1}`;
+}
+
+// A) Exporta NOMÉS les preguntes noves (fragment + PNG) — per enganxar a mà.
+async function exportZip(){
+  const live=state.candidates.filter(c=>!c.dropped);
+  if(!live.length) return;
+  const zip=new JSZip();
+  const imgDir=zip.folder('recuperacio-img');
+  const items=buildItems(live, imgDir);
+
   const jsonText=items.map(it=>'    '+JSON.stringify(it)).join(',\n');
   zip.file('preguntes-noves.json', `[\n${jsonText}\n]`);
   zip.file('LLEGEIX-ME.txt',
 `Preguntes noves per al banc de recuperació
 ==========================================
-1. Copia els PNG de la carpeta recuperacio-img/ a la carpeta recuperacio-img/ del repositori.
+1. Copia els PNG de recuperacio-img/ a la carpeta recuperacio-img/ del repositori.
 2. Obre recuperacio-items.json i afegeix el contingut de preguntes-noves.json
    dins l'array "preguntes" (separa amb una coma de l'últim element existent).
-3. Fes commit. Cloudflare ho desplega.
+3. Fes commit.
 
 Generat: ${new Date().toLocaleString('ca-ES')}
-Preguntes: ${items.length}`);
+Preguntes noves: ${items.length}`);
 
   const blob=await zip.generateAsync({type:'blob'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download=`banc-recuperacio-${new Date().toISOString().slice(0,10)}.zip`;
-  document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(()=>URL.revokeObjectURL(a.href),4000);
-  setStatus(`✓ Exportat: ${items.length} preguntes (PNGs + JSON).`,'');
+  triggerDownload(blob, `preguntes-noves-${new Date().toISOString().slice(0,10)}.zip`);
+  setStatus(`✓ Exportat fragment: ${items.length} preguntes noves.`,'');
+}
+
+// B) Fusiona les noves amb el banc carregat → JSON sencer v(x+1) + PNG nous.
+async function updateAndExport(){
+  const live=state.candidates.filter(c=>!c.dropped);
+  if(!live.length) return;
+  if(!state.bank){ setStatus('Carrega primer el banc actual (pas 2) per actualitzar-lo.','err'); return; }
+
+  const zip=new JSZip();
+  const imgDir=zip.folder('recuperacio-img');
+  const nous=buildItems(live, imgDir);
+
+  const prev=Array.isArray(state.bank.preguntes)?state.bank.preguntes:[];
+  const versioNova=bumpVersion(state.bank.versio);
+  const bankOut={
+    versio: versioNova,
+    _comentari: state.bank._comentari || 'Banc de preguntes de recuperació. Cada pregunta és una imatge (camp figura, a recuperacio-img/).',
+    preguntes: [...prev, ...nous],
+  };
+  // ordre de claus: versio, _comentari, preguntes
+  const jsonStr=JSON.stringify(bankOut, null, 2);
+  zip.file('recuperacio-items.json', jsonStr);
+  zip.file('LLEGEIX-ME.txt',
+`Banc de recuperació actualitzat
+================================
+Versió: ${state.bank.versio||'(sense)'} → ${versioNova}
+Preguntes: ${prev.length} existents + ${nous.length} noves = ${bankOut.preguntes.length}
+
+1. Substitueix recuperacio-items.json del repositori per aquest.
+2. Copia els PNG de recuperacio-img/ a la carpeta recuperacio-img/ del repositori.
+3. Fes commit.
+
+Generat: ${new Date().toLocaleString('ca-ES')}`);
+
+  const blob=await zip.generateAsync({type:'blob'});
+  triggerDownload(blob, `recuperacio-items-v${versioNova}.zip`);
+  setStatus(`✓ Banc actualitzat a v${versioNova}: ${prev.length}+${nous.length}=${bankOut.preguntes.length} preguntes.`,'');
+}
+
+// Carrega el banc actual des d'un fitxer JSON triat per l'usuari.
+async function loadBankFile(file){
+  try{
+    let raw=await file.text();
+    raw=raw.replace(/^\s*\/\/.*$/gm,'');           // tolera comentaris //
+    const data=JSON.parse(raw);
+    if(!data || !Array.isArray(data.preguntes)) throw new Error('El JSON no té un array "preguntes".');
+    state.bank=data;
+    const n=data.preguntes.length, v=data.versio||'(sense versió)';
+    const zone=$('json-zone'); zone.classList.add('loaded');
+    $('json-zone-label').innerHTML=`<b>✓ Banc carregat:</b> v${v} · ${n} preguntes. Es generarà v${bumpVersion(data.versio)}.`;
+    $('btn-update').disabled = state.candidates.filter(c=>!c.dropped).length===0;
+    setStatus(`✓ Banc actual carregat (v${v}, ${n} preguntes).`,'');
+  }catch(e){
+    state.bank=null;
+    $('json-zone').classList.remove('loaded');
+    setStatus(`Error llegint el banc: ${e.message}`,'err');
+  }
 }
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -829,6 +935,7 @@ Preguntes: ${items.length}`);
    ══════════════════════════════════════════════════════════════════════ */
 function init(){
   $('key-load').onclick=loadModels;
+  $('key').addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); loadModels(); } });
   bindCropEditor();
 
   // listeners de drag de l'editor de requadre (registrats un sol cop)
@@ -841,7 +948,15 @@ function init(){
   ['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove('drag');}));
   dz.addEventListener('drop',e=>{ if(e.dataTransfer.files.length) handleFiles(e.dataTransfer.files); });
 
+  // zona de càrrega del banc JSON actual
+  const jz=$('json-zone'), ji=$('json-input');
+  ji.addEventListener('change',()=>{ if(ji.files[0]) loadBankFile(ji.files[0]); ji.value=''; });
+  ['dragenter','dragover'].forEach(ev=>jz.addEventListener(ev,e=>{e.preventDefault();jz.classList.add('drag');}));
+  ['dragleave','drop'].forEach(ev=>jz.addEventListener(ev,e=>{e.preventDefault();jz.classList.remove('drag');}));
+  jz.addEventListener('drop',e=>{ if(e.dataTransfer.files[0]) loadBankFile(e.dataTransfer.files[0]); });
+
   $('btn-export').onclick=exportZip;
+  $('btn-update').onclick=updateAndExport;
   $('group-btn').onclick=groupSelected;
   $('btn-clear-all').onclick=()=>{ state.candidates.forEach(c=>c.pngUrl&&URL.revokeObjectURL(c.pngUrl)); state.candidates=[]; renderCandidates(); setStatus('',''); };
 
