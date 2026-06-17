@@ -102,15 +102,21 @@ a:hover { text-decoration: underline; }
   flex: 1 1 auto;
   display: grid;
   grid-template-columns: 260px 1fr;
-  min-height: 0;
+  align-items: start;   /* perquè la sidebar sticky no s'estiri */
 }
 
 /* ── Sidebar ────────────────────────────────────────────────────────── */
 .sidebar {
   border-right: 1px solid var(--line);
   background: var(--surface-2);
-  overflow-y: auto;
   padding: 16px 12px 60px;
+  /* Flotant: es manté visible en fer scroll del contingut.
+     54px = alçada de la topbar; la barra té el seu propi scroll intern. */
+  position: sticky;
+  top: 54px;
+  align-self: start;
+  height: calc(100dvh - 54px);
+  overflow-y: auto;
 }
 .side-group { margin-bottom: 18px; }
 .side-group h3 {
@@ -155,7 +161,7 @@ a:hover { text-decoration: underline; }
 }
 
 /* ── Main / contingut ───────────────────────────────────────────────── */
-.main { overflow-y: auto; min-width: 0; }
+.main { min-width: 0; }
 .doc-wrap { max-width: 880px; margin: 0 auto; padding: 30px 32px 80px; }
 
 /* capçalera de cada document */
@@ -222,6 +228,59 @@ a:hover { text-decoration: underline; }
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0; color: var(--muted);
 }
 .rich blockquote p:last-child { margin-bottom: 0; }
+
+/* ── Seccions plegables (details/summary) ─────────────────────────── */
+.rich .sec {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  margin: 0 0 12px;
+  box-shadow: var(--sh);
+  overflow: hidden;
+}
+.rich .sec > summary {
+  display: flex; align-items: center; gap: 11px;
+  padding: 14px 18px;
+  cursor: pointer; list-style: none;
+  font-size: 17px; font-weight: 700; color: var(--navy);
+  transition: background .12s;
+  user-select: none;
+}
+.rich .sec > summary::-webkit-details-marker { display: none; }
+.rich .sec > summary:hover { background: var(--blue-bg); }
+.rich .sec[open] > summary { border-bottom: 1px solid var(--line-2); }
+.rich .sec-caret {
+  flex-shrink: 0; width: 9px; height: 9px;
+  border-right: 2.4px solid var(--blue); border-bottom: 2.4px solid var(--blue);
+  transform: rotate(-45deg); transition: transform .18s var(--ease);
+  margin-left: 2px;
+}
+.rich .sec[open] > summary .sec-caret { transform: rotate(45deg); }
+.rich .sec-title { flex: 1; min-width: 0; }
+.rich .sec-body { padding: 6px 18px 18px; }
+.rich .sec-subtitle {
+  font-size: 18px; font-weight: 700; color: var(--navy);
+  margin: 6px 0 14px;
+}
+/* subplegables niats (H3 dins d'un bloc) */
+.rich .sec .sec.sub {
+  border: 1px solid var(--line-2);
+  box-shadow: none;
+  margin: 12px 0;
+  background: var(--surface-2);
+}
+.rich .sec.sub > summary {
+  padding: 11px 15px;
+  font-size: 15px; color: var(--blue);
+}
+.rich .sec.sub > summary:hover { background: rgba(46,117,182,.06); }
+.rich .sec.sub .sec-caret { border-color: var(--blue); }
+.rich .sec.sub > .sec-body { padding: 4px 15px 14px; }
+/* dins d'un bloc plegat, el primer encapçalament no necessita marge superior */
+.rich .sec-body > h3:first-child,
+.rich .sec-body > h4:first-child { margin-top: 12px; }
+/* en imprimir, tot desplegat */
+@media print { .rich .sec-body { display: block !important; } }
 
 /* taules — clau per a la temporalització i les graelles de sessió */
 .rich table {
@@ -491,6 +550,51 @@ function mdToHtml(md) {
   return out.join('\n');
 }
 
+/* ─── PLEGABLE: blocs principals (H1/H2) amb subplegables niats (H3) ──
+   · Bloc arrel: arrenca al títol del document (<h1>) i engloba el
+     subtítol; a dins, «Llegenda» i «Visió general» (<h3>) són
+     subplegables niats.
+   · Blocs germans: cada <h2> (les 16 hores, relació amb l'avaluació,
+     observacions). Si contenen <h3>, també esdevenen subplegables.
+   Tot tancat per defecte. */
+function wrapDetails(title, body, cls) {
+  return `<details class="sec${cls ? ' ' + cls : ''}"><summary>` +
+           `<span class="sec-caret" aria-hidden="true"></span>` +
+           `<span class="sec-title">${title}</span>` +
+         `</summary><div class="sec-body">${body}</div></details>`;
+}
+
+/* Converteix els <h3> de dins d'un bloc en subplegables niats.
+   El contingut anterior al primer <h3> es manté visible a dalt del bloc. */
+function nestH3(body) {
+  const segs = body.split(/(?=<h3>)/g);
+  let out = '';
+  for (const seg of segs) {
+    const m = seg.match(/^<h3>([\s\S]*?)<\/h3>([\s\S]*)$/);
+    if (!m) { out += seg; continue; }          // intro abans del primer h3
+    out += wrapDetails(m[1], m[2], 'sub');
+  }
+  return out;
+}
+
+function collapsibleByH2(html) {
+  const parts = html.split(/(?=<h1>|<h2>)/g).filter(p => p.trim() !== '');
+  // Si el document arrenca amb <h1> seguit d'un <h2> de subtítol,
+  // fusiona tots dos en un únic bloc arrel (el subtítol no és un node propi).
+  if (parts.length >= 2 && /^<h1>/.test(parts[0]) && /^<h2>/.test(parts[1])) {
+    const sub = parts[1].replace(/^<h2>([\s\S]*?)<\/h2>/, '<p class="sec-subtitle">$1</p>');
+    parts[0] = parts[0] + sub;
+    parts.splice(1, 1);
+  }
+  let out = '';
+  for (const part of parts) {
+    const m = part.match(/^<(h1|h2)>([\s\S]*?)<\/\1>([\s\S]*)$/);
+    if (!m) { out += part; continue; }
+    out += wrapDetails(m[2], nestH3(m[3]), '');
+  }
+  return out;
+}
+
 /* ─── RENDER: DOCX → HTML (mammoth) ───────────────────────────────── */
 async function renderDocx(doc) {
   const resp = await fetch(doc.file);
@@ -512,7 +616,7 @@ async function select(id) {
   renderSidebar();
   const doc = DOCS.find(d => d.id === id);
   const main = document.getElementById('main');
-  main.scrollTop = 0;
+  window.scrollTo(0, 0);
   if (!doc) return;
 
   const isUd = doc.kind === 'md';
@@ -523,10 +627,17 @@ async function select(id) {
         <h1>${escHtml(isUd ? doc.title + ' — ' + doc.sub : 'Programació didàctica')}</h1>
         <div class="dh-meta">${isUd ? 'Proposta detallada d\u2019activitats · Markdown' : 'Matemàtiques Aplicades I · document Word'}</div>
       </div>
+      ${isUd ? `<div class="dh-actions">
+        <button class="pill-btn" id="toggleAll" data-state="collapsed">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
+          Desplega-ho tot
+        </button>
+      </div>` : ''}
     </div>`;
 
   if (cache[id]) {
     main.innerHTML = `<div class="doc-wrap">${headHtml}<div class="rich">${cache[id]}</div></div>`;
+    wireToggleAll();
     return;
   }
 
@@ -539,11 +650,12 @@ async function select(id) {
     } else {
       const r = await fetch(doc.file);
       if (!r.ok) throw new Error('HTTP ' + r.status);
-      inner = mdToHtml(await r.text());
+      inner = collapsibleByH2(mdToHtml(await r.text()));
     }
     cache[id] = inner;
     if (activeId === id) {
       main.innerHTML = `<div class="doc-wrap">${headHtml}<div class="rich">${inner}</div></div>`;
+      wireToggleAll();
     }
   } catch (err) {
     main.innerHTML = `<div class="doc-wrap">${headHtml}
@@ -556,11 +668,37 @@ async function select(id) {
   }
 }
 
+/* ─── Control «Desplega-ho tot / Plega-ho tot» ────────────────────── */
+function wireToggleAll() {
+  const btn = document.getElementById('toggleAll');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    const secs = document.querySelectorAll('.rich .sec');
+    const expand = btn.dataset.state === 'collapsed';
+    secs.forEach(d => d.open = expand);
+    btn.dataset.state = expand ? 'expanded' : 'collapsed';
+    btn.querySelector('svg').style.transform = expand ? 'rotate(180deg)' : '';
+    btn.childNodes[btn.childNodes.length - 1].textContent =
+      expand ? ' Plega-ho tot' : ' Desplega-ho tot';
+  });
+}
+
 /* ─── NAV mòbil ───────────────────────────────────────────────────── */
 function closeNav() { document.getElementById('app').classList.remove('nav-open'); }
 document.getElementById('menuToggle').addEventListener('click', () =>
   document.getElementById('app').classList.toggle('nav-open'));
 document.getElementById('scrim').addEventListener('click', closeNav);
+
+/* ─── IMPRESSIÓ: desplega tots els blocs i els restaura després ────── */
+let _printReopen = [];
+window.addEventListener('beforeprint', () => {
+  _printReopen = [...document.querySelectorAll('.rich .sec:not([open])')];
+  _printReopen.forEach(d => d.open = true);
+});
+window.addEventListener('afterprint', () => {
+  _printReopen.forEach(d => d.open = false);
+  _printReopen = [];
+});
 
 /* ─── INIT ────────────────────────────────────────────────────────── */
 (async function init() {
