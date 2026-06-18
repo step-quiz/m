@@ -6,7 +6,7 @@
 
 ---
 
-Aquest document desenvolupa, hora a hora, les 16 hores previstes per a la Unitat Didàctica 1 a la programació general de Matemàtiques Aplicades I. Pren com a punt de partida els objectius, els criteris d'avaluació, els materials i les quatre activitats ja definides («El bo social elèctric», «La frontera dels 18», «Gimnàstica d'inequacions» i «Tocant pressupostos gegants»), i les seqüencia seguint el mateix patró metodològic establert a la programació (aules pensants → classe magistral → treball pràctic), tot afegint les hores de connexió, consolidació i ampliació necessàries (diagnosi inicial, sistemes d'inequacions, un cas real complet de convocatòria, consolidació de la mecanització i un taller de preparació de la prova) per completar un itinerari de 16 hores coherent amb el perfil d'alumnat del Batxillerat Professionalitzador en Serveis a la Comunitat: motivació per les persones per sobre de l'abstracció matemàtica, contextos reals dels àmbits social i comunitari, i èmfasi en el pensament crític davant de dades. L'ampliació de 12 a 16 hores respon a la temporalització de la programació general (16 hores per unitat didàctica) i s'ha aprofitat per reforçar els dos punts que l'alumnat d'aquest perfil necessita treballar amb més temps: la mecanització segura de les inequacions amb canvi de signe (C1) i la lectura de convocatòries reals amb diverses condicions simultànies (C3).
+Aquest document desenvolupa, sessió a sessió, les 16 hores previstes per a la Unitat Didàctica 1 a la programació general de Matemàtiques Aplicades I. Pren com a punt de partida els objectius, els criteris d'avaluació, els materials i les quatre activitats ja definides («El bo social elèctric», «La frontera dels 18», «Gimnàstica d'inequacions» i «Tocant pressupostos gegants»), i les seqüencia seguint el mateix patró metodològic establert a la programació (aules pensants → classe magistral → treball pràctic), tot afegint les sessions de connexió, consolidació i ampliació necessàries (diagnosi inicial, sistemes d'inequacions, un cas real complet de convocatòria, consolidació de la mecanització i un taller de preparació de la prova) per completar un itinerari de 16 hores coherent amb el perfil d'alumnat del Batxillerat Professionalitzador en Serveis a la Comunitat: motivació per les persones per sobre de l'abstracció matemàtica, contextos reals dels àmbits social i comunitari, i èmfasi en el pensament crític davant de dades. L'ampliació de 12 a 16 hores respon a la temporalització de la programació general (16 hores per unitat didàctica) i s'ha aprofitat per reforçar els dos punts que l'alumnat d'aquest perfil necessita treballar amb més temps: la mecanització segura de les inequacions amb canvi de signe (C1) i la lectura de convocatòries reals amb diverses condicions simultànies (C3).
 
 ### Llegenda
 
@@ -25,7 +25,7 @@ Aquest document desenvolupa, hora a hora, les 16 hores previstes per a la Unitat
 
 ### Visió general de les 16 hores
 
-Cada fila correspon a una hora lectiva (60 min). Les hores marcades amb ⁺ són les incorporades en ampliar la unitat de 12 a 16 hores.
+Cada fila correspon a una hora lectiva (60 min). Les sessions marcades amb ⁺ són les incorporades en ampliar la unitat de 12 a 16 hores.
 
 | # | Títol | Agrupament dominant | Metodologia | Referència a la programació |
 | --- | --- | --- | --- | --- |
@@ -48,7 +48,7 @@ Cada fila correspon a una hora lectiva (60 min). Les hores marcades amb ⁺ són
 
 ---
 
-## Hora 1 — Diagnosi inicial i benvinguda a la matèria
+## Sessió 1 — Diagnosi inicial i benvinguda a la matèria
 
 **Agrupament:** individual + gran grup · **Objectius/criteris:** transversal, prepara O1-O3 · **Correspon a:** fase de diagnòstic inicial prevista a les observacions de temporalització.
 
@@ -60,17 +60,17 @@ Cada fila correspon a una hora lectiva (60 min). Les hores marcades amb ⁺ són
 | Desenvolupament | 30 min | Prova diagnòstica individual i silenciosa |
 | Tancament | 15 min | Autocorrecció ràpida i reflexió individual |
 
-**Desenvolupament detallat:** A l'inici es presenta breument com funcionarà la matèria durant el curs (aules pensants amb grups aleatoris, pissarres verticals, connexió constant amb l'àmbit social i comunitari), mostrant com a exemple motivador un fragment real (per exemple, el mateix full del bo social elèctric que es treballarà a l'hora 3) per respondre a la pregunta «per què estudiarem matemàtiques aquest curs». A continuació es passa una prova diagnòstica breu i no punitiva amb ítems curts que cobreixen: operacions amb enters i decimals; suma i simplificació de fraccions; càlcul d'un percentatge senzill; resolució d'una equació de primer grau bàsica; ordenació d'un conjunt mesclat de nombres (enters negatius, decimals, fraccions) en una recta; tria del símbol correcte (<, >, ≤, ≥) a partir d'una frase quotidiana amb «com a màxim» o «com a mínim»; i una operació bàsica amb potències. Al tancament, el docent dicta o projecta les solucions perquè cada alumne s'autocorregeixi sense entregar nota, i demana una breu reflexió escrita («què em sembla més difícil d'aquesta llista?»). El docent recull les fitxes per llegir-les abans de l'hora 2 i poder ajustar el punt de partida real del grup.
+**Desenvolupament detallat:** A l'inici es presenta breument com funcionarà la matèria durant el curs (aules pensants amb grups aleatoris, pissarres verticals, connexió constant amb l'àmbit social i comunitari), mostrant com a exemple motivador un fragment real (per exemple, el mateix full del bo social elèctric que es treballarà a la sessió 3) per respondre a la pregunta «per què estudiarem matemàtiques aquest curs». A continuació es passa una prova diagnòstica breu i no punitiva amb ítems curts que cobreixen: operacions amb enters i decimals; suma i simplificació de fraccions; càlcul d'un percentatge senzill; resolució d'una equació de primer grau bàsica; ordenació d'un conjunt mesclat de nombres (enters negatius, decimals, fraccions) en una recta; tria del símbol correcte (<, >, ≤, ≥) a partir d'una frase quotidiana amb «com a màxim» o «com a mínim»; i una operació bàsica amb potències. Al tancament, el docent dicta o projecta les solucions perquè cada alumne s'autocorregeixi sense entregar nota, i demana una breu reflexió escrita («què em sembla més difícil d'aquesta llista?»). El docent recull les fitxes per llegir-les abans de la sessió 2 i poder ajustar el punt de partida real del grup.
 
 **Evidència d'avaluació formativa:** fitxa de diagnosi (no computa a la nota; és informació per a la planificació docent).
 
-**Atenció a la diversitat:** a partir d'aquesta diagnosi es poden preveure agrupaments heterogenis a les pissarres verticals de les properes hores i petites fitxes de reforç (recta numèrica, fraccions) per a l'alumnat amb mancances més accentuades, sense alterar el ritme de la resta del grup.
+**Atenció a la diversitat:** a partir d'aquesta diagnosi es poden preveure agrupaments heterogenis a les pissarres verticals de les properes sessions i petites fitxes de reforç (recta numèrica, fraccions) per a l'alumnat amb mancances més accentuades, sense alterar el ritme de la resta del grup.
 
 ---
 
-## Hora 2 — Conjunts numèrics i la recta real
+## Sessió 2 — Conjunts numèrics i la recta real
 
-**Agrupament:** grups aleatoris (pissarres verticals) + individual · **Objectius/criteris:** base per a O1 i C2 · **Correspon a:** hora de connexió ESO–Batxillerat, prèvia a l'Activitat 1.
+**Agrupament:** grups aleatoris (pissarres verticals) + individual · **Objectius/criteris:** base per a O1 i C2 · **Correspon a:** sessió de connexió ESO–Batxillerat, prèvia a l'Activitat 1.
 
 **Materials:** pissarres verticals i retoladors, llibreta, calculadora científica.
 
@@ -86,7 +86,7 @@ Cada fila correspon a una hora lectiva (60 min). Les hores marcades amb ⁺ són
 
 ---
 
-## Hora 3 — El bo social elèctric: descoberta dels intervals
+## Sessió 3 — El bo social elèctric: descoberta dels intervals
 
 **Agrupament:** grups aleatoris de 3, pissarres verticals · **Objectius/criteris:** O2 / C2 i C3 (de manera emergent) · **Correspon a:** Activitat 1 de la programació — fase d'aules pensants.
 
@@ -104,25 +104,25 @@ Cada fila correspon a una hora lectiva (60 min). Les hores marcades amb ⁺ són
 
 ---
 
-## Hora 4 — Formalització d'intervals i inequacions
+## Sessió 4 — Formalització d'intervals i inequacions
 
 **Agrupament:** gran grup + parelles · **Objectius/criteris:** O2 / C2 · **Correspon a:** Activitat 1 de la programació — fase de consolidació.
 
-**Materials:** llibreta, pissarra, full de l'Activitat 1 de l'hora anterior.
+**Materials:** llibreta, pissarra, full de l'Activitat 1 de la sessió anterior.
 
 | Fase | Temps | Què passa (resum) |
 | --- | --- | --- |
-| Inici | 10 min | Es recuperen les notacions informals de l'hora 3 |
+| Inici | 10 min | Es recuperen les notacions informals de la sessió 3 |
 | Desenvolupament | 35 min | Classe magistral (intervals, parèntesi/claudàtor, recta real) + pràctica en parelles |
-| Tancament | 10 min | Posada en comú i avançament de la propera hora |
+| Tancament | 10 min | Posada en comú i avançament de la propera sessió |
 
-**Desenvolupament detallat:** Es comença recuperant les notacions informals recollides el dia anterior i preguntant «quina és la manera “oficial” d'escriure-ho en matemàtiques?». La classe magistral defineix què és una inequació, què és un interval obert i tancat, la notació de parèntesi i claudàtor, i la representació gràfica a la recta real amb punt buit (extrem exclòs) o ple (extrem inclòs). Es formalitza directament sobre el cas treballat: «renda ≤ 1,5 vegades l'IPREM» s'escriu com l'interval (−∞, 1,5·IPREM]. A continuació, en parelles, l'alumnat torna al full de l'Activitat 1 i reescriu, ara amb notació formal, la solució per a cada família: inequació, interval i representació a la recta. Al tancament es comparteixen una o dues solucions en veu alta i es presenta breument el repte de la propera hora (els límits exactes relacionats amb la majoria d'edat).
+**Desenvolupament detallat:** Es comença recuperant les notacions informals recollides el dia anterior i preguntant «quina és la manera “oficial” d'escriure-ho en matemàtiques?». La classe magistral defineix què és una inequació, què és un interval obert i tancat, la notació de parèntesi i claudàtor, i la representació gràfica a la recta real amb punt buit (extrem exclòs) o ple (extrem inclòs). Es formalitza directament sobre el cas treballat: «renda ≤ 1,5 vegades l'IPREM» s'escriu com l'interval (−∞, 1,5·IPREM]. A continuació, en parelles, l'alumnat torna al full de l'Activitat 1 i reescriu, ara amb notació formal, la solució per a cada família: inequació, interval i representació a la recta. Al tancament es comparteixen una o dues solucions en veu alta i es presenta breument el repte de la propera sessió (els límits exactes relacionats amb la majoria d'edat).
 
 **Evidència d'avaluació formativa:** full de l'Activitat 1 reformulat amb notació correcta (treball diari).
 
 ---
 
-## Hora 5 — La frontera dels 18: extrems oberts i tancats
+## Sessió 5 — La frontera dels 18: extrems oberts i tancats
 
 **Agrupament:** parelles + gran grup · **Objectius/criteris:** O2 / C2, amb una primera aproximació informal a C3 · **Correspon a:** Activitat 2 de la programació.
 
@@ -134,7 +134,7 @@ Cada fila correspon a una hora lectiva (60 min). Les hores marcades amb ⁺ són
 | Desenvolupament | 30 min | Cas de la protecció de menors + un segon cas amb dos límits alhora |
 | Tancament | 17 min | Debat en gran grup + mini-repte individual |
 
-**Desenvolupament detallat:** Després d'un recordatori oral ràpid sobre obert/tancat, en parelles es treballa el cas de la protecció de menors: representar l'interval [0, 18) i respondre per escrit què significa el parèntesi i quin és l'últim dia exacte en què un jove encara hi és dins. S'amplia amb un segon cas que combina dos límits simultàniament sobre la mateixa variable (per exemple, un programa juvenil amb accés només entre els 16 i els 18 anys), com a primer contacte informal amb la idea de «complir dues condicions alhora» que es desenvoluparà més endavant a l'hora 9. Al tancament hi ha un debat en gran grup sobre les conseqüències reals d'aquesta frontera (un jove que compleix 18 anys i perd la protecció l'endemà mateix), seguit d'un mini-repte individual: escriure l'interval per a un altre cas anàleg (per exemple, l'edat en què cessa una prestació per fill a càrrec).
+**Desenvolupament detallat:** Després d'un recordatori oral ràpid sobre obert/tancat, en parelles es treballa el cas de la protecció de menors: representar l'interval [0, 18) i respondre per escrit què significa el parèntesi i quin és l'últim dia exacte en què un jove encara hi és dins. S'amplia amb un segon cas que combina dos límits simultàniament sobre la mateixa variable (per exemple, un programa juvenil amb accés només entre els 16 i els 18 anys), com a primer contacte informal amb la idea de «complir dues condicions alhora» que es desenvoluparà més endavant a la sessió 9. Al tancament hi ha un debat en gran grup sobre les conseqüències reals d'aquesta frontera (un jove que compleix 18 anys i perd la protecció l'endemà mateix), seguit d'un mini-repte individual: escriure l'interval per a un altre cas anàleg (per exemple, l'edat en què cessa una prestació per fill a càrrec).
 
 **Evidència d'avaluació formativa:** full de parelles + mini-repte individual (exit ticket).
 
@@ -142,9 +142,9 @@ Cada fila correspon a una hora lectiva (60 min). Les hores marcades amb ⁺ són
 
 ---
 
-## Hora 6 — El parany del signe negatiu: com es resolen les inequacions
+## Sessió 6 — El parany del signe negatiu: com es resolen les inequacions
 
-**Agrupament:** grups aleatoris (pissarres) + individual · **Objectius/criteris:** O1 / C1 · **Correspon a:** hora prèvia necessària a l'Activitat 3 (mecanització).
+**Agrupament:** grups aleatoris (pissarres) + individual · **Objectius/criteris:** O1 / C1 · **Correspon a:** sessió prèvia necessària a l'Activitat 3 (mecanització).
 
 **Materials:** pissarres verticals, llibreta, calculadora científica.
 
@@ -160,7 +160,7 @@ Cada fila correspon a una hora lectiva (60 min). Les hores marcades amb ⁺ són
 
 ---
 
-## Hora 7 — Gimnàstica d'inequacions: mecanització i verificació
+## Sessió 7 — Gimnàstica d'inequacions: mecanització i verificació
 
 **Agrupament:** parelles · **Objectius/criteris:** O1 / C1, C2 · **Correspon a:** Activitat 3 de la programació.
 
@@ -189,9 +189,9 @@ Al tancament, el docent facilita les solucions per a l'autocorrecció en parelle
 
 ---
 
-## Hora 8 — Consolidació d'inequacions: casos difícils i errors típics
+## Sessió 8 — Consolidació d'inequacions: casos difícils i errors típics
 
-**Agrupament:** parelles + individual · **Objectius/criteris:** O1 / C1, C2 · **Correspon a:** hora de consolidació afegida en ampliar la unitat a 16 hores, pensada per a l'alumnat amb mancances de l'ESO. Reforça la mecanització iniciada a l'hora 7 abans de passar a contextos amb diverses condicions.
+**Agrupament:** parelles + individual · **Objectius/criteris:** O1 / C1, C2 · **Correspon a:** sessió de consolidació afegida en ampliar la unitat a 16 hores, pensada per a l'alumnat amb mancances de l'ESO. Reforça la mecanització iniciada a la sessió 7 abans de passar a contextos amb diverses condicions.
 
 **Materials:** fitxa d'errors típics, llibreta o pissarres verticals, calculadora científica.
 
@@ -201,15 +201,15 @@ Al tancament, el docent facilita les solucions per a l'autocorrecció en parelle
 | Desenvolupament | 35 min | Bateria graduada de consolidació + reptes amb truc |
 | Tancament | 13 min | Full d'autoavaluació individual |
 
-**Desenvolupament detallat:** L'hora s'obre amb una activitat de «caça l'error»: es projecten o es reparteixen quatre o cinc inequacions ja resoltes pel docent, algunes correctament i altres amb els errors més habituals del grup (no girar el signe en dividir per un negatiu, equivocar-se en treure parèntesis, perdre un denominador en operar amb fraccions). En parelles, l'alumnat ha de decidir quines són correctes i, en les incorrectes, identificar exactament en quin pas s'ha produït l'error i corregir-lo. Aquesta tasca és especialment valuosa per a aquest perfil d'alumnat perquè treballa la detecció de l'error sense la pressió de resoldre des de zero, i fa explícits els passos crítics. A continuació es treballa una bateria graduada de consolidació que recull els casos que més costen: inequacions amb el terme en *x* que acaba amb coeficient negatiu (cal girar el signe al final), inequacions amb parèntesis i fraccions combinats, i un parell de «reptes amb truc» (per exemple, una inequació que se simplifica fins a una identitat sempre certa, com `2x + 1 > 2x − 3`, o una de mai certa, per debatre què significa que «no hi hagi solució» o que «la solució siguin tots els reals»). Cada exercici manté la rutina ja coneguda: resoldre, escriure la solució en forma d'interval i comprovar amb un valor. Al tancament, cada alumne resol individualment un full breu d'autoavaluació de tres inequacions i marca, en una petita graella, quins tipus de pas domina i quins encara li costen, com a preparació per a la prova.
+**Desenvolupament detallat:** La sessió s'obre amb una activitat de «caça l'error»: es projecten o es reparteixen quatre o cinc inequacions ja resoltes pel docent, algunes correctament i altres amb els errors més habituals del grup (no girar el signe en dividir per un negatiu, equivocar-se en treure parèntesis, perdre un denominador en operar amb fraccions). En parelles, l'alumnat ha de decidir quines són correctes i, en les incorrectes, identificar exactament en quin pas s'ha produït l'error i corregir-lo. Aquesta tasca és especialment valuosa per a aquest perfil d'alumnat perquè treballa la detecció de l'error sense la pressió de resoldre des de zero, i fa explícits els passos crítics. A continuació es treballa una bateria graduada de consolidació que recull els casos que més costen: inequacions amb el terme en *x* que acaba amb coeficient negatiu (cal girar el signe al final), inequacions amb parèntesis i fraccions combinats, i un parell de «reptes amb truc» (per exemple, una inequació que se simplifica fins a una identitat sempre certa, com `2x + 1 > 2x − 3`, o una de mai certa, per debatre què significa que «no hi hagi solució» o que «la solució siguin tots els reals»). Cada exercici manté la rutina ja coneguda: resoldre, escriure la solució en forma d'interval i comprovar amb un valor. Al tancament, cada alumne resol individualment un full breu d'autoavaluació de tres inequacions i marca, en una petita graella, quins tipus de pas domina i quins encara li costen, com a preparació per a la prova.
 
 **Evidència d'avaluació formativa:** full d'autoavaluació individual + observació de les parelles (treball diari).
 
-**Atenció a la diversitat:** la fitxa preveu un itinerari mínim (inequacions sense fraccions, amb verificació pas a pas guiada) per a qui encara arrossega dificultats, i exercicis d'ampliació amb fraccions i casos sense solució per a qui ja domina la mecànica, de manera que tothom treballi al seu nivell durant la mateixa hora.
+**Atenció a la diversitat:** la fitxa preveu un itinerari mínim (inequacions sense fraccions, amb verificació pas a pas guiada) per a qui encara arrossega dificultats, i exercicis d'ampliació amb fraccions i casos sense solució per a qui ja domina la mecànica, de manera que tothom treballi al seu nivell durant la mateixa sessió.
 
 ---
 
-## Hora 9 — Diverses condicions alhora: sistemes d'inequacions i interseccions d'intervals
+## Sessió 9 — Diverses condicions alhora: sistemes d'inequacions i interseccions d'intervals
 
 **Agrupament:** grups aleatoris + parelles · **Objectius/criteris:** O1, O2 / C1, C2, C3 · **Correspon a:** ampliació necessària per cobrir el criteri C3 («sistema d'inequacions»), aprofitant el fragment del DOGC sobre l'ajut al lloguer jove ja previst com a material de la unitat.
 
@@ -227,9 +227,9 @@ Al tancament, el docent facilita les solucions per a l'autocorrecció en parelle
 
 ---
 
-## Hora 10 — Cas real complet: resolem una convocatòria sencera
+## Sessió 10 — Cas real complet: resolem una convocatòria sencera
 
-**Agrupament:** parelles · **Objectius/criteris:** O1, O2 / C2, C3 · **Correspon a:** hora d'aprofundiment afegida en ampliar la unitat a 16 hores. Porta el criteri C3 fins a la lectura integral d'unes bases reals, més enllà de l'extracció d'una sola condició treballada a l'hora 9.
+**Agrupament:** parelles · **Objectius/criteris:** O1, O2 / C2, C3 · **Correspon a:** sessió d'aprofundiment afegida en ampliar la unitat a 16 hores. Porta el criteri C3 fins a la lectura integral d'unes bases reals, més enllà de l'extracció d'una sola condició treballada a la sessió 9.
 
 **Materials:** dossier amb les bases reals (o lleugerament adaptades) d'un ajut social amb diverses condicions (per exemple, l'ajut al lloguer jove o una beca de menjador), fitxa de perfils d'usuaris, llibreta.
 
@@ -239,13 +239,13 @@ Al tancament, el docent facilita les solucions per a l'autocorrecció en parelle
 | Desenvolupament | 37 min | «Som la finestreta»: resolució completa de 3-4 expedients |
 | Tancament | 15 min | Posada en comú i redacció d'una resolució justificada |
 
-**Desenvolupament detallat:** Aquesta hora simula la feina real d'un tècnic dels serveis a la comunitat davant d'una convocatòria d'ajuts: no extreure una única condició aïllada, sinó llegir unes bases senceres, identificar-hi totes les condicions rellevants (edat, renda, situació d'empadronament, etc.) i decidir, expedient per expedient, qui hi té dret. En parelles, l'alumnat rep un dossier amb les bases (reals o adaptades perquè siguin abastables) i una fitxa amb tres o quatre perfils d'usuaris ficticis amb les seves dades. La consigna és actuar com «la finestreta» que resol les sol·licituds: per a cada perfil, han de (1) traduir cada requisit de les bases a una inequació o interval, (2) comprovar si el perfil compleix cada condició per separat, i (3) concloure si la persona, en conjunt, té dret a l'ajut, recordant que cal complir-les **totes alhora** (la idea de sistema treballada a l'hora 9). El docent circula plantejant casos límit deliberats (algú que compleix per edat però se'n surt per pocs euros de renda, o algú que queda just al llindar exacte, per reforçar la diferència entre `<` i `≤`). Al tancament, cada parella exposa un dels expedients i en redacta una breu «resolució» justificada per escrit, que connecta directament amb la redacció d'informes que faran als cicles formatius.
+**Desenvolupament detallat:** Aquesta sessió simula la feina real d'un tècnic dels serveis a la comunitat davant d'una convocatòria d'ajuts: no extreure una única condició aïllada, sinó llegir unes bases senceres, identificar-hi totes les condicions rellevants (edat, renda, situació d'empadronament, etc.) i decidir, expedient per expedient, qui hi té dret. En parelles, l'alumnat rep un dossier amb les bases (reals o adaptades perquè siguin abastables) i una fitxa amb tres o quatre perfils d'usuaris ficticis amb les seves dades. La consigna és actuar com «la finestreta» que resol les sol·licituds: per a cada perfil, han de (1) traduir cada requisit de les bases a una inequació o interval, (2) comprovar si el perfil compleix cada condició per separat, i (3) concloure si la persona, en conjunt, té dret a l'ajut, recordant que cal complir-les **totes alhora** (la idea de sistema treballada a la sessió 9). El docent circula plantejant casos límit deliberats (algú que compleix per edat però se'n surt per pocs euros de renda, o algú que queda just al llindar exacte, per reforçar la diferència entre `<` i `≤`). Al tancament, cada parella exposa un dels expedients i en redacta una breu «resolució» justificada per escrit, que connecta directament amb la redacció d'informes que faran als cicles formatius.
 
 **Evidència d'avaluació formativa:** fitxa d'expedients resolta + resolució escrita d'un cas (treball diari, especialment indicativa del criteri C3).
 
 ---
 
-## Hora 11 — Per què necessitem la notació científica? Descobrim-ho amb pressupostos reals
+## Sessió 11 — Per què necessitem la notació científica? Descobrim-ho amb pressupostos reals
 
 **Agrupament:** grups aleatoris + gran grup · **Objectius/criteris:** O3 / C4 · **Correspon a:** Activitat 4 de la programació — fase de descoberta.
 
@@ -263,11 +263,11 @@ Al tancament, el docent facilita les solucions per a l'autocorrecció en parelle
 
 ---
 
-## Hora 12 — Tocant pressupostos gegants: operacions i interpretació
+## Sessió 12 — Tocant pressupostos gegants: operacions i interpretació
 
 **Agrupament:** parelles · **Objectius/criteris:** O3 / C4 · **Correspon a:** Activitat 4 de la programació — fase de pràctica.
 
-**Materials:** les mateixes dades reals de l'hora anterior, calculadora científica, llibreta.
+**Materials:** les mateixes dades reals de la sessió anterior, calculadora científica, llibreta.
 
 | Fase | Temps | Què passa (resum) |
 | --- | --- | --- |
@@ -281,9 +281,9 @@ Al tancament, el docent facilita les solucions per a l'autocorrecció en parelle
 
 ---
 
-## Hora 13 — Notació científica: ampliació i ordre de magnitud
+## Sessió 13 — Notació científica: ampliació i ordre de magnitud
 
-**Agrupament:** parelles + individual · **Objectius/criteris:** O3 / C4 · **Correspon a:** hora de consolidació afegida en ampliar la unitat a 16 hores. Reforça el criteri C4, que als exemples originals quedava concentrat en una sola activitat.
+**Agrupament:** parelles + individual · **Objectius/criteris:** O3 / C4 · **Correspon a:** sessió de consolidació afegida en ampliar la unitat a 16 hores. Reforça el criteri C4, que als exemples originals quedava concentrat en una sola activitat.
 
 **Materials:** fitxa amb dades reals diverses (pressupostos, població, xifres demogràfiques), calculadora científica, llibreta.
 
@@ -301,7 +301,7 @@ Al tancament, el docent facilita les solucions per a l'autocorrecció en parelle
 
 ---
 
-## Hora 14 — Repàs global i síntesi de la unitat
+## Sessió 14 — Repàs global i síntesi de la unitat
 
 **Agrupament:** grups aleatoris (estacions) + gran grup · **Objectius/criteris:** O1, O2, O3 / C1, C2, C3, C4 · **Correspon a:** tancament de la unitat, previ a la prova escrita.
 
@@ -319,9 +319,9 @@ Al tancament, el docent facilita les solucions per a l'autocorrecció en parelle
 
 ---
 
-## Hora 15 — Taller de preparació de la prova
+## Sessió 15 — Taller de preparació de la prova
 
-**Agrupament:** parelles + individual · **Objectius/criteris:** O1, O2, O3 / C1, C2, C3, C4 · **Correspon a:** hora afegida en ampliar la unitat a 16 hores. Pont entre el repàs (hora 14) i la prova escrita (hora 16), pensada per reduir l'ansietat davant l'examen i fer explícits els criteris de correcció.
+**Agrupament:** parelles + individual · **Objectius/criteris:** O1, O2, O3 / C1, C2, C3, C4 · **Correspon a:** sessió afegida en ampliar la unitat a 16 hores. Pont entre el repàs (sessió 14) i la prova escrita (sessió 16), pensada per reduir l'ansietat davant l'examen i fer explícits els criteris de correcció.
 
 **Materials:** model de prova (simulacre) equivalent en estructura a la prova real, rúbrica simplificada, llibreta, calculadora científica.
 
@@ -331,7 +331,7 @@ Al tancament, el docent facilita les solucions per a l'autocorrecció en parelle
 | Desenvolupament | 35 min | Simulacre per blocs amb temps controlat |
 | Tancament | 15 min | Coavaluació amb rúbrica i pla d'estudi personal |
 
-**Desenvolupament detallat:** L'hora comença mostrant de manera transparent com serà la prova de l'hora 16: els quatre blocs (un per criteri, C1-C4), el pes orientatiu de cadascun i una rúbrica simplificada amb els nivells d'assoliment. Fer explícits els criteris de correcció és especialment important per a un alumnat que pot arribar amb una relació insegura amb les matemàtiques, perquè desmunta la sensació que l'examen és imprevisible. A continuació, l'alumnat resol un simulacre breu —un ítem representatiu de cada bloc— amb un temps controlat semblant al de la prova real, però en parelles, de manera que puguin verbalitzar l'estratègia abans d'enfrontar-s'hi sols. En acabar, es fa una coavaluació: cada parella corregeix el simulacre d'una altra amb la rúbrica a la mà, fet que obliga a interioritzar què es valora (no només el resultat, sinó la justificació dels passos, l'ús correcte de la notació d'intervals i la comprovació). Al tancament, cada alumne escriu un breu pla d'estudi personal de cara a la prova: a partir de la graella d'autoavaluació de l'hora 8 i del simulacre, anota els dos o tres tipus d'exercici que ha de repassar amb més atenció. El docent recull aquests plans per detectar qui pot necessitar un suport addicional abans de l'examen.
+**Desenvolupament detallat:** La sessió comença mostrant de manera transparent com serà la prova de la sessió 16: els quatre blocs (un per criteri, C1-C4), el pes orientatiu de cadascun i una rúbrica simplificada amb els nivells d'assoliment. Fer explícits els criteris de correcció és especialment important per a un alumnat que pot arribar amb una relació insegura amb les matemàtiques, perquè desmunta la sensació que l'examen és imprevisible. A continuació, l'alumnat resol un simulacre breu —un ítem representatiu de cada bloc— amb un temps controlat semblant al de la prova real, però en parelles, de manera que puguin verbalitzar l'estratègia abans d'enfrontar-s'hi sols. En acabar, es fa una coavaluació: cada parella corregeix el simulacre d'una altra amb la rúbrica a la mà, fet que obliga a interioritzar què es valora (no només el resultat, sinó la justificació dels passos, l'ús correcte de la notació d'intervals i la comprovació). Al tancament, cada alumne escriu un breu pla d'estudi personal de cara a la prova: a partir de la graella d'autoavaluació de la sessió 8 i del simulacre, anota els dos o tres tipus d'exercici que ha de repassar amb més atenció. El docent recull aquests plans per detectar qui pot necessitar un suport addicional abans de l'examen.
 
 **Evidència d'avaluació formativa:** simulacre resolt + pla d'estudi personal (treball diari; no computa com a nota de prova, però orienta el suport previ a l'examen).
 
@@ -339,7 +339,7 @@ Al tancament, el docent facilita les solucions per a l'autocorrecció en parelle
 
 ---
 
-## Hora 16 — Prova escrita de la Unitat 1
+## Sessió 16 — Prova escrita de la Unitat 1
 
 **Agrupament:** individual · **Avalua:** O1, O2, O3 / C1, C2, C3, C4 · **Correspon a:** instrument «Proves escrites per unitat didàctica» (60% de la nota trimestral).
 
@@ -368,8 +368,8 @@ Al tancament, es recull la prova i es fa una connexió breu amb la propera unita
 
 ## Relació amb l'avaluació global de la matèria
 
-D'acord amb els instruments d'avaluació definits a la programació general, la UD1 alimenta sobretot dos dels tres instruments: les **proves escrites** (60%), a través de l'hora 16, i el **treball diari i les activitats d'aula** (25%), a través de l'observació continuada de les aules pensants, les pissarres verticals i els exit tickets de les hores 1 a 15. El tercer instrument, **treballs pràctics i tecnològics** (15%), queda explícitament vinculat a la programació general a GeoGebra (UD2-UD3) i al full de càlcul (UD4-UD5); per tant, no s'hi aplica de manera directa en aquesta unitat, i l'ús de la calculadora científica a les hores 11, 12 i 13 té un caràcter purament instrumental que no requereix ponderació pròpia.
+D'acord amb els instruments d'avaluació definits a la programació general, la UD1 alimenta sobretot dos dels tres instruments: les **proves escrites** (60%), a través de la sessió 16, i el **treball diari i les activitats d'aula** (25%), a través de l'observació continuada de les aules pensants, les pissarres verticals i els exit tickets de les sessions 1 a 15. El tercer instrument, **treballs pràctics i tecnològics** (15%), queda explícitament vinculat a la programació general a GeoGebra (UD2-UD3) i al full de càlcul (UD4-UD5); per tant, no s'hi aplica de manera directa en aquesta unitat, i l'ús de la calculadora científica a les sessions 11, 12 i 13 té un caràcter purament instrumental que no requereix ponderació pròpia.
 
 ## Observacions i marge de flexibilitat
 
-El repartiment proposat és orientatiu, tal com ja indica la programació general per al conjunt de la temporalització. Si la diagnosi de l'hora 1 detecta mancances molt accentuades, es pot allargar l'hora 2 una hora més, escurçant lleugerament el bloc de repàs de l'hora 14. Les hores 3-4 (intervals), 6-7-8 (inequacions) i 11-12-13 (notació científica) reprodueixen el patró metodològic ja establert a la resta de la programació (aules pensants → classe magistral → treball pràctic), per mantenir-hi la coherència didàctica. Les hores 8, 10, 13 i 15 (consolidació d'inequacions, cas real complet de convocatòria, ampliació de notació científica i taller de preparació de la prova), l'hora 9 (sistemes i interseccions) i les hores 1, 2 i 14 són aportacions d'aquesta proposta, pensades per cobrir explícitament el criteri C3 —que als quatre exemples originals només s'hi esbossava parcialment— i per garantir una diagnosi inicial i un tancament de la unitat coherents amb la resta del curs. Totes les dades reals utilitzades (IPREM, bo social elèctric, DOGC, pressupostos del Departament de Drets Socials, dades de l'Idescat) s'han d'actualitzar amb les xifres vigents en el moment d'impartir la unitat el curs 2026-27.
+El repartiment proposat és orientatiu, tal com ja indica la programació general per al conjunt de la temporalització. Si la diagnosi de la sessió 1 detecta mancances molt accentuades, es pot allargar la sessió 2 una hora més, escurçant lleugerament el bloc de repàs de la sessió 14. Les sessions 3-4 (intervals), 6-7-8 (inequacions) i 11-12-13 (notació científica) reprodueixen el patró metodològic ja establert a la resta de la programació (aules pensants → classe magistral → treball pràctic), per mantenir-hi la coherència didàctica. Les sessions 8, 10, 13 i 15 (consolidació d'inequacions, cas real complet de convocatòria, ampliació de notació científica i taller de preparació de la prova), la sessió 9 (sistemes i interseccions) i les sessions 1, 2 i 14 són aportacions d'aquesta proposta, pensades per cobrir explícitament el criteri C3 —que als quatre exemples originals només s'hi esbossava parcialment— i per garantir una diagnosi inicial i un tancament de la unitat coherents amb la resta del curs. Totes les dades reals utilitzades (IPREM, bo social elèctric, DOGC, pressupostos del Departament de Drets Socials, dades de l'Idescat) s'han d'actualitzar amb les xifres vigents en el moment d'impartir la unitat el curs 2026-27.
