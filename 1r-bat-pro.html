@@ -88,9 +88,28 @@ a:hover { text-decoration: underline; }
 .pill-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
 .pill-btn.accent { border-color: var(--blue); color: var(--blue); }
 .pill-btn.accent:hover { background: var(--blue); color: #fff; }
+
+/* ── Selector de curs (dos botons grans, estil segmentat) ─────────── */
+.course-switch {
+  display: inline-flex; flex-shrink: 0;
+  background: var(--surface-2); border: 1px solid var(--line);
+  border-radius: 22px; padding: 3px; gap: 2px;
+}
+.course-btn {
+  padding: 7px 16px; border-radius: 18px;
+  font-size: 14.5px; font-weight: 700; color: var(--muted);
+  white-space: nowrap; transition: .14s var(--ease);
+}
+.course-btn:hover { color: var(--navy); }
+.course-btn.active {
+  background: var(--blue); color: #fff;
+  box-shadow: 0 1px 3px rgba(46,117,182,.35);
+}
+
 .brand {
   font-size: 16px; font-weight: 800; color: var(--navy); flex: 1;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  text-align: right;
 }
 .brand small { font-weight: 400; color: var(--muted); font-size: 13px; margin-left: 8px; }
 
@@ -347,10 +366,6 @@ a:hover { text-decoration: underline; }
   background: var(--blue); color: #fff; border: 1px solid var(--blue);
 }
 .rich .session-pdf a.sp-view:hover { background: var(--navy); border-color: var(--navy); text-decoration: none; }
-.rich .session-pdf a.sp-dl {
-  background: #fff; color: var(--blue); border: 1px solid var(--blue);
-}
-.rich .session-pdf a.sp-dl:hover { background: var(--blue); color: #fff; text-decoration: none; }
 .rich .session-pdf a.sp-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
 
 /* taules — clau per a la temporalització i les graelles de sessió */
@@ -401,6 +416,11 @@ a:hover { text-decoration: underline; }
   .app.nav-open .scrim { opacity: 1; pointer-events: auto; }
   .doc-wrap { padding: 22px 18px 70px; }
   .doc-head .dh-actions { display: none; }
+  /* La topbar prioritza els botons de curs: amaguem la marca i el text "Inici"/"Imprimir" */
+  .brand { display: none; }
+  .topbar .pill-btn:not(.menu-toggle) { font-size: 0; padding: 7px 10px; }
+  .topbar .pill-btn:not(.menu-toggle) svg { width: 15px; height: 15px; }
+  .course-btn { padding: 7px 12px; font-size: 14px; }
 }
 @media (min-width: 821px) { .scrim { display: none; } }
 </style>
@@ -416,7 +436,11 @@ a:hover { text-decoration: underline; }
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M10 4l-5 4 5 4"/></svg>
       Inici
     </a>
-    <div class="brand">Matemàtiques Aplicades I <small>1r Batxillerat PRO · Serveis a la Comunitat</small></div>
+    <div class="course-switch" id="courseSwitch">
+      <button class="course-btn" data-course="1">1r Bat PRO</button>
+      <button class="course-btn" data-course="2">2n Bat PRO</button>
+    </div>
+    <div class="brand" id="brand"></div>
     <button class="pill-btn" onclick="window.print()" title="Imprimeix el document actual">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="10" height="6" rx="1"/><path d="M5 7V3.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 .5.5V7M5 13v-2h6v2"/></svg>
       Imprimir
@@ -434,28 +458,53 @@ a:hover { text-decoration: underline; }
 </div>
 
 <script>
-/* ─── CONFIG ──────────────────────────────────────────────────────── */
-const DATA_DIR = '1r-bat-pro-data';
-
-/* La programació general (DOCX). */
-const PROG = {
-  id: 'prog',
-  kind: 'docx',
-  file: DATA_DIR + '/1r-batxi-pro-v4.docx',
-  title: 'Programació general',
-  sub: 'Curs · 6 unitats · avaluació',
+/* ─── CONFIG ──────────────────────────────────────────────────────────
+   Dos cursos. Cada curs té la seva carpeta de dades, la seva programació
+   (DOCX) i els seus títols d'unitats. Els fitxers segueixen la convenció:
+     · {dir}/Ud{n}.md                 (proposta detallada de la unitat n)
+     · {dir}/1bat-ud{n}-{s}.pdf        (material de la sessió s de la unitat n)
+   Per al 2n curs, la convenció anàloga és 2bat-ud{n}-{s}.pdf.
+   Quan es creïn els fitxers del 2n curs, apareixeran automàticament. */
+const COURSES = {
+  '1': {
+    label: '1r Bat PRO',
+    dir: '1r-bat-pro-data',
+    pdfPrefix: '1bat',
+    progFile: '1r-batxi-pro-v4.docx',
+    brand: 'Matemàtiques Aplicades I',
+    brandSub: '1r Batxillerat PRO · Serveis a la Comunitat',
+    udTitles: {
+      1: 'Nombres reals, inequacions i intervals',
+      2: 'Llenguatge algebraic i polinomis',
+      3: 'Funcions i modelització social',
+      4: 'Estadística i dades socioeconòmiques',
+      5: 'Aritmètica aplicada i economia social',
+      6: 'Probabilitat i presa de decisions',
+    },
+  },
+  '2': {
+    label: '2n Bat PRO',
+    dir: '2n-bat-pro-data',
+    pdfPrefix: '2bat',
+    progFile: '2n-batxi-pro-v4.docx',
+    brand: 'Matemàtiques Aplicades II',
+    brandSub: '2n Batxillerat PRO · Serveis a la Comunitat',
+    udTitles: {
+      1: 'Matrices: organitzar i operar amb dades',
+      2: 'Programació lineal: decidir amb recursos limitats',
+      3: 'Límits i continuïtat: tendències i llindars',
+      4: 'Derivades i optimització',
+      5: 'Probabilitat i distribucions',
+      6: 'Inferència estadística',
+    },
+  },
 };
 
-/* Unitats candidates: es prova Ud1…Ud6 i només es mostren les que existeixen. */
 const UD_MAX = 6;
-const UD_TITLES = {
-  1: 'Nombres reals, inequacions i intervals',
-  2: 'Llenguatge algebraic i polinomis',
-  3: 'Funcions i modelització social',
-  4: 'Estadística i dades socioeconòmiques',
-  5: 'Aritmètica aplicada i economia social',
-  6: 'Probabilitat i presa de decisions',
-};
+
+/* Curs actiu (per defecte, 1r). DATA_DIR i companyia en deriven. */
+let currentCourse = '1';
+function course() { return COURSES[currentCourse]; }
 
 /* ─── STATE ───────────────────────────────────────────────────────── */
 let DOCS = [];          // [{id, kind, file, title, sub}]
@@ -479,14 +528,24 @@ async function exists(url) {
   } catch (_) { return false; }
 }
 
-/* ─── DETECCIÓ DE DOCUMENTS ───────────────────────────────────────── */
+/* ─── DETECCIÓ DE DOCUMENTS (del curs actiu) ──────────────────────── */
 async function discover() {
+  const c = course();
   const docs = [];
-  if (await exists(PROG.file)) docs.push(PROG);
 
+  // Programació general (DOCX) del curs, si existeix
+  const progFile = `${c.dir}/${c.progFile}`;
+  if (await exists(progFile)) {
+    docs.push({
+      id: 'prog', kind: 'docx', file: progFile,
+      title: 'Programació general', sub: 'Curs · 6 unitats · avaluació',
+    });
+  }
+
+  // Unitats Ud1…Ud6 que existeixin
   const checks = [];
   for (let i = 1; i <= UD_MAX; i++) {
-    const file = `${DATA_DIR}/Ud${i}.md`;
+    const file = `${c.dir}/Ud${i}.md`;
     checks.push(exists(file).then(ok => ok ? { n: i, file } : null));
   }
   const found = (await Promise.all(checks)).filter(Boolean).sort((a, b) => a.n - b.n);
@@ -496,7 +555,7 @@ async function discover() {
       kind: 'md',
       file: u.file,
       title: `Unitat ${u.n}`,
-      sub: UD_TITLES[u.n] || 'Unitat didàctica',
+      sub: c.udTitles[u.n] || 'Unitat didàctica',
     });
   }
   return docs;
@@ -786,13 +845,12 @@ function collapsibleByH2(html, udNum) {
 /* Panell de material (PDF) d'una sessió. Es genera amagat (hidden) i
    s'activa més tard si el fitxer existeix (vegeu revealSessionPdfs). */
 function pdfPanel(udNum, sessNum) {
-  const file = `${DATA_DIR}/1bat-ud${udNum}-${sessNum}.pdf`;
+  const c = course();
+  const file = `${c.dir}/${c.pdfPrefix}-ud${udNum}-${sessNum}.pdf`;
   const viewSvg = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z"/><circle cx="8" cy="8" r="2"/></svg>';
-  const dlSvg = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1v9m0 0L4.5 6.5M8 10l3.5-3.5M2 13h12"/></svg>';
   return `<div class="session-pdf" data-pdf="${escHtml(file)}" hidden>` +
            `<span class="sp-label"><span class="sp-ico">PDF</span>Material de la sessió</span>` +
-           `<a class="sp-btn sp-view" href="${escHtml(file)}" target="_blank" rel="noopener">${viewSvg} Veure</a>` +
-           `<a class="sp-btn sp-dl" href="${escHtml(file)}" download>${dlSvg} Descarregar</a>` +
+           `<a class="sp-btn sp-view" href="${escHtml(file)}" target="_blank" rel="noopener">${viewSvg} Veure PDF</a>` +
          `</div>`;
 }
 
@@ -930,21 +988,53 @@ window.addEventListener('afterprint', () => {
   _printReopen = [];
 });
 
-/* ─── INIT ────────────────────────────────────────────────────────── */
-(async function init() {
+/* ─── CURS: pintar marca, botons i carregar documents del curs actiu ── */
+function renderBrand() {
+  const c = course();
+  document.getElementById('brand').innerHTML =
+    `${escHtml(c.brand)} <small>${escHtml(c.brandSub)}</small>`;
+}
+function renderCourseButtons() {
+  document.querySelectorAll('.course-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.course === currentCourse);
+  });
+}
+
+async function loadCourse() {
+  renderBrand();
+  renderCourseButtons();
+  // reinicialitza estat de documents en canviar de curs
+  for (const k in cache) delete cache[k];
+  activeId = null;
+  document.getElementById('main').innerHTML =
+    '<div class="state"><div class="spinner"></div><div>Carregant…</div></div>';
   DOCS = await discover();
   renderSidebar();
   if (DOCS.length) {
     select(DOCS[0].id);
   } else {
+    const c = course();
     document.getElementById('main').innerHTML =
       `<div class="state err"><div class="state-box">
-        <strong>No s\u2019ha trobat cap document.</strong><br>
+        <strong>Encara no hi ha material per al ${escHtml(c.label)}.</strong><br>
         Col\u00b7loca el DOCX i els fitxers <code>Ud1.md</code>\u2026<code>Ud6.md</code> dins de
-        <code>${escHtml(DATA_DIR)}/</code> i serveix la pàgina per HTTP.
+        <code>${escHtml(c.dir)}/</code> i serveix la pàgina per HTTP.
       </div></div>`;
   }
-})();
+}
+
+function setCourse(courseId) {
+  if (!COURSES[courseId] || courseId === currentCourse) return;
+  currentCourse = courseId;
+  closeNav();
+  loadCourse();
+}
+
+document.querySelectorAll('.course-btn').forEach(btn =>
+  btn.addEventListener('click', () => setCourse(btn.dataset.course)));
+
+/* ─── INIT ────────────────────────────────────────────────────────── */
+loadCourse();
 </script>
 </body>
 </html>
