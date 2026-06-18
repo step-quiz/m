@@ -320,6 +320,39 @@ a:hover { text-decoration: underline; }
 .rich .hour-foot p:last-child { margin-bottom: 0; }
 .rich .hour-foot .hf-key { font-weight: 700; color: var(--navy); }
 
+/* ── Panell de material de la sessió (PDF: veure / descarregar) ────── */
+.rich .session-pdf {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 10px;
+  margin: 0 0 16px; padding: 12px 14px;
+  background: var(--blue-bg); border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+.rich .session-pdf .sp-label {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13.5px; font-weight: 700; color: var(--navy);
+  margin-right: auto;
+}
+.rich .session-pdf .sp-ico {
+  flex-shrink: 0; width: 26px; height: 26px; border-radius: 7px;
+  background: #fff; border: 1px solid var(--line);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 800; color: #b5341a;
+}
+.rich .session-pdf a.sp-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 13px; border-radius: 20px; font-size: 13.5px; font-weight: 600;
+  text-decoration: none; transition: .12s; white-space: nowrap;
+}
+.rich .session-pdf a.sp-view {
+  background: var(--blue); color: #fff; border: 1px solid var(--blue);
+}
+.rich .session-pdf a.sp-view:hover { background: var(--navy); border-color: var(--navy); text-decoration: none; }
+.rich .session-pdf a.sp-dl {
+  background: #fff; color: var(--blue); border: 1px solid var(--blue);
+}
+.rich .session-pdf a.sp-dl:hover { background: var(--blue); color: #fff; text-decoration: none; }
+.rich .session-pdf a.sp-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+
 /* taules — clau per a la temporalització i les graelles de sessió */
 .rich table {
   width: 100%; border-collapse: collapse; margin: 6px 0 20px;
@@ -723,7 +756,7 @@ function nestH3(body) {
   return out;
 }
 
-function collapsibleByH2(html) {
+function collapsibleByH2(html, udNum) {
   const parts = html.split(/(?=<h1>|<h2>)/g).filter(p => p.trim() !== '');
   // Si el document arrenca amb <h1> seguit d'un <h2> de subtítol,
   // fusiona tots dos en un únic bloc arrel (el subtítol no és un node propi).
@@ -736,9 +769,31 @@ function collapsibleByH2(html) {
   for (const part of parts) {
     const m = part.match(/^<(h1|h2)>([\s\S]*?)<\/\1>([\s\S]*)$/);
     if (!m) { out += part; continue; }
-    out += wrapDetails(m[2], styleHourFields(nestH3(m[3])), '');
+    const title = m[2];
+    let body = styleHourFields(nestH3(m[3]));
+    // Si el bloc és una sessió («Sessió N — …») i sabem la unitat, hi afegim
+    // el panell del PDF corresponent (1bat-ud{udNum}-{N}.pdf), amagat fins
+    // que es comprovi que el fitxer existeix.
+    const sm = udNum && title.match(/Sessió\s+(\d+)/i);
+    if (sm) {
+      body = pdfPanel(udNum, parseInt(sm[1], 10)) + body;
+    }
+    out += wrapDetails(title, body, '');
   }
   return out;
+}
+
+/* Panell de material (PDF) d'una sessió. Es genera amagat (hidden) i
+   s'activa més tard si el fitxer existeix (vegeu revealSessionPdfs). */
+function pdfPanel(udNum, sessNum) {
+  const file = `${DATA_DIR}/1bat-ud${udNum}-${sessNum}.pdf`;
+  const viewSvg = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z"/><circle cx="8" cy="8" r="2"/></svg>';
+  const dlSvg = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1v9m0 0L4.5 6.5M8 10l3.5-3.5M2 13h12"/></svg>';
+  return `<div class="session-pdf" data-pdf="${escHtml(file)}" hidden>` +
+           `<span class="sp-label"><span class="sp-ico">PDF</span>Material de la sessió</span>` +
+           `<a class="sp-btn sp-view" href="${escHtml(file)}" target="_blank" rel="noopener">${viewSvg} Veure</a>` +
+           `<a class="sp-btn sp-dl" href="${escHtml(file)}" download>${dlSvg} Descarregar</a>` +
+         `</div>`;
 }
 
 /* ─── RENDER: DOCX → HTML (mammoth) ───────────────────────────────── */
@@ -784,6 +839,7 @@ async function select(id) {
   if (cache[id]) {
     main.innerHTML = `<div class="doc-wrap">${headHtml}<div class="rich">${cache[id]}</div></div>`;
     wireToggleAll();
+    revealSessionPdfs();
     return;
   }
 
@@ -796,12 +852,15 @@ async function select(id) {
     } else {
       const r = await fetch(doc.file);
       if (!r.ok) throw new Error('HTTP ' + r.status);
-      inner = collapsibleByH2(mdToHtml(await r.text()));
+      const udMatch = (doc.id || '').match(/ud(\d+)/i);
+      const udNum = udMatch ? parseInt(udMatch[1], 10) : null;
+      inner = collapsibleByH2(mdToHtml(await r.text()), udNum);
     }
     cache[id] = inner;
     if (activeId === id) {
       main.innerHTML = `<div class="doc-wrap">${headHtml}<div class="rich">${inner}</div></div>`;
       wireToggleAll();
+      revealSessionPdfs();
     }
   } catch (err) {
     main.innerHTML = `<div class="doc-wrap">${headHtml}
@@ -826,6 +885,31 @@ function wireToggleAll() {
     btn.querySelector('svg').style.transform = expand ? 'rotate(180deg)' : '';
     btn.childNodes[btn.childNodes.length - 1].textContent =
       expand ? ' Plega-ho tot' : ' Desplega-ho tot';
+  });
+}
+
+/* ─── Material PDF per sessió: mostra el panell si el fitxer existeix ──
+   Cada sessió duu un panell .session-pdf amagat que apunta a
+   1bat-ud{x}-{y}.pdf. Comprovem amb HEAD quins existeixen i només
+   revelem els que hi són. El resultat es memoritza per no repetir
+   peticions en reobrir el mateix document. */
+const pdfExistCache = {};
+async function pdfExists(url) {
+  if (url in pdfExistCache) return pdfExistCache[url];
+  let ok = false;
+  try {
+    let r = await fetch(url, { method: 'HEAD' });
+    if (r.ok) ok = true;
+    else if (r.status === 405 || r.status === 501) { r = await fetch(url); ok = r.ok; }
+  } catch (_) { ok = false; }
+  pdfExistCache[url] = ok;
+  return ok;
+}
+function revealSessionPdfs() {
+  const panels = document.querySelectorAll('.rich .session-pdf[data-pdf]');
+  panels.forEach(async (panel) => {
+    const url = panel.getAttribute('data-pdf');
+    if (await pdfExists(url)) panel.hidden = false;
   });
 }
 
