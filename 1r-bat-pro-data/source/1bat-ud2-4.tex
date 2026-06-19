@@ -1,0 +1,131 @@
+% =====================================================================
+%  1bat-ud2-4.tex  —  HORA 4: L'avaluador d'expedients (valor numèric)
+%  (sense preàmbul: s'inclou des de main.tex)
+% =====================================================================
+\horatitol{Sessió 4 — L'avaluador d'expedients}%
+{Calcular el valor numèric d'un polinomi substituint la variable, amb la jerarquia d'operacions.}
+
+\subsection{Idea clau}
+
+El \textbf{valor numèric} d'un polinomi és el resultat de substituir la variable
+per un nombre concret i operar. És el que fa, per exemple, un tècnic que aplica
+una fórmula de copagament a la renda d'una família.
+
+\begin{idea}
+\textbf{Jerarquia d'operacions} (l'ordre importa!):
+\begin{enumerate}[leftmargin=1.6em, itemsep=2pt]
+  \item Primer, les \textbf{potències} (els quadrats).
+  \item Després, els \textbf{productes} i les divisions.
+  \item Finalment, les \textbf{sumes} i les \textbf{restes}.
+\end{enumerate}
+\textbf{Compte amb els signes}, sobretot amb els termes negatius.
+\end{idea}
+
+\subsection{Exemples}
+
+\begin{exemple}[valor numèric senzill]
+Per al polinomi $P = 3x + 5$, el valor numèric en $x=4$ és
+\[
+P(4) = 3\per 4 + 5 = 12 + 5 = 17.
+\]
+\end{exemple}
+
+\begin{exemple}[amb un quadrat]
+Per a $C(x) = \num{0,05}\,x^2 - 10x + 500$, calculem el valor en $x=100$:
+\[
+C(100) = \num{0,05}\per 100^2 - 10\per 100 + 500
+       = \num{0,05}\per \num{10000} - \num{1000} + 500.
+\]
+Fem primer la potència ($100^2=\num{10000}$), després els productes
+($\num{0,05}\per\num{10000}=500$ i $10\per 100=\num{1000}$) i, al final, sumes i restes:
+\[
+C(100) = 500 - \num{1000} + 500 = 0.
+\]
+\end{exemple}
+
+\subsection{Exercicis resolts}
+
+\begin{exresolt}[l'expedient d'una família]
+La fórmula de copagament d'un servei és
+\[
+C(x) = \num{0,05}\,x^2 - 10x + 500,
+\]
+on $x$ és la renda mensual disponible (en euros) i $C(x)$ el que paga la família.
+Calcula el copagament d'una família amb renda $x=200$.
+\solucio
+Substituïm $x=200$ i respectem la jerarquia:
+\begin{align*}
+C(200) &= \num{0,05}\per 200^2 - 10\per 200 + 500 \\
+       &= \num{0,05}\per \num{40000} - \num{2000} + 500 &&\text{(primer la potència)}\\
+       &= \num{2000} - \num{2000} + 500 &&\text{(després els productes)}\\
+       &= 500. &&\text{(sumes i restes)}
+\end{align*}
+\resposta{La família amb renda $200\eur$ paga un copagament de $500\eur$.}
+\end{exresolt}
+
+\begin{exresolt}[comparar dos expedients]
+Amb la mateixa fórmula $C(x)=\num{0,05}x^2-10x+500$, calcula i compara el
+copagament de dues famílies: una amb $x=50$ i una altra amb $x=150$.
+\solucio
+Família A ($x=50$):
+\[
+C(50)=\num{0,05}\per 2500 - 10\per 50 + 500 = 125 - 500 + 500 = 125.
+\]
+Família B ($x=150$):
+\[
+C(150)=\num{0,05}\per \num{22500} - 10\per 150 + 500 = \num{1125} - \num{1500} + 500 = 125.
+\]
+Totes dues paguen el mateix copagament, tot i tenir rendes diferents: un resultat
+que convida a discutir si la fórmula és justa (treball d'interpretació de la sessió).
+\resposta{$C(50)=125\eur$ i $C(150)=125\eur$: paguen el mateix.}
+\end{exresolt}
+
+\subsection{Exercicis per fer}
+
+\begin{exercicis}
+\begin{exlist}
+  \item Calcula el valor numèric de $P = 4x - 7$ per a:
+        \quad (a) $x=3$ \quad (b) $x=0$ \quad (c) $x=10$.
+  \item Calcula el valor numèric de $Q = x^2 + 2x - 5$ per a:
+        \quad (a) $x=4$ \quad (b) $x=1$ \quad (c) $x=0$.
+  \item Amb la fórmula de copagament $C(x)=\num{0,05}x^2-10x+500$, calcula el que
+        paga cada expedient i ordena'ls de menys a més:
+    \begin{center}
+    \begin{tabular}{c c}
+    \toprule
+    Família & Renda $x$ ($\eur$) \\
+    \midrule
+    A & 0 \\
+    B & 100 \\
+    C & 250 \\
+    D & 300 \\
+    \bottomrule
+    \end{tabular}
+    \end{center}
+  \item Un casal modelitza el cost per infant amb $G(x) = \num{0,2}x^2 - 4x + 60$,
+        on $x$ són les hores d'activitat. Calcula $G(5)$ i $G(10)$.
+  \item \textbf{(Compte amb el signe)} Calcula el valor numèric de
+        $R = -2x^2 + 3x + 1$ per a $x=2$. Indica en quin pas cal anar amb cura
+        amb el signe.
+  \item \textbf{(Interpretació)} Amb $C(x)=\num{0,05}x^2-10x+500$, calcula
+        $C(100)$. El resultat és $0$: explica, en el context del copagament,
+        què vol dir que una família pagui $0\eur$.
+\end{exlist}
+\end{exercicis}
+
+% ---------------------------------------------------------------------
+\fullsolucions{Sessió 4}
+\begin{solucions}
+\begin{sollist}
+  \item (a) $5$ \quad (b) $-7$ \quad (c) $33$
+  \item (a) $19$ \quad (b) $-2$ \quad (c) $-5$
+  \item $A=500\eur$, \;$B=0\eur$, \;$C=\num{1125}\eur$, \;$D=\num{2000}\eur$. \;
+        Ordre de menys a més: $B<A<C<D$.
+  \item $G(5)=45$; \quad $G(10)=40$
+  \item $R=-1$ \;(cal anar amb compte amb el signe del terme $-2x^2$:
+        $-2\per 2^2=-8$)
+  \item $C(100)=0$: la família no paga res; la seva renda es troba just al
+        llindar on el copagament s'anul·la (per sota, la fórmula donaria
+        valors que cal interpretar com a copagament nul).
+\end{sollist}
+\end{solucions}

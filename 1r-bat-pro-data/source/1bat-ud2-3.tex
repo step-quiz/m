@@ -1,0 +1,113 @@
+% =====================================================================
+%  1bat-ud2-3.tex  —  HORA 3: Formalització del llenguatge algebraic
+%  (sense preàmbul: s'inclou des de main.tex)
+% =====================================================================
+\horatitol{Sessió 3 — Formalització del llenguatge algebraic}%
+{Vocabulari oficial: terme, coeficient, terme independent, grau i polinomi.}
+
+\subsection{Idea clau}
+
+Una \textbf{expressió algebraica} és una combinació de nombres i lletres unides
+per operacions. Quan només hi apareixen sumes, restes i productes de potències
+naturals de la variable, parlem d'un \textbf{polinomi}.
+
+\begin{idea}
+\textbf{Vocabulari} (sobre l'exemple $\;P = 5x^2 - 3x + 8$):
+\begin{itemize}[leftmargin=1.4em, itemsep=2pt]
+  \item \textbf{Termes}: $5x^2$, \;$-3x$, \;$8$ (les parts separades per $+$ o $-$).
+  \item \textbf{Coeficients}: $5$ (del terme $x^2$) i $-3$ (del terme $x$).
+  \item \textbf{Terme independent}: $8$ (no porta lletra).
+  \item \textbf{Grau}: l'exponent més gran de la variable; aquí és $2$.
+\end{itemize}
+\end{idea}
+
+Un polinomi de \textbf{grau 1} (com $C=2000+15x$) modelitza un cost que creix de
+manera \emph{constant}. Un polinomi de \textbf{grau 2} (amb un terme $x^2$, com
+$C(x)=\num{0,05}x^2-10x+500$) modelitza situacions on el ritme de creixement
+canvia, com veurem a la sessió 4.
+
+\subsection{Exemples}
+
+\begin{exemple}[primer grau vs segon grau]
+$\;P_1 = 7x + 4\;$ és de \textbf{grau 1} (terme de més grau: $7x$). \\[2pt]
+$\;P_2 = 2x^2 + 7x + 4\;$ és de \textbf{grau 2} (terme de més grau: $2x^2$).
+\end{exemple}
+
+\begin{exemple}[ordenar un polinomi]
+El polinomi $\;3 - 4x + x^2\;$ es reescriu ordenat de més grau a menys:
+\[
+x^2 - 4x + 3.
+\]
+Coeficients: $1$ (de $x^2$) i $-4$ (de $x$); terme independent: $3$; grau $2$.
+\end{exemple}
+
+\subsection{Exercicis resolts}
+
+\begin{exresolt}[identificar elements]
+Donat el polinomi $\;P = -2x^2 + 9x - 5$, indica'n els termes, els coeficients,
+el terme independent i el grau.
+\solucio
+\begin{itemize}[leftmargin=1.4em, itemsep=2pt]
+  \item Termes: $-2x^2$, \;$9x$, \;$-5$.
+  \item Coeficients: $-2$ (de $x^2$) i $9$ (de $x$). \emph{Atenció al signe.}
+  \item Terme independent: $-5$.
+  \item Grau: $2$ (l'exponent més gran).
+\end{itemize}
+\resposta{Grau $2$; coeficients $-2$ i $9$; terme independent $-5$.}
+\end{exresolt}
+
+\begin{exresolt}[reescriure una regla amb notació formal]
+A la sessió 2 vam trobar, per a un centre, la regla «cost fix $\num{2000}$ més
+$15$ euros per usuari, i a més un terme de $\num{0,5}$ euros per usuari al quadrat
+en concepte de logística». Escriu el polinomi corresponent, ordenat, i indica'n el grau.
+\solucio
+La part «per usuari al quadrat» és $\num{0,5}x^2$; la «per usuari» és $15x$;
+la fixa és $\num{2000}$. Ordenat de més grau a menys:
+\[
+C(x) = \num{0,5}\,x^2 + 15x + \num{2000}.
+\]
+És un polinomi de \textbf{grau 2}, perquè el terme de més grau és $\num{0,5}x^2$.
+\resposta{$C(x)=\num{0,5}x^2+15x+\num{2000}$, de grau $2$.}
+\end{exresolt}
+
+\subsection{Exercicis per fer}
+
+\begin{exercicis}
+\begin{exlist}
+  \item Per a cada polinomi, indica els coeficients, el terme independent i el grau:
+    \begin{enumerate}[label=\alph*), leftmargin=1.6em, topsep=2pt]
+      \item $P = 4x + 9$
+      \item $Q = x^2 - 6x + 2$
+      \item $R = -3x^2 + 5$
+      \item $S = 10x$
+    \end{enumerate}
+  \item Ordena de més grau a menys i indica'n el grau:
+    \quad (a) $7 - 2x + x^2$ \quad (b) $-x + 4 + 3x^2$.
+  \item Classifica cada expressió com a polinomi de \emph{grau 1} o de \emph{grau 2}:
+    \quad (a) $8x-1$ \quad (b) $x^2+x$ \quad (c) $\num{0,2}x^2-3x+7$ \quad (d) $25x+100$.
+  \item Escriu un polinomi de grau $1$ amb coeficient $6$ i terme independent $-4$.
+  \item Escriu un polinomi de grau $2$ amb coeficient de $x^2$ igual a $\num{0,1}$,
+        coeficient de $x$ igual a $-8$ i terme independent $400$.
+  \item \textbf{(Context)} Una entitat modelitza la despesa d'un projecte amb
+        $D(x) = \num{0,3}x^2 + 20x + \num{1500}$, on $x$ és el nombre de
+        beneficiaris. Indica el grau del polinomi i explica què representa,
+        en aquest cas, el terme independent $\num{1500}$.
+\end{exlist}
+\end{exercicis}
+
+% ---------------------------------------------------------------------
+\fullsolucions{Sessió 3}
+\begin{solucions}
+\begin{sollist}
+  \item (a) coeficient $4$, terme independent $9$, grau $1$ \quad
+        (b) coeficients $1$ i $-6$, terme independent $2$, grau $2$ \quad
+        (c) coeficient $-3$ (de $x^2$), terme independent $5$, grau $2$ \quad
+        (d) coeficient $10$, terme independent $0$, grau $1$
+  \item (a) $x^2 - 2x + 7$, grau $2$ \quad (b) $3x^2 - x + 4$, grau $2$
+  \item (a) grau $1$ \quad (b) grau $2$ \quad (c) grau $2$ \quad (d) grau $1$
+  \item $6x - 4$
+  \item $\num{0,1}\,x^2 - 8x + 400$
+  \item Grau $2$. El terme independent $\num{1500}$ és la despesa fixa del
+        projecte (la que hi ha encara que no s'atengui cap beneficiari, $x=0$).
+\end{sollist}
+\end{solucions}
