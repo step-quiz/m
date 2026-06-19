@@ -1,12 +1,13 @@
-# Proposta detallada d'activitats — Unitat Didàctica 1
+# Unitat Didàctica 1
 ## Nombres reals, inequacions i intervals
-
-**Matemàtiques Aplicades I · 1r Batxillerat Professionalitzador en Serveis a la Comunitat**
-**INS Miquel Tarradell · Curs 2026-27 · 16 hores**
 
 ---
 
-Aquest document desenvolupa, sessió a sessió, les 16 hores previstes per a la Unitat Didàctica 1 a la programació general de Matemàtiques Aplicades I. Pren com a punt de partida els objectius, els criteris d'avaluació, els materials i les quatre activitats ja definides («El bo social elèctric», «La frontera dels 18», «Gimnàstica d'inequacions» i «Tocant pressupostos gegants»), i les seqüencia seguint el mateix patró metodològic establert a la programació (aules pensants → classe magistral → treball pràctic), tot afegint les sessions de connexió, consolidació i ampliació necessàries (diagnosi inicial, sistemes d'inequacions, un cas real complet de convocatòria, consolidació de la mecanització i un taller de preparació de la prova) per completar un itinerari de 16 hores coherent amb el perfil d'alumnat del Batxillerat Professionalitzador en Serveis a la Comunitat: motivació per les persones per sobre de l'abstracció matemàtica, contextos reals dels àmbits social i comunitari, i èmfasi en el pensament crític davant de dades. L'ampliació de 12 a 16 hores respon a la temporalització de la programació general (16 hores per unitat didàctica) i s'ha aprofitat per reforçar els dos punts que l'alumnat d'aquest perfil necessita treballar amb més temps: la mecanització segura de les inequacions amb canvi de signe (C1) i la lectura de convocatòries reals amb diverses condicions simultànies (C3).
+La Unitat Didàctica 1 pren com a punt de partida els objectius, els criteris d'avaluació, els materials i les quatre activitats ja definides («El bo social elèctric», «La frontera dels 18», «Gimnàstica d'inequacions» i «Tocant pressupostos gegants»).
+
+La seqüència d'activitats segueix el patró metodològic: aules pensants → classe magistral → treball pràctic, tot afegint les sessions de connexió, consolidació i ampliació necessàries (diagnosi inicial, sistemes d'inequacions, un cas real complet de convocatòria, consolidació de la mecanització i un taller de preparació de la prova)
+
+Atenent el perfil d'alumnat del Batxillerat Professionalitzador en Serveis a la Comunitat, es prioritza els contextos reals dels àmbits social i comunitari i es fa èmfasi en el pensament crític davant de dades.
 
 ### Llegenda
 
@@ -25,7 +26,7 @@ Aquest document desenvolupa, sessió a sessió, les 16 hores previstes per a la 
 
 ### Visió general de les 16 hores
 
-Cada fila correspon a una hora lectiva (60 min). Les sessions marcades amb ⁺ són les incorporades en ampliar la unitat de 12 a 16 hores.
+Cada fila correspon a una hora lectiva (60 min). Les sessions marcades amb el símbol ⁺ són les que s'han incorporat, en ampliar la unitat de 12 a 16 hores.
 
 | # | Títol | Agrupament dominant | Metodologia | Referència a la programació |
 | --- | --- | --- | --- | --- |
