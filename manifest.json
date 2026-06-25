@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated": "2026-06-13",
+  "generated": "2026-06-25",
   "folder_url": "https://drive.google.com/drive/folders/1WjqddjN3uQhO7zUXzRKwDmBia6jqCUdy",
   "vocabulary": {
     "origin": [
@@ -2759,6 +2759,25 @@
       "type": "teoria",
       "year": 2019,
       "notes": "Taller JAEM (Ancochea, Arranz, Muñoz). Construcció de superfícies a la vista 3D de GeoGebra: superfícies de revolució, reglades, de Bézier, Spline bicúbiques, implícites/explícites i paramètriques. 27 activitats guiades."
+    },
+    {
+      "title": "Taules de multiplicar",
+      "id": "taules-de-multiplicar",
+      "drive_id": "13-5l4vKrAx55VwD7dEP3tecC9eeHiZBO0BySEi1vbc4",
+      "format": "doc",
+      "origin": "miquel-tarradell",
+      "courses": [
+        "1ESO",
+        "ESO",
+        "SIEI",
+        "aula-acollida"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "nombres-naturals",
+        "divisibilitat"
+      ],
+      "type": "exercici"
     }
   ],
   "basic": {
