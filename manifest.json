@@ -2778,6 +2778,30 @@
         "divisibilitat"
       ],
       "type": "exercici"
+    },
+    {
+      "title": "1ESO - Dossier de recuperació 2025-26",
+      "id": "1eso-dossier-recuperacio-2025-26",
+      "drive_id": "1rTerWyO2wFOSTBjYrO0eYc5opKKKGMDemLd-B9Wlr2s",
+      "format": "doc",
+      "origin": "miquel-tarradell",
+      "courses": [
+        "1ESO",
+        "2ESO"
+      ],
+      "math_sense": "socio-emocional",
+      "activities": [
+        "nombres-naturals",
+        "divisibilitat",
+        "fraccions",
+        "potencies",
+        "arrels-radicals",
+        "figures-planes",
+        "semblanca"
+      ],
+      "type": "dossier",
+      "year": 2026,
+      "notes": "Dossier fet per en Pau."
     }
   ],
   "basic": {
