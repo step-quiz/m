@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated": "2026-06-25",
+  "generated": "2026-06-26",
   "folder_url": "https://drive.google.com/drive/folders/1WjqddjN3uQhO7zUXzRKwDmBia6jqCUdy",
   "vocabulary": {
     "origin": [
@@ -2802,6 +2802,38 @@
       "type": "dossier",
       "year": 2026,
       "notes": "Dossier fet per en Pau."
+    },
+    {
+      "title": "Potències de base i exponents naturals",
+      "id": "potencies-base-exponent-natural",
+      "drive_id": "1dIeOWOU3FSOM1FOYm4fIu8DVvyDcw_R6hobAExTiJv0",
+      "format": "doc",
+      "origin": "miquel-tarradell",
+      "courses": [
+        "1ESO",
+        "2ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "potencies"
+      ],
+      "type": "dossier"
+    },
+    {
+      "title": "Propietats de les potències",
+      "id": "propietats-de-les-potencies",
+      "drive_id": "1pqlSwvbqb9ziQs6gILRFVrQcR68HjkMSTZjKvgR8ZqE",
+      "format": "doc",
+      "origin": "miquel-tarradell",
+      "courses": [
+        "1ESO",
+        "ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "potencies"
+      ],
+      "type": "dossier"
     }
   ],
   "basic": {
