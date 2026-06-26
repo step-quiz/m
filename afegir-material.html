@@ -390,6 +390,61 @@
   .modal-bg[hidden] { display: none; }
   @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
 
+  /* ── Review queue overlay ───────────────────────────────────────── */
+  .queue-bg {
+    position: fixed; inset: 0; z-index: 90;
+    background: rgba(0,0,0,.4);
+    display: flex; align-items: flex-start; justify-content: center;
+    padding: 40px 24px;
+    overflow-y: auto;
+    animation: fade-in .15s;
+  }
+  .queue-bg[hidden] { display: none; }
+  .queue-panel {
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--sh-lg);
+    width: 100%; max-width: 720px;
+    padding: 22px 24px 24px;
+  }
+  .queue-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+  .queue-head h2 { font-size: 17px; font-weight: 700; letter-spacing: -.02em; }
+  .queue-count { font-size: 12px; color: var(--text-2); font-weight: 600; }
+  .queue-head-actions { display: flex; gap: 8px; flex-shrink: 0; }
+  .queue-intro { font-size: 12px; color: var(--text-2); line-height: 1.5; margin: 12px 0 16px; }
+  .queue-intro code { font-family: var(--mono); background: var(--surface-3); padding: 1px 5px; border-radius: 4px; }
+  .queue-list { display: grid; gap: 10px; }
+
+  .btn-sm { padding: 5px 11px; font-size: 12px; }
+  .btn:disabled { opacity: .45; cursor: default; box-shadow: none; }
+
+  .q-item {
+    display: flex; align-items: flex-start; gap: 14px;
+    border: 1px solid var(--divider);
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    padding: 13px 15px;
+  }
+  .q-item.q-blocked { border-color: rgba(255,159,10,.5); background: rgba(255,159,10,.05); }
+  .q-main { flex: 1; min-width: 0; }
+  .q-title { font-size: 14px; font-weight: 700; letter-spacing: -.01em; }
+  .q-sub { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 3px; font-size: 11px; }
+  .q-sub .q-id { font-family: var(--mono); color: var(--text-3); }
+  .q-sub .q-drive { font-family: var(--mono); color: var(--text-2); }
+  .q-sub .q-nodrive { color: var(--amber); font-weight: 600; }
+  .q-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+  .q-chip {
+    display: inline-flex; align-items: center;
+    padding: 2px 8px; border-radius: 980px;
+    background: var(--surface-3); font-size: 11px; color: var(--text);
+  }
+  .q-err { font-size: 11px; color: var(--amber); font-weight: 600; margin-top: 8px; }
+  .q-actions { display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
+  @media (max-width: 560px) {
+    .q-item { flex-direction: column; }
+    .q-actions { flex-direction: row; }
+  }
+
   .modal {
     background: var(--surface);
     border-radius: var(--radius);
@@ -553,6 +608,27 @@
   <div class="modal" id="modal" role="dialog" aria-modal="true"></div>
 </div>
 
+<div class="queue-bg" id="queue-bg" hidden>
+  <div class="queue-panel" role="dialog" aria-modal="true">
+    <div class="queue-head">
+      <div>
+        <h2>Revisa les entrades</h2>
+        <span class="queue-count" id="queue-count"></span>
+      </div>
+      <div class="queue-head-actions">
+        <button class="btn btn-prim" id="queue-accept-all" title="Accepta totes les entrades vàlides">Accepta-ho tot</button>
+        <button class="btn btn-ghost" id="queue-close" title="Tanca la cua (les entrades pendents es perdran)">Tanca</button>
+      </div>
+    </div>
+    <p class="queue-intro">
+      Aquestes propostes venen de <code>extreu-json.html</code>. Revisa-les una a una:
+      <strong>Accepta</strong> per afegir-la al manifest, <strong>Edita</strong> per ajustar-la abans, o <strong>Descarta</strong>.
+      Les que no tinguin enllaç de Drive no es poden acceptar fins que les editis.
+    </p>
+    <div class="queue-list" id="queue-list"></div>
+  </div>
+</div>
+
 <div class="toast" id="toast" hidden></div>
 
 <script>
@@ -600,6 +676,7 @@ const state = {
   fileSearch: '',
   editing: null,   // file being edited; null when modal closed
   editingNew: false,
+  queueEditingUid: null,  // uid of the review-queue item currently open in the modal
 };
 
 const $ = id => document.getElementById(id);
@@ -1325,6 +1402,14 @@ function closeModal() {
   state.editingNew = false;
   $('modal-bg').hidden = true;
   $('modal').innerHTML = '';
+  // If this modal was an "edit from the review queue", return to the queue.
+  if (state.queueEditingUid != null) {
+    state.queueEditingUid = null;
+    if (reviewQueue.length) {
+      renderReviewQueue();
+      $('queue-bg').hidden = false;
+    }
+  }
 }
 
 function renderModal() {
@@ -1556,6 +1641,10 @@ function saveModal() {
     if (idx >= 0) state.manifest.files[idx] = f;
     toast(`Fitxer "${f.title}" desat`);
   }
+  // If this was an entry edited from the review queue, drop it from the queue.
+  if (state.queueEditingUid != null) {
+    reviewQueue = reviewQueue.filter(q => q.uid !== state.queueEditingUid);
+  }
   setDirty();
   closeModal();
   render();
@@ -1577,6 +1666,11 @@ $('btn-load').onclick = () => $('file-input').click();
 $('btn-save').onclick = () => {
   if (!state.manifest) { toast('Carrega o crea un manifest primer', true); return; }
   downloadManifest();
+};
+$('queue-accept-all').onclick = acceptAllQueue;
+$('queue-close').onclick = () => {
+  if (reviewQueue.length && !confirm(`Tancar la cua? Es descartaran ${reviewQueue.length} entrada(es) pendents.`)) return;
+  closeReviewQueue();
 };
 $('file-input').addEventListener('change', e => {
   const f = e.target.files?.[0];
@@ -1696,22 +1790,38 @@ window.addEventListener('beforeunload', e => {
 
 /* ─── INIT ──────────────────────────────────────────────────────── */
 
-// Handoff from extreu-json.html: a URL hash like "#new=<urlencoded JSON>"
-// pre-fills the "new file" modal once a manifest is available.
+// Handoff from extreu-json.html:
+//   "#new=<urlencoded JSON object>"  → a single entry (opens the new-file modal)
+//   "#queue=<urlencoded JSON array>" → a list of entries (opens the review queue)
+// Both pre-fill once a manifest is available.
 let pendingPrefilledEntry = null;
+let pendingQueue = null;
 (function pickUpPrefilledEntry() {
-  const m = (location.hash || '').match(/^#new=(.+)$/);
-  if (!m) return;
+  const hash = location.hash || '';
+  const mQueue = hash.match(/^#queue=(.+)$/);
+  const mNew = hash.match(/^#new=(.+)$/);
   try {
-    pendingPrefilledEntry = JSON.parse(decodeURIComponent(m[1]));
+    if (mQueue) {
+      const arr = JSON.parse(decodeURIComponent(mQueue[1]));
+      if (Array.isArray(arr) && arr.length) pendingQueue = arr;
+    } else if (mNew) {
+      pendingPrefilledEntry = JSON.parse(decodeURIComponent(mNew[1]));
+    }
   } catch (e) {
     console.warn('Hash d\'entrada pre-emplenada no vàlid:', e);
   }
   // Clean the URL so reloads don't replay the handoff
-  history.replaceState(null, '', location.pathname + location.search);
+  if (mQueue || mNew) history.replaceState(null, '', location.pathname + location.search);
 })();
 
 function consumePrefilledEntry() {
+  // Queue takes priority: a batch hand-off from the basket.
+  if (pendingQueue && state.manifest) {
+    const q = pendingQueue;
+    pendingQueue = null;
+    openReviewQueue(q);
+    return;
+  }
   if (!pendingPrefilledEntry || !state.manifest) return;
   const incoming = pendingPrefilledEntry;
   pendingPrefilledEntry = null;
@@ -1739,6 +1849,168 @@ function consumePrefilledEntry() {
   toast('Entrada pre-emplenada des de extreu-json');
 }
 
+/* ─── REVIEW QUEUE (batch hand-off from the basket) ─────────────────
+   A list of proposed entries waiting to be accepted into the manifest.
+   Each is accepted / edited / discarded one by one. Accepting runs the
+   same checks as the editor (drive_id required, unique id). */
+let reviewQueue = [];   // [{ entry, uid }]
+let reviewSeq = 0;
+
+function openReviewQueue(entries) {
+  reviewQueue = entries.map(e => ({ uid: ++reviewSeq, entry: e }));
+  renderReviewQueue();
+  $('queue-bg').hidden = false;
+  toast(`${reviewQueue.length} entrada(es) per revisar des de extreu-json`);
+}
+
+function closeReviewQueue() {
+  $('queue-bg').hidden = true;
+  reviewQueue = [];
+  render();
+}
+
+// Build a complete file object from a proposed entry, applying the same
+// defaults the modal uses, then validate it the same way saveModal does.
+function buildFileFromEntry(entry) {
+  const f = Object.assign(
+    {
+      id: '', drive_id: '', title: '', format: 'pdf',
+      origin: state.manifest.vocabulary.origin[0] || '',
+      courses: [], math_sense: '', activities: [], type: '', year: null, notes: ''
+    },
+    JSON.parse(JSON.stringify(entry))
+  );
+  if (!f.id && f.title) f.id = slugify(f.title);
+  return f;
+}
+
+// Returns an error string, or null if the entry can be accepted.
+function validateQueueEntry(f) {
+  if (!f.title) return 'Falta el títol';
+  if (!f.id) return 'Falta l\'ID intern';
+  if (!/^[a-z0-9-]+$/.test(f.id)) return 'ID no vàlid (només minúscules, números i guions)';
+  if (!f.drive_id && !f.url) return 'Falta l\'enllaç de Drive';
+  if (!f.format) return 'Falta el format';
+  const conflict = state.manifest.files.find(x => x.id === f.id);
+  if (conflict) return `Ja existeix un fitxer amb ID "${f.id}"`;
+  return null;
+}
+
+function acceptQueueItem(uid) {
+  const item = reviewQueue.find(q => q.uid === uid);
+  if (!item) return;
+  const f = buildFileFromEntry(item.entry);
+  const errMsg = validateQueueEntry(f);
+  if (errMsg) { toast(errMsg, true); return; }
+
+  // Tidy empties, mirroring saveModal()
+  if (!f.year) delete f.year;
+  if (!f.url) delete f.url;
+  if (!f.math_sense) delete f.math_sense;
+  if (!f.type) delete f.type;
+  if (!f.notes) delete f.notes;
+  if (!f.activities || !f.activities.length) delete f.activities;
+  if (!f.courses || !f.courses.length) delete f.courses;
+
+  state.manifest.files.push(f);
+  setDirty();
+  reviewQueue = reviewQueue.filter(q => q.uid !== uid);
+  toast(`Fitxer "${f.title}" afegit`);
+  if (!reviewQueue.length) { closeReviewQueue(); return; }
+  renderReviewQueue();
+}
+
+function discardQueueItem(uid) {
+  reviewQueue = reviewQueue.filter(q => q.uid !== uid);
+  if (!reviewQueue.length) { closeReviewQueue(); return; }
+  renderReviewQueue();
+}
+
+// Edit a queued entry in the normal modal. On save it is inserted and the
+// item is dropped from the queue (saveModal pushes it; we just clean up).
+function editQueueItem(uid) {
+  const item = reviewQueue.find(q => q.uid === uid);
+  if (!item) return;
+  state.editingNew = true;
+  state.editing = buildFileFromEntry(item.entry);
+  state.queueEditingUid = uid;   // so saveModal/closeModal can drop it
+  renderModal();
+  $('queue-bg').hidden = true;    // hide the queue behind the modal
+  $('modal-bg').hidden = false;
+  setTimeout(() => $('f-title')?.focus(), 50);
+}
+
+function acceptAllQueue() {
+  // Accept every entry that validates; leave the rest in place with a notice.
+  let added = 0;
+  const remaining = [];
+  for (const item of reviewQueue) {
+    const f = buildFileFromEntry(item.entry);
+    if (validateQueueEntry(f)) { remaining.push(item); continue; }
+    if (!f.year) delete f.year;
+    if (!f.url) delete f.url;
+    if (!f.math_sense) delete f.math_sense;
+    if (!f.type) delete f.type;
+    if (!f.notes) delete f.notes;
+    if (!f.activities || !f.activities.length) delete f.activities;
+    if (!f.courses || !f.courses.length) delete f.courses;
+    state.manifest.files.push(f);
+    added++;
+  }
+  if (added) setDirty();
+  reviewQueue = remaining;
+  if (!reviewQueue.length) {
+    toast(`${added} fitxer(s) afegit(s)`);
+    closeReviewQueue();
+    return;
+  }
+  toast(`${added} afegit(s); ${remaining.length} pendents (revisa'ls)`, remaining.length > 0);
+  renderReviewQueue();
+}
+
+function renderReviewQueue() {
+  const slot = $('queue-list');
+  if (!slot) return;
+  $('queue-count').textContent = reviewQueue.length
+    + (reviewQueue.length === 1 ? ' entrada pendent' : ' entrades pendents');
+
+  const labelOf = v => label(v);
+  slot.innerHTML = reviewQueue.map(({ uid, entry }) => {
+    const f = buildFileFromEntry(entry);
+    const errMsg = validateQueueEntry(f);
+    const chips = []
+      .concat(f.format ? [f.format] : [])
+      .concat(f.origin ? [f.origin] : [])
+      .concat(f.courses || [])
+      .concat(f.math_sense ? [f.math_sense] : [])
+      .concat(f.activities || [])
+      .concat(f.type ? [f.type] : [])
+      .map(s => `<span class="q-chip">${escHtml(labelOf(s))}</span>`).join('');
+    const blocked = !!errMsg;
+    return `
+      <div class="q-item ${blocked ? 'q-blocked' : ''}" data-uid="${uid}">
+        <div class="q-main">
+          <div class="q-title">${escHtml(f.title || 'Sense títol')}</div>
+          <div class="q-sub">
+            <span class="q-id">${escHtml(f.id || '—')}</span>
+            ${f.drive_id ? `<span class="q-drive">Drive: ${escHtml(f.drive_id)}</span>` : '<span class="q-nodrive">⚠ sense Drive</span>'}
+          </div>
+          <div class="q-chips">${chips}</div>
+          ${errMsg ? `<div class="q-err">${escHtml(errMsg)}</div>` : ''}
+        </div>
+        <div class="q-actions">
+          <button class="btn btn-sm btn-prim q-accept" data-uid="${uid}" ${blocked ? 'disabled' : ''} title="${blocked ? escHtml(errMsg) : 'Afegeix al manifest'}">Accepta</button>
+          <button class="btn btn-sm btn-ghost q-edit" data-uid="${uid}">Edita</button>
+          <button class="btn btn-sm btn-ghost q-discard" data-uid="${uid}">Descarta</button>
+        </div>
+      </div>`;
+  }).join('');
+
+  slot.querySelectorAll('.q-accept').forEach(b => b.onclick = () => acceptQueueItem(Number(b.dataset.uid)));
+  slot.querySelectorAll('.q-edit').forEach(b => b.onclick = () => editQueueItem(Number(b.dataset.uid)));
+  slot.querySelectorAll('.q-discard').forEach(b => b.onclick = () => discardQueueItem(Number(b.dataset.uid)));
+}
+
 // Try to pre-load manifest.json from same dir; if not present, show drop zone
 (async function init() {
   try {
@@ -1751,7 +2023,9 @@ function consumePrefilledEntry() {
     }
   } catch {}
   render();  // drop zone
-  if (pendingPrefilledEntry) {
+  if (pendingQueue) {
+    toast(`Tens ${pendingQueue.length} entrada(es) per afegir des de extreu-json — carrega o crea primer el manifest`, false, 6000);
+  } else if (pendingPrefilledEntry) {
     toast('Tens un fitxer per afegir des de extreu-json — carrega o crea primer el manifest', false, 5000);
   }
 })();
