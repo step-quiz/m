@@ -128,22 +128,22 @@
     padding-top: 14px;
   }
 
-  /* ── Drop zone (when no manifest loaded) ────────────────────────── */
-  .drop-zone {
-    margin: 22px auto;
-    max-width: 720px;
-    border: 2px dashed var(--text-3);
+  /* ── Load-error screen (when the manifest can't be fetched) ─────── */
+  .load-error {
+    margin: 40px auto;
+    max-width: 560px;
+    border: 1px solid var(--divider);
     border-radius: var(--radius);
     background: var(--surface);
-    padding: 50px 24px;
+    box-shadow: var(--sh);
+    padding: 40px 32px;
     text-align: center;
-    transition: border-color .15s, background .15s;
   }
-  .drop-zone.dragover { border-color: var(--accent); background: var(--accent-soft); }
-  .drop-zone h2 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
-  .drop-zone p { color: var(--text-2); font-size: 13px; margin-bottom: 14px; }
-  .drop-zone .dz-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-  .drop-zone input[type=file] { display: none; }
+  .load-error svg { width: 40px; height: 40px; color: var(--amber); margin: 0 auto 14px; }
+  .load-error h2 { font-size: 16px; font-weight: 700; margin-bottom: 10px; letter-spacing: -.01em; }
+  .load-error p { color: var(--text-2); font-size: 13px; line-height: 1.55; }
+  .load-error code { font-family: var(--mono); background: var(--surface-3); padding: 1px 5px; border-radius: 4px; color: var(--text-2); }
+  .dz-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
 
   /* ── Form rows ──────────────────────────────────────────────────── */
   .row {
@@ -589,15 +589,10 @@
   <span class="dirty" id="dirty-flag" hidden>● Canvis sense desar</span>
   <div class="spacer"></div>
   <a class="back" href="index.html">← Tornar al cercador</a>
-  <button class="btn btn-ghost" id="btn-load">
-    <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8V1M3 4l3-3 3 3M2 9h8v2H2z"/></svg>
-    Carrega
-  </button>
   <button class="btn btn-prim" id="btn-save">
     <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 1v8M3 6l3 3 3-3M2 11h8"/></svg>
     Descarrega manifest
   </button>
-  <input type="file" id="file-input" accept=".json,application/json" hidden>
 </header>
 
 <main class="container" id="container">
@@ -644,30 +639,6 @@ const FILTER_GROUPS = [
   { key: 'activity',   label: 'Activitat',        field: 'activities', multi: true,  required: false },
   { key: 'type',       label: 'Tipus',            field: 'type',       multi: false, required: false },
 ];
-
-/* Scaffold used ONLY by "Comença des de zero" (when there's no manifest to load).
-   It is intentionally almost empty: the real vocabulary lives in manifest.json,
-   so this must not carry a second, drifting copy. Only `format` is seeded,
-   because it's the one required field and the modal needs at least one option;
-   everything else you build as you go (or, normally, you just load the manifest). */
-function emptyManifest() {
-  return {
-    version: 1,
-    generated: new Date().toISOString().slice(0, 10),
-    folder_url: '',
-    vocabulary: {
-      origin: [],
-      format: ['pdf', 'doc', 'web'],
-      course: [],
-      math_sense: [],
-      activity: [],
-      type: []
-    },
-    vocabulary_labels: {},
-    activity_blocks: [],
-    files: []
-  };
-}
 
 /* ─── STATE ─────────────────────────────────────────────────────── */
 const state = {
@@ -742,13 +713,6 @@ function loadFromText(text, sourceName) {
   // If extreu-json handed off an entry via #new=..., consume it now.
   if (typeof consumePrefilledEntry === 'function') consumePrefilledEntry();
   return true;
-}
-
-function loadFromFile(file) {
-  const reader = new FileReader();
-  reader.onload = () => loadFromText(reader.result, file.name);
-  reader.onerror = () => toast('No s\'ha pogut llegir el fitxer', true);
-  reader.readAsText(file);
 }
 
 function downloadManifest() {
@@ -988,60 +952,40 @@ function renderValidationPanel() {
 /* ─── RENDER ─────────────────────────────────────────────────────── */
 function render() {
   if (!state.manifest) {
-    renderDropZone();
+    renderLoadError();
     return;
   }
   renderEditor();
 }
 
-function renderDropZone() {
+function renderLoadError() {
   $('container').innerHTML = `
-    <div class="drop-zone" id="drop-zone">
-      <h2>Editor del manifest</h2>
+    <div class="load-error">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+        <path d="M12 9v4M12 17h.01"/>
+      </svg>
+      <h2>No s'ha pogut carregar el manifest del repositori</h2>
       <p>
-        Carrega un <code>manifest.json</code> existent per editar-lo,
-        o comença des d'una plantilla buida amb el vocabulari per defecte.
+        Aquesta pàgina edita el <code>manifest.json</code> que hi ha publicat al costat seu.
+        Ara mateix no s'ha pogut llegir — normalment perquè s'ha obert el fitxer en local
+        (<code>file://</code>) o perquè la connexió ha fallat.
       </p>
-      <div class="dz-row">
-        <button class="btn btn-prim"  id="dz-pick">Carrega manifest.json</button>
-        <button class="btn btn-ghost" id="dz-new">Comença des de zero</button>
+      <p style="margin-top:6px">
+        Obre aquesta pàgina des del lloc publicat i torna-ho a provar.
+      </p>
+      <div class="dz-row" style="margin-top:16px">
+        <button class="btn btn-prim" id="le-retry">Torna-ho a provar</button>
       </div>
-      <p style="margin-top:16px;font-size:11px;color:var(--text-3)">
-        També pots arrossegar el fitxer aquí.
-      </p>
     </div>
   `;
-  $('dz-pick').onclick = () => $('file-input').click();
-  $('dz-new').onclick = () => {
-    state.manifest = emptyManifest();
-    setDirty(true);
-    render();
-    if (typeof consumePrefilledEntry === 'function') consumePrefilledEntry();
-  };
+  $('le-retry').onclick = () => location.reload();
 }
 
 function renderEditor() {
   const m = state.manifest;
   $('container').innerHTML = `
     ${renderValidationPanel()}
-    <details class="panel" open>
-      <summary>
-        <svg class="caret" viewBox="0 0 10 10" fill="currentColor"><path d="M3 1l4 4-4 4z"/></svg>
-        <h2>Configuració general</h2>
-        <span class="panel-hint">Versió ${escHtml(m.version)} · generat ${escHtml(m.generated)}</span>
-      </summary>
-      <div class="panel-body">
-        <div class="row">
-          <label for="cfg-folder">URL carpeta Drive</label>
-          <div class="field">
-            <input id="cfg-folder" type="url" value="${attr(m.folder_url || '')}"
-                   placeholder="https://drive.google.com/drive/folders/…">
-            <div class="hint">Per referència. L'app no llegeix la carpeta; cada fitxer es referencia pel seu <code>drive_id</code>.</div>
-          </div>
-        </div>
-      </div>
-    </details>
-
     <details class="panel">
       <summary>
         <svg class="caret" viewBox="0 0 10 10" fill="currentColor"><path d="M3 1l4 4-4 4z"/></svg>
@@ -1087,7 +1031,6 @@ function renderEditor() {
       </div>
     </details>
   `;
-  $('cfg-folder').addEventListener('input', e => { m.folder_url = e.target.value; setDirty(); });
   $('file-search').addEventListener('input', e => { state.fileSearch = e.target.value; renderFileList(); });
   $('btn-add-file').onclick = () => openModal(null);
   // Click an issue in the validation panel → jump straight into that entry.
@@ -1662,9 +1605,8 @@ function deleteEditing() {
 }
 
 /* ─── EVENT WIRING ──────────────────────────────────────────────── */
-$('btn-load').onclick = () => $('file-input').click();
 $('btn-save').onclick = () => {
-  if (!state.manifest) { toast('Carrega o crea un manifest primer', true); return; }
+  if (!state.manifest) { toast('Encara no s\'ha carregat el manifest', true); return; }
   downloadManifest();
 };
 $('queue-accept-all').onclick = acceptAllQueue;
@@ -1672,40 +1614,6 @@ $('queue-close').onclick = () => {
   if (reviewQueue.length && !confirm(`Tancar la cua? Es descartaran ${reviewQueue.length} entrada(es) pendents.`)) return;
   closeReviewQueue();
 };
-$('file-input').addEventListener('change', e => {
-  const f = e.target.files?.[0];
-  if (f) loadFromFile(f);
-  e.target.value = '';
-});
-
-// Drag-and-drop on the whole page
-let dragDepth = 0;
-window.addEventListener('dragenter', e => {
-  e.preventDefault();
-  dragDepth++;
-  const dz = document.getElementById('drop-zone');
-  if (dz) dz.classList.add('dragover');
-});
-window.addEventListener('dragleave', () => {
-  dragDepth = Math.max(0, dragDepth - 1);
-  if (dragDepth === 0) {
-    const dz = document.getElementById('drop-zone');
-    if (dz) dz.classList.remove('dragover');
-  }
-});
-window.addEventListener('dragover', e => { e.preventDefault(); });
-window.addEventListener('drop', e => {
-  e.preventDefault();
-  dragDepth = 0;
-  const dz = document.getElementById('drop-zone');
-  if (dz) dz.classList.remove('dragover');
-  const f = e.dataTransfer?.files?.[0];
-  if (f && (f.type === 'application/json' || f.name.endsWith('.json'))) {
-    loadFromFile(f);
-  } else if (f) {
-    toast('Cal un fitxer .json', true);
-  }
-});
 
 // Delegated clicks on container
 document.addEventListener('click', e => {
@@ -2011,7 +1919,8 @@ function renderReviewQueue() {
   slot.querySelectorAll('.q-discard').forEach(b => b.onclick = () => discardQueueItem(Number(b.dataset.uid)));
 }
 
-// Try to pre-load manifest.json from same dir; if not present, show drop zone
+// Load manifest.json from the same directory (the published repository copy).
+// If it can't be read, show a clear error screen — there's no local-file fallback.
 (async function init() {
   try {
     const res = await fetch('manifest.json', { cache: 'no-cache' });
@@ -2022,11 +1931,11 @@ function renderReviewQueue() {
       return;
     }
   } catch {}
-  render();  // drop zone
+  render();  // load-error screen
   if (pendingQueue) {
-    toast(`Tens ${pendingQueue.length} entrada(es) per afegir des de extreu-json — carrega o crea primer el manifest`, false, 6000);
+    toast(`No s'ha pogut carregar el manifest; les ${pendingQueue.length} entrada(es) d'extreu-json no s'han pogut obrir`, true, 6000);
   } else if (pendingPrefilledEntry) {
-    toast('Tens un fitxer per afegir des de extreu-json — carrega o crea primer el manifest', false, 5000);
+    toast('No s\'ha pogut carregar el manifest del repositori', true, 5000);
   }
 })();
 </script>
