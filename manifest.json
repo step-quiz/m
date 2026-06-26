@@ -2941,6 +2941,25 @@
         "nombres-decimals"
       ],
       "type": "dossier"
+    },
+    {
+      "title": "Tangram, àrees i fraccions (CESIRE)",
+      "id": "tangram-arees-i-fraccions-cesire",
+      "drive_id": "1pto5bOftcHDwCK-eG_1N7mn0PUDhe96x",
+      "format": "pdf",
+      "origin": "miquel-tarradell",
+      "courses": [
+        "ESO"
+      ],
+      "math_sense": "mesura",
+      "activities": [
+        "nombres-naturals",
+        "divisibilitat",
+        "fraccions",
+        "figures-planes",
+        "arees-perimetres"
+      ],
+      "type": "dossier"
     }
   ],
   "basic": {
