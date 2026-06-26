@@ -2924,6 +2924,23 @@
         "circumferencia-cercle"
       ],
       "type": "dossier"
+    },
+    {
+      "title": "Fraccions i decimals visualment",
+      "id": "fraccions-i-decimals-visualment",
+      "drive_id": "1UKekMNKiiiCR5zKPxF1i2BKJyMog0Gqn",
+      "format": "pdf",
+      "origin": "miquel-tarradell",
+      "courses": [
+        "1ESO",
+        "2ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "fraccions",
+        "nombres-decimals"
+      ],
+      "type": "dossier"
     }
   ],
   "basic": {

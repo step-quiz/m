@@ -224,7 +224,20 @@
   .json-box .jk { color: #7dd3fc; }
   .json-box .js { color: #86efac; }
   .json-box .jn { color: #fca5a5; }
-  .json-actions { display: flex; gap: 8px; margin-top: 10px; }
+  .json-actions { display: flex; gap: 8px; margin-top: 10px; align-items: center; }
+  .result-drive {
+    flex: 1; min-width: 0;
+    padding: 7px 11px;
+    background: var(--surface-2);
+    border: 1px solid var(--divider);
+    border-radius: var(--radius-xs);
+    font-family: var(--mono); font-size: 12px;
+  }
+  .result-drive:focus {
+    outline: none; background: var(--surface);
+    border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+  .json-actions .btn-prim { flex-shrink: 0; }
 
   .warn-inline {
     font-size: 11px; color: var(--amber); font-weight: 600;
@@ -794,18 +807,20 @@ function renderResult(entry, warnings) {
     <div class="summary">${rows}</div>
     <div class="json-box" id="json-box">${highlightJson(entry)}</div>
     <div class="json-actions">
-      <button class="btn btn-prim" id="add-basket" title="Afegeix aquesta entrada a la cistella per portar-la després al manifest">
+      <input type="text" id="result-drive" class="result-drive"
+             placeholder="Enganxa enllaç Drive"
+             autocomplete="off" spellcheck="false">
+      <button class="btn btn-prim" id="add-basket" title="Afegeix aquesta entrada a la cistella (amb l'enllaç de Drive si l'has enganxat)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
         Afegeix a la cistella
       </button>
-      <button class="btn btn-ghost" id="copy-json">Copia JSON</button>
-      <button class="btn btn-ghost" id="copy-json-comma" title="Amb una coma final, per enganxar dins de \"files\": [ … ]">Copia + coma</button>
     </div>`;
 
-  const jsonStr = JSON.stringify(entry, FIELD_ORDER, 2);
-  $('copy-json').onclick = () => copyText(jsonStr, 'JSON copiat');
-  $('copy-json-comma').onclick = () => copyText(jsonStr + ',', 'JSON copiat (amb coma)');
-  $('add-basket').onclick = () => addToBasket(entry);
+  $('add-basket').onclick = () => addToBasket(entry, $('result-drive').value);
+  // Enter in the link field adds straight to the basket.
+  $('result-drive').addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); addToBasket(entry, $('result-drive').value); }
+  });
 }
 
 async function copyText(txt, okMsg) {
@@ -826,11 +841,13 @@ function extractDriveId(raw) {
   return s;   // assume it's already a bare id (or empty)
 }
 
-function addToBasket(entry) {
+function addToBasket(entry, driveLink) {
   // Store a clone so later edits to the basket don't mutate the rendered result.
   const item = JSON.parse(JSON.stringify(entry));
   item._uid = ++basketSeq;
-  item.drive_id = item.drive_id || '';
+  // Prefer a link pasted here; fall back to whatever the entry already had.
+  const pasted = extractDriveId(driveLink || '');
+  item.drive_id = pasted || item.drive_id || '';
   state.basket.push(item);
   renderBasket();
   toast('Afegit a la cistella (' + state.basket.length + ')');
