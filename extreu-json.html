@@ -231,6 +231,47 @@
     background: rgba(255,159,10,.12); padding: 2px 8px; border-radius: 980px;
   }
 
+  /* ── Basket ─────────────────────────────────────────────────────── */
+  .basket-list { display: grid; gap: 10px; }
+  .basket-item {
+    border: 1px solid var(--divider);
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    padding: 12px 14px;
+  }
+  .basket-item.no-drive { border-color: rgba(255,159,10,.5); background: rgba(255,159,10,.05); }
+  .basket-item .bi-top { display: flex; align-items: flex-start; gap: 10px; }
+  .basket-item .bi-main { flex: 1; min-width: 0; }
+  .basket-item .bi-title { font-size: 13px; font-weight: 700; letter-spacing: -.01em; }
+  .basket-item .bi-meta { margin-top: 5px; display: flex; flex-wrap: wrap; gap: 4px; }
+  .basket-item .bi-meta .schip { font-size: 11px; padding: 2px 8px; }
+  .basket-item .bi-x {
+    width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--surface-3); color: var(--text-3);
+  }
+  .basket-item .bi-x:hover { background: var(--red); color: #fff; }
+  .basket-item .bi-x svg { width: 10px; height: 10px; }
+  .basket-item .bi-drive { margin-top: 10px; }
+  .basket-item .bi-drive label {
+    display: block; font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .06em; color: var(--text-3); margin-bottom: 4px;
+  }
+  .basket-item .bi-drive input {
+    width: 100%;
+    padding: 6px 9px;
+    background: var(--surface);
+    border: 1px solid var(--divider);
+    border-radius: var(--radius-xs);
+    font-family: var(--mono); font-size: 11px;
+  }
+  .basket-item .bi-drive input:focus {
+    outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+  .basket-item .bi-drive .bi-drive-hint { font-size: 10px; color: var(--amber); font-weight: 600; margin-top: 4px; }
+  .basket-actions { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+  .basket-actions[hidden] { display: none; }
+
   /* Toast */
   .toast {
     position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%);
@@ -326,6 +367,35 @@
             </div>
           </div>
         </div>
+
+        <!-- ── Cistella: entrades acumulades ──────────────────────── -->
+        <div class="panel">
+          <div class="panel-head">
+            <h2>Cistella</h2>
+            <span class="panel-hint" id="basket-count">buida</span>
+          </div>
+          <div class="panel-body">
+            <div class="note" style="margin-top:0;margin-bottom:12px">
+              Cada document analitzat s'acumula aquí. Enganxa l'<strong>enllaç de Drive</strong> de cada fitxer i, quan tinguis tots els que vulguis, porta'ls de cop a l'editor del manifest. <strong>La cistella es perd si tanques la pestanya.</strong>
+            </div>
+            <div id="basket-slot">
+              <div class="result-empty" id="basket-empty">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>
+                </svg>
+                <div>Encara no hi ha cap entrada. Analitza un document per començar.</div>
+              </div>
+            </div>
+            <div class="basket-actions" id="basket-actions" hidden>
+              <button class="btn btn-prim" id="send-basket" title="Obre afegir-material.html amb totes les entrades per revisar-les una a una">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3h7v7"/><path d="M10 14L21 3"/><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></svg>
+                Edita-ho tot al manifest →
+              </button>
+              <button class="btn btn-ghost" id="copy-basket" title="Copia totes les entrades com un array JSON">Copia tot (JSON)</button>
+              <button class="btn btn-ghost" id="clear-basket" title="Buida la cistella">Buida</button>
+            </div>
+          </div>
+        </div>
       </div>
 
     </div>
@@ -368,6 +438,7 @@ const state = {
   previewURL: null,
   busy: false,
   result: null,     // last parsed entry
+  basket: [],       // accumulated entries pending hand-off (lives only while the page is open)
 };
 
 /* ─── DOM HELPERS ───────────────────────────────────────────────── */
@@ -707,9 +778,9 @@ function renderResult(entry, warnings) {
     <div class="summary">${rows}</div>
     <div class="json-box" id="json-box">${highlightJson(entry)}</div>
     <div class="json-actions">
-      <button class="btn btn-prim" id="open-editor" title="Obre afegir-material.html amb aquesta entrada pre-emplenada">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3h7v7"/><path d="M10 14L21 3"/><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></svg>
-        Edita al manifest →
+      <button class="btn btn-prim" id="add-basket" title="Afegeix aquesta entrada a la cistella per portar-la després al manifest">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+        Afegeix a la cistella
       </button>
       <button class="btn btn-ghost" id="copy-json">Copia JSON</button>
       <button class="btn btn-ghost" id="copy-json-comma" title="Amb una coma final, per enganxar dins de \"files\": [ … ]">Copia + coma</button>
@@ -718,15 +789,137 @@ function renderResult(entry, warnings) {
   const jsonStr = JSON.stringify(entry, FIELD_ORDER, 2);
   $('copy-json').onclick = () => copyText(jsonStr, 'JSON copiat');
   $('copy-json-comma').onclick = () => copyText(jsonStr + ',', 'JSON copiat (amb coma)');
-  $('open-editor').onclick = () => {
-    const payload = encodeURIComponent(JSON.stringify(entry));
-    window.open('afegir-material.html#new=' + payload, '_blank', 'noopener');
-  };
+  $('add-basket').onclick = () => addToBasket(entry);
 }
 
 async function copyText(txt, okMsg) {
   try { await navigator.clipboard.writeText(txt); toast(okMsg); }
   catch { toast('No s\'ha pogut copiar', true); }
+}
+
+/* ─── BASKET ────────────────────────────────────────────────────── */
+let basketSeq = 0;
+
+// Pull a bare Drive ID out of whatever the user pastes (full URL or raw id).
+function extractDriveId(raw) {
+  const s = String(raw || '').trim();
+  const m1 = s.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  const m2 = s.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (m1) return m1[1];
+  if (m2) return m2[1];
+  return s;   // assume it's already a bare id (or empty)
+}
+
+function addToBasket(entry) {
+  // Store a clone so later edits to the basket don't mutate the rendered result.
+  const item = JSON.parse(JSON.stringify(entry));
+  item._uid = ++basketSeq;
+  item.drive_id = item.drive_id || '';
+  state.basket.push(item);
+  renderBasket();
+  toast('Afegit a la cistella (' + state.basket.length + ')');
+  // Clear the single-result slot and the file so the next document starts clean.
+  clearFile();
+}
+
+function removeFromBasket(uid) {
+  state.basket = state.basket.filter(it => it._uid !== uid);
+  renderBasket();
+}
+
+function clearBasket() {
+  if (state.basket.length && !confirm('Buidar la cistella? Es perdran ' + state.basket.length + ' entrada(es).')) return;
+  state.basket = [];
+  renderBasket();
+}
+
+function setBasketDriveId(uid, value) {
+  const it = state.basket.find(x => x._uid === uid);
+  if (!it) return;
+  it.drive_id = extractDriveId(value);
+}
+
+function basketChips(entry) {
+  const slugs = []
+    .concat(entry.format ? [entry.format] : [])
+    .concat(entry.origin ? [entry.origin] : [])
+    .concat(entry.courses || [])
+    .concat(entry.math_sense ? [entry.math_sense] : [])
+    .concat(entry.activities || [])
+    .concat(entry.type ? [entry.type] : []);
+  return slugs.map(s => `<span class="schip">${escHtml(label(s))}</span>`).join('');
+}
+
+function renderBasket() {
+  const slot = $('basket-slot');
+  const actions = $('basket-actions');
+  const count = $('basket-count');
+
+  if (!state.basket.length) {
+    slot.innerHTML = `
+      <div class="result-empty" id="basket-empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+        <div>Encara no hi ha cap entrada. Analitza un document per començar.</div>
+      </div>`;
+    actions.hidden = true;
+    count.textContent = 'buida';
+    return;
+  }
+
+  count.textContent = state.basket.length + (state.basket.length === 1 ? ' entrada' : ' entrades');
+  slot.innerHTML = '<div class="basket-list">' + state.basket.map(it => {
+    const noDrive = !it.drive_id;
+    return `
+      <div class="basket-item ${noDrive ? 'no-drive' : ''}" data-uid="${it._uid}">
+        <div class="bi-top">
+          <div class="bi-main">
+            <div class="bi-title">${escHtml(it.title || 'Sense títol')}</div>
+            <div class="bi-meta">${basketChips(it)}</div>
+          </div>
+          <button class="bi-x" data-act="remove" title="Treu de la cistella">
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 2l8 8M10 2l-8 8"/></svg>
+          </button>
+        </div>
+        <div class="bi-drive">
+          <label>Enllaç o ID de Drive</label>
+          <input type="text" data-act="drive" value="${escHtml(it.drive_id)}"
+                 placeholder="enganxa https://drive.google.com/file/d/… o l'ID directament"
+                 autocomplete="off" spellcheck="false">
+          ${noDrive ? '<div class="bi-drive-hint">⚠ sense enllaç de Drive — caldrà per poder-la afegir al manifest</div>' : ''}
+        </div>
+      </div>`;
+  }).join('') + '</div>';
+  actions.hidden = false;
+
+  // Wire each row
+  slot.querySelectorAll('.basket-item').forEach(row => {
+    const uid = Number(row.getAttribute('data-uid'));
+    row.querySelector('[data-act="remove"]').onclick = () => removeFromBasket(uid);
+    const input = row.querySelector('[data-act="drive"]');
+    input.addEventListener('blur', () => {
+      setBasketDriveId(uid, input.value);
+      renderBasket();   // re-render to clear/show the warning state
+    });
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') input.blur(); });
+  });
+}
+
+// Strip the internal _uid before handing the list off.
+function basketPayload() {
+  return state.basket.map(({ _uid, ...rest }) => rest);
+}
+
+function sendBasketToEditor() {
+  if (!state.basket.length) { toast('La cistella és buida', true); return; }
+  const payload = encodeURIComponent(JSON.stringify(basketPayload()));
+  window.open('afegir-material.html#queue=' + payload, '_blank', 'noopener');
+}
+
+function copyBasket() {
+  if (!state.basket.length) { toast('La cistella és buida', true); return; }
+  copyText(JSON.stringify(basketPayload(), null, 2), 'Cistella copiada (' + state.basket.length + ')');
 }
 
 /* ─── ORCHESTRATION ─────────────────────────────────────────────── */
@@ -852,7 +1045,12 @@ $('model-sel').addEventListener('change', () => { if (state.file && !state.busy)
 // If the user pastes a key after having dropped a file, let them retry easily.
 $('api-key').addEventListener('change', () => { if (state.file && !state.busy && !state.result) run(); });
 
+$('send-basket').onclick = sendBasketToEditor;
+$('copy-basket').onclick = copyBasket;
+$('clear-basket').onclick = clearBasket;
+
 renderEmptyResult();
+renderBasket();
 </script>
 </body>
 </html>
