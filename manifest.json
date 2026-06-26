@@ -2853,6 +2853,23 @@
         "angles"
       ],
       "type": "dossier"
+    },
+    {
+      "title": "Fraccions. Representació gràfica",
+      "id": "fraccions-representacio-grafica",
+      "drive_id": "1D2JNIiDzaxw74CdZafWRo0MV57_dZn4wUaJiQBxwHj0",
+      "format": "doc",
+      "origin": "miquel-tarradell",
+      "courses": [
+        "1ESO",
+        "2ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "fraccions",
+        "proporcionalitat"
+      ],
+      "type": "dossier"
     }
   ],
   "basic": {
