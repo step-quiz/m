@@ -2870,6 +2870,60 @@
         "proporcionalitat"
       ],
       "type": "dossier"
+    },
+    {
+      "title": "Concepte de fracció i operacions",
+      "id": "concepte-de-fraccio-i-operacions",
+      "drive_id": "1-4GtQudFSn6YPbaNNLMQuP2ADLqiSOTPkdx5_RxTGTI",
+      "format": "doc",
+      "origin": "miquel-tarradell",
+      "courses": [
+        "1ESO",
+        "2ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "fraccions"
+      ],
+      "type": "dossier"
+    },
+    {
+      "title": "Dòmino fraccions, enters, decimals",
+      "id": "domino-de-fraccions",
+      "drive_id": "1-mEF2sZreSNCzvLUXiXJI7cu5WbxFojC",
+      "format": "pdf",
+      "origin": "miquel-tarradell",
+      "courses": [
+        "ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "nombres-enters",
+        "fraccions",
+        "nombres-decimals",
+        "percentatges",
+        "proporcionalitat"
+      ],
+      "type": "dossier"
+    },
+    {
+      "title": "Fem una pizza: proporcionalitat i fraccions",
+      "id": "fem-una-pizza-proporcionalitat-i-fraccions",
+      "drive_id": "1wmMdgfzM079Z6XGca4-pY-HhQD79RM-C",
+      "format": "pdf",
+      "origin": "miquel-tarradell",
+      "courses": [
+        "2ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "fraccions",
+        "nombres-decimals",
+        "proporcionalitat",
+        "arees-perimetres",
+        "circumferencia-cercle"
+      ],
+      "type": "dossier"
     }
   ],
   "basic": {
