@@ -475,6 +475,17 @@ function detectFormat(file) {
   return null;
 }
 
+// The original filename carries the author's intent (e.g. "domino_fraccions").
+// Strip the extension and tidy separators so the model can use it as a hint,
+// while keeping the raw name too in case the cleanup loses something.
+function cleanFileName(name) {
+  return String(name || '')
+    .replace(/\.[^.]+$/, '')        // drop extension
+    .replace(/[_-]+/g, ' ')         // underscores/dashes → spaces
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 function setFile(file) {
   const fmt = detectFormat(file);
   if (!fmt) { toast('Format no admès. Cal un PDF o un DOCX.', true); return; }
@@ -551,12 +562,13 @@ function buildInstruction() {
   return [
     "Ets un assistent que cataloga documents de matemàtiques de secundària (en català) per a un repositori escolar.",
     "Inspecciona el document (títol, text, logotips, peus de pàgina, marques d'aigua, tipus d'activitats, diagrames, nivell de dificultat) i genera UNA entrada de manifest en JSON.",
+    "Tens també el NOM DEL FITXER ORIGINAL (vegeu més avall): és una pista d'intenció humana molt valuosa per al títol; tingue'l molt en compte.",
     "",
     "VOCABULARI CONTROLAT (fes servir EXCLUSIVAMENT els valors 'slug' d'aquestes llistes):",
     JSON.stringify(vocabForModel, null, 2),
     "",
     "CAMPS DE SORTIDA i regles:",
-    "- \"title\": títol curt en català basat en el TEMA matemàtic principal (p. ex. \"Àrea i perímetre\"). Evita subtítols, eslògans i signes d'exclamació. Sense punt final.",
+    "- \"title\": títol curt en català basat en el TEMA matemàtic principal (p. ex. \"Àrea i perímetre\"). PARTEIX DEL NOM DEL FITXER ORIGINAL i tingue'l molt en compte (p. ex. \"domino_fraccions\" → \"Dòmino de fraccions\"; \"fraccions visualment\" → \"Fraccions visualment\"). Prioritza el tema real del contingut només si el nom del fitxer és buit, genèric (p. ex. \"document1\", \"sense titol\", \"scan\"), o clarament no coincideix amb el contingut. Evita subtítols, eslògans i signes d'exclamació. Sense punt final.",
     "- \"id\": el \"title\" en format slug (minúscules, sense accents, separat per guions).",
     "- \"drive_id\": sempre cadena buida \"\" (no es pot deduir del contingut).",
     "- \"format\": fes servir exactament \"" + (state.format || 'pdf') + "\".",
@@ -579,10 +591,14 @@ async function buildUserContent() {
   const parts = [];
   parts.push({ text: buildInstruction() });
 
+  const rawName = state.file?.name || '';
+  const niceName = cleanFileName(rawName);
+  const nameHint = 'NOM DEL FITXER ORIGINAL: "' + niceName + '" (nom de fitxer brut: "' + rawName + '").';
+
   if (state.format === 'pdf') {
     const b64 = await fileToBase64(state.file);
     parts.push({ inline_data: { mime_type: 'application/pdf', data: b64 } });
-    parts.push({ text: 'Aquí tens el document PDF. Genera ara la seva entrada de manifest.' });
+    parts.push({ text: nameHint + '\n\nAquí tens el document PDF. Genera ara la seva entrada de manifest.' });
   } else {
     // DOCX → text + (some) embedded images, via mammoth
     const buf = await state.file.arrayBuffer();
@@ -602,7 +618,7 @@ async function buildUserContent() {
       const m = src.match(/^data:([^;]+);base64,(.+)$/);
       if (m) parts.push({ inline_data: { mime_type: m[1], data: m[2] } });
     }
-    parts.push({ text: 'TEXT EXTRET DEL DOCUMENT DOCX:\n\n' + text.slice(0, 14000) + '\n\nGenera ara la seva entrada de manifest.' });
+    parts.push({ text: nameHint + '\n\nTEXT EXTRET DEL DOCUMENT DOCX:\n\n' + text.slice(0, 14000) + '\n\nGenera ara la seva entrada de manifest.' });
   }
   return parts;
 }

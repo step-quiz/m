@@ -430,7 +430,8 @@
   .q-title { font-size: 14px; font-weight: 700; letter-spacing: -.01em; }
   .q-sub { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 3px; font-size: 11px; }
   .q-sub .q-id { font-family: var(--mono); color: var(--text-3); }
-  .q-sub .q-drive { font-family: var(--mono); color: var(--text-2); }
+  .q-sub .q-drive { font-family: var(--mono); color: var(--accent); text-decoration: none; cursor: pointer; }
+  .q-sub .q-drive:hover { text-decoration: underline; }
   .q-sub .q-nodrive { color: var(--amber); font-weight: 600; }
   .q-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
   .q-chip {
@@ -1876,6 +1877,16 @@ function acceptAllQueue() {
   renderReviewQueue();
 }
 
+// Build the real Drive/Docs URL for a file entry, mirroring index.html:
+// an explicit url wins; a "doc" opens in Google Docs; anything else in Drive.
+function driveUrlFor(f) {
+  if (f.url) return f.url;
+  if (!f.drive_id) return '';
+  return f.format === 'doc'
+    ? `https://docs.google.com/document/d/${encodeURIComponent(f.drive_id)}/edit`
+    : `https://drive.google.com/file/d/${encodeURIComponent(f.drive_id)}/view`;
+}
+
 function renderReviewQueue() {
   const slot = $('queue-list');
   if (!slot) return;
@@ -1901,7 +1912,9 @@ function renderReviewQueue() {
           <div class="q-title">${escHtml(f.title || 'Sense títol')}</div>
           <div class="q-sub">
             <span class="q-id">${escHtml(f.id || '—')}</span>
-            ${f.drive_id ? `<span class="q-drive">Drive: ${escHtml(f.drive_id)}</span>` : '<span class="q-nodrive">⚠ sense Drive</span>'}
+            ${f.drive_id
+              ? `<a class="q-drive" href="${escHtml(driveUrlFor(f))}" target="_blank" rel="noopener" title="Obre el fitxer real al Drive ↗">Drive: ${escHtml(f.drive_id)} ↗</a>`
+              : '<span class="q-nodrive">⚠ sense Drive</span>'}
           </div>
           <div class="q-chips">${chips}</div>
           ${errMsg ? `<div class="q-err">${escHtml(errMsg)}</div>` : ''}
