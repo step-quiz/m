@@ -1,6 +1,6 @@
 /* auth.js ── Portal d'accés · Departament de Matemàtiques · INS Miquel Tarradell
  * ════════════════════════════════════════════════════════════════════════════════
- * Carregat al final de <body> de repartiment.html i seguiment.html.
+ * Carregat al final de <body> de repartiment.html.
  *
  * CONFIGURACIÓ
  * ┌──────────────────┬──────────────────────────────────────────────────────────┐

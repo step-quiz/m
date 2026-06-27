@@ -37,7 +37,7 @@ afegeix una línia al **Registre de canvis** i —si la millora resol un punt de
 | A4 | Semàntica correcta del commutador Bàsic/Avançat | Baixa | S | Fet |
 | B1 | Avisar d'activitats òrfenes al validador (`afegir-material.html`) | Alta | S | Fet |
 | B2 | Resoldre l'activitat òrfena actual al `manifest.json` | Alta | S | Fet |
-| B3 | Centralitzar codi compartit en `common.js` | Mitjana | M | Fet |
+| B3 | Centralitzar codi compartit en `common.js` | Mitjana | M | En curs (parcial) |
 | B4 | Treure el codi mort de `saveModal()` | Baixa | S | Fet |
 | B5 | Homogeneïtzar `florence-cb.html` (sense `onclick` en línia) | Baixa | M | Fet |
 | C1 | Servir totes les llibreries en local (treure cdnjs) | Mitjana | S–M | Pendent |
@@ -121,15 +121,22 @@ afegeix una línia al **Registre de canvis** i —si la millora resol un punt de
   ```
 
 ### B3 — Centralitzar codi compartit en `common.js`
-- [x] **Estat:** Fet · **Prioritat:** Mitjana · **Esforç:** M
+- [ ] **Estat:** En curs (parcial) · **Prioritat:** Mitjana · **Esforç:** M
 - **Fitxers:** totes les pàgines
-- **Problema:** `escHtml`, `normalize`, `label`, `slugify`, `FILTER_GROUPS` i el vocabulari
-  de reserva estan **copiats** a cada pàgina (documentat a `ARQUITECTURA.md` §1 i §6.5). Un
-  canvi de lògica comuna s'ha de replicar a mà i el vocabulari triplicat es pot desincronitzar.
+- **Problema:** `escHtml`, `normalize`, `slugify`, `FILTER_GROUPS` i el vocabulari
+  de reserva estaven **copiats** a cada pàgina (documentat a `ARQUITECTURA.md` §1 i §6.5). Un
+  canvi de lògica comuna s'ha de replicar a mà i el vocabulari es pot desincronitzar.
 - **Proposta:** Moure aquestes utilitats a un únic `common.js` carregat amb
   `<script src="common.js"></script>`. **No cal pas de compilació**; segueix sent estàtic.
-- **Verificació:** Les sis pàgines funcionen igual carregant la utilitat des d'un sol fitxer;
-  cercar `function escHtml` retorna una sola definició.
+- **Estat actual (parcial):** `common.js` existeix i el carreguen `index.html`,
+  `repartiment.html`, `banc-cb.html` i `eliminar-curs.html`. Les altres quatre pàgines
+  (`afegir-material.html`, `extreu-json.html`, `alimentar-banc.html`,
+  `examen-recuperacio.html`) **encara NO** el carreguen i conserven còpies locals. Mentre
+  això sigui així es paga alhora el cost del fitxer compartit i el de la duplicació. **Decisió
+  actual: no completar B3** (es manté la coexistència deliberadament); aquesta entrada queda
+  oberta com a recordatori de l'estat real, no com a feina planificada.
+- **Verificació (si algun dia es completa):** cercar `function escHtml` a `*.html` retorna 0
+  definicions locals; totes les pàgines carreguen `common.js`.
 
 ### B4 — Treure el codi mort de `saveModal()`
 - [x] **Estat:** Fet · **Prioritat:** Baixa · **Esforç:** S
@@ -240,7 +247,7 @@ Afegeix una línia per cada millora aplicada (la més recent a dalt).
 |------|----|-------|-----|
 | 2026-06-04 | E2 | `index.html`: `_blobTitle` i `_blobMain` per ponderar títol (×3) i camps principals (×2) vs notes (×1) en `matchesQuery()` | — |
 | 2026-06-04 | D1 | `ARQUITECTURA.md §6.2`, `MANTENIMENT.md`, `README.md`: actualitzades les referències a imatges de `cb-img/`; les 107 imatges ja hi són totes (`CB157.png` inclòs) | — |
-| 2026-06-04 | B3 | Creat `common.js` amb `escHtml`, `normalize`, `slugify`, `FILTER_GROUPS`, `ESO_COURSES`, `BATX_COURSES`, `FALLBACK_VOCAB`, `FALLBACK_LABELS`; eliminades les definicions locals de les 5 pàgines HTML | — |
+| 2026-06-04 | B3 | Creat `common.js` amb `escHtml`, `normalize`, `slugify`, `FILTER_GROUPS`, `ESO_COURSES`, `BATX_COURSES`, `FALLBACK_VOCAB`, `FALLBACK_LABELS`; adoptat per `index.html`, `repartiment.html`, `banc-cb.html` i `eliminar-curs.html`. Les altres 4 pàgines conserven còpies locals (migració deixada deliberadament incompleta) | — |
 | 2026-06-04 | B5 | `florence-cb.html`: 12 `onclick` eliminats; gestors delegats; `esc()` per a tot l'innerHTML dinàmic | — |
 | 2026-06-04 | B4 | `saveModal()`: eliminada variable `others` no usada i bloc `if (!state.editingNew) {}` buit | — |
 | 2026-06-04 | B2 | `manifest.json`: `circumferencia-cercle` afegida al bloc Geometria sintètica (resolt manualment) | — |

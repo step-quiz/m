@@ -409,9 +409,6 @@ function renderChips() {
 function senseChips(senses) {
   return senses.map(s => `<span class="pill pill-s">${escHtml(label(s))}</span>`).join('');
 }
-function diffChips(diffs) {
-  return diffs.map(d => `<span class="pill pill-d${d}">dif. ${escHtml(d)}</span>`).join('');
-}
 function renderResults() {
   // No filters active → show hint
   const anyFilter = GROUPS.some(G => state.filters[G.key].size > 0);

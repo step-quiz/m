@@ -8,11 +8,15 @@ detalls que convé tenir presents abans de tocar res).
 
 ## 1. Forma general
 
-Vuit pàgines HTML independents, cadascuna autocontinguda (el seu CSS i el seu JS dins del
-mateix fitxer). No hi ha codi compartit entre fitxers: utilitats com `escHtml`, `slugify`,
-`label` o `normalize` i constants com `FILTER_GROUPS` estan **copiades** a cada pàgina que
-les necessita. És un compromís deliberat per evitar un pas de compilació; el cost és que un
-canvi de lògica comuna s'ha de replicar a mà.
+Nou pàgines HTML independents, cadascuna autocontinguda (el seu CSS i el seu JS dins del
+mateix fitxer). El codi compartit està **parcialment** centralitzat: `common.js` aplega
+utilitats com `escHtml`, `slugify` o `normalize` i constants com `FILTER_GROUPS`, i el
+carreguen `index.html`, `repartiment.html`, `banc-cb.html` i `eliminar-curs.html`. La resta
+de pàgines (`afegir-material.html`, `extreu-json.html`, `alimentar-banc.html` i
+`examen-recuperacio.html`) **no** carreguen `common.js` i en conserven **còpies pròpies**
+d'aquestes utilitats. És un compromís deliberat per evitar un pas de compilació; el cost és
+que un canvi de lògica comuna s'ha de replicar a mà a les pàgines que no fan servir
+`common.js`. Vegeu la millora `B3` a `MILLORES-TECNIQUES.md`.
 
 Cada pàgina segueix la mateixa estructura interna: `CONFIG → STATE → utilitats → càlcul →
 render → accions → events → init`, amb separadors de comentari. El codi està ben comentat,
@@ -231,12 +235,12 @@ foto(s) → Gemini: text + box figura          fetch(recuperacio-items.json)
 
 ---
 
-## 4b. Contracte de dades: `repartiment-data.js` i localStorage de seguiment
+## 4b. Contracte de dades: `repartiment-data.js`
 
 `repartiment-data.js` és un fitxer JS (no JSON) carregat com a `<script src="...">` per
-`repartiment.html` i `seguiment.html`. Declara tres constants globals: `SENTITS`, `CLASSES`
+`repartiment.html`. Declara tres constants globals: `SENTITS`, `CLASSES`
 i `REPARTIMENT`. És la **font de veritat** del currículum: quan el departament revisa els
-continguts d'un curs, s'edita aquest fitxer i ambdues pàgines s'actualitzen soles.
+continguts d'un curs, s'edita aquest fitxer i la pàgina s'actualitza sola.
 
 Estructura de `REPARTIMENT`:
 ```
@@ -245,19 +249,7 @@ BlocData = { sentit: "numeric"|…, hores, temes: [ TemaData ] }
 TemaData = { id, label, hores, continguts: string[] }
 ```
 
-**Dades de seguiment** (localStorage, clau `dept-seguiment-2025-26`):
-```json
-{ "curs": "2025-26", "lastSaved": "…ISO…",
-  "classes": {
-    "3ESO-A": {
-      "numeric/nombres-enters": { "status": "parcial", "nota": "només op. combinades" }
-    }
-  }
-}
-```
-Valors de `status`: `""` (pendent) · `"fet"` · `"parcial"` · `"no-fet"` · `"no-ho-fare"`.
-La clau de cada tema és `"<sentit>/<tema.id>"`. L'exportació/importació JSON preserva
-exactament aquest esquema, cosa que permet compartir dades entre professors copiant el fitxer.
+La clau de cada tema és `"<sentit>/<tema.id>"`.
 
 ---
 
@@ -267,7 +259,6 @@ exactament aquest esquema, cosa que permet compartir dades entre professors copi
 |---|---|---|
 | `index.html` | cap | `fetch('manifest.json')`; iframes de Google Drive a la previsualització |
 | `repartiment.html` | cap | cap (dades via `repartiment-data.js` local) |
-| `seguiment.html` | cap | cap (dades via `repartiment-data.js`; persistència localStorage) |
 | `afegir-material.html` | cap | `fetch('manifest.json')`; descàrrega del `manifest.json` editat |
 | `extreu-json.html` | **mammoth 1.8.0** (cdnjs) | `fetch('manifest.json')` per sincronitzar vocabulari; **Gemini API** (clau de l'usuari) |
 | `banc-cb.html` | **pdf-lib (local, `lib/`)** | `fetch('cb-items.json')`; imatges de `cb.step-quiz.net` (CORS) |
@@ -284,7 +275,6 @@ Hosts externs que apareixen al codi: `drive.google.com`, `docs.google.com`,
 - `material:recents` (`index.html`) — array `{id, ts}`, màxim 10 documents oberts recentment.
 - `material:uiMode` (`index.html`) — `"basic"` o `"advanced"`.
 - `dept-auth-token` (`auth.js`) — objecte de sessió `{expires}` (vegeu §4c).
-- `dept-seguiment-2025-26` (`seguiment.html`) — objecte de seguiment (vegeu §4b).
 
 La clau de Gemini (`extreu-json.html` i `alimentar-banc.html`) s'introdueix a cada sessió i
 **no es desa** enlloc; s'envia directament a `generativelanguage.googleapis.com`. No queda
@@ -295,7 +285,7 @@ clau; convé restringir-la a l'API de Gemini a la consola de Google.
 
 ## 4c. Autenticació per contrasenya: `auth.js`
 
-`auth.js` protegeix `repartiment.html` i `seguiment.html` mostrant una pantalla de
+`auth.js` protegeix `repartiment.html` mostrant una pantalla de
 contrasenya mentre no hi hagi una sessió vàlida al navegador.
 
 ### Mecanisme
