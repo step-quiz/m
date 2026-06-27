@@ -414,6 +414,8 @@
     from { opacity: 0; transform: translateY(6px); }
     to   { opacity: 1; transform: translateY(0); }
   }
+  /* Re-render sense animació d'entrada (p. ex. en re-ordenar per estrelles). */
+  .results.no-anim .card { animation: none; }
   .card.is-open {
     border-color: var(--accent);
     background: var(--accent-soft);
@@ -663,11 +665,12 @@
 
   /* ── Site title (replaces the old Continguts menu) ──────────────── */
   .site-title {
-    font-size: 14px;
+    font-family: Georgia, 'Times New Roman', 'Iowan Old Style', serif;
+    font-size: 15.4px;          /* +10% respecte els 14px previs */
     font-weight: 700;
     line-height: 1.05;
-    color: var(--text);
-    letter-spacing: -.01em;
+    color: var(--accent);
+    letter-spacing: -.005em;
     white-space: nowrap;
     user-select: none;
   }
@@ -875,6 +878,21 @@ function setRating(id, value) {
 function toggleRating(id, starValue) {
   const current = getRating(id);
   setRating(id, current === starValue ? 0 : starValue);
+}
+
+/* Actualitza in situ les estrelles de la targeta amb aquest id, sense
+   reconstruir ni reordenar la llista. Reflecteix la puntuació desada. */
+function paintStars(id) {
+  const rating = getRating(id);
+  const stars = els.results.querySelectorAll(
+    `.star-btn[data-star-id="${CSS.escape(id)}"]`
+  );
+  stars.forEach(btn => {
+    const val = Number(btn.dataset.starVal);
+    const on = rating >= val;
+    btn.classList.toggle('is-on', on);
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
 }
 
 /* ─── RECENTS (localStorage) ────────────────────────────────────── */
@@ -1273,7 +1291,11 @@ function renderChips() {
   els.chipRow.innerHTML = chips.join('');
 }
 
-function renderResults(filtered) {
+function renderResults(filtered, opts = {}) {
+  const animate = opts.animate !== false;   // per defecte sí; false en clicar estrelles
+  // L'animació d'entrada de targetes només s'aplica quan animate === true.
+  // En re-ordenar per estrelles la desactivem per evitar un "blink" molest.
+  els.results.classList.toggle('no-anim', !animate);
   // Estat inicial "net": sense cap filtre ni cerca → no mostrem tots els
   // resultats (introdueix soroll), sinó dues bombolles d'orientació.
   if (isPristine()) {
@@ -1571,12 +1593,17 @@ els.chipRow.addEventListener('click', e => {
 });
 
 els.results.addEventListener('click', e => {
-  // Clic sobre una estrella de puntuació → actualitza la nota i re-ordena.
+  // Clic sobre una estrella de puntuació → desa la nota i actualitza NOMÉS
+  // les estrelles d'aquesta targeta, in situ. NO re-ordenem ni re-renderitzem
+  // la llista, perquè la targeta no ha de saltar de posició (es perdria de
+  // vista). La reordenació per estrelles s'aplica només quan es fa una nova
+  // cerca o es canvia un filtre (via computeFiltered() dins renderAll()).
   const starBtn = e.target.closest('.star-btn');
   if (starBtn) {
     e.stopPropagation();
-    toggleRating(starBtn.dataset.starId, Number(starBtn.dataset.starVal));
-    renderAll();
+    const id = starBtn.dataset.starId;
+    toggleRating(id, Number(starBtn.dataset.starVal));
+    paintStars(id);
     return;
   }
   // "Previsualitza" button → open side drawer with iframe.
