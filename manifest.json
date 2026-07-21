@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "generated": "2026-06-26",
+  "version": 2,
+  "generated": "2026-07-21T11:19:51",
   "folder_url": "https://drive.google.com/drive/folders/1WjqddjN3uQhO7zUXzRKwDmBia6jqCUdy",
   "vocabulary": {
     "origin": [
@@ -148,7 +148,8 @@
       "teoria",
       "examen-estructura",
       "examen-correccio",
-      "prova-cb"
+      "prova-cb",
+      "solucions"
     ]
   },
   "vocabulary_labels": {
@@ -285,7 +286,8 @@
     "proves-cb": "Proves CB",
     "prova-cb": "Prova CB",
     "math-bits": "Math-Bits",
-    "mariel-mates": "Mariel Mates"
+    "mariel-mates": "Mariel Mates",
+    "solucions": "Solucions"
   },
   "files": [
     {
@@ -1141,6 +1143,24 @@
       "notes": "Dossier 1r ESO · Unitat 1"
     },
     {
+      "title": "Solucions · Nombres naturals",
+      "id": "mt-1eso-1-nombres-naturals-solucions",
+      "drive_id": "125ZEkpYAOpM1G7tQRMZAgKWpZWpoxCwJ",
+      "format": "pdf",
+      "origin": "math-bits",
+      "courses": [
+        "1ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "nombres-naturals",
+        "divisibilitat"
+      ],
+      "type": "solucions",
+      "solution_of": "mt-1eso-1-nombres-naturals",
+      "notes": "Solucions · Dossier 1r ESO · Unitat 1"
+    },
+    {
       "title": "Fraccions i decimals",
       "id": "mt-1eso-2-fraccions-i-decimals",
       "drive_id": "1rmFMasn7WDGHM5_KiuU_DNZd7in20b-S",
@@ -1156,6 +1176,24 @@
       ],
       "type": "dossier",
       "notes": "Dossier 1r ESO · Unitat 2"
+    },
+    {
+      "title": "Solucions · Fraccions i decimals",
+      "id": "mt-1eso-2-fraccions-i-decimals-solucions",
+      "drive_id": "1fNaaQNA5snP68XeuIY7L8Jy8VxlPK5B2",
+      "format": "pdf",
+      "origin": "math-bits",
+      "courses": [
+        "1ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "fraccions",
+        "nombres-decimals"
+      ],
+      "type": "solucions",
+      "solution_of": "mt-1eso-2-fraccions-i-decimals",
+      "notes": "Solucions · Dossier 1r ESO · Unitat 2"
     },
     {
       "title": "Llenguatge algebraic",
@@ -1174,6 +1212,23 @@
       "notes": "Dossier 1r ESO · Unitat 3"
     },
     {
+      "title": "Solucions · Llenguatge algebraic",
+      "id": "mt-1eso-3-llenguatge-algebraic-solucions",
+      "drive_id": "16_06k_TCs3Sd6dy_6UqSX-9vD9UQZ6g8",
+      "format": "pdf",
+      "origin": "math-bits",
+      "courses": [
+        "1ESO"
+      ],
+      "math_sense": "algebraic",
+      "activities": [
+        "llenguatge-algebraic"
+      ],
+      "type": "solucions",
+      "solution_of": "mt-1eso-3-llenguatge-algebraic",
+      "notes": "Solucions · Dossier 1r ESO · Unitat 3"
+    },
+    {
       "title": "Nombres enters i equacions",
       "id": "mt-1eso-4-nombres-enters-i-equacions",
       "drive_id": "1V1UB6ry99oPCZ7QPNSCzFntH2bMM1r4Z",
@@ -1189,6 +1244,24 @@
       ],
       "type": "dossier",
       "notes": "Dossier 1r ESO · Unitat 4"
+    },
+    {
+      "title": "Solucions · Nombres enters i equacions",
+      "id": "mt-1eso-4-nombres-enters-i-equacions-solucions",
+      "drive_id": "1qgWGf8mbKrbkVACfm7zFCj4nyWopSTNH",
+      "format": "pdf",
+      "origin": "math-bits",
+      "courses": [
+        "1ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "nombres-enters",
+        "equacions"
+      ],
+      "type": "solucions",
+      "solution_of": "mt-1eso-4-nombres-enters-i-equacions",
+      "notes": "Solucions · Dossier 1r ESO · Unitat 4"
     },
     {
       "title": "Geometria en el pla",
@@ -1209,6 +1282,25 @@
       "notes": "Dossier 1r ESO · Unitat 5"
     },
     {
+      "title": "Solucions · Geometria en el pla",
+      "id": "mt-1eso-5-geometria-en-el-pla-solucions",
+      "drive_id": "1b12Y-xk1Lp0wxcT8i2Ea2jC__yPum-FL",
+      "format": "pdf",
+      "origin": "math-bits",
+      "courses": [
+        "1ESO"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "figures-planes",
+        "poligons",
+        "arees-perimetres"
+      ],
+      "type": "solucions",
+      "solution_of": "mt-1eso-5-geometria-en-el-pla",
+      "notes": "Solucions · Dossier 1r ESO · Unitat 5"
+    },
+    {
       "title": "Proporcionalitat",
       "id": "mt-2eso-1-proporcionalitat",
       "drive_id": "12yrXQBY9qQ7pOGGX1s2L0Are-IOyZh4o",
@@ -1226,6 +1318,24 @@
       "notes": "Dossier 2n ESO · Unitat 1"
     },
     {
+      "title": "Solucions · Proporcionalitat",
+      "id": "mt-2eso-1-proporcionalitat-solucions",
+      "drive_id": "1iGYa92oseBieq_-NE1sr16A0FWAnoexS",
+      "format": "pdf",
+      "origin": "math-bits",
+      "courses": [
+        "2ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "percentatges",
+        "proporcionalitat"
+      ],
+      "type": "solucions",
+      "solution_of": "mt-2eso-1-proporcionalitat",
+      "notes": "Solucions · Dossier 2n ESO · Unitat 1"
+    },
+    {
       "title": "Funcions",
       "id": "mt-2eso-2-funcions",
       "drive_id": "1yK8sbetO4XNCBPG_xvWl1RYQ1yb6g6vQ",
@@ -1241,6 +1351,24 @@
       ],
       "type": "dossier",
       "notes": "Dossier 2n ESO · Unitat 2"
+    },
+    {
+      "title": "Solucions · Funcions",
+      "id": "mt-2eso-2-funcions-solucions",
+      "drive_id": "1edgrT15UbvUhN0zCtM415ibn0qL9SoXH",
+      "format": "pdf",
+      "origin": "math-bits",
+      "courses": [
+        "2ESO"
+      ],
+      "math_sense": "analitic",
+      "activities": [
+        "concepte-funcio",
+        "funcio-lineal"
+      ],
+      "type": "solucions",
+      "solution_of": "mt-2eso-2-funcions",
+      "notes": "Solucions · Dossier 2n ESO · Unitat 2"
     },
     {
       "title": "Nombres racionals i àlgebra",
@@ -1261,6 +1389,25 @@
       "notes": "Dossier 2n ESO · Unitat 3"
     },
     {
+      "title": "Solucions · Nombres racionals i àlgebra",
+      "id": "mt-2eso-3-nombres-racionals-i-algebra-solucions",
+      "drive_id": "1rVgDMbwmnA9OznL7-yJs0esEX2fP--Sy",
+      "format": "pdf",
+      "origin": "math-bits",
+      "courses": [
+        "2ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "nombres-racionals",
+        "llenguatge-algebraic",
+        "equacions"
+      ],
+      "type": "solucions",
+      "solution_of": "mt-2eso-3-nombres-racionals-i-algebra",
+      "notes": "Solucions · Dossier 2n ESO · Unitat 3"
+    },
+    {
       "title": "Geometria del pla a l’espai",
       "id": "mt-2eso-4-geometria-del-pla-a-lespai",
       "drive_id": "1vCb6cmxZGDcqFyHConjHCAJ2u_7UGj1a",
@@ -1279,6 +1426,25 @@
       "notes": "Dossier 2n ESO · Unitat 4"
     },
     {
+      "title": "Solucions · Geometria del pla a l’espai",
+      "id": "mt-2eso-4-geometria-del-pla-a-lespai-solucions",
+      "drive_id": "1F3Vk9R6hsAUIIh2YVx7vbfmSJvJFYXeE",
+      "format": "pdf",
+      "origin": "math-bits",
+      "courses": [
+        "2ESO"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "figures-planes",
+        "cossos-geometrics",
+        "volums-arees-cossos"
+      ],
+      "type": "solucions",
+      "solution_of": "mt-2eso-4-geometria-del-pla-a-lespai",
+      "notes": "Solucions · Dossier 2n ESO · Unitat 4"
+    },
+    {
       "title": "Probabilitat",
       "id": "mt-2eso-5-probabilitat",
       "drive_id": "1Q5PAdgXc9U4F2rdM41aPZdLR-1YoIX6e",
@@ -1293,6 +1459,23 @@
       ],
       "type": "dossier",
       "notes": "Dossier 2n ESO · Unitat 5"
+    },
+    {
+      "title": "Solucions · Probabilitat",
+      "id": "mt-2eso-5-probabilitat-solucions",
+      "drive_id": "1VxdErSqmDm9RYrulk-LyiF1uX2qzM0Vk",
+      "format": "pdf",
+      "origin": "math-bits",
+      "courses": [
+        "2ESO"
+      ],
+      "math_sense": "estocastic",
+      "activities": [
+        "probabilitat-basica"
+      ],
+      "type": "solucions",
+      "solution_of": "mt-2eso-5-probabilitat",
+      "notes": "Solucions · Dossier 2n ESO · Unitat 5"
     },
     {
       "title": "Estadística",
@@ -1311,6 +1494,25 @@
       ],
       "type": "dossier",
       "notes": "Dossier 2n ESO · Unitat 6"
+    },
+    {
+      "title": "Solucions · Estadística",
+      "id": "mt-2eso-6-estadistica-solucions",
+      "drive_id": "1FG9cuWefIRPU-fOeOtliSsVhDGW-9yBq",
+      "format": "pdf",
+      "origin": "math-bits",
+      "courses": [
+        "2ESO"
+      ],
+      "math_sense": "estocastic",
+      "activities": [
+        "estadistica-descriptiva",
+        "mesures-centralitzacio",
+        "taules-grafics-estadistics"
+      ],
+      "type": "solucions",
+      "solution_of": "mt-2eso-6-estadistica",
+      "notes": "Solucions · Dossier 2n ESO · Unitat 6"
     },
     {
       "title": "Nombres enters",
