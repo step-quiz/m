@@ -846,33 +846,55 @@ function closeMoveModal(confirmed) {
   _movePending = null;
 }
 
-/* ─── Descàrrega de repartiment-data.js ──────────────────────────── */
-function downloadData() {
-  const ca = typeof CONTINGUTS_ACTIVITATS !== 'undefined' ? CONTINGUTS_ACTIVITATS : {};
+/* ─── Descàrrega de repartiment-data.js ────────────────────────────
+ *
+ * L'ÚNICA cosa que aquest editor canvia és REPARTIMENT. Per tant el fitxer
+ * NO es regenera de zero: es baixa el text original i s'hi substitueix
+ * únicament el bloc de REPARTIMENT, deixant la resta byte a byte igual.
+ *
+ * Abans es reconstruïa tot amb JSON.stringify(), i això s'emportava per
+ * davant el bloc de documentació de CONTINGUTS_ACTIVITATS (format de la
+ * clau, com afegir-n'hi, l'avís sobre les posicions) i els comentaris de
+ * línia que expliquen a quin contingut correspon cada número. Un sol ús de
+ * l'editor i la documentació del fitxer desapareixia.
+ *
+ * Delimitadors del bloc: la línia «const REPARTIMENT = {» i la línia
+ * «}; // end REPARTIMENT». Si no s'hi troben (o no es pot llegir el fitxer),
+ * s'avisa i no es descarrega res, en comptes de generar un fitxer mutilat. */
+async function downloadData() {
+  let original;
+  try {
+    const res = await fetch('repartiment-data.js', { cache: 'no-cache' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    original = await res.text();
+  } catch (err) {
+    alert("No s'ha pogut llegir repartiment-data.js per actualitzar-lo.\n\n"
+      + "Cal servir la pàgina per HTTP(S), no obrir-la amb file://.\n"
+      + "No s'ha descarregat res (error: " + err.message + ").");
+    return;
+  }
+
+  const START = /^const REPARTIMENT = \{$/m;
+  const END   = /^\}; \/\/ end REPARTIMENT$/m;
+  const mStart = START.exec(original);
+  const mEnd   = mStart ? END.exec(original.slice(mStart.index)) : null;
+  if (!mStart || !mEnd) {
+    alert("No s'han trobat els delimitadors del bloc REPARTIMENT dins de\n"
+      + "repartiment-data.js, així que no s'ha tocat res.\n\n"
+      + "El bloc ha de començar amb «const REPARTIMENT = {» i acabar amb\n"
+      + "«}; // end REPARTIMENT», cadascun sol a la seva línia.");
+    return;
+  }
+  const from = mStart.index;
+  const to   = mStart.index + mEnd.index + mEnd[0].length;
+
   const date = new Date().toLocaleDateString('ca-ES', {day:'2-digit',month:'2-digit',year:'numeric'});
-  const js = [
-    `/* repartiment-data.js — Repartiment de continguts matemàtics ESO 2025-26`,
-    ` * Compartit entre repartiment.html i seguiment.html.`,
-    ` * No modifiqueu els noms de les constants (SENTITS, CLASSES, REPARTIMENT).`,
-    ` * Generat per l'editor integrat de repartiment.html el ${date}.`,
-    ` */`,
-    ``,
-    `/* ─── SENTITS ───────────────────────────────────────────────────────── */`,
-    `const SENTITS = ${JSON.stringify(SENTITS, null, 2)};`,
-    ``,
-    `/* ─── CLASSES DEL DEPARTAMENT ───────────────────────────────────────── */`,
-    `const CLASSES = ${JSON.stringify(CLASSES, null, 2)};`,
-    ``,
-    `/* ─── REPARTIMENT DE CONTINGUTS ──────────────────────────────────────── */`,
-    `const REPARTIMENT = ${JSON.stringify(editData, null, 2)};`,
-    ``,
-    `/* ════════════════════════════════════════════════════════════════════`,
-    ` * CONTINGUTS_ACTIVITATS — pont entre el repartiment i el catàleg.`,
-    ` * ATENCIÓ: si heu reordenat o eliminat continguts d'un tema, reviseu`,
-    ` * les posicions numèriques d'aquest objecte.`,
-    ` * ════════════════════════════════════════════════════════════════════ */`,
-    `const CONTINGUTS_ACTIVITATS = ${JSON.stringify(ca, null, 2)};`,
-  ].join('\n');
+  const block = `const REPARTIMENT = ${JSON.stringify(editData, null, 2)}; // end REPARTIMENT`
+    + `\n/* Bloc REPARTIMENT actualitzat per l'editor de repartiment.html el ${date}.`
+    + `\n * Si hi heu reordenat, afegit o esborrat continguts d'algun tema, reviseu`
+    + `\n * les posicions numèriques de CONTINGUTS_ACTIVITATS al final del fitxer. */`;
+
+  const js = original.slice(0, from) + block + original.slice(to);
 
   const blob = new Blob([js], { type: 'application/javascript' });
   const a = document.createElement('a');

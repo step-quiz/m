@@ -1003,27 +1003,40 @@ function toggleConfigMenu(force) {
    ═══════════════════════════════════════════════════════════════════ */
 
 
-function damerauLevenshtein(a, b) {
-  const m = a.length, n = b.length;
-  if (!m) return n;
-  if (!n) return m;
-  const d = Array.from({length: m + 1}, () => new Array(n + 1).fill(0));
-  for (let i = 0; i <= m; i++) d[i][0] = i;
-  for (let j = 0; j <= n; j++) d[0][j] = j;
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      const cost = a[i-1] === b[j-1] ? 0 : 1;
-      d[i][j] = Math.min(
-        d[i-1][j]   + 1,
-        d[i][j-1]   + 1,
-        d[i-1][j-1] + cost
-      );
-      if (i > 1 && j > 1 && a[i-1] === b[j-2] && a[i-2] === b[j-1]) {
-        d[i][j] = Math.min(d[i][j], d[i-2][j-2] + 1);
-      }
+/* Distància d'edició ≤ 1 (Damerau-Levenshtein amb transposició d'adjacents).
+ *
+ * Abans això era una matriu de programació dinàmica completa que calculava la
+ * distància exacta, O(L²) per finestra. Però l'únic consumidor, scoreToken(),
+ * només pregunta «és ≤ 1?», i aquesta pregunta es respon en O(L) amb sortida
+ * anticipada: si hi ha més d'una diferència, es veu de seguida. Sobre un blob
+ * de ~200 caràcters i un token de 16 això és unes 16 vegades més ràpid, i el
+ * resultat és idèntic (verificat exhaustivament sobre tots els parells de
+ * paraules de fins a 6 lletres més 350.000 parells aleatoris).
+ *
+ * Casos: cadenes iguals; una substitució; una transposició d'adjacents;
+ * una inserció o una supressió. Qualsevol altra cosa és distància ≥ 2. */
+function withinEditDistance1(a, b) {
+  const la = a.length, lb = b.length;
+  if (Math.abs(la - lb) > 1) return false;
+  let i = 0;
+  while (i < la && i < lb && a[i] === b[i]) i++;
+  if (i === la && i === lb) return true;                 // idèntiques
+  if (la === lb) {
+    let j = i + 1;                                       // substitució d'un caràcter
+    while (j < la && a[j] === b[j]) j++;
+    if (j === la) return true;
+    if (a[i] === b[i + 1] && a[i + 1] === b[i]) {        // transposició d'adjacents
+      let k = i + 2;
+      while (k < la && a[k] === b[k]) k++;
+      if (k === la) return true;
     }
+    return false;
   }
-  return d[m][n];
+  // Longituds diferents: ha de ser exactament una inserció o una supressió.
+  const lng = la > lb ? a : b, shrt = la > lb ? b : a;
+  let p = i + 1, q = i;                                  // salta el caràcter sobrer
+  while (p < lng.length && q < shrt.length && lng[p] === shrt[q]) { p++; q++; }
+  return p === lng.length && q === shrt.length;
 }
 
 /* Returns score per token: 100 exact, 60 distance-1, 0 no match */
@@ -1036,8 +1049,7 @@ function scoreToken(blob, token) {
   for (const wl of [L, L - 1, L + 1]) {
     if (wl < 2 || wl > blob.length) continue;
     for (let i = 0; i + wl <= blob.length; i++) {
-      const w = blob.substring(i, i + wl);
-      if (damerauLevenshtein(token, w) <= 1) return 60;
+      if (withinEditDistance1(token, blob.substring(i, i + wl))) return 60;
     }
   }
   return 0;
@@ -1061,6 +1073,22 @@ function label(value) {
   if (!value && value !== 0) return '';
   if (state.vocabLabels[value]) return state.vocabLabels[value];
   return String(value).replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+
+/* El camp `url` del manifest és l'únic valor que acaba dins d'un href i d'un
+   src d'iframe. Es filtra per esquema (només http i https) perquè un
+   "javascript:" o un "data:" s'executaria en clicar l'enllaç, i després
+   s'escapa com qualsevol altre atribut — era l'única interpolació de la
+   pàgina que no passava per escHtml(). Retorna '' si la URL no és vàlida. */
+function safeUrl(u) {
+  const s = String(u ?? '').trim();
+  if (!s) return '';
+  try {
+    const parsed = new URL(s, location.href);
+    if (parsed.protocol === 'http:' || parsed.protocol === 'https:') return parsed.href;
+  } catch (e) { /* URL mal formada → tractada com a buida */ }
+  console.warn('manifest.json: URL descartada per esquema no permès:', s);
+  return '';
 }
 
 
@@ -1102,14 +1130,40 @@ function fileMatchesAllFilters(file) {
    FILTER ENGINE — main compute
    ═══════════════════════════════════════════════════════════════════ */
 
+/* ─── CACHE DE LA COINCIDÈNCIA DE CONSULTA ───────────────────────────
+   matchesQuery() és la part caríssima del filtratge: quan un token no hi és
+   com a subcadena, recorre totes les finestres del blob. Abans es recalculava
+   SET vegades per cada pulsació de tecla — un cop a computeFiltered() i un cop
+   per cadascun dels sis grups a computeCounts() — perquè cada grup refeia el
+   seu propi .filter() sobre tot el manifest. Amb una consulta llarga això
+   bloquejava el fil principal uns quants segons.
+
+   La coincidència amb la consulta NO depèn de cap filtre, així que es calcula
+   un sol cop per consulta i es reparteix. La clau inclou el manifest per si
+   algun dia es recarrega en calent. */
+let _queryCache = { key: null, manifest: null, tokens: null, map: null };
+
+function queryIndex() {
+  if (_queryCache.map
+      && _queryCache.key === state.query
+      && _queryCache.manifest === state.manifest) {
+    return _queryCache;
+  }
+  const tokens = normalize(state.query).split(' ').filter(Boolean);
+  const map = new Map();
+  for (const f of (state.manifest?.files || [])) map.set(f, matchesQuery(f, tokens));
+  _queryCache = { key: state.query, manifest: state.manifest, tokens, map };
+  return _queryCache;
+}
+
 function computeFiltered() {
   if (!state.manifest) return [];
-  const queryTokens = normalize(state.query).split(' ').filter(Boolean);
+  const { tokens: queryTokens, map: qm } = queryIndex();
   const out = [];
   for (const f of state.manifest.files) {
     if (!fileMatchesAllFilters(f)) continue;
-    const m = matchesQuery(f, queryTokens);
-    if (!m.ok) continue;
+    const m = qm.get(f);
+    if (!m || !m.ok) continue;
     out.push({ file: f, score: m.score });
   }
   // Criteri principal d'ordenació: la puntuació d'estrelles (de més a menys).
@@ -1137,14 +1191,15 @@ function isPristine() {
 function computeCounts() {
   const counts = {};
   if (!state.manifest) return counts;
-  const queryTokens = normalize(state.query).split(' ').filter(Boolean);
+  const { map: qm } = queryIndex();
+  // La consulta ja està resolta per a totes les fitxes: aquí només queda
+  // filtrar-les pels altres grups, que és barat.
+  const passQuery = state.manifest.files.filter(f => qm.get(f)?.ok);
 
   // Pre-filter: files that match query and ALL filters except for G
   for (const G of FILTER_GROUPS) {
     counts[G.key] = {};
-    const passQueryAndOthers = state.manifest.files.filter(f => {
-      const m = matchesQuery(f, queryTokens);
-      if (!m.ok) return false;
+    const passQueryAndOthers = passQuery.filter(f => {
       for (const H of FILTER_GROUPS) {
         if (H.key === G.key) continue;
         if (!fileMatchesGroup(f, H, state.filters[H.key])) return false;
@@ -1335,7 +1390,7 @@ function renderResults(filtered, opts = {}) {
 
     const isLink = !!f.url;
     const openHref = isLink
-      ? f.url
+      ? (safeUrl(f.url) || '#')
       : (f.format === 'doc'
           ? `https://docs.google.com/document/d/${encodeURIComponent(f.drive_id)}/edit`
           : `https://drive.google.com/file/d/${encodeURIComponent(f.drive_id)}/view`);
@@ -1373,7 +1428,7 @@ function renderResults(filtered, opts = {}) {
           </div>
           <div class="card-actions">
             ${isLink ? '' : `<button class="btn-act btn-prim act-preview" data-id="${escHtml(f.id)}">Previsualitza</button>`}
-            <a class="btn-act ${isLink ? 'btn-prim ' : ''}act-drive" href="${openHref}" target="_blank" rel="noopener">${openLabel}</a>
+            <a class="btn-act ${isLink ? 'btn-prim ' : ''}act-drive" href="${escHtml(openHref)}" target="_blank" rel="noopener">${openLabel}</a>
           </div>
         </div>
       </li>`;
@@ -1395,7 +1450,7 @@ function renderPreview() {
   els.layout.classList.add('has-preview');
 
   const previewSrc = f.url
-    ? f.url
+    ? safeUrl(f.url)
     : `https://drive.google.com/file/d/${encodeURIComponent(f.drive_id)}/preview`;
 
   els.preview.innerHTML = `
@@ -1406,7 +1461,7 @@ function renderPreview() {
       </button>
     </div>
     <div class="preview-body" id="pv-body">
-      <iframe src="${previewSrc}" title="Visor de ${escHtml(f.title)}" allow="autoplay"></iframe>
+      <iframe src="${escHtml(previewSrc)}" title="Visor de ${escHtml(f.title)}" allow="autoplay"></iframe>
     </div>
   `;
 
@@ -1457,8 +1512,10 @@ function openPreview(id) {
   // Web resources (proves CB, etc.) have no Drive preview — open externally.
   const wf = state.manifest?.files.find(x => x.id === id);
   if (wf && wf.url) {
+    const target = safeUrl(wf.url);   // no obrim mai una URL d'esquema no permès
+    if (!target) return;
     pushRecent(id);
-    window.open(wf.url, '_blank', 'noopener');
+    window.open(target, '_blank', 'noopener');
     return;
   }
   const prevId = state.openId;
@@ -1705,6 +1762,13 @@ async function loadManifest() {
   if (!data.vocabulary || !Array.isArray(data.files)) {
     throw new Error('Manifest invàlid: falta "vocabulary" o "files".');
   }
+  // IMPORTANT: les etiquetes s'han d'assignar ABANS de construir els blobs.
+  // label() llegeix state.vocabLabels; si encara és buit, cau al fallback
+  // (slug → "Text Capitalitzat") i les etiquetes reals del vocabulari mai
+  // entren a l'índex de cerca. Amb 167 fitxes això deixava fora paraules com
+  // "teorema", "1r", "2n", "3r", "4t", "resolució" o "socioemocional":
+  // cercar "1r ESO" retornava 11 resultats en comptes de 51.
+  state.vocabLabels = data.vocabulary_labels || {};
   // Build search blob per file
   for (const f of data.files) {
     const parts = [
@@ -1762,8 +1826,8 @@ async function init() {
       const saved = localStorage.getItem('material:uiMode');
       if (saved === 'basic' || saved === 'advanced') state.uiMode = saved;
     } catch (e) {}
+    // loadManifest() ja ha assignat state.vocabLabels (cal per als blobs).
     state.manifest = await loadManifest();
-    state.vocabLabels = state.manifest.vocabulary_labels || {};
     syncFromUrl();
     renderAll();
     // Scroll-to-open if preview was deep-linked

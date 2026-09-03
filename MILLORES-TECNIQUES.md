@@ -45,6 +45,11 @@ afegeix una línia al **Registre de canvis** i —si la millora resol un punt de
 | D1 | Actualitzar la documentació desfasada | Alta | S | Fet |
 | E1 | Botó «comparteix aquesta cerca» (`index.html`) | Mitjana | S | Pendent |
 | E2 | Millorar el rànquing de la cerca (pes del títol) | Baixa | S | Fet |
+| F1 | Les etiquetes del vocabulari no entren a l'índex de cerca | Alta | S | Fet |
+| F2 | La cerca bloqueja el navegador uns segons per pulsació de tecla | Alta | S | Fet |
+| F3 | **L'examen de recuperació barreja preguntes de cursos diferents** | Mitjana | S | **Pendent** |
+| F4 | L'editor de `repartiment.html` destrueix la documentació del fitxer de dades | Mitjana | S | Fet |
+| F5 | `f.url` sense escapar i `bumpVersion()` que fa retrocedir la versió | Baixa | S | Fet |
 
 ---
 
@@ -225,6 +230,112 @@ afegeix una línia al **Registre de canvis** i —si la millora resol un punt de
 
 ---
 
+## F. Errors detectats
+
+A diferència de les seccions anteriors, aquestes entrades no són millores
+opcionals: són comportaments incorrectes. Les que estan marcades com a `Fet`
+ja s'han corregit; `F3` es deixa documentada expressament perquè **no és
+urgent**, però convé no perdre-la de vista.
+
+### F1 — Les etiquetes del vocabulari no entren a l'índex de cerca
+- [x] **Estat:** Fet · **Prioritat:** Alta · **Esforç:** S
+- **Fitxers:** `index.html` (`loadManifest()`, `init()`)
+- **Problema:** `loadManifest()` construïa els blobs de cerca cridant `label()`,
+  però `state.vocabLabels` no s'assignava fins **després** que `loadManifest()`
+  retornés. Durant tota la construcció de l'índex, `label()` queia al *fallback*
+  (slug → «Text Capitalitzat») i les etiquetes reals de `vocabulary_labels` no
+  s'indexaven mai. Afectava **157 de les 167 fitxes**.
+- **Símptoma:** paraules com `teorema`, `1r`, `2n`, `3r`, `4t`, `resolució`,
+  `aritmètiques`, `geomètriques` o `socioemocional` no trobaven res.
+  Cercar `1r ESO` retornava 11 resultats en comptes de 51.
+- **Solució:** assignar `state.vocabLabels` dins de `loadManifest()`, abans del
+  bucle que construeix `_blob`, `_blobTitle` i `_blobMain`.
+- **Verificació:** `1r ESO` → 51 · `4t` → 23 · `teorema` → 12 ·
+  `teorema de pitàgores` → 7 · `progressions geomètriques` → 3.
+
+### F2 — La cerca bloqueja el navegador uns segons per pulsació de tecla
+- [x] **Estat:** Fet · **Prioritat:** Alta · **Esforç:** S
+- **Fitxers:** `index.html` (`scoreToken()`, `computeCounts()`, `computeFiltered()`)
+- **Problema:** dues causes que es multiplicaven.
+  1. `computeCounts()` refeia `matchesQuery()` sobre tot el manifest **un cop per
+     cadascun dels sis grups de filtres**, i `computeFiltered()` una setena vegada.
+  2. `scoreToken()` calculava la distància Damerau-Levenshtein **exacta** amb una
+     matriu de programació dinàmica O(L²) per cada finestra del blob, quan només
+     necessita saber si és ≤ 1.
+- **Símptoma:** amb `proporcionalitat` escrit sencer, ~4,7 s de bloqueig del fil
+  principal per pulsació. El *debounce* de 120 ms no ho tapava.
+- **Solució:** cache `queryIndex()` que resol la consulta un sol cop i la
+  reparteix (la coincidència amb la consulta no depèn de cap filtre), i
+  `withinEditDistance1()`, una comprovació O(L) amb sortida anticipada que
+  substitueix la matriu. L'equivalència amb la implementació anterior s'ha
+  verificat sobre tots els parells de paraules de fins a 6 lletres (1.129.309
+  parells) més 351.081 parells aleatoris: cap discrepància.
+- **Verificació:** `proporcionalitat` passa de 4.733 ms a ~3 ms per pulsació.
+
+### F3 — L'examen de recuperació barreja preguntes de cursos diferents
+- [ ] **Estat:** Pendent · **Prioritat:** Mitjana · **Esforç:** S
+- **Fitxers:** `examen-recuperacio.html` (`setCurs()`, `selectedOrdered()`, `doExport()`)
+- **Problema:** `setCurs()` neteja `state.sentits` però **no** `state.selected`, i
+  `selectedOrdered()` filtra sobre *totes* les preguntes del banc, no sobre les
+  del curs actiu. Les preguntes triades sobreviuen al canvi de curs sense que
+  res ho indiqui.
+- **Símptoma:** un professor tria preguntes a 1r d'ESO, canvia a 2n per comparar,
+  n'hi afegeix un parell més i exporta. El `.docx` conté preguntes dels dos
+  cursos i el fitxer es diu `examen-recuperacio-2ESO-<data>.docx`. El panell
+  dret «Examen muntat» les mostra totes, però sense dir de quin curs és cadascuna,
+  així que la barreja passa desapercebuda fins que l'examen és a mans de l'alumnat.
+- **Per què no és urgent ara:** el banc de recuperació encara són els 5 ítems de
+  prova (`recuperacio-items.json` v1.0), i amb tan poques preguntes la barreja es
+  detecta a ull. Passarà a ser rellevant quan el banc creixi.
+- **Opcions (a decidir quan es reprengui):**
+  - **(a) Aïllar per curs** — `setCurs()` fa també `state.selected.clear()`.
+    És el més simple i coherent amb el nom del fitxer exportat, però esborra
+    la feina feta si algú canvia de curs per mirar una cosa i torna enrere.
+  - **(b) Avisar i confirmar** — conservar la selecció, però si en exportar hi ha
+    més d'un curs, demanar confirmació i anomenar el fitxer `…-mixt-<data>.docx`.
+  - **(c) Etiquetar** — mostrar el curs a cada element del panell «Examen muntat»
+    i acolorir els que no són del curs actiu. No impedeix res, però ho fa visible.
+  - La (b) sembla el millor equilibri: no destrueix feina i tanca el forat real,
+    que és exportar una barreja **sense saber-ho**.
+- **Verificació (quan es faci):** triar 2 preguntes a 1ESO, canviar a 2ESO, triar-ne
+  1, exportar → o bé el `.docx` té només la de 2ESO, o bé apareix l'avís.
+
+### F4 — L'editor de `repartiment.html` destrueix la documentació del fitxer de dades
+- [x] **Estat:** Fet · **Prioritat:** Mitjana · **Esforç:** S
+- **Fitxers:** `repartiment.html` (`downloadData()`)
+- **Problema:** `downloadData()` regenerava `repartiment-data.js` sencer amb
+  `JSON.stringify()`. Com que els comentaris no sobreviuen a un *round-trip* per
+  JSON, cada ús de l'editor s'emportava el bloc de documentació de
+  `CONTINGUTS_ACTIVITATS` (30 línies: format de la clau, com afegir-n'hi, l'avís
+  sobre les posicions) i els 21 comentaris de línia que diuen a quin contingut
+  correspon cada número.
+- **Solució:** l'editor només modifica `REPARTIMENT`, així que ara es baixa el
+  text original del fitxer i s'hi substitueix **només** aquell bloc, delimitat per
+  `const REPARTIMENT = {` i `}; // end REPARTIMENT`. La resta queda byte a byte
+  igual. Si el fitxer no es pot llegir o no hi ha delimitadors, s'avisa i no es
+  descarrega res, en comptes de generar un fitxer mutilat.
+- **Verificació:** editar, descarregar i comprovar que els 21 comentaris de línia
+  i els blocs `FORMAT:` / `COM AFEGIR-NE` hi continuen sent, i que el fitxer
+  generat es pot tornar a passar per l'editor.
+
+### F5 — `f.url` sense escapar i `bumpVersion()` que fa retrocedir la versió
+- [x] **Estat:** Fet · **Prioritat:** Baixa · **Esforç:** S
+- **Fitxers:** `index.html` (`renderResults()`, `renderPreview()`, `openPreview()`),
+  `alimentar-banc.html` (`bumpVersion()`)
+- **Problema 1:** el camp `url` del manifest era l'**única** interpolació de tot
+  `index.html` que no passava per `escHtml()`, ni a `href="${openHref}"` ni a
+  `<iframe src="${previewSrc}">`. Amb un manifest curat el risc pràctic és baix,
+  però trencava la regla que se segueix a la resta del fitxer.
+- **Problema 2:** `bumpVersion()` només entenia el format exacte `N.M`; per a
+  qualsevol altra cosa retornava `'1.0'`. Un banc a `2.0.1` retrocedia
+  silenciosament a `1.0` i el fitxer nou semblava més vell que el que substituïa.
+- **Solució:** helper `safeUrl()` que filtra per esquema (només `http`/`https`,
+  perquè un `javascript:` s'executaria en clicar) i escapament del resultat;
+  `bumpVersion()` incrementa l'últim grup de xifres sigui quin sigui el format.
+- **Verificació:** `2.0.1` → `2.0.2` · `v3` → `v4` · `1.9` → `1.10` · buit → `1.0`.
+
+---
+
 ## Decisions: què NO farem (i per què)
 
 Es deixa constància de propostes valorades i **descartades a propòsit**, perquè no es tornin a obrir sense motiu.
@@ -245,6 +356,12 @@ Afegeix una línia per cada millora aplicada (la més recent a dalt).
 
 | Data | ID | Canvi | Qui |
 |------|----|-------|-----|
+| 2026-09-03 | dades | `manifest.json`: revisades les 11 entrades `bg-*` (dossiers Bogdan d'ESO) contra el contingut real dels PDF. Tretes 4 etiquetes que el dossier no tracta (`pitagores` a geometria, `inequacions` a equacions de 4t, `sistemes-lineals-gauss` a sistemes 3×3) i afegides 10 que hi faltaven (5 només a `bg-nombres-reals`). Afegit el camp `notes` amb el temari real de cada dossier. Afegida l'etiqueta que faltava al valor `angles` del vocabulari. **Pendent:** el dossier de trigonometria d'ESO (tema 3) no és al Drive; entrada preparada a `PENDENT-bg-trigonometria-eso.json`, només li falta el `drive_id` | — |
+| 2026-09-03 | F5 | `index.html`: helper `safeUrl()` (només http/https) + `escHtml()` a l'`href` de la targeta, al `src` de l'iframe i a `window.open()`. `alimentar-banc.html`: `bumpVersion()` incrementa l'últim grup de xifres en comptes de reiniciar a `1.0` | — |
+| 2026-09-03 | F4 | `repartiment.html`: `downloadData()` ara fa *splice* del bloc `REPARTIMENT` dins del text original del fitxer en comptes de regenerar-lo sencer; es conserven els 21 comentaris de línia i els blocs de documentació de `CONTINGUTS_ACTIVITATS` | — |
+| 2026-09-03 | F3 | Documentat (no corregit): la selecció de preguntes sobreviu al canvi de curs a `examen-recuperacio.html`. Vegeu §F3 i el comentari a `setCurs()` | — |
+| 2026-09-03 | F2 | `index.html`: cache `queryIndex()` (la consulta es resol 1 cop en comptes de 7 per pulsació) i `withinEditDistance1()` O(L) en lloc de la matriu Damerau-Levenshtein O(L²). 4.733 ms → ~3 ms per pulsació | — |
+| 2026-09-03 | F1 | `index.html`: `state.vocabLabels` s'assigna dins de `loadManifest()`, abans de construir els blobs. `1r ESO` passa d'11 a 51 resultats | — |
 | 2026-06-04 | E2 | `index.html`: `_blobTitle` i `_blobMain` per ponderar títol (×3) i camps principals (×2) vs notes (×1) en `matchesQuery()` | — |
 | 2026-06-04 | D1 | `ARQUITECTURA.md §6.2`, `MANTENIMENT.md`, `README.md`: actualitzades les referències a imatges de `cb-img/`; les 107 imatges ja hi són totes (`CB157.png` inclòs) | — |
 | 2026-06-04 | B3 | Creat `common.js` amb `escHtml`, `normalize`, `slugify`, `FILTER_GROUPS`, `ESO_COURSES`, `BATX_COURSES`, `FALLBACK_VOCAB`, `FALLBACK_LABELS`; adoptat per `index.html`, `repartiment.html`, `banc-cb.html` i `eliminar-curs.html`. Les altres 4 pàgines conserven còpies locals (migració deixada deliberadament incompleta) | — |

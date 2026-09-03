@@ -841,10 +841,19 @@ function triggerDownload(blob, filename){
 }
 
 // Incrementa una versió "1.x" → "1.(x+1)". Si no és vàlida, comença a 1.0.
+/* Incrementa la versió del banc.
+ *
+ * Abans només entenia el format exacte "N.M" i, per a qualsevol altra cosa,
+ * retornava '1.0'. Això no incrementava res: un banc a "2.0.1" o a "v3"
+ * RETROCEDIA silenciosament a 1.0, i el fitxer nou semblava més vell que
+ * el que substituïa. Ara s'incrementa l'últim grup de xifres que hi hagi,
+ * sigui quin sigui el format, i només es parteix d'1.0 si no hi ha versió. */
 function bumpVersion(v){
-  const m=/^(\d+)\.(\d+)$/.exec(String(v||'').trim());
-  if(!m) return '1.0';
-  return `${m[1]}.${parseInt(m[2],10)+1}`;
+  const s=String(v??'').trim();
+  if(!s) return '1.0';                       // banc sense versió → primera versió
+  const m=/^(.*?)(\d+)(\D*)$/.exec(s);       // últim grup de xifres de la cadena
+  if(!m) return s+'.1';                      // cap xifra: hi afegim un sufix
+  return `${m[1]}${parseInt(m[2],10)+1}${m[3]}`;
 }
 
 // A) Exporta NOMÉS les preguntes noves (fragment + PNG) — per enganxar a mà.

@@ -648,6 +648,18 @@ function renderExamPanel() {
 function setCurs(c) {
   state.curs = c;
   state.sentits.clear();        // reinicia filtre de sentit (els sentits depenen del curs)
+  // ⚠️ ERRÒNIA CONEGUDA (F3 a MILLORES-TECNIQUES.md) — pendent, no urgent.
+  //
+  // state.selected NO es neteja aquí, i selectedOrdered() filtra sobre TOTES les
+  // preguntes del banc, no sobre les del curs actiu. Per tant la selecció
+  // sobreviu al canvi de curs: qui triï preguntes a 1r, canviï a 2n i n'hi
+  // afegeixi més, exportarà un .docx amb preguntes dels dos cursos, anomenat
+  // només amb el curs actiu. El panell «Examen muntat» no mostra de quin curs
+  // és cada pregunta, així que la barreja no es veu.
+  //
+  // Ara no fa mal perquè el banc són 5 ítems de prova. Quan creixi, cal decidir
+  // entre netejar la selecció aquí, avisar en exportar, o etiquetar el curs a
+  // cada element del panell dret. Vegeu §F3 per a l'anàlisi de les tres opcions.
   render();
   syncExportButtons();
 }

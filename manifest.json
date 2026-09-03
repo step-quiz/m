@@ -1,6 +1,6 @@
 {
-  "version": 2,
-  "generated": "2026-07-21T11:19:51",
+  "version": 3,
+  "generated": "2026-09-03T05:21:39",
   "folder_url": "https://drive.google.com/drive/folders/1WjqddjN3uQhO7zUXzRKwDmBia6jqCUdy",
   "vocabulary": {
     "origin": [
@@ -287,7 +287,8 @@
     "prova-cb": "Prova CB",
     "math-bits": "Math-Bits",
     "mariel-mates": "Mariel Mates",
-    "solucions": "Solucions"
+    "solucions": "Solucions",
+    "angles": "Angles"
   },
   "files": [
     {
@@ -2135,7 +2136,8 @@
         "identitats-notables",
         "factoritzacio"
       ],
-      "type": "dossier"
+      "type": "dossier",
+      "notes": "Tema 6. Llenguatge algebraic, expressions algebraiques i valor numèric, monomis i operacions amb monomis, identitats notables, extracció de factor comú. Amb exercicis i problemes resolts en vídeo."
     },
     {
       "title": "Equacions 1r i 2n grau",
@@ -2152,7 +2154,8 @@
         "equacions",
         "equacions-segon-grau"
       ],
-      "type": "dossier"
+      "type": "dossier",
+      "notes": "Tema 9. Equacions de 1r grau (regla de la suma i del producte, equacions amb denominadors) i equacions de 2n grau (fórmula general i discriminant). Amb exercicis i problemes resolts en vídeo."
     },
     {
       "title": "Equacions 4t ESO",
@@ -2167,9 +2170,10 @@
       "activities": [
         "equacions",
         "equacions-segon-grau",
-        "inequacions"
+        "arrels-radicals"
       ],
-      "type": "dossier"
+      "type": "dossier",
+      "notes": "Tema 10. Equacions polinòmiques de grau més gran o igual que 3 (regla de Ruffini i arrels del polinomi), equacions biquadrades, equacions amb radicals i equacions racionals. Amb exercicis i problemes resolts en vídeo."
     },
     {
       "title": "Funcions",
@@ -2188,7 +2192,8 @@
         "funcio-quadratica",
         "creixement-decreixement"
       ],
-      "type": "dossier"
+      "type": "dossier",
+      "notes": "Tema 7. Funcions de variables reals: taula de valors, funció definida per una gràfica, domini, punts de tall amb els eixos, creixement i decreixement, màxims i mínims, funció afí (i càlcul de la recta que passa per dos punts) i funció de 2n grau. Amb exercicis i problemes resolts en vídeo."
     },
     {
       "title": "Geometria",
@@ -2203,11 +2208,13 @@
       "activities": [
         "figures-planes",
         "arees-perimetres",
-        "pitagores",
         "cossos-geometrics",
-        "volums-arees-cossos"
+        "volums-arees-cossos",
+        "poligons",
+        "circumferencia-cercle"
       ],
-      "type": "dossier"
+      "type": "dossier",
+      "notes": "Tema 1. Figures geomètriques planes i polígons, circumferència i cercle, perímetres i àrees, poliedres, cossos de revolució (cilindre, con i esfera), àrees i volums. Amb exercicis i problemes resolts en vídeo."
     },
     {
       "title": "Nombres reals",
@@ -2224,9 +2231,15 @@
         "potencies",
         "arrels-radicals",
         "nombres-reals",
-        "logaritmes-exponencials"
+        "logaritmes-exponencials",
+        "nombres-enters",
+        "nombres-racionals",
+        "fraccions",
+        "notacio-cientifica",
+        "percentatges"
       ],
-      "type": "dossier"
+      "type": "dossier",
+      "notes": "Tema 5. Nombres enters i racionals, fracció generatriu, nombres irracionals i reals, intervals i intersecció/unió d'intervals, estimació, arrodoniment i errors, percentatges, potències de nombres reals, notació científica, radicals, simplificació del radicand, racionalització i logaritmes. Amb exercicis i problemes resolts en vídeo."
     },
     {
       "title": "Polinomis (ESO)",
@@ -2243,7 +2256,8 @@
         "identitats-notables",
         "factoritzacio"
       ],
-      "type": "dossier"
+      "type": "dossier",
+      "notes": "Tema 8. Polinomis i operacions, potència d'un polinomi, regla de Ruffini, teorema del residu, arrels d'un polinomi, factorització de polinomis i fraccions algebraiques. Amb exercicis i problemes resolts en vídeo."
     },
     {
       "title": "Semblança",
@@ -2259,9 +2273,11 @@
       "activities": [
         "pitagores",
         "tales",
-        "semblanca"
+        "semblanca",
+        "proporcionalitat"
       ],
-      "type": "dossier"
+      "type": "dossier",
+      "notes": "Tema 2. Segments proporcionals, teorema de Tales, triangles semblants i criteris de semblança, teorema del catet i de l'altura, figures semblants i raó de semblança, escales. Amb exercicis i problemes resolts en vídeo."
     },
     {
       "title": "Sistemes 2×2",
@@ -2274,9 +2290,11 @@
       ],
       "math_sense": "algebraic",
       "activities": [
-        "sistemes-equacions"
+        "sistemes-equacions",
+        "equacions"
       ],
-      "type": "dossier"
+      "type": "dossier",
+      "notes": "Tema 11. Equacions lineals de 1r grau amb dues incògnites, sistemes d'equacions lineals 2×2 pels mètodes de substitució, igualació i reducció, i interpretació geomètrica dels sistemes lineals. Amb exercicis i problemes resolts en vídeo."
     },
     {
       "title": "Sistemes 3×3 i no lineals",
@@ -2291,9 +2309,10 @@
       "math_sense": "algebraic",
       "activities": [
         "sistemes-equacions",
-        "sistemes-lineals-gauss"
+        "equacions-segon-grau"
       ],
-      "type": "dossier"
+      "type": "dossier",
+      "notes": "Tema 12. Sistemes d'equacions lineals 3×3 resolts per substitució i reducció, sistemes d'equacions no lineals i interpretació geomètrica dels sistemes no lineals 2×2. Amb exercicis i problemes resolts en vídeo."
     },
     {
       "title": "Vectors",
@@ -2309,7 +2328,8 @@
         "geometria-pla-cartesia",
         "vectors-pla"
       ],
-      "type": "dossier"
+      "type": "dossier",
+      "notes": "Tema 4. Vectors al pla, coordenades d'un vector, mòdul i argument, i operacions amb vectors. Amb exercicis i problemes resolts en vídeo."
     },
     {
       "title": "Recull de problemes de selectivitat sobre geometria afi i mètrica (BLOC II 2016-2024)",

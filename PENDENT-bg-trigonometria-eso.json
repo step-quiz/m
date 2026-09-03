@@ -1,0 +1,19 @@
+{
+  "title": "Trigonometria (ESO)",
+  "id": "bg-trigonometria-eso",
+  "drive_id": "",
+  "format": "pdf",
+  "origin": "bogdan",
+  "courses": [
+    "4ESO"
+  ],
+  "math_sense": "mesura",
+  "activities": [
+    "angles",
+    "trigonometria",
+    "triangles-rectangles",
+    "identitats-trigonometriques"
+  ],
+  "type": "dossier",
+  "notes": "Tema 3. Mesura d'angles en graus i radians, raons trigonomètriques d'un angle agut, relacions entre raons trigonomètriques, circumferència trigonomètrica, resolució de triangles rectangles i aplicacions de la trigonometria. Amb exercicis i problemes resolts en vídeo."
+}
