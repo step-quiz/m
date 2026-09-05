@@ -158,8 +158,13 @@ Objecte JS incrustat:
 }
 ```
 
-Cada sessió: `{ id, titol, nucli, cb[], principal, addicionals[] }`.
+Cada sessió: `{ id, titol, nucli, cb[] }`.
 Cada ítem CB: `{ id (numèric), desc, src ("2ESO"|"4ESO"), pes (1–3) }`.
+
+`ff2`/`ff3` són triples `[origen, destí, descripció]`; la descripció surt com a `title` del
+xip «Continua per…». Els camps `principal` i `addicionals[]` (combinacions de filtre amb URL
+cap a `cb.step-quiz.net`) es van eliminar el 2026-09-04: no es renderitzaven i quedaven
+desfasats cada cop que creixia el banc.
 
 Les imatges es resolen en **local** com `cb-img/CB<id>.png` (a diferència del banc CB, que
 les agafa de `cb.step-quiz.net`). Es referencien 107 ids CB diferents.
