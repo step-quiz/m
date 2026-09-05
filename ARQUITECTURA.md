@@ -291,6 +291,9 @@ Particularitats:
   alguna sessió del `PAYLOAD`. `pipeline-data.js` en fa servir els 166.
 - Una sessió pot ser d'un curs diferent del contingut, i és el cas habitual: la interfície
   ho marca amb l'etiqueta «del graf de 3r d'ESO».
+- **La cobertura es veu a la interfície**, no cal consultar el fitxer: cada contingut duu un
+  punt ple o un anell buit, i cada tema el recompte `n/m` dels seus. Quan el juny del 2027
+  entrin les sessions de 1r i 4t, els forats es taparan sols en afegir entrades aquí.
 - **Cobertura actual:** 231 dels 251 continguts (2n 80/80 · 3r 48/49 · 1r 54/62 · 4t 49/60).
   Els forats són reals (logaritmes, trigonometria, notació científica) i es mostren com a
   tals. És, de fet, la vista inversa que demanava `CB1` al roadmap pedagògic.
@@ -482,6 +485,23 @@ documenten perquè se'n tingui constància.
     de dades externs, però per `<script src>` i no per `fetch()`, de manera que segueix
     funcionant sense servidor. Si no s'hi troben, el commutador de mode no apareix i la resta
     de la pàgina no se n'assabenta.
+
+---
+
+## 6b. Comprovació automàtica: `valida-dades.js`
+
+`node valida-dades.js` (només Node, cap paquet) creua tots els contractes de dades i
+comprova el que no peta en execució però es veu a classe: ids CB sense targeta a `cb-img/`,
+sessions amb `pdf:true` sense fitxer, fils que apunten a sessions inexistents, posicions de
+`CONTINGUT_PIPELINE` fora del seu tema, fils definits i no fets servir, relacions `ff<n>`
+que travessen grafs, i el desfasament entre `cb-items.json` i el `PAYLOAD`.
+
+Acaba imprimint totes les xifres que hi ha escrites als `.md` (targetes, sessions, fils,
+cobertura per curs). Quan un recompte d'aquest fitxer o del `README` no quadri, la sortida
+del guió és la bona.
+
+Torna codi 1 si hi ha errors i 0 si només hi ha avisos, de manera que es pot encadenar
+abans d'un commit.
 
 ---
 

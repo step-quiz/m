@@ -136,6 +136,7 @@ abans del commit. `florence-cb.html` ja admet grafs de 1r i 4t d'ESO sense tocar
 ├── cb-items.json           ← banc CB (per a banc-cb.html)
 ├── cb-img/                 ← PNG per a florence-cb.html
 ├── lib/pdf-lib.min.js      ← pdf-lib local (per a banc-cb.html)
+├── valida-dades.js         ← «node valida-dades.js» abans de fer commit
 ├── README.md
 ├── ARQUITECTURA.md
 └── MANTENIMENT.md          ← aquest document

@@ -1,19 +1,31 @@
 # Actualització anual: competències bàsiques i Florence
 
-Cada juny arriben novetats per dos camins independents. Aquesta guia recull els dos, amb
-l'estat en què va quedar tot el setembre del 2026 i què cal fer la propera vegada.
+Cada juny arriben novetats per tres camins. Aquesta guia els recull tots tres, amb
+l'estat en què va quedar el projecte i què cal fer la propera vegada.
 
 - **Eix CB** — el Departament publica les proves de competències bàsiques de l'any.
   Afecten `cb-main` (el projecte de `cb.step-quiz.net`) i, de retruc, aquest projecte.
 - **Eix Florence** — apareixen seqüències didàctiques noves. El juny del 2027 s'hi
   afegiran les de **1r i 4t d'ESO**, que ara no existeixen.
+- **Eix repartiment** — el pont `pipeline-data.js`, que relaciona els continguts del
+  currículum amb les dues coses anteriors. **No s'actualitza sol**: si només fas els dos
+  primers eixos, el mode «El meu repartiment» de `florence-cb.html` es quedarà mostrant la
+  cobertura de l'any passat i 1r i 4t continuaran dient que no hi ha cap tasca.
 
-Els dos eixos es poden fer per separat i en qualsevol ordre. Si toca fer-los tots dos,
-convé fer primer el de CB: així les preguntes noves ja hi són quan s'assignen a les
-sessions de Florence.
+**L'ordre importa:** CB → Florence → repartiment. Cada pas fa servir el resultat de
+l'anterior (les preguntes noves s'assignen a les sessions; les sessions noves s'assignen
+als continguts).
 
-Per a l'esquema de dades vegeu [`ARQUITECTURA.md`](ARQUITECTURA.md); per al dia a dia del
-catàleg, [`MANTENIMENT.md`](MANTENIMENT.md).
+### Si comences sense context
+
+Llegeix, en aquest ordre: [`README.md`](README.md) (què és cada fitxer),
+[`ARQUITECTURA.md`](ARQUITECTURA.md) §2–§5 (els contractes de dades) i aquesta guia. Per al
+dia a dia del catàleg, [`MANTENIMENT.md`](MANTENIMENT.md).
+
+Abans de tocar res, executa `node valida-dades.js`: comprova totes les relacions entre
+fitxers i imprimeix les xifres actuals. Torna a executar-lo al final i compara. És la
+manera més ràpida de veure l'estat real del repositori sense fiar-te del que diuen els
+`.md`, que es poden haver quedat enrere.
 
 ---
 
@@ -25,6 +37,10 @@ catàleg, [`MANTENIMENT.md`](MANTENIMENT.md).
 | Grafs Florence | 2n ESO (11 sessions) · 3r ESO (11 sessions) |
 | Targetes `cb-img/` | 166 (`CB1.png … CB218.png`) |
 | Fitxes d'alumnat `florence-pdf/` | 22 |
+| Pont `pipeline-data.js` | 48 fils · 231 dels 251 continguts (2n 80/80 · 3r 48/49 · 1r 54/62 · 4t 49/60) |
+
+> Aquestes xifres les imprimeix `node valida-dades.js`. Si no coincideixen amb el que veus,
+> fes cas del guió, no de la taula.
 
 ---
 
@@ -69,8 +85,10 @@ complexitat de cada ítem, i la clau de respostes. No cal endevinar res.
    del 2026 deriva els anys de `preguntes.json` i només fa servir la llista escrita a mà
    com a reserva quan no pot llegir el fitxer.
 
-7. Actualitza els recomptes de `ARQUITECTURA.md` §3 i afegeix una línia a
-   `MILLORES-TECNIQUES.md`.
+7. **Reparteix les preguntes noves entre les sessions del `PAYLOAD`** i, tot seguit, entre
+   els fils de `pipeline-data.js` (vegeu «Eix repartiment» més avall).
+8. Executa `node valida-dades.js`, actualitza els recomptes de `ARQUITECTURA.md` §3 i §4e i
+   afegeix una línia a `MILLORES-TECNIQUES.md`.
 
 ### Coses que han passat i tornaran a passar
 
@@ -180,8 +198,89 @@ L'error mitjà és de 0,2 sobre 255 i el pes baixa un 60 %.
 - Cap sessió repeteix el mateix id CB.
 - Les llistes `cb` estan ordenades per pes descendent.
 - Cada sessió amb `"pdf": true` té el seu fitxer a `florence-pdf/`.
-- Actualitza el recompte d'imatges a `README.md`, `MANTENIMENT.md` i `ARQUITECTURA.md`
-  (surt a tres llocs), i afegeix la línia a `MILLORES-TECNIQUES.md`.
+- **Afegeix les sessions noves als fils de `pipeline-data.js`** (secció següent). Sense
+  això, les sessions surten al mode «Sessions Florence» però no al del repartiment.
+- Executa `node valida-dades.js` i resol-ne els errors.
+- Actualitza els recomptes a `README.md`, `MANTENIMENT.md` i `ARQUITECTURA.md`, i afegeix la
+  línia a `MILLORES-TECNIQUES.md`. El validador imprimeix totes les xifres al final.
+
+---
+
+## Eix repartiment: actualitzar el pont `pipeline-data.js`
+
+Aquest és el pas que és fàcil oblidar, perquè res no falla si te'l saltes: la pàgina
+segueix funcionant, simplement es queda amb la cobertura de l'any passat.
+
+### Què hi ha dins
+
+Dues taules (l'esquema complet és a [`ARQUITECTURA.md`](ARQUITECTURA.md) §4e):
+
+- `PIPELINES` — els «fils didàctics». Cada fil aplega les **sessions Florence** i les
+  **preguntes CB** que treballen una mateixa idea (`pitagores`, `percentatges`, `poliedres`…).
+- `CONTINGUT_PIPELINE` — quins fils toca cada contingut del repartiment, per posició.
+
+Gairebé tota la feina anual és a `PIPELINES`. `CONTINGUT_PIPELINE` només canvia si canvia
+el repartiment mateix.
+
+### Quan arriba una edició CB nova
+
+Les preguntes noves ja s'han repartit entre les sessions al pas anterior. Ara toca posar-les
+també als fils, que és el que fa que apareguin quan un professor entra pel currículum.
+
+1. Mira quines preguntes noves ha rebut cada sessió.
+2. Per a cada fil que inclogui aquella sessió, pregunta't si la pregunta nova hi encaixa.
+   Si hi encaixa, afegeix-hi l'id. **Les llistes `cb` van de més a menys properes al
+   contingut:** la primera és la que donaries a un alumne si només n'hi poguessis donar una.
+3. Si una pregunta nova obre un tema que cap fil no cobreix, val més crear un fil nou i
+   assignar-lo als continguts que toqui, que no encabir-la en un fil que li queda gran.
+
+Restricció dura: **només pots posar ids que tinguin targeta a `cb-img/`**, perquè és d'allà
+que surt la imatge, i que estiguin descrits en alguna sessió del `PAYLOAD`, perquè d'allà
+surten la font (`2ESO`/`4ESO`) i el text de la columna «Continguts que es mobilitzen». Si
+poses un id que no compleix les dues coses, `valida-dades.js` t'ho dirà.
+
+### Quan arriba un graf Florence nou (1r i 4t, juny del 2027)
+
+Aquest és el cas gros, i el que farà pujar més la cobertura.
+
+1. Dona d'alta les sessions al `PAYLOAD` (secció anterior). Fins aquí, el mode
+   «El meu repartiment» encara no les proposa.
+2. Per a cada sessió nova, llegeix-ne el `nucli` i busca **quins fils ja existents** la
+   descriuen. Afegeix-hi `['F_1ESO_S03', <encaix>]`. Sovint no cal cap fil nou: una sessió
+   de 1r sobre àrees encaixa al fil `area-figures` que ja hi ha.
+3. Crea fils nous només per a idees que no hi són. Els forats coneguts del 2026 són bons
+   candidats: logaritmes, trigonometria, notació científica, sistemes de numeració, la
+   jerarquia de les operacions.
+4. Assigna els fils nous als continguts a `CONTINGUT_PIPELINE`, amb la clau
+   `<CURS>|<sentit>/<tema.id>` i la **posició** del contingut dins del tema, començant per 1.
+
+Un detall que va sorprendre el 2026 i tornarà a passar: **una sessió pot servir per a un
+contingut d'un altre curs**. El teorema de Pitàgores és contingut de 2n, però la sessió que
+el treballa és «Quadrats inclinats», del graf de 3r. Això és desitjat i la interfície ho
+marca; no ho «arreglis» limitant els fils al seu propi curs.
+
+### Frases que ja no s'han de tocar
+
+La interfície deriva del `PAYLOAD` quins cursos tenen graf. Quan omplis `d1` i `d4`, els
+missatges del tipus «De moment només hi ha graf de 2n i 3r d'ESO» desapareixen sols. **No
+hi ha cap any escrit a mà dins de `florence-cb.html`**; si n'hi afegeixes un, el tornaràs a
+haver de buscar l'any vinent.
+
+### El fitxer s'edita a mà
+
+`pipeline-data.js` es va generar un cop amb un guió, però la font de veritat ara és el
+fitxer mateix: està comentat contingut a contingut precisament perquè es pugui editar
+directament. No el regeneris des de zero; perdries les correccions del departament.
+
+### Comprovacions
+
+```
+node valida-dades.js
+```
+
+Comprova que cap fil no apunti a sessions o preguntes inexistents, que cap posició no se
+surti del seu tema, que no hi hagi fils definits i no fets servir, i imprimeix la cobertura
+nova per copiar-la als `.md`.
 
 ---
 
@@ -192,9 +291,11 @@ L'error mitjà és de 0,2 sobre 255 i el pes baixa un 60 %.
 | `retalla_cb.py` | Retalla enunciats i preguntes dels PDF oficials d'una prova CB |
 | `genera_cb_items.py` | Refà `cb-items.json` a partir de `preguntes.json` de `cb-main` |
 | `make_cb_card.py` | Compon les targetes `cb-img/CB<id>.png` de `florence-cb.html` |
+| `valida-dades.js` | Comprova la coherència entre el `PAYLOAD`, `pipeline-data.js`, `repartiment-data.js`, `cb-img/`, `florence-pdf/` i `cb-items.json`, i imprimeix les xifres dels `.md` |
 
-Tots tres necessiten Python 3; els dos primers, també Pillow, i `retalla_cb.py` a més
-`pdfplumber` i les eines de `poppler` (`pdftoppm`).
+Els tres primers necessiten Python 3; dos d'ells, també Pillow, i `retalla_cb.py` a més
+`pdfplumber` i les eines de `poppler` (`pdftoppm`). `valida-dades.js` només necessita Node,
+sense cap paquet: llegeix els fitxers de dades tal com ho faria el navegador.
 
 `cb-items.json` **es dedueix sencer** de `preguntes.json`: la font de veritat és el segon i
 el primer se'n deriva. No editis `cb-items.json` a mà.

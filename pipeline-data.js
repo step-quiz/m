@@ -614,8 +614,8 @@ const CONTINGUT_PIPELINE = {
     2: ['estadistica-taules'],                     // Variables quantitatives i qualitatives
     3: ['estadistica-taules'],                     // Variables quantitatives discretes i contínues
     4: ['estadistica-taules', 'percentatges'],     // Taula estadística: freqüència absoluta, relativa, percentatge
-    5: ['estadistica-taules', 'lectura-grafics'],  // Gràfic de barres
-    6: ['estadistica-taules', 'percentatges'],     // Diagrama de sectors
+    5: ['estadistica-taules', 'lectura-grafics'],       // Gràfic de barres
+    6: ['estadistica-taules', 'percentatges', 'pensament-critic'],  // Diagrama de sectors
   },
 
   '2ESO|estocastic/mesures-centralitzacio': {   // Mesures de centralització
@@ -726,7 +726,7 @@ const CONTINGUT_PIPELINE = {
   },
 
   '4ESO|numeric/percentatge': {   // Percentatge
-    1: ['estadistica-taules', 'percentatges'],        // Interpretació d'un diagrama de sectors
+    1: ['estadistica-taules', 'percentatges', 'pensament-critic'],  // Interpretació d'un diagrama de sectors
     2: ['centralitzacio'],                            // Mitjana aritmètica ponderada
     3: ['percentatge-variacio'],                      // Augments i disminucions percentuals
     4: ['percentatge-variacio'],                      // Càlcul de l'IVA
@@ -782,7 +782,7 @@ const CONTINGUT_PIPELINE = {
   '4ESO|estocastic/variable-estadistica': {   // Variable estadística quantitativa
     1: ['estadistica-taules'],  // Variables quantitatives discretes
     2: ['estadistica-taules'],  // Variables quantitatives contínues. Marca de classe
-    3: ['centralitzacio'],      // Paràmetres de centralització. Paràmetres de dispersió.
+    3: ['centralitzacio', 'pensament-critic'],  // Paràmetres de centralització. Paràmetres de dispersió.
   },
 
   '4ESO|estocastic/combinatoria': {   // Combinatòria

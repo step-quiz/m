@@ -172,6 +172,20 @@ a:hover { text-decoration: underline; }
 .tema-toggle.open .tema-caret { transform: rotate(90deg); }
 .tema-name { font-size: 15.4px; font-weight: 600; color: var(--ink); line-height: 1.35; }
 
+/* Quants continguts del tema tenen seqüència de pràctica. Permet veure on
+   n'hi ha sense desplegar tema per tema; la mateixa pastilla que fa servir
+   florence-cb.html al seu arbre. */
+.tema-pipes {
+  flex-shrink: 0; margin-left: auto; align-self: center;
+  font-size: 10.5px; font-weight: 700; letter-spacing: .02em;
+  padding: 1px 7px; border-radius: 9px;
+  background: var(--blue); color: #fff;
+}
+.tema-pipes.zero {
+  background: transparent; color: var(--hint);
+  border: 1px solid var(--line); font-weight: 600;
+}
+
 .hores-td { font-size: 14.3px; color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; padding-top: 10px; }
 
 /* ── Continguts list ───────────────────────────────────────────────── */
@@ -212,12 +226,12 @@ a:hover { text-decoration: underline; }
 .cont-pipe {
   margin-left: auto; align-self: flex-start; margin-top: 1px;
   display: inline-flex; align-items: center; flex-shrink: 0;
-  color: var(--navy); opacity: .55; text-decoration: none;
+  color: var(--blue); opacity: .8; text-decoration: none;
   border-radius: 5px; padding: 1px 3px;
   transition: opacity .12s, background .12s, color .12s;
 }
 .cont-pipe svg { width: 14px; height: 14px; display: block; }
-.cont-list li:hover .cont-pipe { opacity: .85; }
+.cont-list li:hover .cont-pipe { opacity: 1; }
 .cont-pipe:hover, .cont-pipe:focus-visible {
   opacity: 1; background: var(--blue-bg); color: var(--blue);
 }
@@ -488,6 +502,7 @@ function buildTemaRow(curs, sentit, t) {
       <div class="tema-toggle" data-rid="${rid}">
         <span class="tema-caret">▶</span>
         <span class="tema-name">${escHtml(t.label)}</span>
+        ${pipelineCount(curs, sentit, t)}
       </div>
       <ul class="cont-list" id="cl-${rid}">${items}</ul>
     </td>
@@ -584,6 +599,19 @@ function applyMaterialLinks(manifest) {
  * moment de construir la fila: les dades són locals i síncrones, no cal
  * esperar cap fetch. Si pipeline-data.js no s'ha carregat, o el contingut
  * no té res associat, no es retorna res i la fila queda com abans. */
+/* Pastilla «n/m» a la capçalera del tema: quants dels seus continguts tenen
+   seqüència. Es dedueix del mateix pont, així que apareix i desapareix sola. */
+function pipelineCount(curs, sentit, t) {
+  if (typeof CONTINGUT_PIPELINE === 'undefined') return '';
+  const m = CONTINGUT_PIPELINE[`${curs}|${sentit}/${t.id}`] || {};
+  const tot = t.continguts.length;
+  const amb = t.continguts.filter((c, i) => (m[i + 1] || []).length).length;
+  const lbl = amb
+    ? `${amb} ${amb === 1 ? "d'aquests continguts té" : "d'aquests continguts tenen"} seqüència de pràctica (tasca de Florence i preguntes CB)`
+    : 'Cap contingut d\'aquest tema no té encara seqüència de pràctica';
+  return `<span class="tema-pipes${amb ? '' : ' zero'}" title="${escHtml(lbl)}">${amb}/${tot}</span>`;
+}
+
 function pipelineLink(curs, sentit, tid, pos) {
   if (typeof CONTINGUT_PIPELINE === 'undefined' || typeof PIPELINES === 'undefined') return '';
   const fils = (((CONTINGUT_PIPELINE[`${curs}|${sentit}/${tid}`] || {})[pos]) || [])

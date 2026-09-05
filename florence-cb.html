@@ -181,20 +181,40 @@ table.cb th:last-child{text-align:left}
 .temahd:hover{background:var(--bg)}
 .temahd .caret{flex:0 0 auto;color:var(--hint);font-size:10px;transition:transform .15s}
 .temahd.open .caret{transform:rotate(90deg)}
-.temahd .h{margin-left:auto;font-size:11px;font-weight:600;color:var(--hint)}
+.temahd .tl{min-width:0}
+.temahd .h{flex:0 0 auto;font-size:11px;font-weight:600;color:var(--hint)}
 .contlist{margin:0 0 6px;padding:0;list-style:none}
 .contlist[hidden]{display:none}
 .controw{display:flex;gap:8px;align-items:baseline;width:100%;text-align:left;border:0;background:none;
- font:inherit;font-size:12.7px;line-height:1.35;color:var(--muted);padding:5px 8px 5px 22px;
+ font:inherit;font-size:12.7px;line-height:1.35;color:var(--ink);padding:5px 8px 5px 12px;
  border-radius:7px;cursor:pointer}
-.controw:hover{background:#e2e5ea;color:var(--ink)}
+.controw:hover{background:#e2e5ea}
 .controw.sel{background:var(--blue-bg);color:var(--navy);font-weight:600}
 .controw .n{flex:0 0 auto;font-size:11px;font-weight:700;color:var(--hint);min-width:12px}
 .controw.sel .n{color:var(--blue-soft)}
 .controw.buit{color:var(--hint)}
-.controw.buit .t::after{content:'·';margin-left:6px;color:var(--line)}
+
+/* Marcador «aquest contingut té tasca i pràctica associades».
+   La diferència ha de ser de FORMA, no de to de gris: un punt ple contra un
+   anell buit es distingeix d'un cop d'ull i sobreviu a qualsevol pantalla.
+   És d'un sol color perquè vol dir una sola cosa; el sentit matemàtic ja
+   l'expliquen la capçalera i la vora de color de cada tema. */
+.mk{flex:0 0 auto;width:9px;height:9px;border-radius:50%;box-sizing:border-box;
+ align-self:center;background:var(--blue);border:1px solid var(--blue)}
+.mk.buit{background:transparent;border-color:#c3c9d4}
+.controw.sel .mk{background:var(--blue-soft);border-color:var(--blue-soft)}
+
 .hitmeta{display:block;font-size:10.5px;color:var(--hint);font-weight:400;margin-top:1px}
 .nores{padding:16px 14px;font-size:12.5px;color:var(--hint)}
+
+/* Recompte de continguts amb pràctica, a la capçalera de cada tema. Serveix
+   per veure on hi ha material sense haver de desplegar tema per tema. */
+.tcount{flex:0 0 auto;margin-left:auto;font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:9px;
+ background:var(--blue);color:#fff;letter-spacing:.02em}
+.tcount.zero{background:transparent;color:var(--hint);border:1px solid var(--line);font-weight:600}
+
+/* Llegenda del marcador (panell lateral) */
+.mklegend{display:flex;align-items:center;gap:6px}
 
 /* ---- Fitxa del contingut (panell dret) ---- */
 .crumb{font-size:11.5px;color:var(--hint);font-weight:600;margin-bottom:4px}
@@ -205,11 +225,12 @@ table.cb th:last-child{text-align:left}
 .filchip{display:inline-block;font-size:11.5px;font-weight:600;padding:2px 9px;border-radius:12px;
  background:var(--bg);color:var(--muted);border:1px solid var(--line);margin:0 5px 5px 0}
 .contsibs{list-style:none;margin:0;padding:0;font-size:13px}
-.contsibs li{display:flex;gap:9px;padding:3px 0;color:var(--muted)}
-.contsibs li.here{color:var(--ink);font-weight:600}
-.contsibs .n{flex:0 0 auto;font-size:11px;font-weight:700;color:var(--hint);min-width:13px;padding-top:2px}
+.contsibs li{display:flex;gap:9px;padding:4px 0;align-items:baseline;color:var(--hint)}
+.contsibs li.te{color:var(--ink)}
+.contsibs li.here{font-weight:600}
+.contsibs .n{flex:0 0 auto;font-size:11px;font-weight:700;color:var(--hint);min-width:13px}
 .contsibs button{border:0;background:none;font:inherit;color:inherit;text-align:left;padding:0;cursor:pointer}
-.contsibs button:hover{color:var(--blue);text-decoration:underline}
+.contsibs li.te button:hover{color:var(--blue);text-decoration:underline}
 .contsibs li.here button{cursor:default}
 .contsibs li.here button:hover{color:inherit;text-decoration:none}
 
@@ -313,7 +334,8 @@ summary:focus-visible,
   <ul>
    <li><b>Sessions Florence:</b> tria una sessió i baixa el PNG de cada pregunta CB (enunciat + pregunta en una sola imatge) per repartir a classe.</li>
    <li><b>El meu repartiment:</b> tria el contingut que toca (per exemple, el teorema de Pitàgores de 2n) i la pàgina proposa la sessió Florence que el treballa i les preguntes CB que el consoliden. La sessió pot ser d'un altre curs: quan passa, surt marcada.</li>
-   <li>Un contingut pot no tenir res associat. Vol dir que ni Florence ni la prova CB el toquen directament, i la pàgina t'ho diu.</li>
+   <li>El <b>punt ple</b> marca els continguts que tenen tasca i pràctica associades; l'anell buit, els que encara no. Cada tema du el recompte («4/6») per veure on n'hi ha sense desplegar-lo.</li>
+   <li>Un contingut pot no tenir res associat. Vol dir que ni Florence ni la prova CB el toquen directament, i la pàgina t'ho diu. A mesura que s'incorporin sessions noves i edicions noves de la prova, n'hi haurà més de plens.</li>
   </ul>
   <p>Detalls de les etiquetes:</p>
   <ul>
@@ -405,6 +427,15 @@ const normal = s => String(s || '').toLowerCase().normalize('NFD')
 
 function cursActual(){ return cursDeGraf(graf); }
 
+/* Quins cursos tenen graf Florence, en text. Es dedueix del PAYLOAD: quan
+   s'hi donin d'alta 1r i 4t, les frases de la interfície s'actualitzen soles
+   i no queda cap any escrit a mà per anar a buscar. */
+function cursosAmbGraf(){
+  const l = grafsActius().map(([g]) => ORDINAL[g]);
+  if (!l.length) return '';
+  return l.length === 1 ? l[0] : l.slice(0, -1).join(', ') + ' i ' + l[l.length-1];
+}
+
 function temaPerKey(key){
   const i = key.indexOf('|'); if (i < 0) return null;
   const curs = key.slice(0, i), j = key.indexOf('/', i);
@@ -489,9 +520,10 @@ function renderTabs(){
 function renderLegend(){
  const leg=document.getElementById('legend');
  if(mode==='repartiment'){
-  leg.innerHTML=Object.keys(SENTITS).map(s=>
-   `<span><span class="pill p1" style="background:var(--s-${s})"></span>${esc(SENTITS[s].short||SENTITS[s].label)}</span>`
-  ).join('');
+  // Els colors dels sentits ja són a les capçaleres i a la vora de cada tema;
+  // el que cal explicar aquí és el marcador, que és el que guia la tria.
+  leg.innerHTML=`<span class="mklegend"><span class="mk"></span>amb tasca i pràctica</span>`
+   +`<span class="mklegend"><span class="mk buit"></span>encara sense</span>`;
   return;
  }
  const pc=pesColor();
@@ -559,8 +591,9 @@ const ICONA_ULL='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stro
 const majus=s=>String(s||'').charAt(0).toUpperCase()+String(s||'').slice(1);
 
 /* L'arbre del currículum del curs actiu: sentit → tema → continguts.
-   Els continguts sense cap fil surten esmorteïts, però es poden triar: la
-   fitxa explica que no hi ha res i ofereix les alternatives. */
+   Cada contingut duu un marcador que diu si té tasca i pràctica associades,
+   i cada tema el recompte dels seus, perquè es vegi on hi ha material sense
+   haver de desplegar-los d'un en un. */
 function renderArbre(){
  const list=document.getElementById('list');
  if(normal(query).length>=2){renderCerca();return;}
@@ -573,15 +606,21 @@ function renderArbre(){
   b.temes.forEach(t=>{
    const key=curs+'|'+b.sentit+'/'+t.id;
    const obert=obertes.has(key)||sel.key===key;
+   const amb=t.continguts.filter((c,i)=>filsDe(key,i+1).length).length;
+   const tot=t.continguts.length;
+   const rot=amb?`${amb} dels ${tot} continguts d'aquest tema tenen tasca i pràctica associades`
+                :`Cap contingut d'aquest tema no té encara tasca ni pràctica associades`;
    h+=`<div class="temabox" style="border-left-color:var(--s-${esc(b.sentit)})">`
      +`<button class="temahd${obert?' open':''}" data-tema="${esc(key)}" aria-expanded="${obert}">`
-     +`<span class="caret" aria-hidden="true">▶</span><span>${esc(t.label)}</span>`
+     +`<span class="caret" aria-hidden="true">▶</span><span class="tl">${esc(t.label)}</span>`
+     +`<span class="tcount${amb?'':' zero'}" title="${esc(rot)}">${amb}/${tot}</span>`
      +`<span class="h">${t.hores}h</span></button>`
      +`<ul class="contlist"${obert?'':' hidden'}>`;
    t.continguts.forEach((c,i)=>{
     const pos=i+1,te=filsDe(key,pos).length>0;
     h+=`<li><button class="controw${te?'':' buit'}${sel.key===key&&sel.pos===pos?' sel':''}"`
-      +` data-cont="${esc(key)}" data-pos="${pos}">`
+      +` data-cont="${esc(key)}" data-pos="${pos}" title="${te?'Amb tasca i pràctica':'Encara sense tasca ni pràctica'}">`
+      +`<span class="mk${te?'':' buit'}" aria-hidden="true"></span>`
       +`<span class="n">${pos}</span><span class="t">${esc(c)}</span></button></li>`;
    });
    h+='</ul></div>';
@@ -611,7 +650,8 @@ function renderCerca(){
  list.innerHTML=hits.slice(0,60).map(x=>{
   const te=filsDe(x.key,x.pos).length>0;
   return `<button class="controw${te?'':' buit'}${sel.key===x.key&&sel.pos===x.pos?' sel':''}"`
-    +` data-cont="${esc(x.key)}" data-pos="${x.pos}" style="padding-left:10px">`
+    +` data-cont="${esc(x.key)}" data-pos="${x.pos}" title="${te?'Amb tasca i pràctica':'Encara sense tasca ni pràctica'}">`
+    +`<span class="mk${te?'':' buit'}" aria-hidden="true"></span>`
     +`<span class="n">${x.pos}</span><span class="t">${esc(x.txt)}`
     +`<span class="hitmeta" style="color:var(--s-${esc(x.sentit)})">`
     +`${esc((REPARTIMENT[x.curs]||{}).label||x.curs)} · ${esc(x.tema)}</span></span></button>`;
@@ -633,8 +673,8 @@ function introRepartiment(){
   <div class="nucli">${d.hores_any||''}h · ${esc(d.hores_info||'')}</div>
   <div class="emptystate" style="margin-top:18px">
    <p>Tria un contingut a l'esquerra i et proposaré la tasca rica de Florence que el treballa i les preguntes de competències bàsiques que el consoliden.</p>
-   <p>Aquest curs té ${temes} temes i ${conts} continguts; ${amb} tenen alguna cosa associada.
-   ${teGraf?'':'Encara no hi ha graf Florence propi d\'aquest curs, així que les tasques que et proposi vindran de 2n o de 3r.'}</p>
+   <p>Aquest curs té ${temes} temes i ${conts} continguts. ${amb} duen el punt ple, que vol dir que tenen tasca i pràctica associades.
+   ${teGraf?'':`Encara no hi ha graf Florence propi d'aquest curs, així que les tasques que et proposi vindran de ${esc(cursosAmbGraf())}.`}</p>
   </div>`;
 }
 
@@ -690,8 +730,10 @@ function showContingut(key,pos,keepDrawer){
     </div></div>`;
   }).join('');
  }else{
-  h+=`<div class="emptystate"><p>Cap sessió de Florence no treballa aquest contingut. `
-    +`De moment només hi ha graf de 2n i de 3r d'ESO; els de 1r i 4t arriben el juny del 2027.</p></div>`;
+  const falten=grafsActius().length<GRAFS.length;
+  h+=`<div class="emptystate"><p>Cap sessió de Florence no treballa aquest contingut.`
+    +(falten?` De moment només hi ha graf de ${esc(cursosAmbGraf())} d'ESO.`:'')
+    +`</p></div>`;
  }
  h+=`</div>`;
 
@@ -734,12 +776,16 @@ function showContingut(key,pos,keepDrawer){
 
  /* 4 — la resta del tema, per continuar sense tornar a la llista */
  if(t.tema.continguts.length>1){
-  h+=`<div class="stage"><h3>La resta del tema</h3><ul class="contsibs">`
+  const ambPract=t.tema.continguts.filter((c,i)=>filsDe(key,i+1).length).length;
+  h+=`<div class="stage"><h3>La resta del tema</h3>`
+   +`<p class="lede">El punt ple marca els continguts que tenen tasca i pràctica associades: `
+   +`${ambPract} dels ${t.tema.continguts.length} d'aquest tema.</p><ul class="contsibs">`
    +t.tema.continguts.map((c,i)=>{
      const p=i+1,aqui=p===pos,te=filsDe(key,p).length>0;
-     return `<li class="${aqui?'here':''}"><span class="n">${p}</span>`
-      +`<button data-cont="${esc(key)}" data-pos="${p}"${aqui?' disabled':''}`
-      +`${te?'':' style="color:var(--hint)"'}>${esc(c)}</button></li>`;
+     return `<li class="${te?'te':'buit'}${aqui?' here':''}">`
+      +`<span class="mk${te?'':' buit'}" aria-hidden="true"></span>`
+      +`<span class="n">${p}</span>`
+      +`<button data-cont="${esc(key)}" data-pos="${p}"${aqui?' disabled':''}>${esc(c)}</button></li>`;
    }).join('')+`</ul></div>`;
  }
 

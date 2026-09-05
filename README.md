@@ -45,6 +45,7 @@ Tot és **HTML + CSS + JavaScript pur (vanilla)**, sense framework, sense `npm` 
 | `retalla_cb.py` | Retalla els enunciats i les preguntes dels PDF oficials d'una prova CB. |
 | `genera_cb_items.py` | Refà `cb-items.json` a partir del `preguntes.json` del projecte CB. |
 | `make_cb_card.py` | Compon les targetes `cb-img/CB<id>.png` que mostra `florence-cb.html`. |
+| `valida-dades.js` | `node valida-dades.js` — comprova que totes les dades lliguen entre elles i imprimeix les xifres que apareixen escrites als `.md`. Executa'l abans de qualsevol commit que toqui dades. |
 | `ACTUALITZACIO-ANUAL.md` | Com incorporar les proves CB de l'any i les sessions Florence noves. |
 
 ## Canviar la contrasenya
