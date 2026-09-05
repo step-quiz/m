@@ -19,7 +19,7 @@ Tot és **HTML + CSS + JavaScript pur (vanilla)**, sense framework, sense `npm` 
 | Fitxer | Què és | Per a qui |
 |---|---|---|
 | `index.html` | **Cercador**. Cerca per paraula clau + filtres (curs, origen, sentit, format, tipus, activitat). Previsualització lateral del Drive i enllaços per obrir. | Tot el professorat |
-| `repartiment.html` | **Repartiment de continguts**. Consulta els continguts matemàtics assignats a cada curs de l'ESO (1r–4t), organitzats per sentit matemàtic. Document de referència immutable d'un curs a l'altre. | Tot el professorat |
+| `repartiment.html` | **Repartiment de continguts**. Consulta els continguts matemàtics assignats a cada curs de l'ESO (1r–4t), organitzats per sentit matemàtic. Cada contingut pot dur dues icones: a l'esquerra, el material del catàleg; a la dreta, la seqüència de pràctica a `florence-cb.html`. | Tot el professorat |
 | `afegir-material.html` | **Editor del manifest**. Afegeix, edita i elimina entrades del catàleg, gestiona el vocabulari, valida i descarrega el `manifest.json`. | Qui manté el catàleg |
 | `extreu-json.html` | **Catalogador amb IA**. Puja un PDF/DOCX i Gemini en proposa l'entrada de manifest (títol, curs, activitats…). Cal una clau de Gemini. | Qui manté el catàleg |
 | `banc-cb.html` | **Banc d'ítems CB**. Filtra blocs de preguntes de proves CB i exporta un PDF per a l'alumnat (sense respostes). | Tot el professorat |
@@ -34,7 +34,7 @@ Tot és **HTML + CSS + JavaScript pur (vanilla)**, sense framework, sense `npm` 
 |---|---|
 | `manifest.json` | El catàleg: vocabulari, etiquetes, configuració dels filtres i la llista de materials. **Font de veritat del cercador.** |
 | `repartiment-data.js` | Dades del repartiment de continguts (estructura per curs, sentit, tema i ítems). **Font de veritat** de `repartiment.html`; també la llegeix `florence-cb.html`. |
-| `pipeline-data.js` | Pont entre el repartiment, Florence i les CB: els «fils didàctics» (`PIPELINES`) i quins toca cada contingut (`CONTINGUT_PIPELINE`). El fa servir `florence-cb.html`. |
+| `pipeline-data.js` | Pont entre el repartiment, Florence i les CB: els «fils didàctics» (`PIPELINES`) i quins toca cada contingut (`CONTINGUT_PIPELINE`). El fan servir `florence-cb.html` i `repartiment.html`. |
 | `auth.js` | Portal d'accés per contrasenya per a `repartiment.html`. Carregat al final del `<body>` de la pàgina protegida. Vegeu §&nbsp;[Canviar la contrasenya](#canviar-la-contrasenya) més avall. |
 | `cb-items.json` | El banc de proves CB que consumeix `banc-cb.html`. |
 | `cb-img/` | 166 imatges PNG (`CB1.png … CB218.png`) que fa servir `florence-cb.html`. |

@@ -251,8 +251,12 @@ foto(s) → Gemini: text + box figura          fetch(recuperacio-items.json)
 ## 4e. Contracte de dades: `pipeline-data.js`
 
 Pont entre el **repartiment de continguts** i els dos programes de pràctica (Florence i les
-proves CB). El carrega `florence-cb.html` com a `<script src>`, just després de
-`repartiment-data.js`, per al mode «El meu repartiment».
+proves CB). El carreguen com a `<script src>`, just després de `repartiment-data.js`, les
+dues pàgines que el travessen en direccions oposades:
+
+- `florence-cb.html` → mode «El meu repartiment»: tries un contingut i en munta la seqüència.
+- `repartiment.html` → posa a la dreta de cada contingut amb fils una icona cap a
+  `florence-cb.html?c=<CURS>|<sentit>/<tema.id>|<posició>`, que aquella pàgina ja entén.
 
 Declara dues constants globals:
 
@@ -279,9 +283,10 @@ Particularitats:
 - **La clau porta el curs.** El mateix `<sentit>/<tema.id>` existeix a cursos diferents amb
   continguts diferents (`numeric/fraccions` és a 1r i a 2n; `algebraic/llenguatge-algebraic`
   als quatre). És la diferència amb `CONTINGUTS_ACTIVITATS` (vegeu §6.11).
-- La posició és la que es veu a `repartiment.html`, començant per 1. `florence-cb.html`
-  ignora en silenci les posicions inexistents, de manera que renumerar el repartiment
-  degrada la proposta però no trenca la pàgina.
+- La posició és la que es veu a `repartiment.html`, començant per 1. Les dues pàgines
+  ignoren en silenci les posicions inexistents, de manera que renumerar el repartiment
+  degrada la proposta (o fa desaparèixer la icona) però no trenca res. L'editor de
+  `repartiment.html` ho recorda al comentari que segella al fitxer descarregat.
 - Els ids CB han de tenir targeta a `cb-img/CB<id>.png`: avui, els 166 que ja referencia
   alguna sessió del `PAYLOAD`. `pipeline-data.js` en fa servir els 166.
 - Una sessió pot ser d'un curs diferent del contingut, i és el cas habitual: la interfície
@@ -318,7 +323,7 @@ La clau de cada tema és `"<sentit>/<tema.id>"`.
 | Pàgina | Llibreries | Xarxa en execució |
 |---|---|---|
 | `index.html` | cap | `fetch('manifest.json')`; iframes de Google Drive a la previsualització |
-| `repartiment.html` | cap | cap (dades via `repartiment-data.js` local) |
+| `repartiment.html` | cap | `fetch('manifest.json')` per a les icones de material (opcional: si falla, no en surt cap); dades via `repartiment-data.js` i `pipeline-data.js` locals |
 | `afegir-material.html` | cap | `fetch('manifest.json')`; descàrrega del `manifest.json` editat |
 | `extreu-json.html` | **mammoth 1.8.0** (cdnjs) | `fetch('manifest.json')` per sincronitzar vocabulari; **Gemini API** (clau de l'usuari) |
 | `banc-cb.html` | **pdf-lib (local, `lib/`)** | `fetch('cb-items.json')`; imatges de `cb.step-quiz.net` (CORS) |

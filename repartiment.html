@@ -19,6 +19,10 @@ try {
 <style>.auth-locked body { visibility: hidden; }</style>
 -->
 <script src="repartiment-data.js"></script>
+<!-- Pont cap a Florence i les CB. Només serveix per posar la icona «obre la
+     seqüència de pràctica» al costat dels continguts que en tenen; si el
+     fitxer no hi és, no surt cap icona i la pàgina funciona igual. -->
+<script src="pipeline-data.js"></script>
 <script src="common.js"></script>
 <style>
 :root {
@@ -201,6 +205,23 @@ a:hover { text-decoration: underline; }
 .cont-mat svg { width: 13px; height: 13px; display: block; }
 .cont-mat:hover { background: var(--blue-bg); }
 
+/* Icona "obre la seqüència de pràctica", a la DRETA del contingut.
+   Les dues icones d'una fila responen preguntes diferents: la de l'esquerra
+   diu quin material hi ha, aquesta diu què fer-hi (tasca de Florence +
+   preguntes CB). Per això va a l'altra banda i no comparteix el marge. */
+.cont-pipe {
+  margin-left: auto; align-self: flex-start; margin-top: 1px;
+  display: inline-flex; align-items: center; flex-shrink: 0;
+  color: var(--navy); opacity: .55; text-decoration: none;
+  border-radius: 5px; padding: 1px 3px;
+  transition: opacity .12s, background .12s, color .12s;
+}
+.cont-pipe svg { width: 14px; height: 14px; display: block; }
+.cont-list li:hover .cont-pipe { opacity: .85; }
+.cont-pipe:hover, .cont-pipe:focus-visible {
+  opacity: 1; background: var(--blue-bg); color: var(--blue);
+}
+
 /* ── Sentit themes (header BG + dot color + border) ────────────────── */
 .s-header.comprensio { background: var(--s-comprensio-bg); }
 .s-header.comprensio .s-dot   { background: var(--s-comprensio); }
@@ -329,6 +350,9 @@ body.is-editing .pill-btn.edit-dl:hover { background: var(--blue); color: #fff; 
 .move-modal-btns { display: flex; gap: 8px; justify-content: flex-end; margin-top: 18px; }
 @media print {
   .edit-banner, .pill-btn.edit-start, .pill-btn.edit-stop, .pill-btn.edit-dl { display: none !important; }
+  /* Un enllaç no serveix de res en paper, i com que va a la dreta desapareix
+     sense deixar forat (a diferència de .cont-mat, que ocupa el lloc del punt). */
+  .cont-pipe { display: none !important; }
 }
 </style>
 </head>
@@ -456,7 +480,8 @@ function buildTemaRow(curs, sentit, t) {
   const items = t.continguts.map((c, i) => {
     const acts = linkMap[i + 1] || [];
     const da = acts.length ? ` data-act="${escHtml(acts.join(','))}"` : '';
-    return `<li${da}><span class="cont-num">${i+1}.</span><span>${escHtml(c)}</span></li>`;
+    return `<li${da}><span class="cont-num">${i+1}.</span><span>${escHtml(c)}</span>`
+      + pipelineLink(curs, sentit, t.id, i + 1) + `</li>`;
   }).join('');
   return `<tr class="tema-row">
     <td>
@@ -547,6 +572,43 @@ function applyMaterialLinks(manifest) {
       + `<path d="M4 2.5h4.5L12.5 6.5v6a1 1 0 0 1-1 1h-7a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1z"/><path d="M8.5 2.5v4h4"/></svg>`
       + `</a>`);
   });
+}
+
+/* ─── ENLLAÇ A LA SEQÜÈNCIA DE PRÀCTICA ───────────────────────────────
+ * El camí invers del que fa florence-cb.html: des d'un contingut concret
+ * del repartiment, obrir-hi directament la seqüència (tasca rica de
+ * Florence → preguntes CB → material). El pont són PIPELINES i
+ * CONTINGUT_PIPELINE, de pipeline-data.js.
+ *
+ * A diferència de les icones del catàleg, aquesta es pinta al mateix
+ * moment de construir la fila: les dades són locals i síncrones, no cal
+ * esperar cap fetch. Si pipeline-data.js no s'ha carregat, o el contingut
+ * no té res associat, no es retorna res i la fila queda com abans. */
+function pipelineLink(curs, sentit, tid, pos) {
+  if (typeof CONTINGUT_PIPELINE === 'undefined' || typeof PIPELINES === 'undefined') return '';
+  const fils = (((CONTINGUT_PIPELINE[`${curs}|${sentit}/${tid}`] || {})[pos]) || [])
+    .map(id => PIPELINES[id]).filter(Boolean);
+  if (!fils.length) return '';
+
+  // Comptem sessions i preguntes sense repetir: dos fils poden compartir-ne.
+  const sess = new Set(), cb = new Set();
+  for (const f of fils) {
+    (f.florence || []).forEach(([sid]) => sess.add(sid));
+    (f.cb || []).forEach(id => cb.add(id));
+  }
+  const trossos = [];
+  if (sess.size) trossos.push(sess.size === 1 ? 'una tasca de Florence' : `${sess.size} tasques de Florence`);
+  if (cb.size)   trossos.push(cb.size === 1 ? 'una pregunta CB' : `${cb.size} preguntes CB`);
+  const lbl = `${fils.map(f => f.label).join(' · ')} — ${trossos.join(' i ')}`
+            + ' · obre la seqüència de pràctica';
+
+  const url = 'florence-cb.html?c=' + encodeURIComponent(`${curs}|${sentit}/${tid}|${pos}`);
+  return `<a class="cont-pipe" href="${url}" target="_blank" rel="noopener"`
+    + ` title="${escHtml(lbl)}" aria-label="${escHtml(lbl)}">`
+    + `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"`
+    + ` stroke-linecap="round" stroke-linejoin="round">`
+    + `<circle cx="3.6" cy="8" r="1.9"/><circle cx="12.4" cy="8" r="1.9"/><path d="M5.5 8h5"/></svg>`
+    + `</a>`;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -891,8 +953,12 @@ async function downloadData() {
   const date = new Date().toLocaleDateString('ca-ES', {day:'2-digit',month:'2-digit',year:'numeric'});
   const block = `const REPARTIMENT = ${JSON.stringify(editData, null, 2)}; // end REPARTIMENT`
     + `\n/* Bloc REPARTIMENT actualitzat per l'editor de repartiment.html el ${date}.`
-    + `\n * Si hi heu reordenat, afegit o esborrat continguts d'algun tema, reviseu`
-    + `\n * les posicions numèriques de CONTINGUTS_ACTIVITATS al final del fitxer. */`;
+    + `\n * Si hi heu reordenat, afegit o esborrat continguts d'algun tema, reviseu les`
+    + `\n * DUES taules que hi apunten per posició:`
+    + `\n *   · CONTINGUTS_ACTIVITATS, al final d'aquest fitxer (enllaç al catàleg);`
+    + `\n *   · CONTINGUT_PIPELINE, a pipeline-data.js (enllaç a Florence i a les CB).`
+    + `\n * Cap de les dues no peta si la posició ja no existeix: simplement deixa`
+    + `\n * d'aparèixer l'enllaç d'aquell contingut. */`;
 
   const js = original.slice(0, from) + block + original.slice(to);
 

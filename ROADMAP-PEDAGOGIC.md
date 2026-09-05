@@ -93,9 +93,11 @@ segon és el gros.
   departament ja fa servir cada dia; per a cada contingut es veuen alhora la sessió Florence
   que el treballa, les preguntes CB que el consoliden i el material del catàleg. El pont viu a
   `pipeline-data.js` (vegeu `ARQUITECTURA.md` §4e).
-- **Què hi falta:** enllaçar-hi des de `repartiment.html` (una icona per contingut, com la del
-  catàleg), i substituir o completar els «fils didàctics» pels descriptors oficials quan hi
-  hagi F1.
+- **Es travessa en els dos sentits:** des de `florence-cb.html` tries el contingut, i des de
+  `repartiment.html` cada contingut amb fils duu una icona que obre la seva seqüència.
+- **Què hi falta:** substituir o completar els «fils didàctics» pels descriptors oficials del
+  decret quan hi hagi F1, i revisar el mapatge tema a tema (ara és un esborrany derivat dels
+  `nucli` de les sessions).
 - **Cost:** tècnic M · contingut baix (es deriva de F1)
 - **Idea:** Una vista on, partint d'un **saber o competència**, es vegin alhora els **ítems CB**
   que el treballen, les **sessions Florence** relacionades i els **materials del catàleg** que el toquen.
