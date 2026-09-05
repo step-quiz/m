@@ -151,14 +151,21 @@ Objecte JS incrustat:
 
 ```jsonc
 {
+  "d1": [ … ], "ff1": [ … ],   // 1r ESO — buit ara mateix
   "d2": [ /* 11 sessions de 2n ESO */ ],
+  "ff2": [ ["F_2ESO_S01","F_2ESO_S11","relació…"], … ],   // 10 relacions
   "d3": [ /* 11 sessions de 3r ESO */ ],
-  "ff2": [ ["F_2ESO_S01","F_2ESO_S11","relació…"], … ],  // 10 relacions
-  "ff3": [ … ]                                            // 9 relacions
+  "ff3": [ … ],                                           // 9 relacions
+  "d4": [ … ], "ff4": [ … ]    // 4t ESO — buit ara mateix
 }
 ```
 
-Cada sessió: `{ id, titol, nucli, cb[] }`.
+El fitxer accepta els quatre cursos d'ESO. Omplir `d1`/`ff1` o `d4`/`ff4` fa aparèixer la
+pestanya, els colors i la navegació sense tocar codi; una clau buida o absent no dibuixa
+res. L'ordre de les pestanyes surt de la constant `GRAFS`, no de l'ordre de les claus.
+
+Cada sessió: `{ id, titol, pdf, nucli, cb[] }`; `pdf` diu si hi ha
+`florence-pdf/<id>.pdf` (abans era el conjunt `FPDF`, una llista paral·lela d'ids).
 Cada ítem CB: `{ id (numèric), desc, src ("2ESO"|"4ESO"), pes (1–3) }`.
 
 `ff2`/`ff3` són triples `[origen, destí, descripció]`; la descripció surt com a `title` del

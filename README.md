@@ -24,7 +24,7 @@ Tot és **HTML + CSS + JavaScript pur (vanilla)**, sense framework, sense `npm` 
 | `extreu-json.html` | **Catalogador amb IA**. Puja un PDF/DOCX i Gemini en proposa l'entrada de manifest (títol, curs, activitats…). Cal una clau de Gemini. | Qui manté el catàleg |
 | `banc-cb.html` | **Banc d'ítems CB**. Filtra blocs de preguntes de proves CB i exporta un PDF per a l'alumnat (sense respostes). | Tot el professorat |
 | `eliminar-curs.html` | **Eliminador de curs**. Treu la referència a un curs acadèmic (p. ex. `2024-25`) d'un PDF o DOCX, tot client-side. | Tot el professorat |
-| `florence-cb.html` | **Mapa Florence → CB**. Per a cada sessió Florence de 2n/3r ESO, recomana preguntes CB i en deixa baixar els PNG. | Tot el professorat |
+| `florence-cb.html` | **Mapa Florence → CB**. Per a cada sessió Florence, recomana preguntes CB i en deixa baixar els PNG. Ara hi ha els grafs de 2n i 3r ESO; el fitxer admet també els de 1r i 4t. | Tot el professorat |
 | `examen-recuperacio.html` | **Generador d'exàmens de recuperació** del curs anterior (1r/2n/3r ESO). Filtra el banc de recuperació per curs, sentit/tema i dificultat, el professor marca les preguntes i descarrega un `.docx` amb una imatge per pregunta (numeració nativa de Word + espai de resposta configurable). | Tot el professorat |
 | `alimentar-banc.html` | **Crear preguntes a partir d'imatges** (amb IA). Puja fotos d'exercicis; Gemini en transcriu el text i n'aïlla les figures. Cada pregunta es **re-renderitza** en tipografia uniforme (text + figura). Permet editar, agrupar diverses en una, i exportar: o bé un fragment (`Exporta .zip`), o bé el banc sencer amb la versió incrementada (`Actualitza JSON`). Cal una clau de Gemini. | Qui manté el banc de recuperació |
 
@@ -41,6 +41,10 @@ Tot és **HTML + CSS + JavaScript pur (vanilla)**, sense framework, sense `npm` 
 | `recuperacio-img/` | Els PNG de les preguntes de recuperació (un per pregunta), referenciats pel camp `figura` de cada ítem. |
 | `lib/jszip.min.js` | Llibreria `jszip` servida en local; la fan servir `florence-cb.html`, `examen-recuperacio.html` i `alimentar-banc.html`. |
 | `lib/pdf-lib.min.js` | Llibreria `pdf-lib` servida en local; la fa servir `banc-cb.html`. |
+| `retalla_cb.py` | Retalla els enunciats i les preguntes dels PDF oficials d'una prova CB. |
+| `genera_cb_items.py` | Refà `cb-items.json` a partir del `preguntes.json` del projecte CB. |
+| `make_cb_card.py` | Compon les targetes `cb-img/CB<id>.png` que mostra `florence-cb.html`. |
+| `ACTUALITZACIO-ANUAL.md` | Com incorporar les proves CB de l'any i les sessions Florence noves. |
 
 ## Canviar la contrasenya
 

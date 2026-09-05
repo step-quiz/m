@@ -89,6 +89,15 @@ surt sense les respostes. **Necessita connexió** (les imatges venen de `cb.step
 
 ---
 
+## Novetats de cada juny
+
+Les proves de competències bàsiques de l'any i les seqüències noves de Florence entren
+per camins diferents i tenen guia pròpia: [`ACTUALITZACIO-ANUAL.md`](ACTUALITZACIO-ANUAL.md).
+Hi ha els dos procediments pas a pas, els guions que cal executar i les comprovacions
+abans del commit. `florence-cb.html` ja admet grafs de 1r i 4t d'ESO sense tocar codi.
+
+---
+
 ## Coses a tenir presents
 
 - **Sempre per HTTP(S).** No obris les pàgines amb doble clic (`file://`): el cercador i el
