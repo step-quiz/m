@@ -167,7 +167,7 @@ cap a `cb.step-quiz.net`) es van eliminar el 2026-09-04: no es renderitzaven i q
 desfasats cada cop que creixia el banc.
 
 Les imatges es resolen en **local** com `cb-img/CB<id>.png` (a diferència del banc CB, que
-les agafa de `cb.step-quiz.net`). Es referencien 107 ids CB diferents.
+les agafa de `cb.step-quiz.net`). Es referencien 166 ids CB diferents.
 
 ---
 
@@ -372,9 +372,9 @@ documenten perquè se'n tingui constància.
    d'aquest cas. Com que l'editor no gestiona `activity_blocks`, l'efecte es repeteix cada
    cop que s'afegeix una activitat nova (vegeu `MANTENIMENT.md`).
 
-2. **Imatges de `florence-cb.html`:** les 107 imatges referenciades (`CB1.png … CB157.png`)
-   es troben totes a `cb-img/`. Les anteriorment mancants (`CB24, CB54, CB56, CB58, CB59,
-   CB155, CB157`) han estat afegides; les sessions `F_3ESO_S01` i `F_3ESO_S10` funcionen correctament.
+2. **Imatges de `florence-cb.html`:** les 166 imatges referenciades (`CB1.png … CB218.png`)
+   es troben totes a `cb-img/`. Les 59 de l'edició 2026 (`CB158 … CB218`) es van generar amb
+   `make_cb_card.py` i estan palatitzades (mode P), com la resta.
 
 3. **El banc CB depèn d'imatges remotes.** `banc-cb.html` carrega les imatges de
    `cb.step-quiz.net` (no del repo); sense connexió, sense aquell host actiu o sense les
@@ -405,9 +405,10 @@ documenten perquè se'n tingui constància.
 9. **Responsivitat mòbil «best-effort».** Per sota de 900 px s'amaguen el panell de filtres i
    la previsualització lateral. Pensat per a ús en portàtil.
 
-10. **Estil de `florence-cb.html`.** Usa handlers `onclick` en línia i construeix HTML amb
-    `innerHTML` sense escapar. És segur perquè totes les dades del `PAYLOAD` són internes i de
-    confiança (no hi ha cap entrada de l'usuari), però és el patró menys robust del conjunt.
+10. **Estil de `florence-cb.html`.** Construeix tot l'HTML amb `innerHTML`. Els gestors són
+    delegats i les dades passen per `esc()` des del canvi B5 (2026-06-04), de manera que ja no
+    hi ha `onclick` en línia ni interpolació sense escapar. Segueix sent l'única pàgina amb les
+    dades incrustades al fitxer en comptes de llegir-les d'un JSON.
 
 ---
 

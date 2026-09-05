@@ -101,7 +101,8 @@ surt sense les respostes. **Necessita connexió** (les imatges venen de `cb.step
 - **El camp `generated`** del manifest es posa sol a la data de cada descàrrega; no cal tocar-lo.
 - **Imatges de `florence-cb.html`:** són locals a `cb-img/` (`CB<id>.png`). Si una sessió
   recomana un CB del qual no hi ha el PNG, la previsualització/baixada d'aquella entrada
-  falla. Ara hi ha totes les 107 imatges referenciades (`CB1.png … CB157.png`), sense cap pendent.
+  falla. Ara hi ha totes les 166 imatges referenciades (`CB1.png … CB218.png`), sense cap
+  pendent. Per generar-ne de noves: `make_cb_card.py <ids>`, amb el projecte CB al costat.
 - **Llibreries:** algunes pàgines les carreguen de `cdnjs.cloudflare.com`. Si algun dia cdnjs
   no és accessible, `eliminar-curs.html` (pdf.js, pdf-lib, jszip) i `extreu-json.html`
   (mammoth) deixarien de funcionar. `banc-cb.html` ja porta `pdf-lib` en local i no en depèn.

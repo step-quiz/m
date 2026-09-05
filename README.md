@@ -36,7 +36,7 @@ Tot és **HTML + CSS + JavaScript pur (vanilla)**, sense framework, sense `npm` 
 | `repartiment-data.js` | Dades del repartiment de continguts (estructura per curs, sentit, tema i ítems). **Font de veritat** de `repartiment.html`. |
 | `auth.js` | Portal d'accés per contrasenya per a `repartiment.html`. Carregat al final del `<body>` de la pàgina protegida. Vegeu §&nbsp;[Canviar la contrasenya](#canviar-la-contrasenya) més avall. |
 | `cb-items.json` | El banc de proves CB que consumeix `banc-cb.html`. |
-| `cb-img/` | 107 imatges PNG (`CB1.png … CB157.png`) que fa servir `florence-cb.html`. |
+| `cb-img/` | 166 imatges PNG (`CB1.png … CB218.png`) que fa servir `florence-cb.html`. |
 | `recuperacio-items.json` | El banc de preguntes de recuperació que consumeixen `examen-recuperacio.html` i `alimentar-banc.html`. Cada pregunta és **una imatge**. Té un camp `versio` (`"1.x"`) que `alimentar-banc.html` incrementa en actualitzar el banc. |
 | `recuperacio-img/` | Els PNG de les preguntes de recuperació (un per pregunta), referenciats pel camp `figura` de cada ítem. |
 | `lib/jszip.min.js` | Llibreria `jszip` servida en local; la fan servir `florence-cb.html`, `examen-recuperacio.html` i `alimentar-banc.html`. |
