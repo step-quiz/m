@@ -24,7 +24,7 @@ Tot és **HTML + CSS + JavaScript pur (vanilla)**, sense framework, sense `npm` 
 | `extreu-json.html` | **Catalogador amb IA**. Puja un PDF/DOCX i Gemini en proposa l'entrada de manifest (títol, curs, activitats…). Cal una clau de Gemini. | Qui manté el catàleg |
 | `banc-cb.html` | **Banc d'ítems CB**. Filtra blocs de preguntes de proves CB i exporta un PDF per a l'alumnat (sense respostes). | Tot el professorat |
 | `eliminar-curs.html` | **Eliminador de curs**. Treu la referència a un curs acadèmic (p. ex. `2024-25`) d'un PDF o DOCX, tot client-side. | Tot el professorat |
-| `florence-cb.html` | **Mapa Florence → CB**. Per a cada sessió Florence, recomana preguntes CB i en deixa baixar els PNG. Ara hi ha els grafs de 2n i 3r ESO; el fitxer admet també els de 1r i 4t. | Tot el professorat |
+| `florence-cb.html` | **Mapa Florence → CB**, amb dues entrades. *Sessions Florence:* per a cada sessió, les preguntes CB recomanades i els seus PNG. *El meu repartiment:* tries un contingut del repartiment (p. ex. el teorema de Pitàgores de 2n) i et proposa la tasca rica que el treballa, les preguntes CB que el consoliden i el material del catàleg. Ara hi ha els grafs de 2n i 3r ESO; el fitxer admet també els de 1r i 4t. | Tot el professorat |
 | `examen-recuperacio.html` | **Generador d'exàmens de recuperació** del curs anterior (1r/2n/3r ESO). Filtra el banc de recuperació per curs, sentit/tema i dificultat, el professor marca les preguntes i descarrega un `.docx` amb una imatge per pregunta (numeració nativa de Word + espai de resposta configurable). | Tot el professorat |
 | `alimentar-banc.html` | **Crear preguntes a partir d'imatges** (amb IA). Puja fotos d'exercicis; Gemini en transcriu el text i n'aïlla les figures. Cada pregunta es **re-renderitza** en tipografia uniforme (text + figura). Permet editar, agrupar diverses en una, i exportar: o bé un fragment (`Exporta .zip`), o bé el banc sencer amb la versió incrementada (`Actualitza JSON`). Cal una clau de Gemini. | Qui manté el banc de recuperació |
 
@@ -33,7 +33,8 @@ Tot és **HTML + CSS + JavaScript pur (vanilla)**, sense framework, sense `npm` 
 | Fitxer / carpeta | Contingut |
 |---|---|
 | `manifest.json` | El catàleg: vocabulari, etiquetes, configuració dels filtres i la llista de materials. **Font de veritat del cercador.** |
-| `repartiment-data.js` | Dades del repartiment de continguts (estructura per curs, sentit, tema i ítems). **Font de veritat** de `repartiment.html`. |
+| `repartiment-data.js` | Dades del repartiment de continguts (estructura per curs, sentit, tema i ítems). **Font de veritat** de `repartiment.html`; també la llegeix `florence-cb.html`. |
+| `pipeline-data.js` | Pont entre el repartiment, Florence i les CB: els «fils didàctics» (`PIPELINES`) i quins toca cada contingut (`CONTINGUT_PIPELINE`). El fa servir `florence-cb.html`. |
 | `auth.js` | Portal d'accés per contrasenya per a `repartiment.html`. Carregat al final del `<body>` de la pàgina protegida. Vegeu §&nbsp;[Canviar la contrasenya](#canviar-la-contrasenya) més avall. |
 | `cb-items.json` | El banc de proves CB que consumeix `banc-cb.html`. |
 | `cb-img/` | 166 imatges PNG (`CB1.png … CB218.png`) que fa servir `florence-cb.html`. |

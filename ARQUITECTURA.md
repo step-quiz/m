@@ -22,12 +22,13 @@ Cada pàgina segueix la mateixa estructura interna: `CONFIG → STATE → utilit
 render → accions → events → init`, amb separadors de comentari. El codi està ben comentat,
 sobretot a les parts no evidents.
 
-Les dades viuen en quatre contractes separats:
+Les dades viuen en cinc contractes separats:
 
 - `manifest.json` → el cercador i l'editor.
 - `cb-items.json` → el banc d'ítems CB.
 - un objecte `PAYLOAD` incrustat dins de `florence-cb.html` → el mapa Florence.
 - `recuperacio-items.json` → el banc de recuperació (generador d'exàmens + alimentador).
+- `repartiment-data.js` + `pipeline-data.js` → el currículum i el seu pont cap a Florence i CB.
 
 ---
 
@@ -247,6 +248,53 @@ foto(s) → Gemini: text + box figura          fetch(recuperacio-items.json)
 
 ---
 
+## 4e. Contracte de dades: `pipeline-data.js`
+
+Pont entre el **repartiment de continguts** i els dos programes de pràctica (Florence i les
+proves CB). El carrega `florence-cb.html` com a `<script src>`, just després de
+`repartiment-data.js`, per al mode «El meu repartiment».
+
+Declara dues constants globals:
+
+```jsonc
+PIPELINES = {
+  "pitagores": {
+    "label":    "Teorema de Pitàgores",
+    "nota":     "…per què aquesta tasca serveix per a això (opcional)",
+    "florence": [ ["F_3ESO_S02", 3] ],   // [id de sessió, encaix 1-3]
+    "cb":       [133, 164, 131, 132, 74] // ids de pregunta, els millors primer
+  }, …
+}
+
+CONTINGUT_PIPELINE = {
+  "2ESO|espacial/triangles": { 3: ["pitagores"], 6: ["pitagores","resolucio-problemes"] }, …
+}
+```
+
+**Per què dos nivells.** 251 continguts comparteixen unes 48 idees matemàtiques. Corregir
+una llista de preguntes es fa un cop, al fil, i no contingut a contingut.
+
+Particularitats:
+
+- **La clau porta el curs.** El mateix `<sentit>/<tema.id>` existeix a cursos diferents amb
+  continguts diferents (`numeric/fraccions` és a 1r i a 2n; `algebraic/llenguatge-algebraic`
+  als quatre). És la diferència amb `CONTINGUTS_ACTIVITATS` (vegeu §6.11).
+- La posició és la que es veu a `repartiment.html`, començant per 1. `florence-cb.html`
+  ignora en silenci les posicions inexistents, de manera que renumerar el repartiment
+  degrada la proposta però no trenca la pàgina.
+- Els ids CB han de tenir targeta a `cb-img/CB<id>.png`: avui, els 166 que ja referencia
+  alguna sessió del `PAYLOAD`. `pipeline-data.js` en fa servir els 166.
+- Una sessió pot ser d'un curs diferent del contingut, i és el cas habitual: la interfície
+  ho marca amb l'etiqueta «del graf de 3r d'ESO».
+- **Cobertura actual:** 231 dels 251 continguts (2n 80/80 · 3r 48/49 · 1r 54/62 · 4t 49/60).
+  Els forats són reals (logaritmes, trigonometria, notació científica) i es mostren com a
+  tals. És, de fet, la vista inversa que demanava `CB1` al roadmap pedagògic.
+- **És un esborrany per revisar.** El mapatge inicial es va derivar dels `nucli` de les 22
+  sessions i de les descripcions dels 166 ítems CB; els encaixos i la tria de preguntes són
+  una proposta del departament, no una dada oficial.
+
+---
+
 ## 4b. Contracte de dades: `repartiment-data.js`
 
 `repartiment-data.js` és un fitxer JS (no JSON) carregat com a `<script src="...">` per
@@ -275,7 +323,7 @@ La clau de cada tema és `"<sentit>/<tema.id>"`.
 | `extreu-json.html` | **mammoth 1.8.0** (cdnjs) | `fetch('manifest.json')` per sincronitzar vocabulari; **Gemini API** (clau de l'usuari) |
 | `banc-cb.html` | **pdf-lib (local, `lib/`)** | `fetch('cb-items.json')`; imatges de `cb.step-quiz.net` (CORS) |
 | `eliminar-curs.html` | **pdf.js 3.11.174 + pdf-lib 1.17.1 + jszip 3.10.1** (cdnjs) | cap (tot el processament és al navegador) |
-| `florence-cb.html` | cap | imatges locals `cb-img/`; enllaços a `cb.step-quiz.net` |
+| `florence-cb.html` | cap | imatges locals `cb-img/`; `repartiment-data.js` i `pipeline-data.js` per `<script src>`; enllaços a `cb.step-quiz.net` |
 | `examen-recuperacio.html` | **jszip (local, `lib/`)** | `fetch('recuperacio-items.json')`; imatges locals `recuperacio-img/` |
 | `alimentar-banc.html` | **jszip (local, `lib/`)** | **Gemini API** (clau de l'usuari): `models` (llistar) + `generateContent` (detecció) |
 
@@ -412,10 +460,23 @@ documenten perquè se'n tingui constància.
 9. **Responsivitat mòbil «best-effort».** Per sota de 900 px s'amaguen el panell de filtres i
    la previsualització lateral. Pensat per a ús en portàtil.
 
-10. **Estil de `florence-cb.html`.** Construeix tot l'HTML amb `innerHTML`. Els gestors són
+11. **`CONTINGUTS_ACTIVITATS` no distingeix el curs.** La clau és `<sentit>/<tema.id>` sense
+    curs, i `repartiment.html` aplica la mateixa taula als quatre cursos. Com que les
+    posicions són per tema i cada curs té els seus continguts, les icones surten desplaçades
+    quan un tema es repeteix: l'entrada `numeric/fraccions` està pensada per a 1r (la
+    posició 8 és «Fracció d'un nombre»), però a 2n aquell tema només té 7 continguts, de
+    manera que la 8 es perd i les 1, 3 i 4 assenyalen continguts diferents dels previstos.
+    El dany visible és petit perquè els slugs són genèrics (`fraccions`), però el pont nou
+    (`pipeline-data.js`) sí que porta el curs a la clau per no repetir-ho. L'enllaç que
+    genera `florence-cb.html` hi afegeix `course=<curs>` per pal·liar-ho.
+
+12. **Estil de `florence-cb.html`.** Construeix tot l'HTML amb `innerHTML`. Els gestors són
     delegats i les dades passen per `esc()` des del canvi B5 (2026-06-04), de manera que ja no
-    hi ha `onclick` en línia ni interpolació sense escapar. Segueix sent l'única pàgina amb les
-    dades incrustades al fitxer en comptes de llegir-les d'un JSON.
+    hi ha `onclick` en línia ni interpolació sense escapar. El `PAYLOAD` continua incrustat al
+    fitxer; des del mode «El meu repartiment» (2026-09-05) la pàgina també carrega dos fitxers
+    de dades externs, però per `<script src>` i no per `fetch()`, de manera que segueix
+    funcionant sense servidor. Si no s'hi troben, el commutador de mode no apareix i la resta
+    de la pàgina no se n'assabenta.
 
 ---
 
@@ -424,7 +485,7 @@ documenten perquè se'n tingui constància.
 - **XSS:** `index.html`, `afegir-material.html` i `banc-cb.html` escapen amb `escHtml` totes
   les dades interpolades. `eliminar-curs.html` no escapa la cometa simple, però només fa
   servir atributs entre cometes dobles → segur. `florence-cb.html` no escapa, però només
-  renderitza dades internes (vegeu §6.10).
+  renderitza dades internes (vegeu §6.12).
 - **Edició segura del catàleg:** l'editor mai escriu al servidor; només **descarrega** un
   `manifest.json` nou que cal pujar a mà. Per tant l'eina no pot corrompre el catàleg en
   producció. La validació bloqueja la descàrrega davant d'errors estructurals (IDs duplicats,

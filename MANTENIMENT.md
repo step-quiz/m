@@ -130,6 +130,8 @@ abans del commit. `florence-cb.html` ja admet grafs de 1r i 4t d'ESO sense tocar
 ├── banc-cb.html            ← banc CB + export PDF
 ├── eliminar-curs.html      ← treure curs de PDF/DOCX
 ├── florence-cb.html        ← mapa Florence → CB
+├── repartiment-data.js     ← el currículum (font de veritat del repartiment)
+├── pipeline-data.js        ← pont repartiment ↔ Florence ↔ CB
 ├── manifest.json           ← catàleg (font de veritat del cercador)
 ├── cb-items.json           ← banc CB (per a banc-cb.html)
 ├── cb-img/                 ← PNG per a florence-cb.html

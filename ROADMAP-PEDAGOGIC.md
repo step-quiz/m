@@ -52,7 +52,7 @@ segon és el gros.
 | ID | Idea | Tipus | Prioritat | Depèn de | Estat |
 |----|------|-------|-----------|----------|-------|
 | F1 | Vocabulari curricular compartit (competències, sabers) | Dades | Alta | — | Pendent |
-| F2 | Graf navegable saber ↔ CB ↔ Florence ↔ material | Funcionalitat | Mitjana | F1 | Pendent |
+| F2 | Graf navegable saber ↔ CB ↔ Florence ↔ material | Funcionalitat | Mitjana | F1 | Fet (parcial) |
 | S1 | Seqüències didàctiques / situacions d'aprenentatge | Funcionalitat + Contingut | Alta | — | Pendent |
 | S2 | Graf de prerequisits entre temes | Dades + Funcionalitat | Mitjana | F1 | Pendent |
 | D1 | Nivells: suport / consolidació / ampliació | Dades | Alta | — | Pendent |
@@ -60,7 +60,7 @@ segon és el gros.
 | D3 | Glossari de vocabulari (aula d'acollida) | Contingut | Baixa | — | Pendent |
 | AV1 | Rúbriques i criteris d'avaluació per tasca | Contingut | Mitjana | F1 | Pendent |
 | G1 | De l'enllaç PDF a la guia docent de la tasca | Contingut | Alta | — | Pendent |
-| CB1 | Vista inversa de Florence (forats de cobertura) | Funcionalitat | Mitjana | — | Pendent |
+| CB1 | Vista inversa de Florence (forats de cobertura) | Funcionalitat | Mitjana | — | Fet (parcial) |
 | CB2 | Cobertura de sentits en exportar el banc CB | Funcionalitat | Baixa | — | Pendent |
 | CB3 | Versió «professorat» del PDF (amb solucionari) | Funcionalitat | Mitjana | — | Pendent |
 | CX1 | Contextos reals i connexió amb altres matèries | Dades + Contingut | Mitjana | — | Pendent |
@@ -87,7 +87,15 @@ segon és el gros.
   d'ESO i afegir-la com a grup nou (sense etiquetar encara cap fitxer).
 
 ### F2 — Graf navegable saber ↔ CB ↔ Florence ↔ material
-- [ ] **Estat:** Pendent · **Prioritat:** Mitjana · **Tipus:** Funcionalitat
+- [x] **Estat:** Fet (parcial, 2026-09-05) · **Prioritat:** Mitjana · **Tipus:** Funcionalitat
+- **Què s'ha fet:** el mode «El meu repartiment» de `florence-cb.html`. El punt de partida no
+  és un saber del decret sinó un **contingut del repartiment**, que és el vocabulari que el
+  departament ja fa servir cada dia; per a cada contingut es veuen alhora la sessió Florence
+  que el treballa, les preguntes CB que el consoliden i el material del catàleg. El pont viu a
+  `pipeline-data.js` (vegeu `ARQUITECTURA.md` §4e).
+- **Què hi falta:** enllaçar-hi des de `repartiment.html` (una icona per contingut, com la del
+  catàleg), i substituir o completar els «fils didàctics» pels descriptors oficials quan hi
+  hagi F1.
 - **Cost:** tècnic M · contingut baix (es deriva de F1)
 - **Idea:** Una vista on, partint d'un **saber o competència**, es vegin alhora els **ítems CB**
   que el treballen, les **sessions Florence** relacionades i els **materials del catàleg** que el toquen.
@@ -197,7 +205,13 @@ segon és el gros.
 ## 6. Competències Bàsiques com a diagnòstic
 
 ### CB1 — Vista inversa de Florence (forats de cobertura)
-- [ ] **Estat:** Pendent · **Prioritat:** Mitjana · **Tipus:** Funcionalitat
+- [x] **Estat:** Fet (parcial, 2026-09-05) · **Prioritat:** Mitjana · **Tipus:** Funcionalitat
+- **Què s'ha fet:** el forat es veu des del costat del currículum, que és on es nota. Cada curs
+  diu quants dels seus continguts tenen pràctica associada (2n 80/80 · 3r 48/49 · 1r 54/62 ·
+  4t 49/60) i un contingut sense res ho diu obertament. Els buits documentats són logaritmes,
+  trigonometria, notació científica i bona part de 1r.
+- **Què hi falta:** l'altra direcció, la que deia la fitxa original: quins ítems CB no toca cap
+  sessió Florence. Amb `pipeline-data.js` ara és una resta de conjunts trivial.
 - **Cost:** tècnic S · contingut baix
 - **Idea:** Mostrar quins **ítems CB no toca cap sessió Florence**, és a dir, l'invers del que
   ara fa `florence-cb.html`.
@@ -297,4 +311,5 @@ Afegeix una línia per cada idea aplicada (la més recent a dalt).
 
 | Data | ID | Canvi | Qui |
 |------|----|-------|-----|
+| 2026-09-05 | F2 · CB1 | Mode «El meu repartiment» a `florence-cb.html` i fitxer de pont `pipeline-data.js` (48 fils, 231/251 continguts). El repartiment de continguts passa a ser un punt d'entrada navegable cap a Florence, les CB i el catàleg | — |
 | _(exemple)_ 2026-06-04 | — | Creació del roadmap pedagògic | — |

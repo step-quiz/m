@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Florence → Competències Bàsiques · Mapa de pràctica</title>
+<!-- Dades del currículum (SENTITS, REPARTIMENT, CONTINGUTS_ACTIVITATS) i el pont
+     cap a Florence/CB (PIPELINES, CONTINGUT_PIPELINE). Són <script src> i no
+     fetch(), així que la pàgina segueix funcionant sense servidor. Si algun dels
+     dos falta, el mode «El meu repartiment» s'amaga i la resta no se n'assabenta. -->
+<script src="repartiment-data.js"></script>
+<script src="pipeline-data.js"></script>
 <style>
 :root{
  --navy:#1f3a5f; --blue:#2e75b6; --blue-bg:#eaf1fa; --blue-soft:#185fa5;
@@ -15,6 +21,14 @@
  --p3-3:#0f6e56; --p2-3:#1d9e75; --p1-3:#9fe1cb;
  --p3-4:#5c2a6b; --p2-4:#9a63ab; --p1-4:#dcc0e6;
  --topbar-h:58px; --sidebar-w:288px;
+ /* Paleta dels sentits matemàtics. Són els mateixos valors que
+    repartiment.html, perquè un tema es reconegui igual a les dues pàgines. */
+ --s-comprensio:#506080; --s-comprensio-bg:#ecf0f7;
+ --s-numeric:#1a6fa8;    --s-numeric-bg:#e8f2fb;
+ --s-espacial:#1a8a5c;   --s-espacial-bg:#e5f5ed;
+ --s-mesura:#b56010;     --s-mesura-bg:#fdf3e5;
+ --s-algebraic:#6b3fa0;  --s-algebraic-bg:#f2ecfb;
+ --s-estocastic:#a02848; --s-estocastic-bg:#fde8ef;
 }
 *{box-sizing:border-box}
 html,body{height:100%}
@@ -137,11 +151,96 @@ table.cb th:last-child{text-align:left}
 .infoclose:hover{background:var(--navy);color:#fff}
 
 
+/* ══════════════════════════════════════════════════════════════════
+   MODE «EL MEU REPARTIMENT»
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ---- Commutador de mode (barra superior) ---- */
+.modeswitch{flex:0 0 auto;display:flex;background:var(--bg);border:1px solid var(--line);
+ border-radius:9px;padding:2px;gap:2px}
+.modeswitch button{border:0;background:none;font:inherit;font-size:12.5px;font-weight:600;
+ color:var(--muted);padding:5px 12px;border-radius:7px;cursor:pointer;white-space:nowrap;transition:.15s}
+.modeswitch button:hover{color:var(--navy)}
+.modeswitch button[aria-pressed="true"]{background:var(--card);color:var(--navy);
+ box-shadow:0 1px 3px rgba(20,30,45,.12)}
+
+/* ---- Cercador del repartiment ---- */
+.findwrap{flex:0 0 auto;padding:10px 12px;border-bottom:1px solid var(--line)}
+.findwrap input{width:100%;font:inherit;font-size:13px;padding:7px 10px;border:1px solid var(--line);
+ border-radius:8px;background:var(--bg);color:var(--ink)}
+.findwrap input:focus{outline:none;border-color:var(--blue);background:var(--card)}
+
+/* ---- Arbre del currículum ---- */
+.sentitgrp{margin-bottom:10px}
+.sentithd{display:flex;align-items:baseline;gap:7px;padding:5px 8px;font-size:11.5px;font-weight:800;
+ letter-spacing:.04em;text-transform:uppercase}
+.sentithd .h{font-weight:600;letter-spacing:0;text-transform:none;color:var(--hint);font-size:11px}
+.temabox{border-left:3px solid var(--line);margin:0 0 4px 8px;padding-left:2px}
+.temahd{display:flex;align-items:baseline;gap:6px;width:100%;text-align:left;border:0;background:none;
+ font:inherit;font-size:13px;font-weight:600;color:var(--ink);padding:5px 8px;border-radius:7px;cursor:pointer}
+.temahd:hover{background:var(--bg)}
+.temahd .caret{flex:0 0 auto;color:var(--hint);font-size:10px;transition:transform .15s}
+.temahd.open .caret{transform:rotate(90deg)}
+.temahd .h{margin-left:auto;font-size:11px;font-weight:600;color:var(--hint)}
+.contlist{margin:0 0 6px;padding:0;list-style:none}
+.contlist[hidden]{display:none}
+.controw{display:flex;gap:8px;align-items:baseline;width:100%;text-align:left;border:0;background:none;
+ font:inherit;font-size:12.7px;line-height:1.35;color:var(--muted);padding:5px 8px 5px 22px;
+ border-radius:7px;cursor:pointer}
+.controw:hover{background:#e2e5ea;color:var(--ink)}
+.controw.sel{background:var(--blue-bg);color:var(--navy);font-weight:600}
+.controw .n{flex:0 0 auto;font-size:11px;font-weight:700;color:var(--hint);min-width:12px}
+.controw.sel .n{color:var(--blue-soft)}
+.controw.buit{color:var(--hint)}
+.controw.buit .t::after{content:'·';margin-left:6px;color:var(--line)}
+.hitmeta{display:block;font-size:10.5px;color:var(--hint);font-weight:400;margin-top:1px}
+.nores{padding:16px 14px;font-size:12.5px;color:var(--hint)}
+
+/* ---- Fitxa del contingut (panell dret) ---- */
+.crumb{font-size:11.5px;color:var(--hint);font-weight:600;margin-bottom:4px}
+.crumb .dot{margin:0 5px;color:var(--line)}
+.stage{margin-top:22px}
+.stage>h3{margin:0 0 3px;font-size:13.5px;color:var(--navy)}
+.stage>p.lede{margin:0 0 10px;font-size:12.5px;color:var(--muted)}
+.filchip{display:inline-block;font-size:11.5px;font-weight:600;padding:2px 9px;border-radius:12px;
+ background:var(--bg);color:var(--muted);border:1px solid var(--line);margin:0 5px 5px 0}
+.contsibs{list-style:none;margin:0;padding:0;font-size:13px}
+.contsibs li{display:flex;gap:9px;padding:3px 0;color:var(--muted)}
+.contsibs li.here{color:var(--ink);font-weight:600}
+.contsibs .n{flex:0 0 auto;font-size:11px;font-weight:700;color:var(--hint);min-width:13px;padding-top:2px}
+.contsibs button{border:0;background:none;font:inherit;color:inherit;text-align:left;padding:0;cursor:pointer}
+.contsibs button:hover{color:var(--blue);text-decoration:underline}
+.contsibs li.here button{cursor:default}
+.contsibs li.here button:hover{color:inherit;text-decoration:none}
+
+/* ---- Targeta de sessió Florence ---- */
+.fcard{border:1px solid var(--line);border-radius:11px;padding:12px 14px;margin-bottom:9px;background:var(--card)}
+.fcard .top{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:3px}
+.fcard .fid{font-size:11px;font-weight:800;letter-spacing:.03em;padding:2px 7px;border-radius:6px;background:var(--bg)}
+.fcard .ftit{font-size:14.5px;font-weight:700;color:var(--navy)}
+.fcard .fnucli{font-size:12.5px;color:var(--muted);font-style:italic;margin:2px 0 9px}
+.fcard .fact{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.altcurs{font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;
+ background:#fdf3e5;color:var(--s-mesura);border:1px solid #e0aa60}
+.encaix{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--hint);font-weight:600}
+
+/* ---- Estat buit ---- */
+.emptystate{border:1px dashed var(--line);border-radius:11px;padding:16px 18px;background:var(--card)}
+.emptystate p{margin:0 0 10px;font-size:13px;color:var(--muted)}
+.emptystate p:last-child{margin-bottom:0}
+
+/* ---- Elements que només tenen sentit en un dels dos modes ---- */
+.m-sessions .only-rep{display:none}
+
 /* ---- Mobile ---- */
 @media(max-width:820px){
  .hamb{display:flex}
- .brand h1{font-size:14px}
- .tab{padding:6px 12px;font-size:12px}
+ /* El títol cedeix el lloc al commutador de mode i a les pestanyes de curs,
+    que sí que són navegació. El nom de la pàgina ja és al títol del navegador. */
+ .brand{display:none}
+ .tab{padding:6px 11px;font-size:12px}
+ .modeswitch button{padding:5px 9px;font-size:12px}
+ .topbar{gap:8px;padding:0 10px}
  .sidebar{position:fixed;top:var(--topbar-h);bottom:0;left:0;width:84vw;max-width:330px;
   transform:translateX(-102%);transition:transform .22s ease;box-shadow:6px 0 24px rgba(20,30,45,.18)}
  .sidebar.open{transform:translateX(0)}
@@ -177,6 +276,10 @@ summary:focus-visible,
   <div class="brand">
    <h1>Relació ·Florence → Competències Bàsiques·</h1>
   </div>
+  <div class="modeswitch" id="modeSwitch" role="group" aria-label="Per on vols començar" hidden>
+   <button type="button" data-mode="sessions" aria-pressed="true">Sessions Florence</button>
+   <button type="button" data-mode="repartiment" aria-pressed="false">El meu repartiment</button>
+  </div>
   <div class="tabs" id="tabs"></div>
   <div class="spacer"></div>
   <button class="iconbtn" id="infoBtn" aria-label="Com s'utilitza">
@@ -186,6 +289,10 @@ summary:focus-visible,
 
  <div class="main">
   <aside class="sidebar" id="sidebar">
+   <div class="findwrap only-rep">
+    <input type="search" id="find" placeholder="Cerca un contingut…"
+           aria-label="Cerca un contingut del repartiment" autocomplete="off">
+   </div>
    <div class="legend" id="legend"></div>
    <div class="list" id="list"></div>
   </aside>
@@ -202,7 +309,13 @@ summary:focus-visible,
  <div class="infocard">
   <button class="infoclose" id="infoClose" aria-label="Tancar">×</button>
   <h3>Com s'utilitza</h3>
-  <p>Després de cada sessió Florence, els enunciats de cb-main que consoliden el mateix contingut. Tria una sessió a l'esquerra i baixa el PNG de cada pregunta (enunciat + pregunta en una sola imatge) per repartir a classe.</p>
+  <p>La pàgina relaciona tres coses: el repartiment de continguts del departament, les tasques riques de Florence i les preguntes de les proves de competències bàsiques. Hi pots entrar per dos costats.</p>
+  <ul>
+   <li><b>Sessions Florence:</b> tria una sessió i baixa el PNG de cada pregunta CB (enunciat + pregunta en una sola imatge) per repartir a classe.</li>
+   <li><b>El meu repartiment:</b> tria el contingut que toca (per exemple, el teorema de Pitàgores de 2n) i la pàgina proposa la sessió Florence que el treballa i les preguntes CB que el consoliden. La sessió pot ser d'un altre curs: quan passa, surt marcada.</li>
+   <li>Un contingut pot no tenir res associat. Vol dir que ni Florence ni la prova CB el toquen directament, i la pàgina t'ho diu.</li>
+  </ul>
+  <p>Detalls de les etiquetes:</p>
   <ul>
    <li>Cada sessió Florence (F) és un node. Les preguntes de competències bàsiques (CB) que en pengen són la pràctica recomanada per a la classe següent.</li>
    <li>El node CB és la pregunta individual, no l'activitat sencera.</li>
@@ -246,6 +359,105 @@ function relFor(id){const out=[];ffFor().forEach(e=>{
 });return out;}
 let selId=null;
 
+/* ═══════════════════════════════════════════════════════════════════
+   MODE «EL MEU REPARTIMENT»
+   ───────────────────────────────────────────────────────────────────
+   El professorat parteix del repartiment de continguts, no de la llista
+   de sessions. Aquest bloc afegeix aquesta segona entrada: tries un
+   contingut i la pàgina en munta la seqüència (tasca rica → pràctica CB
+   → material del catàleg) creuant tres fitxers:
+
+     repartiment-data.js  el currículum (REPARTIMENT, SENTITS) i el pont
+                          cap al catàleg (CONTINGUTS_ACTIVITATS)
+     pipeline-data.js     el pont cap a Florence i CB (PIPELINES,
+                          CONTINGUT_PIPELINE)
+     PAYLOAD              les sessions i les preguntes, aquí mateix
+
+   Si els dos primers no s'han pogut carregar, REP_OK és fals: el
+   commutador no apareix i la pàgina es comporta com sempre.
+   ═══════════════════════════════════════════════════════════════════ */
+const REP_OK = typeof REPARTIMENT !== 'undefined' && typeof SENTITS !== 'undefined'
+            && typeof PIPELINES  !== 'undefined' && typeof CONTINGUT_PIPELINE !== 'undefined';
+const CURSOS = ['1ESO','2ESO','3ESO','4ESO'];
+
+let mode  = 'sessions';        // 'sessions' | 'repartiment'
+let sel   = {key:null, pos:0}; // contingut triat: clau de tema + posició
+let query = '';                // text del cercador de continguts
+const obertes = new Set();     // temes desplegats a l'arbre
+
+/* Índexs sobre el PAYLOAD: sessió per id, i la fitxa de cada pregunta CB.
+   Les descripcions d'una mateixa CB varien lleugerament d'una sessió a
+   l'altra; ens quedem amb la primera que apareix. */
+const SESS = {}, CBINFO = {};
+GRAFS.forEach(([g]) => (PAYLOAD['d'+g] || []).forEach(n => {
+  SESS[n.id] = Object.assign({graf:g}, n);
+  n.cb.forEach(c => { if (!CBINFO[c.id]) CBINFO[c.id] = {src:c.src, desc:c.desc}; });
+}));
+
+const cursDeGraf = g => g + 'ESO';
+const grafDeCurs = c => c.charAt(0);
+const ORDINAL = {'1':'1r', '2':'2n', '3':'3r', '4':'4t'};
+/* La prova CB que farà aquest alumnat: la diagnòstica de 2n o la de final
+   d'etapa de 4t. Serveix per posar davant les preguntes que li tocaran. */
+const provaDe = curs => (curs === '1ESO' || curs === '2ESO') ? '2ESO' : '4ESO';
+const normal = s => String(s || '').toLowerCase().normalize('NFD')
+  .replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
+
+function cursActual(){ return cursDeGraf(graf); }
+
+function temaPerKey(key){
+  const i = key.indexOf('|'); if (i < 0) return null;
+  const curs = key.slice(0, i), j = key.indexOf('/', i);
+  const sentit = key.slice(i+1, j), tid = key.slice(j+1);
+  const bloc = ((REPARTIMENT[curs] || {}).blocs || []).find(b => b.sentit === sentit);
+  const tema = bloc && bloc.temes.find(t => t.id === tid);
+  return tema ? {curs, sentit, tema, key} : null;
+}
+
+/* Els fils didàctics d'un contingut. Una posició que no existeix (perquè
+   s'ha reordenat el repartiment i no s'ha renumerat el pont) no peta:
+   simplement no retorna res. */
+function filsDe(key, pos){
+  const m = CONTINGUT_PIPELINE[key] || {};
+  return (m[pos] || []).map(id => PIPELINES[id]).filter(Boolean);
+}
+
+/* Fusiona els fils d'un contingut en una sola proposta: les sessions
+   sense repetir (amb l'encaix més alt de tots els fils) i les preguntes
+   CB sense repetir, en l'ordre en què els fils les recomanen. */
+function proposta(key, pos){
+  const fils = filsDe(key, pos);
+  const perSessio = new Map();
+  fils.forEach(f => (f.florence || []).forEach(([sid, pes]) => {
+    perSessio.set(sid, Math.max(perSessio.get(sid) || 0, pes));
+  }));
+  const sess = [...perSessio].map(([sid, pes]) => ({sid, pes, node:SESS[sid]}))
+    .filter(x => x.node)
+    .sort((a, b) => b.pes - a.pes || a.sid.localeCompare(b.sid));
+  const vistes = new Set(), cbs = [];
+  fils.forEach(f => (f.cb || []).forEach(id => {
+    if (!vistes.has(id) && CBINFO[id]) { vistes.add(id); cbs.push(id); }
+  }));
+  return {fils, sess, cbs};
+}
+
+/* Activitats del catàleg per a aquest contingut. CONTINGUTS_ACTIVITATS no
+   porta el curs a la clau, així que la mateixa taula s'aplica a tots els
+   cursos que comparteixen «<sentit>/<tema.id>»; per compensar-ho, l'enllaç
+   que generem filtra també per curs. Si la posició no hi és, provem amb la
+   unió de tot el tema. */
+function activitatsDe(key, pos){
+  if (typeof CONTINGUTS_ACTIVITATS === 'undefined') return {acts:[], ambit:''};
+  const t = temaPerKey(key); if (!t) return {acts:[], ambit:''};
+  const m = CONTINGUTS_ACTIVITATS[t.sentit + '/' + t.tema.id] || {};
+  if ((m[pos] || []).length) return {acts:m[pos].slice(), ambit:'contingut'};
+  const totes = new Set();
+  Object.keys(m).forEach(p => {
+    if (Number(p) <= t.tema.continguts.length) (m[p] || []).forEach(a => totes.add(a));
+  });
+  return {acts:[...totes], ambit:'tema'};
+}
+
 function isMobile(){return window.matchMedia('(max-width:820px)').matches;}
 function openDrawer(){document.getElementById('sidebar').classList.add('open');document.getElementById('backdrop').classList.add('show');}
 function closeDrawer(){document.getElementById('sidebar').classList.remove('open');document.getElementById('backdrop').classList.remove('show');}
@@ -256,24 +468,41 @@ document.getElementById('hambBtn').addEventListener('click',()=>{
 });
 
 function setGraf(g){
- graf=g;selId=null;
+ graf=g;selId=null;sel={key:null,pos:0};
  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.g===g));
  renderLegend();renderList();
+ if(mode==='repartiment'){document.getElementById('detail').innerHTML=introRepartiment();return;}
  const d=dataFor();if(d.length)show(d[0].id,true);
 }
+/* En mode «sessions» només surten els cursos que tenen graf Florence (ara 2n
+   i 3r); en mode «repartiment» hi són els quatre, perquè el currículum sí que
+   existeix a tots. */
+function cursosDeLaBarra(){
+ return mode==='repartiment'
+   ? CURSOS.map(c=>[grafDeCurs(c),(REPARTIMENT[c]||{}).label||c])
+   : grafsActius();
+}
 function renderTabs(){
- document.getElementById('tabs').innerHTML=grafsActius().map(([g,et])=>
+ document.getElementById('tabs').innerHTML=cursosDeLaBarra().map(([g,et])=>
   `<div class="tab${g===graf?' active':''}" data-g="${g}">${esc(et)}</div>`).join('');
 }
 function renderLegend(){
+ const leg=document.getElementById('legend');
+ if(mode==='repartiment'){
+  leg.innerHTML=Object.keys(SENTITS).map(s=>
+   `<span><span class="pill p1" style="background:var(--s-${s})"></span>${esc(SENTITS[s].short||SENTITS[s].label)}</span>`
+  ).join('');
+  return;
+ }
  const pc=pesColor();
- document.getElementById('legend').innerHTML=
+ leg.innerHTML=
   `<span><span class="pill p3" style="background:${pc[3]}"></span>fort</span>
    <span><span class="pill p2" style="background:${pc[2]}"></span>mitjà</span>
    <span><span class="pill p1" style="background:${pc[1]}"></span>dèbil</span>
    <span><span class="src s2">2ESO</span> / <span class="src s4">4ESO</span> font</span>`;
 }
 function renderList(){
+ if(mode==='repartiment'){renderArbre();return;}
  const list=document.getElementById('list');list.innerHTML='';
  dataFor().forEach(n=>{
   const r=document.createElement('div');
@@ -286,11 +515,12 @@ function renderList(){
   list.appendChild(r);
  });
 }
-function downloadAll(id){
- const n=dataFor().find(x=>x.id===id);
- n.cb.forEach((cb,i)=>setTimeout(()=>{
+/* Rep una llista d'ids CB. El navegador rebutja moltes descàrregues seguides,
+   d'aquí l'espaiat de 250 ms. */
+function downloadAll(ids){
+ ids.forEach((id,i)=>setTimeout(()=>{
   const a=document.createElement('a');
-  a.href='cb-img/CB'+cb.id+'.png';a.download='CB'+cb.id+'.png';
+  a.href='cb-img/CB'+id+'.png';a.download='CB'+id+'.png';
   document.body.appendChild(a);a.click();a.remove();
  }, i*250));
 }
@@ -305,7 +535,7 @@ function show(id,keepDrawer){
    <td class="veurecell"><button class="iconmini" title="Visualitza" data-preview="${cb.id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg></button></td>
    <td class="baixacell"><a class="btn open dl" href="cb-img/CB${cb.id}.png" download="CB${cb.id}.png">⬇ Baixa</a></td>
    <td style="color:var(--muted)">${esc(cb.desc.charAt(0).toUpperCase()+cb.desc.slice(1))}</td></tr>`).join('');
- const allBtn=`<button class="btn open dlall" data-dlall="${esc(n.id)}">⬇ Baixa-ho tot (${n.cb.length})</button>`;
+ const allBtn=`<button class="btn open dlall" data-dlall="${esc(n.cb.map(c=>c.id).join(','))}">⬇ Baixa-ho tot (${n.cb.length})</button>`;
  const rels=relFor(n.id);
  const relHtml=rels.length?`<div class="sectlab">Continua per…</div><div class="rel">`+
   rels.map(([rid,txt])=>{const t=dataFor().find(x=>x.id===rid);
@@ -320,8 +550,273 @@ function show(id,keepDrawer){
    ${relHtml}`;
  // scroll the detail pane (not the page) to top
  document.getElementById('detailwrap').scrollTop=0;
+ sincronitzaUrl();
  if(!keepDrawer && isMobile()) closeDrawer();
 }
+/* ─── Render del mode «El meu repartiment» ────────────────────────── */
+
+const ICONA_ULL='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>';
+const majus=s=>String(s||'').charAt(0).toUpperCase()+String(s||'').slice(1);
+
+/* L'arbre del currículum del curs actiu: sentit → tema → continguts.
+   Els continguts sense cap fil surten esmorteïts, però es poden triar: la
+   fitxa explica que no hi ha res i ofereix les alternatives. */
+function renderArbre(){
+ const list=document.getElementById('list');
+ if(normal(query).length>=2){renderCerca();return;}
+ const curs=cursActual(),blocs=(REPARTIMENT[curs]||{}).blocs||[];
+ let h='';
+ blocs.forEach(b=>{
+  const sm=SENTITS[b.sentit]||{label:b.sentit};
+  h+=`<div class="sentitgrp"><div class="sentithd" style="color:var(--s-${esc(b.sentit)})">`
+    +`${esc(sm.short||sm.label)} <span class="h">${b.hores}h</span></div>`;
+  b.temes.forEach(t=>{
+   const key=curs+'|'+b.sentit+'/'+t.id;
+   const obert=obertes.has(key)||sel.key===key;
+   h+=`<div class="temabox" style="border-left-color:var(--s-${esc(b.sentit)})">`
+     +`<button class="temahd${obert?' open':''}" data-tema="${esc(key)}" aria-expanded="${obert}">`
+     +`<span class="caret" aria-hidden="true">▶</span><span>${esc(t.label)}</span>`
+     +`<span class="h">${t.hores}h</span></button>`
+     +`<ul class="contlist"${obert?'':' hidden'}>`;
+   t.continguts.forEach((c,i)=>{
+    const pos=i+1,te=filsDe(key,pos).length>0;
+    h+=`<li><button class="controw${te?'':' buit'}${sel.key===key&&sel.pos===pos?' sel':''}"`
+      +` data-cont="${esc(key)}" data-pos="${pos}">`
+      +`<span class="n">${pos}</span><span class="t">${esc(c)}</span></button></li>`;
+   });
+   h+='</ul></div>';
+  });
+  h+='</div>';
+ });
+ list.innerHTML=h;
+}
+
+/* La cerca travessa els quatre cursos: sovint el contingut que busques és
+   al curs del costat, i saber-ho també és informació útil. */
+function renderCerca(){
+ const q=normal(query),hits=[];
+ CURSOS.forEach(curs=>((REPARTIMENT[curs]||{}).blocs||[]).forEach(b=>b.temes.forEach(t=>{
+  const key=curs+'|'+b.sentit+'/'+t.id,enTema=normal(t.label).includes(q);
+  t.continguts.forEach((c,i)=>{
+   if(enTema||normal(c).includes(q))
+    hits.push({key,pos:i+1,txt:c,tema:t.label,curs,sentit:b.sentit});
+  });
+ })));
+ const list=document.getElementById('list');
+ if(!hits.length){
+  list.innerHTML=`<p class="nores">Cap contingut del repartiment no encaixa amb «${esc(query)}». `
+    +`Prova amb una paraula més curta o amb el nom del tema.</p>`;
+  return;
+ }
+ list.innerHTML=hits.slice(0,60).map(x=>{
+  const te=filsDe(x.key,x.pos).length>0;
+  return `<button class="controw${te?'':' buit'}${sel.key===x.key&&sel.pos===x.pos?' sel':''}"`
+    +` data-cont="${esc(x.key)}" data-pos="${x.pos}" style="padding-left:10px">`
+    +`<span class="n">${x.pos}</span><span class="t">${esc(x.txt)}`
+    +`<span class="hitmeta" style="color:var(--s-${esc(x.sentit)})">`
+    +`${esc((REPARTIMENT[x.curs]||{}).label||x.curs)} · ${esc(x.tema)}</span></span></button>`;
+ }).join('')+(hits.length>60?`<p class="nores">…i ${hits.length-60} més. Afina la cerca.</p>`:'');
+}
+
+/* Pantalla d'entrada del mode: què hi ha en aquest curs i quant n'hi ha
+   de cobert. La xifra de cobertura és honesta a propòsit; els forats són
+   informació per al departament. */
+function introRepartiment(){
+ const curs=cursActual(),d=REPARTIMENT[curs]||{blocs:[]};
+ let temes=0,conts=0,amb=0;
+ d.blocs.forEach(b=>b.temes.forEach(t=>{
+  temes++;
+  t.continguts.forEach((c,i)=>{conts++;if(filsDe(curs+'|'+b.sentit+'/'+t.id,i+1).length)amb++;});
+ }));
+ const teGraf=(PAYLOAD['d'+graf]||[]).length>0;
+ return `<h2>${esc(d.label||curs)}</h2>
+  <div class="nucli">${d.hores_any||''}h · ${esc(d.hores_info||'')}</div>
+  <div class="emptystate" style="margin-top:18px">
+   <p>Tria un contingut a l'esquerra i et proposaré la tasca rica de Florence que el treballa i les preguntes de competències bàsiques que el consoliden.</p>
+   <p>Aquest curs té ${temes} temes i ${conts} continguts; ${amb} tenen alguna cosa associada.
+   ${teGraf?'':'Encara no hi ha graf Florence propi d\'aquest curs, així que les tasques que et proposi vindran de 2n o de 3r.'}</p>
+  </div>`;
+}
+
+/* La fitxa d'un contingut: d'on surt, quina tasca el treballa, quines
+   preguntes el consoliden, quin material hi ha al catàleg. */
+function showContingut(key,pos,keepDrawer){
+ const t=temaPerKey(key);
+ if(!t){document.getElementById('detail').innerHTML=introRepartiment();return;}
+ pos=Number(pos)||1;
+ sel={key,pos};selId=null;
+ const gCurs=grafDeCurs(t.curs);
+ if(gCurs!==graf){graf=gCurs;renderTabs();renderLegend();}
+ renderList();
+ document.querySelectorAll('.controw').forEach(r=>
+  r.classList.toggle('sel',r.dataset.cont===key&&Number(r.dataset.pos)===pos));
+
+ const sm=SENTITS[t.sentit]||{label:t.sentit};
+ const txt=t.tema.continguts[pos-1]||'';
+ const {fils,sess,cbs}=proposta(key,pos);
+ const prova=provaDe(t.curs);
+
+ let h=`<div class="crumb"><span style="color:var(--s-${esc(t.sentit)})">${esc(sm.label)}</span>`
+  +`<span class="dot">·</span>${esc(t.tema.label)}<span class="dot">·</span>${t.tema.hores}h</div>`
+  +`<h2>${pos}. ${esc(txt)}</h2>`;
+
+ if(fils.length){
+  h+=`<div style="margin:8px 0 2px">`
+    +fils.map(f=>`<span class="filchip">${esc(f.label)}</span>`).join('')+`</div>`;
+  const notes=fils.filter(f=>f.nota);
+  if(notes.length) h+=notes.map(f=>`<div class="nucli">${esc(f.nota)}</div>`).join('');
+ }
+
+ /* 1 — la tasca rica */
+ h+=`<div class="stage"><h3>La tasca rica</h3>`;
+ if(sess.length){
+  h+=`<p class="lede">Fes-la abans de la pràctica: planteja el contingut com un problema obert.</p>`;
+  h+=sess.map(({sid,pes,node})=>{
+   const altre=node.graf!==gCurs;
+   const fpdf=pdfFor(node);
+   return `<div class="fcard">
+    <div class="top">
+     <span class="fid" style="color:var(--p3-${node.graf})">${esc(shortId(sid))}</span>
+     <span class="ftit">${esc(node.titol)}</span>
+     ${altre?`<span class="altcurs">del graf de ${ORDINAL[node.graf]} d'ESO</span>`:''}
+     <span class="encaix" style="margin-left:auto">encaix
+      <span class="pestrack"><span class="pesbar p${pes}" style="background:var(--p${pes}-${node.graf})"></span></span>
+      ${esc(pesTxt[pes])}</span>
+    </div>
+    <div class="fnucli">${esc(node.nucli)}</div>
+    <div class="fact">
+     ${fpdf?`<a class="btn open" href="${esc(fpdf)}" target="_blank" rel="noopener">Fitxa de l'alumnat (PDF)</a>`:''}
+     <button class="btn" data-obre-sessio="${esc(sid)}">Veure la sessió sencera</button>
+    </div></div>`;
+  }).join('');
+ }else{
+  h+=`<div class="emptystate"><p>Cap sessió de Florence no treballa aquest contingut. `
+    +`De moment només hi ha graf de 2n i de 3r d'ESO; els de 1r i 4t arriben el juny del 2027.</p></div>`;
+ }
+ h+=`</div>`;
+
+ /* 2 — la pràctica CB, començant per la prova que farà aquest alumnat */
+ h+=`<div class="stage"><h3>La pràctica: preguntes de competències bàsiques</h3>`;
+ if(cbs.length){
+  const meves=cbs.filter(id=>CBINFO[id].src===prova);
+  const altres=cbs.filter(id=>CBINFO[id].src!==prova);
+  const meva=prova==='2ESO'?'2n':'4t',altra=prova==='2ESO'?'4t':'2n';
+  h+=`<p class="lede">Ordenades de més a menys properes al contingut. `
+    +(meves.length
+       ? `Aquest alumnat farà la prova de ${meva}, així que aquestes van primer.`
+       : `La prova de ${meva} no avalua aquest contingut: totes les que hi encaixen són de la de ${altra}, `
+        +`i serveixen igual com a pràctica.`)
+    +`</p>`
+    +`<div class="sectlab dlhead"><button class="btn open dlall" data-dlall="${esc(cbs.join(','))}">`
+    +`⬇ Baixa-ho tot (${cbs.length})</button></div>`;
+  const capsalera=`<tr><th>CB</th><th>Font</th><th>Veure</th><th>Baixa</th><th>Continguts que es mobilitzen</th></tr>`;
+  if(meves.length) h+=`<table class="cb">${capsalera}${filesCb(meves)}</table>`;
+  if(altres.length){
+   if(meves.length) h+=`<div class="sectlab">També hi encaixen, de la prova de ${altra}</div>`;
+   h+=`<table class="cb">${capsalera}${filesCb(altres)}</table>`;
+  }
+ }else{
+  h+=`<div class="emptystate"><p>Cap pregunta de les proves CB publicades no avalua aquest contingut.</p>`
+    +`<p>És normal: la prova no cobreix tot el currículum. `+veins(key,pos)+`</p></div>`;
+ }
+ h+=`</div>`;
+
+ /* 3 — el catàleg de material */
+ const {acts,ambit}=activitatsDe(key,pos);
+ if(acts.length){
+  const qs=new URLSearchParams({mode:'advanced',course:t.curs,activity:acts.join(',')});
+  h+=`<div class="stage"><h3>Material del catàleg</h3>`
+    +`<p class="lede">${ambit==='tema'?'Etiquetat per al tema sencer':'Etiquetat per a aquest contingut'}, `
+    +`filtrat per ${esc((REPARTIMENT[t.curs]||{}).label||t.curs)}.</p>`
+    +`<a class="btn open" href="index.html?${esc(qs.toString())}" target="_blank" rel="noopener">`
+    +`Obre el cercador filtrat</a></div>`;
+ }
+
+ /* 4 — la resta del tema, per continuar sense tornar a la llista */
+ if(t.tema.continguts.length>1){
+  h+=`<div class="stage"><h3>La resta del tema</h3><ul class="contsibs">`
+   +t.tema.continguts.map((c,i)=>{
+     const p=i+1,aqui=p===pos,te=filsDe(key,p).length>0;
+     return `<li class="${aqui?'here':''}"><span class="n">${p}</span>`
+      +`<button data-cont="${esc(key)}" data-pos="${p}"${aqui?' disabled':''}`
+      +`${te?'':' style="color:var(--hint)"'}>${esc(c)}</button></li>`;
+   }).join('')+`</ul></div>`;
+ }
+
+ document.getElementById('detail').innerHTML=h;
+ document.getElementById('detailwrap').scrollTop=0;
+ sincronitzaUrl();
+ if(!keepDrawer&&isMobile()) closeDrawer();
+}
+
+function filesCb(ids){
+ return ids.map(id=>{
+  const info=CBINFO[id];
+  return `<tr><td><b>CB ${id}</b></td>
+   <td><span class="src ${info.src==='2ESO'?'s2':'s4'}">${esc(info.src)}</span></td>
+   <td class="veurecell"><button class="iconmini" title="Visualitza" aria-label="Visualitza la pregunta CB ${id}" data-preview="${id}">${ICONA_ULL}</button></td>
+   <td class="baixacell"><a class="btn open dl" href="cb-img/CB${id}.png" download="CB${id}.png">⬇ Baixa</a></td>
+   <td style="color:var(--muted)">${esc(majus(info.desc))}</td></tr>`;
+ }).join('');
+}
+
+/* Quan un contingut no té res, mirem si els seus veïns del mateix tema sí:
+   una pantalla buida ha de dir per on continuar. */
+function veins(key,pos){
+ const t=temaPerKey(key);if(!t)return '';
+ const amb=t.tema.continguts.map((c,i)=>i+1).filter(p=>p!==pos&&filsDe(key,p).length);
+ if(!amb.length) return 'Dins d\'aquest tema no n\'hi ha cap altre amb pràctica associada.';
+ return 'Dins del mateix tema en tenen '+amb.map(p=>'el '+p).join(', ')+'.';
+}
+
+/* ─── Mode i estat a la URL ───────────────────────────────────────── */
+
+function setMode(m){
+ if(m==='repartiment'&&!REP_OK) return;
+ mode=m;
+ document.body.className=(m==='repartiment')?'m-repartiment':'m-sessions';
+ document.querySelectorAll('#modeSwitch button').forEach(b=>
+  b.setAttribute('aria-pressed',String(b.dataset.mode===m)));
+ // En mode «sessions» no tots els cursos tenen pestanya: si véns de 1r o 4t,
+ // cal aterrar en un que sí que en tingui.
+ if(m==='sessions'&&!(PAYLOAD['d'+graf]||[]).length) graf=(grafsActius()[0]||['2'])[0];
+ renderTabs();renderLegend();renderList();
+ if(m==='repartiment'){
+  if(sel.key) showContingut(sel.key,sel.pos,true);
+  else document.getElementById('detail').innerHTML=introRepartiment();
+ }else{
+  const d=dataFor();if(d.length)show(selId&&SESS[selId]&&SESS[selId].graf===graf?selId:d[0].id,true);
+ }
+ sincronitzaUrl();
+}
+
+/* Enllaç compartible: ?s=<sessió> o ?c=<CURS|sentit/tema|posició>. Serveix
+   també per entrar-hi des de fora (per exemple des de repartiment.html). */
+function sincronitzaUrl(){
+ const p=new URLSearchParams();
+ if(mode==='repartiment'&&sel.key) p.set('c',sel.key+'|'+sel.pos);
+ else if(mode==='sessions'&&selId) p.set('s',selId);
+ else if(mode==='repartiment') p.set('c',cursActual());
+ const qs=p.toString();
+ // Amb file:// alguns navegadors rebutgen replaceState. No és res greu:
+ // només es perd l'enllaç compartible.
+ try{history.replaceState(null,'',location.pathname+(qs?'?'+qs:''));}catch(e){}
+}
+function llegeixUrl(){
+ const p=new URLSearchParams(location.search);
+ const c=p.get('c');
+ if(c&&REP_OK){
+  const parts=c.split('|');
+  if(parts.length>=2&&temaPerKey(parts[0]+'|'+parts[1])){
+   setMode('repartiment');showContingut(parts[0]+'|'+parts[1],parts[2]||1,true);return true;
+  }
+  if(REPARTIMENT[parts[0]]){graf=grafDeCurs(parts[0]);setMode('repartiment');return true;}
+ }
+ const s=p.get('s');
+ if(s&&SESS[s]){graf=SESS[s].graf;setMode('sessions');show(s,true);return true;}
+ return false;
+}
+
 function previewPng(id){
  const src='cb-img/CB'+id+'.png';
  document.getElementById('pvImg').src=src;
@@ -345,19 +840,59 @@ document.getElementById('pvOverlay').addEventListener('click',e=>{if(e.target===
 document.getElementById('pvClose').addEventListener('click',closePreview);
 document.getElementById('list').addEventListener('click',e=>{
  const row=e.target.closest('.srow');
- if(row) show(row.dataset.id);
+ if(row){show(row.dataset.id);return;}
+ const cont=e.target.closest('[data-cont]');
+ if(cont){showContingut(cont.dataset.cont,cont.dataset.pos);return;}
+ const tema=e.target.closest('[data-tema]');
+ if(tema){
+  const k=tema.dataset.tema,obert=obertes.has(k);
+  obert?obertes.delete(k):obertes.add(k);
+  tema.classList.toggle('open',!obert);
+  tema.setAttribute('aria-expanded',String(!obert));
+  const ul=tema.nextElementSibling;
+  if(ul) ul.hidden=obert;
+ }
 });
 document.getElementById('detailwrap').addEventListener('click',e=>{
  const pvBtn=e.target.closest('[data-preview]');
  if(pvBtn){previewPng(Number(pvBtn.dataset.preview));return;}
  const dlAll=e.target.closest('[data-dlall]');
- if(dlAll){downloadAll(dlAll.dataset.dlall);return;}
+ if(dlAll){downloadAll(dlAll.dataset.dlall.split(',').filter(Boolean));return;}
  const goto=e.target.closest('[data-goto]');
- if(goto) show(goto.dataset.goto);
+ if(goto){show(goto.dataset.goto);return;}
+ // Des de la fitxa d'un contingut, saltar a la sessió sencera canvia de mode.
+ const obreSes=e.target.closest('[data-obre-sessio]');
+ if(obreSes){
+  const sid=obreSes.dataset.obreSessio;
+  if(SESS[sid]){graf=SESS[sid].graf;setMode('sessions');show(sid,true);}
+  return;
+ }
+ const cont=e.target.closest('[data-cont]');
+ if(cont) showContingut(cont.dataset.cont,cont.dataset.pos,true);
 });
 
-renderTabs();renderLegend();renderList();
-{const d=dataFor();if(d.length)show(d[0].id,true);}
+if(REP_OK){
+ document.getElementById('modeSwitch').hidden=false;
+ document.getElementById('modeSwitch').addEventListener('click',e=>{
+  const b=e.target.closest('[data-mode]');
+  if(b&&b.dataset.mode!==mode) setMode(b.dataset.mode);
+ });
+ // Cercar no és canviar de curs: mentre hi ha text, la llista travessa
+ // els quatre cursos i les pestanyes queden com a simple indicador.
+ let temporitzador;
+ document.getElementById('find').addEventListener('input',e=>{
+  query=e.target.value;
+  clearTimeout(temporitzador);
+  temporitzador=setTimeout(()=>{if(mode==='repartiment') renderArbre();},120);
+ });
+}
+
+/* ─── Arrencada ───────────────────────────────────────────────────── */
+document.body.className='m-sessions';
+if(!llegeixUrl()){
+ renderTabs();renderLegend();renderList();
+ const d=dataFor();if(d.length)show(d[0].id,true);
+}
 </script>
 </body>
 </html>
