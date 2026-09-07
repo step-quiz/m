@@ -1574,8 +1574,19 @@ function syncFromUrl() {
   els.search.value = state.query;
   for (const G of FILTER_GROUPS) {
     state.filters[G.key].clear();
+    // Només s'accepten valors que siguin al vocabulari del manifest. Un enllaç
+    // vell —compartit, desat als preferits o al fons de l'historial— pot dur un
+    // slug que ja s'ha retirat del vocabulari. Si l'acceptéssim, passarien dues
+    // coses: el xip el mostraria igualment, perquè label() cau al fallback
+    // «slug → Text Capitalitzat» i el reviuria a la pantalla; i el filtre no
+    // casaria amb cap fitxa, així que la llista sortiria buida sense explicació.
+    // syncFromUrl() sempre s'executa amb el manifest carregat (init() i
+    // popstate); si per algun motiu no ho estigués, no filtrem res.
+    const permesos = state.manifest?.vocabulary?.[G.key] || null;
     const v = p.get(G.key);
-    if (v) v.split(',').forEach(x => x && state.filters[G.key].add(x));
+    if (v) v.split(',').forEach(x => {
+      if (x && (!permesos || permesos.includes(x))) state.filters[G.key].add(x);
+    });
   }
   state.openId = p.get('open') || null;
   // Deep links (p. ex. des de repartiment.html) poden forçar el mode amb ?mode=advanced.

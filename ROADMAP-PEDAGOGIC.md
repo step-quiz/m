@@ -73,7 +73,7 @@ segon és el gros.
 
 ### F1 — Vocabulari curricular compartit
 - [ ] **Estat:** Pendent · **Prioritat:** Alta · **Tipus:** Dades
-- **Cost:** tècnic S–M · contingut M (etiquetar 48 materials)
+- **Cost:** tècnic S–M · contingut M (etiquetar 135 materials)
 - **Idea:** Afegir al vocabulari del `manifest.json` (i, a la llarga, a `cb-items.json` i al
   `PAYLOAD` de Florence) els descriptors oficials: **competències específiques** (CE) i, si es
   vol, els **sabers** del currículum, a més dels sentits que ja hi ha.

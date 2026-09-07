@@ -36,18 +36,18 @@ Les dades viuen en cinc contractes separats:
 
 ```jsonc
 {
-  "version": 1,
-  "generated": "2026-06-02",        // se segella a cada descàrrega des de l'editor
+  "version": 4,
+  "generated": "2026-09-03T05:32:50",   // darrer segell; l'editor hi escriu només YYYY-MM-DD
   "folder_url": "https://drive.google.com/drive/folders/…",
   "vocabulary": {                   // valors permesos (slugs) per cada faceta
     "origin":     ["miquel-tarradell", "florence", "nrich", …],
     "format":     ["pdf", "doc", "web"],
     "course":     ["1ESO","2ESO","3ESO","4ESO","1Bat","2Bat","ESO","Bat", …],
     "math_sense": ["algebraic","mesura","espacial","estocastic","numeric", …],
-    "activity":   ["nombres-naturals", "fraccions", …],   // ~90 valors
+    "activity":   ["nombres-naturals", "fraccions", …],   // 91 valors
     "type":       ["exercici","dossier","examen", …]
   },
-  "vocabulary_labels": {            // slug → text visible (≈132 entrades)
+  "vocabulary_labels": {            // slug → text visible (135 entrades)
     "miquel-tarradell": "Miquel Tarradell",
     "1ESO": "1r ESO",
     …
@@ -61,7 +61,7 @@ Les dades viuen en cinc contractes separats:
     { "label": "Àlgebra",     "items": [ … ] },
     … (8 blocs en total)
   ],
-  "files": [ /* 48 entrades, vegeu sota */ ]
+  "files": [ /* 135 entrades, vegeu sota */ ]
 }
 ```
 
@@ -84,9 +84,10 @@ Les dades viuen en cinc contractes separats:
 }
 ```
 
-Freqüència real dels camps (sobre 48 fitxers): `title`/`id`/`format`/`origin`/`courses` a
-tots; `type` 47; `drive_id` 42; `activities` 42; `math_sense` 41; `notes` 31; `year` 26;
-`url` 6. Distribució de format: **pdf 39 · web 6 · doc 3**.
+Freqüència real dels camps (sobre 135 fitxes): `title`/`id`/`format`/`origin`/`courses`/`type`
+a totes; `drive_id` 129; `math_sense` 129; `activities` 129; `notes` 82; `year` 30; `url` 6.
+Les 129 amb `drive_id` i les 6 amb `url` no se solapen, tal com demana la regla «cal `drive_id`
+O `url`». Distribució de format: **pdf 116 · doc 13 · web 6**.
 
 Com es construeix l'enllaç d'obertura (a `index.html`):
 - `url` present → s'obre l'`url` (recursos web).
@@ -108,6 +109,15 @@ L'editor desa el manifest sencer tal com el va carregar, així que `basic` i
 `activity_blocks` es conserven en el cicle carregar→descarregar encara que no tinguin
 interfície. Però **no s'actualitzen sols**: afegir un valor a `vocabulary.activity` NO
 l'afegeix a cap bloc.
+
+El vocabulari és la llista de valors **permesos**, no un índex del que hi ha al catàleg: és
+normal que hi hagi valors que ara mateix no fa servir cap fitxa. Avui n'hi ha 24 de 135
+(1 origen, 1 curs, 16 activitats escampades per sis blocs temàtics i 6 tipus). `index.html` els
+pinta amb la classe `is-zero`, que els atenua però no els amaga, perquè un valor amb zero
+resultats *amb els filtres actuals* i un valor sense cap fitxa al catàleg s'han de veure
+igual: la diferència no és estable, canvia a cada clic. Esborrar-los quan es retira material
+no cal, i sortir del vocabulari els deixaria fora del desplegable de l'editor la propera
+vegada que es doni d'alta material d'aquell tema.
 
 Lògica de cursos «paraigua» (a `index.html`): un filtre per `3ESO` també casa amb fitxers
 etiquetats `ESO`; `1Bat`/`2Bat` casen amb `Bat`; un fitxer **sense** `courses` es considera
@@ -515,5 +525,5 @@ abans d'un commit.
   `manifest.json` nou que cal pujar a mà. Per tant l'eina no pot corrompre el catàleg en
   producció. La validació bloqueja la descàrrega davant d'errors estructurals (IDs duplicats,
   valors fora de vocabulari) i un avís `beforeunload` evita perdre canvis a mig fer.
-- **Rendiment:** el càlcul dels filtres és O(grups × fitxers × valors) per render; amb 48
-  fitxers és instantani. Cap problema a aquesta escala.
+- **Rendiment:** el càlcul dels filtres és O(grups × fitxers × valors) per render; amb 135
+  fitxes és instantani. Cap problema a aquesta escala.
