@@ -83,3 +83,12 @@ L'aplicació depèn d'internet per a les seves funcions principals:
 - **`cdnjs.cloudflare.com`** — algunes llibreries JS (vegeu `ARQUITECTURA.md`).
 
 Vegeu el mapa complet de dependències a [`ARQUITECTURA.md`](ARQUITECTURA.md#dependències-per-pàgina).
+
+<!-- atribucio-centre:inici -->
+
+---
+
+Material desenvolupat per **David Arso Civil** per al Departament de Matemàtiques de l'INS Miquel Tarradell.
+Contingut sota CC BY-NC-SA 4.0, codi sota llicència MIT. Vegeu [`LLICENCIA.md`](LLICENCIA.md).
+
+<!-- atribucio-centre:final -->
