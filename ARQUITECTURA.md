@@ -147,7 +147,7 @@ universal i passa tots els filtres de curs.
 }
 ```
 
-- **59 blocs · 157 preguntes**, nivells `2eso` i `4eso`, anys 2022–2025.
+- **84 blocs · 218 preguntes**, nivells `2eso` i `4eso`, anys 2022–2026.
 - La unitat de filtre i d'exportació és el **bloc** (enunciat + la seva seqüència de preguntes).
 - Les imatges es resolen com `image_base + img`, és a dir **des de `cb.step-quiz.net`** —
   no estan al repositori. L'exportació a PDF (i les miniatures) per tant necessiten connexió

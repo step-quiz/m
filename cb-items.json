@@ -1,5 +1,5 @@
 {
-  "generated": "2026-06-02",
+  "generated": "2026-09-16",
   "source": "https://cb.step-quiz.net/",
   "image_base": "https://cb.step-quiz.net/",
   "labels": {
@@ -3076,6 +3076,1237 @@
             "Aquesta fórmula no té sentit, perquè sembla que cada dia baixi 50 mm, i això no és cert.",
             "Fórmula no correcta. Pensa que l'altura inicial de 50 mm és constant i no depèn de D.",
             "Amb aquesta fórmula, al cap d'un dia l'alçada seria negativa, i això no té sentit."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb4eso2026e1",
+      "nivell": "4eso",
+      "any": 2026,
+      "num": 1,
+      "title": "CB 4t ESO 2026 · bloc 1",
+      "enunciat": "data/cb4eso2026e1.png",
+      "senses": [
+        "numeric",
+        "mesura",
+        "espacial"
+      ],
+      "difficulties": [
+        1,
+        2,
+        3
+      ],
+      "questions": [
+        {
+          "id": 158,
+          "img": "data/cb4eso2026p1.png",
+          "sentit": "numeric",
+          "dificultat": 1,
+          "correcta": 2,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 159,
+          "img": "data/cb4eso2026p2.png",
+          "sentit": "numeric",
+          "dificultat": 2,
+          "correcta": 2,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 160,
+          "img": "data/cb4eso2026p3.png",
+          "sentit": "mesura",
+          "dificultat": 2,
+          "correcta": 3,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 161,
+          "img": "data/cb4eso2026p4.png",
+          "sentit": "espacial",
+          "dificultat": 3,
+          "correcta": 2,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb4eso2026e2",
+      "nivell": "4eso",
+      "any": 2026,
+      "num": 2,
+      "title": "CB 4t ESO 2026 · bloc 2",
+      "enunciat": "data/cb4eso2026e2.png",
+      "senses": [
+        "algebraic"
+      ],
+      "difficulties": [
+        1,
+        2
+      ],
+      "questions": [
+        {
+          "id": 162,
+          "img": "data/cb4eso2026p5.png",
+          "sentit": "algebraic",
+          "dificultat": 1,
+          "correcta": 0,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 163,
+          "img": "data/cb4eso2026p6.png",
+          "sentit": "algebraic",
+          "dificultat": 2,
+          "correcta": 3,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb4eso2026e3",
+      "nivell": "4eso",
+      "any": 2026,
+      "num": 3,
+      "title": "CB 4t ESO 2026 · bloc 3",
+      "enunciat": "data/cb4eso2026e3.png",
+      "senses": [
+        "espacial",
+        "mesura"
+      ],
+      "difficulties": [
+        1,
+        2
+      ],
+      "questions": [
+        {
+          "id": 164,
+          "img": "data/cb4eso2026p7.png",
+          "sentit": "espacial",
+          "dificultat": 2,
+          "correcta": 0,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 165,
+          "img": "data/cb4eso2026p8.png",
+          "sentit": "mesura",
+          "dificultat": 1,
+          "correcta": 1,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb4eso2026e4",
+      "nivell": "4eso",
+      "any": 2026,
+      "num": 4,
+      "title": "CB 4t ESO 2026 · bloc 4",
+      "enunciat": "data/cb4eso2026e4.png",
+      "senses": [
+        "mesura",
+        "espacial"
+      ],
+      "difficulties": [
+        1,
+        2
+      ],
+      "questions": [
+        {
+          "id": 166,
+          "img": "data/cb4eso2026p9.png",
+          "sentit": "mesura",
+          "dificultat": 1,
+          "correcta": 0,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 167,
+          "img": "data/cb4eso2026p10.png",
+          "sentit": "espacial",
+          "dificultat": 2,
+          "correcta": 3,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb4eso2026e5",
+      "nivell": "4eso",
+      "any": 2026,
+      "num": 5,
+      "title": "CB 4t ESO 2026 · bloc 5",
+      "enunciat": "data/cb4eso2026e5.png",
+      "senses": [
+        "algebraic"
+      ],
+      "difficulties": [
+        1,
+        2,
+        3
+      ],
+      "questions": [
+        {
+          "id": 168,
+          "img": "data/cb4eso2026p11.png",
+          "sentit": "algebraic",
+          "dificultat": 1,
+          "correcta": 1,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 169,
+          "img": "data/cb4eso2026p12.png",
+          "sentit": "algebraic",
+          "dificultat": 2,
+          "correcta": 2,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 170,
+          "img": "data/cb4eso2026p13.png",
+          "sentit": "algebraic",
+          "dificultat": 3,
+          "correcta": 3,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb4eso2026e6",
+      "nivell": "4eso",
+      "any": 2026,
+      "num": 6,
+      "title": "CB 4t ESO 2026 · bloc 6",
+      "enunciat": "data/cb4eso2026e6.png",
+      "senses": [
+        "estocastic"
+      ],
+      "difficulties": [
+        1,
+        2
+      ],
+      "questions": [
+        {
+          "id": 171,
+          "img": "data/cb4eso2026p14.png",
+          "sentit": "estocastic",
+          "dificultat": 1,
+          "correcta": 0,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 172,
+          "img": "data/cb4eso2026p15.png",
+          "sentit": "estocastic",
+          "dificultat": 2,
+          "correcta": 2,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 173,
+          "img": "data/cb4eso2026p16.png",
+          "sentit": "estocastic",
+          "dificultat": 2,
+          "correcta": 0,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb4eso2026e7",
+      "nivell": "4eso",
+      "any": 2026,
+      "num": 7,
+      "title": "CB 4t ESO 2026 · bloc 7",
+      "enunciat": "data/cb4eso2026e7.png",
+      "senses": [
+        "estocastic",
+        "algebraic"
+      ],
+      "difficulties": [
+        2,
+        3
+      ],
+      "questions": [
+        {
+          "id": 174,
+          "img": "data/cb4eso2026p17.png",
+          "sentit": "estocastic",
+          "dificultat": 3,
+          "correcta": 2,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 175,
+          "img": "data/cb4eso2026p18.png",
+          "sentit": "algebraic",
+          "dificultat": 2,
+          "correcta": 1,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb4eso2026e8",
+      "nivell": "4eso",
+      "any": 2026,
+      "num": 8,
+      "title": "CB 4t ESO 2026 · bloc 8",
+      "enunciat": "data/cb4eso2026e8.png",
+      "senses": [
+        "algebraic"
+      ],
+      "difficulties": [
+        1,
+        2,
+        3
+      ],
+      "questions": [
+        {
+          "id": 176,
+          "img": "data/cb4eso2026p19.png",
+          "sentit": "algebraic",
+          "dificultat": 1,
+          "correcta": 0,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 177,
+          "img": "data/cb4eso2026p20.png",
+          "sentit": "algebraic",
+          "dificultat": 2,
+          "correcta": 0,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 178,
+          "img": "data/cb4eso2026p21.png",
+          "sentit": "algebraic",
+          "dificultat": 3,
+          "correcta": 3,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb4eso2026e9",
+      "nivell": "4eso",
+      "any": 2026,
+      "num": 9,
+      "title": "CB 4t ESO 2026 · bloc 9",
+      "enunciat": "data/cb4eso2026e9.png",
+      "senses": [
+        "numeric",
+        "estocastic"
+      ],
+      "difficulties": [
+        3
+      ],
+      "questions": [
+        {
+          "id": 179,
+          "img": "data/cb4eso2026p22.png",
+          "sentit": "numeric",
+          "dificultat": 3,
+          "correcta": 2,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 180,
+          "img": "data/cb4eso2026p23.png",
+          "sentit": "estocastic",
+          "dificultat": 3,
+          "correcta": 1,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb4eso2026e10",
+      "nivell": "4eso",
+      "any": 2026,
+      "num": 10,
+      "title": "CB 4t ESO 2026 · bloc 10",
+      "enunciat": "data/cb4eso2026e10.png",
+      "senses": [
+        "mesura",
+        "numeric"
+      ],
+      "difficulties": [
+        2,
+        3
+      ],
+      "questions": [
+        {
+          "id": 181,
+          "img": "data/cb4eso2026p24.png",
+          "sentit": "mesura",
+          "dificultat": 2,
+          "correcta": 1,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 182,
+          "img": "data/cb4eso2026p25.png",
+          "sentit": "numeric",
+          "dificultat": 2,
+          "correcta": 1,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 183,
+          "img": "data/cb4eso2026p26.png",
+          "sentit": "mesura",
+          "dificultat": 3,
+          "correcta": 0,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb4eso2026e11",
+      "nivell": "4eso",
+      "any": 2026,
+      "num": 11,
+      "title": "CB 4t ESO 2026 · bloc 11",
+      "enunciat": "data/cb4eso2026e11.png",
+      "senses": [
+        "numeric"
+      ],
+      "difficulties": [
+        1,
+        2,
+        3
+      ],
+      "questions": [
+        {
+          "id": 184,
+          "img": "data/cb4eso2026p27.png",
+          "sentit": "numeric",
+          "dificultat": 1,
+          "correcta": 3,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 185,
+          "img": "data/cb4eso2026p28.png",
+          "sentit": "numeric",
+          "dificultat": 2,
+          "correcta": 2,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 186,
+          "img": "data/cb4eso2026p29.png",
+          "sentit": "numeric",
+          "dificultat": 3,
+          "correcta": 3,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb4eso2026e12",
+      "nivell": "4eso",
+      "any": 2026,
+      "num": 12,
+      "title": "CB 4t ESO 2026 · bloc 12",
+      "enunciat": "data/cb4eso2026e12.png",
+      "senses": [
+        "estocastic"
+      ],
+      "difficulties": [
+        1,
+        2
+      ],
+      "questions": [
+        {
+          "id": 187,
+          "img": "data/cb4eso2026p30.png",
+          "sentit": "estocastic",
+          "dificultat": 1,
+          "correcta": 0,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 188,
+          "img": "data/cb4eso2026p31.png",
+          "sentit": "estocastic",
+          "dificultat": 2,
+          "correcta": 1,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 189,
+          "img": "data/cb4eso2026p32.png",
+          "sentit": "estocastic",
+          "dificultat": 2,
+          "correcta": 1,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb2eso2026e1",
+      "nivell": "2eso",
+      "any": 2026,
+      "num": 1,
+      "title": "CB 2n ESO 2026 · bloc 1",
+      "enunciat": "data/cb2eso2026e1.png",
+      "senses": [
+        "algebraic",
+        "mesura"
+      ],
+      "difficulties": [
+        2
+      ],
+      "questions": [
+        {
+          "id": 190,
+          "img": "data/cb2eso2026p1.png",
+          "sentit": "algebraic",
+          "dificultat": 2,
+          "correcta": 2,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 191,
+          "img": "data/cb2eso2026p2.png",
+          "sentit": "mesura",
+          "dificultat": 2,
+          "correcta": 3,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb2eso2026e2",
+      "nivell": "2eso",
+      "any": 2026,
+      "num": 2,
+      "title": "CB 2n ESO 2026 · bloc 2",
+      "enunciat": "data/cb2eso2026e2.png",
+      "senses": [
+        "algebraic",
+        "numeric"
+      ],
+      "difficulties": [
+        2
+      ],
+      "questions": [
+        {
+          "id": 192,
+          "img": "data/cb2eso2026p3.png",
+          "sentit": "algebraic",
+          "dificultat": 2,
+          "correcta": 0,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 193,
+          "img": "data/cb2eso2026p4.png",
+          "sentit": "numeric",
+          "dificultat": 2,
+          "correcta": 2,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb2eso2026e3",
+      "nivell": "2eso",
+      "any": 2026,
+      "num": 3,
+      "title": "CB 2n ESO 2026 · bloc 3",
+      "enunciat": "data/cb2eso2026e3.png",
+      "senses": [
+        "numeric"
+      ],
+      "difficulties": [
+        2,
+        3
+      ],
+      "questions": [
+        {
+          "id": 194,
+          "img": "data/cb2eso2026p5.png",
+          "sentit": "numeric",
+          "dificultat": 2,
+          "correcta": 2,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 195,
+          "img": "data/cb2eso2026p6.png",
+          "sentit": "numeric",
+          "dificultat": 3,
+          "correcta": 0,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb2eso2026e4",
+      "nivell": "2eso",
+      "any": 2026,
+      "num": 4,
+      "title": "CB 2n ESO 2026 · bloc 4",
+      "enunciat": "data/cb2eso2026e4.png",
+      "senses": [
+        "algebraic",
+        "numeric"
+      ],
+      "difficulties": [
+        1,
+        2,
+        3
+      ],
+      "questions": [
+        {
+          "id": 196,
+          "img": "data/cb2eso2026p7.png",
+          "sentit": "algebraic",
+          "dificultat": 2,
+          "correcta": 2,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 197,
+          "img": "data/cb2eso2026p8.png",
+          "sentit": "algebraic",
+          "dificultat": 1,
+          "correcta": 1,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 198,
+          "img": "data/cb2eso2026p9.png",
+          "sentit": "numeric",
+          "dificultat": 3,
+          "correcta": 1,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 199,
+          "img": "data/cb2eso2026p10.png",
+          "sentit": "numeric",
+          "dificultat": 3,
+          "correcta": 3,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb2eso2026e5",
+      "nivell": "2eso",
+      "any": 2026,
+      "num": 5,
+      "title": "CB 2n ESO 2026 · bloc 5",
+      "enunciat": "data/cb2eso2026e5.png",
+      "senses": [
+        "espacial"
+      ],
+      "difficulties": [
+        1
+      ],
+      "questions": [
+        {
+          "id": 200,
+          "img": "data/cb2eso2026p11.png",
+          "sentit": "espacial",
+          "dificultat": 1,
+          "correcta": 0,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb2eso2026e6",
+      "nivell": "2eso",
+      "any": 2026,
+      "num": 6,
+      "title": "CB 2n ESO 2026 · bloc 6",
+      "enunciat": "data/cb2eso2026e6.png",
+      "senses": [
+        "algebraic"
+      ],
+      "difficulties": [
+        1,
+        2
+      ],
+      "questions": [
+        {
+          "id": 201,
+          "img": "data/cb2eso2026p13.png",
+          "sentit": "algebraic",
+          "dificultat": 1,
+          "correcta": 1,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 202,
+          "img": "data/cb2eso2026p14.png",
+          "sentit": "algebraic",
+          "dificultat": 2,
+          "correcta": 2,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 203,
+          "img": "data/cb2eso2026p15.png",
+          "sentit": "algebraic",
+          "dificultat": 2,
+          "correcta": 0,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb2eso2026e7",
+      "nivell": "2eso",
+      "any": 2026,
+      "num": 7,
+      "title": "CB 2n ESO 2026 · bloc 7",
+      "enunciat": "data/cb2eso2026e7.png",
+      "senses": [
+        "espacial"
+      ],
+      "difficulties": [
+        1,
+        3
+      ],
+      "questions": [
+        {
+          "id": 204,
+          "img": "data/cb2eso2026p16.png",
+          "sentit": "espacial",
+          "dificultat": 1,
+          "correcta": 3,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 205,
+          "img": "data/cb2eso2026p17.png",
+          "sentit": "espacial",
+          "dificultat": 3,
+          "correcta": 1,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb2eso2026e8",
+      "nivell": "2eso",
+      "any": 2026,
+      "num": 8,
+      "title": "CB 2n ESO 2026 · bloc 8",
+      "enunciat": "data/cb2eso2026e8.png",
+      "senses": [
+        "estocastic"
+      ],
+      "difficulties": [
+        1,
+        2
+      ],
+      "questions": [
+        {
+          "id": 206,
+          "img": "data/cb2eso2026p18.png",
+          "sentit": "estocastic",
+          "dificultat": 1,
+          "correcta": 1,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 207,
+          "img": "data/cb2eso2026p19.png",
+          "sentit": "estocastic",
+          "dificultat": 2,
+          "correcta": 3,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb2eso2026e9",
+      "nivell": "2eso",
+      "any": 2026,
+      "num": 9,
+      "title": "CB 2n ESO 2026 · bloc 9",
+      "enunciat": "data/cb2eso2026e9.png",
+      "senses": [
+        "numeric",
+        "estocastic"
+      ],
+      "difficulties": [
+        1,
+        2,
+        3
+      ],
+      "questions": [
+        {
+          "id": 208,
+          "img": "data/cb2eso2026p20.png",
+          "sentit": "numeric",
+          "dificultat": 1,
+          "correcta": 3,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 209,
+          "img": "data/cb2eso2026p21.png",
+          "sentit": "estocastic",
+          "dificultat": 2,
+          "correcta": 1,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 210,
+          "img": "data/cb2eso2026p22.png",
+          "sentit": "estocastic",
+          "dificultat": 3,
+          "correcta": 3,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb2eso2026e10",
+      "nivell": "2eso",
+      "any": 2026,
+      "num": 10,
+      "title": "CB 2n ESO 2026 · bloc 10",
+      "enunciat": "data/cb2eso2026e10.png",
+      "senses": [
+        "espacial"
+      ],
+      "difficulties": [
+        1,
+        2
+      ],
+      "questions": [
+        {
+          "id": 211,
+          "img": "data/cb2eso2026p23.png",
+          "sentit": "espacial",
+          "dificultat": 2,
+          "correcta": 2,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 212,
+          "img": "data/cb2eso2026p24.png",
+          "sentit": "espacial",
+          "dificultat": 1,
+          "correcta": 2,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb2eso2026e11",
+      "nivell": "2eso",
+      "any": 2026,
+      "num": 11,
+      "title": "CB 2n ESO 2026 · bloc 11",
+      "enunciat": "data/cb2eso2026e11.png",
+      "senses": [
+        "mesura"
+      ],
+      "difficulties": [
+        2
+      ],
+      "questions": [
+        {
+          "id": 213,
+          "img": "data/cb2eso2026p25.png",
+          "sentit": "mesura",
+          "dificultat": 2,
+          "correcta": 0,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 214,
+          "img": "data/cb2eso2026p26.png",
+          "sentit": "mesura",
+          "dificultat": 2,
+          "correcta": 0,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb2eso2026e12",
+      "nivell": "2eso",
+      "any": 2026,
+      "num": 12,
+      "title": "CB 2n ESO 2026 · bloc 12",
+      "enunciat": "data/cb2eso2026e12.png",
+      "senses": [
+        "mesura"
+      ],
+      "difficulties": [
+        1,
+        3
+      ],
+      "questions": [
+        {
+          "id": 215,
+          "img": "data/cb2eso2026p27.png",
+          "sentit": "mesura",
+          "dificultat": 3,
+          "correcta": 0,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 216,
+          "img": "data/cb2eso2026p28.png",
+          "sentit": "mesura",
+          "dificultat": 1,
+          "correcta": 3,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb2eso2026e13",
+      "nivell": "2eso",
+      "any": 2026,
+      "num": 13,
+      "title": "CB 2n ESO 2026 · bloc 13",
+      "enunciat": "data/cb2eso2026e13.png",
+      "senses": [
+        "estocastic",
+        "mesura"
+      ],
+      "difficulties": [
+        1,
+        2
+      ],
+      "questions": [
+        {
+          "id": 217,
+          "img": "data/cb2eso2026p29.png",
+          "sentit": "estocastic",
+          "dificultat": 1,
+          "correcta": 2,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 218,
+          "img": "data/cb2eso2026p30.png",
+          "sentit": "mesura",
+          "dificultat": 2,
+          "correcta": 1,
+          "pistes": [
+            "",
+            "",
+            "",
+            ""
           ]
         }
       ]
