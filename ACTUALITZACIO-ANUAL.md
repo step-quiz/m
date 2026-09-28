@@ -9,7 +9,7 @@ l'estat en què va quedar el projecte i què cal fer la propera vegada.
   afegiran les de **1r i 4t d'ESO**, que ara no existeixen.
 - **Eix repartiment** — el pont `pipeline-data.js`, que relaciona els continguts del
   currículum amb les dues coses anteriors. **No s'actualitza sol**: si només fas els dos
-  primers eixos, el mode «El meu repartiment» de `florence-cb.html` es quedarà mostrant la
+  primers eixos, l'entrada «Per contingut» de `florence-cb.html` es quedarà mostrant la
   cobertura de l'any passat i 1r i 4t continuaran dient que no hi ha cap tasca.
 
 **L'ordre importa:** CB → Florence → repartiment. Cada pas fa servir el resultat de
@@ -128,19 +128,23 @@ quatre cursos d'ESO sense tocar codi:
 }
 ```
 
-**Per donar d'alta 1r o 4t ESO n'hi ha prou d'omplir `d1`/`ff1` o `d4`/`ff4`.** La pestanya
-apareix sola, amb la seva etiqueta i la seva gamma de colors; si una clau és buida o no hi
-és, la pestanya no es dibuixa. Cada graf té la seva gamma d'encaix definida al CSS:
+**Per donar d'alta 1r o 4t ESO n'hi ha prou d'omplir `d1`/`ff1` o `d4`/`ff4`.** A l'entrada
+«Per sessió Florence» apareix sol un grup nou («Pensades per a 1r d'ESO»), i l'avís «Encara no
+hi ha sessions pensades per a…» desapareix per a aquell curs; si una clau és buida o no hi
+és, el grup no es dibuixa. Cada graf té un color, que només pinta l'identificador de la
+sessió (S1, S2…):
 
-| Graf | Gamma | Color |
+| Graf | Variable CSS | Color |
 |---|---|---|
-| 1r ESO | `--p3-1` `--p2-1` `--p1-1` | terra |
-| 2n ESO | `--p3-2` `--p2-2` `--p1-2` | blau |
-| 3r ESO | `--p3-3` `--p2-3` `--p1-3` | verd |
-| 4t ESO | `--p3-4` `--p2-4` `--p1-4` | morat |
+| 1r ESO | `--g1` | terra |
+| 2n ESO | `--g2` | blau |
+| 3r ESO | `--g3` | verd |
+| 4t ESO | `--g4` | morat |
 
-L'ordre de les pestanyes surt de la constant `GRAFS` del guió, no de l'ordre de les claus
-del `PAYLOAD`.
+L'encaix ja no es pinta amb colors sinó amb paraules i punts (●●● molt relacionada, ●●○
+relacionada, ●○○ relació parcial), de manera que un graf nou no demana cap gamma. Els grups
+s'ordenen segons el curs dels alumnes triat (primer el seu, després el més proper), no per
+l'ordre de les claus del `PAYLOAD`.
 
 ### Donar d'alta una sessió
 
@@ -199,7 +203,7 @@ L'error mitjà és de 0,2 sobre 255 i el pes baixa un 60 %.
 - Les llistes `cb` estan ordenades per pes descendent.
 - Cada sessió amb `"pdf": true` té el seu fitxer a `florence-pdf/`.
 - **Afegeix les sessions noves als fils de `pipeline-data.js`** (secció següent). Sense
-  això, les sessions surten al mode «Sessions Florence» però no al del repartiment.
+  això, les sessions surten a l'entrada «Per sessió Florence» però no a «Per contingut».
 - Executa `node valida-dades.js` i resol-ne els errors.
 - Actualitza els recomptes a `README.md`, `MANTENIMENT.md` i `ARQUITECTURA.md`, i afegeix la
   línia a `MILLORES-TECNIQUES.md`. El validador imprimeix totes les xifres al final.
@@ -243,8 +247,8 @@ poses un id que no compleix les dues coses, `valida-dades.js` t'ho dirà.
 
 Aquest és el cas gros, i el que farà pujar més la cobertura.
 
-1. Dona d'alta les sessions al `PAYLOAD` (secció anterior). Fins aquí, el mode
-   «El meu repartiment» encara no les proposa.
+1. Dona d'alta les sessions al `PAYLOAD` (secció anterior). Fins aquí, l'entrada
+   «Per contingut» encara no les proposa.
 2. Per a cada sessió nova, llegeix-ne el `nucli` i busca **quins fils ja existents** la
    descriuen. Afegeix-hi `['F_1ESO_S03', <encaix>]`. Sovint no cal cap fil nou: una sessió
    de 1r sobre àrees encaixa al fil `area-figures` que ja hi ha.

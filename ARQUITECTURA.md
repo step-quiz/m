@@ -171,9 +171,16 @@ Objecte JS incrustat:
 }
 ```
 
-El fitxer accepta els quatre cursos d'ESO. Omplir `d1`/`ff1` o `d4`/`ff4` fa aparèixer la
-pestanya, els colors i la navegació sense tocar codi; una clau buida o absent no dibuixa
-res. L'ordre de les pestanyes surt de la constant `GRAFS`, no de l'ordre de les claus.
+El fitxer accepta els quatre cursos d'ESO. Omplir `d1`/`ff1` o `d4`/`ff4` fa aparèixer el
+grup de sessions, el color i la navegació sense tocar codi; una clau buida o absent no dibuixa
+res. L'ordre dels grups depèn del curs dels alumnes triat a la interfície (primer el seu,
+després el més proper), no de l'ordre de les claus.
+
+**Vocabulari de la interfície (des del 2026-09-28).** A la pàgina, «curs» vol dir sempre el
+curs dels alumnes (selector «Els meus alumnes fan»). Els altres dos cursos que hi ha a les
+dades tenen nom propi: el graf de la sessió surt com a «Pensada per a 3r d'ESO» (només quan
+no coincideix) i el camp `src` de cada CB surt com a «Prova de 2n» / «Prova de 4t». El `pes`
+surt com a «Molt relacionada / Relacionada / Relació parcial» amb punts, no amb colors.
 
 Cada sessió: `{ id, titol, pdf, nucli, cb[] }`; `pdf` diu si hi ha
 `florence-pdf/<id>.pdf` (abans era el conjunt `FPDF`, una llista paral·lela d'ids).
@@ -264,7 +271,7 @@ Pont entre el **repartiment de continguts** i els dos programes de pràctica (Fl
 proves CB). El carreguen com a `<script src>`, just després de `repartiment-data.js`, les
 dues pàgines que el travessen en direccions oposades:
 
-- `florence-cb.html` → mode «El meu repartiment»: tries un contingut i en munta la seqüència.
+- `florence-cb.html` → entrada «Per contingut»: tries un contingut i en munta la seqüència.
 - `repartiment.html` → posa a la dreta de cada contingut amb fils una icona cap a
   `florence-cb.html?c=<CURS>|<sentit>/<tema.id>|<posició>`, que aquella pàgina ja entén.
 
@@ -491,7 +498,7 @@ documenten perquè se'n tingui constància.
 12. **Estil de `florence-cb.html`.** Construeix tot l'HTML amb `innerHTML`. Els gestors són
     delegats i les dades passen per `esc()` des del canvi B5 (2026-06-04), de manera que ja no
     hi ha `onclick` en línia ni interpolació sense escapar. El `PAYLOAD` continua incrustat al
-    fitxer; des del mode «El meu repartiment» (2026-09-05) la pàgina també carrega dos fitxers
+    fitxer; des de l'entrada «Per contingut» (2026-09-05) la pàgina també carrega dos fitxers
     de dades externs, però per `<script src>` i no per `fetch()`, de manera que segueix
     funcionant sense servidor. Si no s'hi troben, el commutador de mode no apareix i la resta
     de la pàgina no se n'assabenta.
