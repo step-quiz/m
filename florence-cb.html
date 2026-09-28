@@ -81,6 +81,7 @@ button{font:inherit}
 .grp{display:flex;align-items:baseline;gap:8px;font-size:12.5px;font-weight:700;color:var(--navy);padding:12px 10px 5px}
 .grp .n{font-size:11px;font-weight:600;color:var(--hint)}
 .grp.altre{color:var(--muted)}
+.senseses{margin:16vh auto 0;max-width:520px;text-align:center;font-size:18px;font-weight:600;color:var(--muted)}
 .grpnote{margin:10px 8px 2px;padding:9px 11px;font-size:12.5px;color:var(--amber);background:var(--amber-bg);
  border:1px solid var(--amber-line);border-radius:9px;line-height:1.4}
 .srow{display:flex;align-items:flex-start;gap:10px;width:100%;text-align:left;padding:8px 10px;border-radius:9px;
@@ -424,6 +425,12 @@ function ordreGrafs(){
  return grafsActius().map(([g])=>g).sort((x,y)=>(Math.abs(x-a)-Math.abs(y-a))||(x-y));
 }
 function primeraSessio(){const g=ordreGrafs()[0];return g?PAYLOAD['d'+g][0].id:null;}
+/* Un curs sense sessions pensades per a ell no mostra cap llista ni cap
+   sessió d'un altre curs: només l'avís. Així queda clar que no n'hi ha cap
+   de publicada. L'única excepció és quan el professorat demana una sessió
+   concreta des d'un contingut (o per URL): aleshores es mostra aquella. */
+const teSessions=g=>(PAYLOAD['d'+g]||[]).length>0;
+const avisSenseSessions=()=>`Encara no hi ha sessions pensades per a ${nomCurs(alumnes)}.`;
 
 const normal=s=>String(s||'').toLowerCase().normalize('NFD')
  .replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
@@ -534,9 +541,8 @@ function renderList(){
  if(mode==='repartiment'){renderArbre();return;}
  setLegend(false);
  const list=document.getElementById('list');
+ if(!teSessions(alumnes)){list.innerHTML=`<p class="grpnote">${esc(avisSenseSessions())}</p>`;return;}
  let h='';
- if(!(PAYLOAD['d'+alumnes]||[]).length)
-  h+=`<p class="grpnote">Encara no hi ha sessions pensades per a ${esc(nomCurs(alumnes))}. Aquestes són de ${esc(cursosAmbGraf())} i també et serveixen.</p>`;
  ordreGrafs().forEach(g=>{
   const d=PAYLOAD['d'+g];
   h+=`<div class="grp${g===alumnes?'':' altre'}">Pensades per a ${esc(nomCurs(g))}<span class="n">${d.length} sessions</span></div>`;
@@ -656,6 +662,14 @@ function acabaDetall(h,opts){
  sincronitzaUrl(opts&&opts.push);
  marcaSeleccio();
  if(!(opts&&opts.keepDrawer)&&isMobile())closeDrawer();
+}
+
+/* ─── Curs sense sessions: només l'avís ───────────────────────────── */
+function mostraSenseSessions(){
+ selId=null;origen=null;
+ document.getElementById('detail').innerHTML=`<p class="senseses">${esc(avisSenseSessions())}</p>`;
+ document.getElementById('detailwrap').scrollTop=0;
+ sincronitzaUrl();
 }
 
 /* ─── Fitxa d'una sessió Florence ─────────────────────────────────── */
@@ -859,7 +873,8 @@ function setMode(m){
   if(t&&grafDeCurs(t.curs)===alumnes)showContingut(sel.key,sel.pos,{keepDrawer:true});
   else mostraIntro();
  }else{
-  show(selId&&SESS[selId]?selId:primeraSessio(),{keepDrawer:true});
+  if(teSessions(alumnes))show(selId&&SESS[selId]?selId:primeraSessio(),{keepDrawer:true});
+  else mostraSenseSessions();
  }
  desaPrefs();
 }
@@ -871,7 +886,7 @@ function setAlumnes(g){
  document.getElementById('list').scrollTop=0;
  renderNav();desaPrefs();
  if(mode==='repartiment'){sel={key:null,pos:0};renderList();mostraIntro();}
- else{renderList();show(primeraSessio(),{keepDrawer:true});}
+ else{renderList();teSessions(g)?show(primeraSessio(),{keepDrawer:true}):mostraSenseSessions();}
 }
 /* Des de la fitxa d'un contingut, obrir la sessió sencera. Es canvia a
    «Per sessió Florence», però es manté el curs dels alumnes i apareix un
@@ -1044,7 +1059,8 @@ window.addEventListener('popstate',()=>{if(!llegeixUrl())arrencadaPerDefecte();}
 function arrencadaPerDefecte(){
  renderNav();renderList();
  if(mode==='repartiment')mostraIntro();
- else show(selId&&SESS[selId]?selId:primeraSessio(),{keepDrawer:true});
+ else if(teSessions(alumnes))show(selId&&SESS[selId]?selId:primeraSessio(),{keepDrawer:true});
+ else mostraSenseSessions();
 }
 if(!llegeixUrl()){llegeixPrefs();arrencadaPerDefecte();}
 </script>
