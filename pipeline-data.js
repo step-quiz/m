@@ -41,7 +41,7 @@
  *     ignora en silenci les posicions que no existeixen.
  *   - Els ids de sessió han de ser al PAYLOAD de florence-cb.html i els
  *     ids CB han de tenir targeta a cb-img/CB<id>.png. Ara mateix això
- *     vol dir els 166 ids que ja referencia alguna sessió Florence.
+ *     vol dir els 169 ids que ja referencia alguna sessió Florence.
  *   - Una sessió pot ser d'un curs diferent del contingut: és normal i
  *     desitjat (Pitàgores de 2n es treballa amb «Quadrats inclinats»,
  *     que és del graf de 3r). La interfície ho marca.
@@ -51,6 +51,10 @@
  * ESTAT
  *   Esborrany generat el 05/09/2026 a partir dels nuclis de les 22
  *   sessions Florence i de les descripcions dels 166 ítems CB.
+ *   L'01/10/2026 s'hi van afegir les dues primeres sessions de 1r i 4t
+ *   (bloc I1 de Florence, raonament proporcional): «Sanefes» al fil
+ *   'proporcionalitat' i «Qui té la raó?» a 'semblanca' i al fil nou
+ *   'trigonometria', que tapa dos forats de 4t.
  *   ESTÀ PENSAT PER SER REVISAT pel departament: els encaixos (1-3) i la
  *   tria de preguntes són una proposta, no una veritat.
  */
@@ -196,8 +200,9 @@ const PIPELINES = {
 
   'proporcionalitat': {
     label: 'Proporcionalitat i comparació de raons',
-    florence: [['F_3ESO_S07', 2], ['F_2ESO_S03', 2]],
-    cb: [194, 192, 184, 182, 174, 188, 186, 69, 141, 54],
+    nota:  'Una raó compara dues quantitats («per cada hexàgon, 2 trapezis i 3 triangles»): no és una part del tot, com la fracció. «Sanefes» la construeix abans de parlar de proporcions.',
+    florence: [['F_1ESO_S01', 3], ['F_3ESO_S07', 2], ['F_2ESO_S03', 2]],
+    cb: [194, 192, 184, 182, 174, 188, 186, 88, 69, 141, 54],
   },
 
   'enters': {
@@ -267,8 +272,15 @@ const PIPELINES = {
 
   'semblanca': {
     label: 'Semblança i teorema de Tales',
-    florence: [['F_3ESO_S05', 3], ['F_2ESO_S06', 2]],
-    cb: [28, 14, 81, 132, 127, 138],
+    florence: [['F_3ESO_S05', 3], ['F_4ESO_S01', 3], ['F_2ESO_S06', 2]],
+    cb: [28, 9, 14, 81, 88, 132, 127, 138],
+  },
+
+  'trigonometria': {
+    label: 'Raons trigonomètriques',
+    nota:  'La raó entre dos costats d\'un triangle rectangle només depèn de l\'angle. «Qui té la raó?» la fa descobrir mesurant triangles semblants, abans de posar-hi el nom de sinus, cosinus i tangent.',
+    florence: [['F_4ESO_S01', 3]],
+    cb: [10, 28, 9, 133, 164],
   },
 
   'circumferencia': {
@@ -476,7 +488,7 @@ const CONTINGUT_PIPELINE = {
   },
 
   '1ESO|algebraic/grafics-taules': {   // Gràfics i taules
-    1: ['lectura-grafics', 'estadistica-taules', 'patrons'],  // Interpretació de gràfics i taules. Buidat de dades i deducc…
+    1: ['lectura-grafics', 'estadistica-taules', 'patrons', 'proporcionalitat'],  // Interpretació de gràfics i taules. Buidat de dades i deducc…
   },
 
   /* ═══ 2n d'ESO ═══ */
@@ -734,16 +746,18 @@ const CONTINGUT_PIPELINE = {
   },
 
   '4ESO|espacial/repas-trigonometria': {   // Repàs previ a la Trigonometria
-    1: ['circumferencia', 'angles'],  // Circumferència: radi, centre, angle central
-    2: ['pitagores'],                 // Triangles rectangles: vocabulari. Teorema de Pitàgores.
-    3: ['semblanca'],                 // Triangles semblants: propietats que compleixen els angles r…
-    4: ['coordenades'],               // Signe de les coordenades d'un punt en funció del quadrant
+    1: ['circumferencia', 'angles'],    // Circumferència: radi, centre, angle central
+    2: ['pitagores', 'trigonometria'],  // Triangles rectangles: vocabulari. Teorema de Pitàgores.
+    3: ['semblanca'],                   // Triangles semblants: propietats que compleixen els angles r…
+    4: ['coordenades'],                 // Signe de les coordenades d'un punt en funció del quadrant
   },
 
   '4ESO|mesura/trigonometria': {   // Trigonometria
-    2: ['circumferencia'],                    // Circumferència goniomètrica
-    5: ['angles'],                            // Raons trigonomètriques d'angles complementaris
-    8: ['pitagores', 'resolucio-problemes'],  // Resolució de problemes i de triangles amb trigonometria
+    1: ['trigonometria'],                                      // Definició de les raons trigonomètriques sin(A), cos(A)
+    2: ['circumferencia'],                                     // Circumferència goniomètrica
+    3: ['trigonometria'],                                      // Estudi de les raons dels angles 0°, 30°, 45°, 60°, 90°
+    5: ['trigonometria', 'angles'],                            // Raons trigonomètriques d'angles complementaris
+    8: ['trigonometria', 'pitagores', 'resolucio-problemes'],  // Resolució de problemes i de triangles amb trigonometria
   },
 
   '4ESO|algebraic/llenguatge-algebraic': {   // Llenguatge algebraic

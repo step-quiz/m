@@ -162,14 +162,18 @@ Objecte JS incrustat:
 
 ```jsonc
 {
-  "d1": [ … ], "ff1": [ … ],   // 1r ESO — buit ara mateix
+  "d1": [ /* 1 sessió de 1r ESO */ ], "ff1": [],          // encara cap relació
   "d2": [ /* 11 sessions de 2n ESO */ ],
   "ff2": [ ["F_2ESO_S01","F_2ESO_S11","relació…"], … ],   // 10 relacions
   "d3": [ /* 11 sessions de 3r ESO */ ],
   "ff3": [ … ],                                           // 9 relacions
-  "d4": [ … ], "ff4": [ … ]    // 4t ESO — buit ara mateix
+  "d4": [ /* 1 sessió de 4t ESO */ ], "ff4": []           // encara cap relació
 }
 ```
+
+`d1` i `d4` es van omplir l'octubre del 2026 amb la primera sessió de cada curs (bloc I1 de
+Florence, raonament proporcional). Amb una sola sessió no hi ha relacions `ff1`/`ff4`, i la
+fitxa d'aquelles sessions no mostra el pas «Continua amb una altra sessió».
 
 El fitxer accepta els quatre cursos d'ESO. Omplir `d1`/`ff1` o `d4`/`ff4` fa aparèixer el
 grup de sessions, el color i la navegació sense tocar codi; una clau buida o absent no dibuixa
@@ -192,7 +196,12 @@ cap a `cb.step-quiz.net`) es van eliminar el 2026-09-04: no es renderitzaven i q
 desfasats cada cop que creixia el banc.
 
 Les imatges es resolen en **local** com `cb-img/CB<id>.png` (a diferència del banc CB, que
-les agafa de `cb.step-quiz.net`). Es referencien 166 ids CB diferents.
+les agafa de `cb.step-quiz.net`). Es referencien 169 ids CB diferents.
+
+Quan una mateixa pregunta CB surt a diverses sessions, l'entrada «Per contingut» en mostra la
+descripció de la **primera** sessió que la cita, recorrent els grafs de 1r a 4t. Per això les
+sessions de 1r copien literalment la descripció que ja tenia cada pregunta: si se'n canvia el
+text a `d1`, canvia a tota la vista «Per contingut».
 
 ---
 
@@ -292,7 +301,7 @@ CONTINGUT_PIPELINE = {
 }
 ```
 
-**Per què dos nivells.** 251 continguts comparteixen unes 48 idees matemàtiques. Corregir
+**Per què dos nivells.** 251 continguts comparteixen unes 49 idees matemàtiques. Corregir
 una llista de preguntes es fa un cop, al fil, i no contingut a contingut.
 
 Particularitats:
@@ -304,19 +313,21 @@ Particularitats:
   ignoren en silenci les posicions inexistents, de manera que renumerar el repartiment
   degrada la proposta (o fa desaparèixer la icona) però no trenca res. L'editor de
   `repartiment.html` ho recorda al comentari que segella al fitxer descarregat.
-- Els ids CB han de tenir targeta a `cb-img/CB<id>.png`: avui, els 166 que ja referencia
-  alguna sessió del `PAYLOAD`. `pipeline-data.js` en fa servir els 166.
+- Els ids CB han de tenir targeta a `cb-img/CB<id>.png`: avui, els 169 que ja referencia
+  alguna sessió del `PAYLOAD`. `pipeline-data.js` en fa servir els 169.
 - Una sessió pot ser d'un curs diferent del contingut, i és el cas habitual: la interfície
   ho marca amb l'etiqueta «del graf de 3r d'ESO».
 - **La cobertura es veu a la interfície**, no cal consultar el fitxer: cada contingut duu un
-  punt ple o un anell buit, i cada tema el recompte `n/m` dels seus. Quan el juny del 2027
-  entrin les sessions de 1r i 4t, els forats es taparan sols en afegir entrades aquí.
-- **Cobertura actual:** 231 dels 251 continguts (2n 80/80 · 3r 48/49 · 1r 54/62 · 4t 49/60).
-  Els forats són reals (logaritmes, trigonometria, notació científica) i es mostren com a
-  tals. És, de fet, la vista inversa que demanava `CB1` al roadmap pedagògic.
+  punt ple o un anell buit, i cada tema el recompte `n/m` dels seus. Cada sessió nova de 1r
+  o de 4t tapa forats quan s'afegeix als fils: l'octubre del 2026, «Qui té la raó?» en va
+  tapar dos de trigonometria de 4t.
+- **Cobertura actual:** 233 dels 251 continguts (2n 80/80 · 3r 48/49 · 1r 54/62 · 4t 51/60).
+  Els forats són reals (logaritmes, part de la trigonometria, notació científica) i es
+  mostren com a tals. És, de fet, la vista inversa que demanava `CB1` al roadmap pedagògic.
 - **És un esborrany per revisar.** El mapatge inicial es va derivar dels `nucli` de les 22
-  sessions i de les descripcions dels 166 ítems CB; els encaixos i la tria de preguntes són
-  una proposta del departament, no una dada oficial.
+  sessions i de les descripcions dels 166 ítems CB; l'octubre del 2026 s'hi van afegir les
+  dues primeres sessions de 1r i 4t i el fil `trigonometria`. Els encaixos i la tria de
+  preguntes són una proposta del departament, no una dada oficial.
 
 ---
 
@@ -452,8 +463,9 @@ documenten perquè se'n tingui constància.
    d'aquest cas. Com que l'editor no gestiona `activity_blocks`, l'efecte es repeteix cada
    cop que s'afegeix una activitat nova (vegeu `MANTENIMENT.md`).
 
-2. **Imatges de `florence-cb.html`:** les 166 imatges referenciades (`CB1.png … CB218.png`)
-   es troben totes a `cb-img/`. Les 59 de l'edició 2026 (`CB158 … CB218`) es van generar amb
+2. **Imatges de `florence-cb.html`:** les 169 imatges referenciades (`CB1.png … CB218.png`)
+   es troben totes a `cb-img/`. Les 59 de l'edició 2026 (`CB158 … CB218`) i les tres que va
+   demanar «Qui té la raó?» l'octubre del 2026 (`CB9`, `CB10`, `CB88`) es van generar amb
    `make_cb_card.py` i estan palatitzades (mode P), com la resta.
 
 3. **El banc CB depèn d'imatges remotes.** `banc-cb.html` carrega les imatges de

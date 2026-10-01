@@ -5,12 +5,14 @@ l'estat en què va quedar el projecte i què cal fer la propera vegada.
 
 - **Eix CB** — el Departament publica les proves de competències bàsiques de l'any.
   Afecten `cb-main` (el projecte de `cb.step-quiz.net`) i, de retruc, aquest projecte.
-- **Eix Florence** — apareixen seqüències didàctiques noves. El juny del 2027 s'hi
-  afegiran les de **1r i 4t d'ESO**, que ara no existeixen.
+- **Eix Florence** — apareixen seqüències didàctiques noves. No sempre arriben el juny: el
+  curs 2026-27 el material de Florence arriba per blocs (I1, I2…), i el primer, l'octubre
+  del 2026, va portar la primera sessió de **1r** i la primera de **4t d'ESO** (vegeu
+  «El material arriba per blocs» més avall).
 - **Eix repartiment** — el pont `pipeline-data.js`, que relaciona els continguts del
   currículum amb les dues coses anteriors. **No s'actualitza sol**: si només fas els dos
   primers eixos, l'entrada «Per contingut» de `florence-cb.html` es quedarà mostrant la
-  cobertura de l'any passat i 1r i 4t continuaran dient que no hi ha cap tasca.
+  cobertura de l'any passat i cap contingut no proposarà les sessions noves.
 
 **L'ordre importa:** CB → Florence → repartiment. Cada pas fa servir el resultat de
 l'anterior (les preguntes noves s'assignen a les sessions; les sessions noves s'assignen
@@ -29,15 +31,15 @@ manera més ràpida de veure l'estat real del repositori sense fiar-te del que d
 
 ---
 
-## Estat actual (setembre del 2026)
+## Estat actual (octubre del 2026)
 
 | | |
 |---|---|
 | Banc CB | 2n ESO 2024–2026 · 4t ESO 2022–2026 · **84 blocs, 218 preguntes** (ids 1–218) |
-| Grafs Florence | 2n ESO (11 sessions) · 3r ESO (11 sessions) |
-| Targetes `cb-img/` | 166 (`CB1.png … CB218.png`) |
-| Fitxes d'alumnat `florence-pdf/` | 22 |
-| Pont `pipeline-data.js` | 48 fils · 231 dels 251 continguts (2n 80/80 · 3r 48/49 · 1r 54/62 · 4t 49/60) |
+| Grafs Florence | 1r ESO (1 sessió) · 2n ESO (11 sessions) · 3r ESO (11 sessions) · 4t ESO (1 sessió) |
+| Targetes `cb-img/` | 169 (`CB1.png … CB218.png`) |
+| Fitxes d'alumnat `florence-pdf/` | 24 |
+| Pont `pipeline-data.js` | 49 fils · 233 dels 251 continguts (2n 80/80 · 3r 48/49 · 1r 54/62 · 4t 51/60) |
 
 > Aquestes xifres les imprimeix `node valida-dades.js`. Si no coincideixen amb el que veus,
 > fes cas del guió, no de la taula.
@@ -146,6 +148,26 @@ relacionada, ●○○ relació parcial), de manera que un graf nou no demana ca
 s'ordenen segons el curs dels alumnes triat (primer el seu, després el més proper), no per
 l'ordre de les claus del `PAYLOAD`.
 
+### El material arriba per blocs (I1, I2…)
+
+El curs 2026-27 Florence (programa FLORENCE-SIM) envia el material per blocs temàtics. Cada
+bloc porta una carpeta per curs, amb el prefix del bloc (`I1 ESO1. Sanefes`,
+`I1 ESO4. Qui té la raó`), i el bloc I1 («Raonament proporcional») va portar a més un
+document d'«Activitats focus». L'octubre del 2026 es va incorporar així:
+
+| Fitxer de la carpeta | On va |
+|---|---|
+| Fitxa alumnat (PDF) | `florence-pdf/F_<curs>ESO_S<nn>.pdf`. El número surt del títol intern del document (`ESO4_S01_Fitxa docent…` → `F_4ESO_S01`). |
+| Fitxa docent, Fitxa Centre, Presentació, Recurs imprimible | No van al repositori. Si el departament les vol a mà, al Drive i al catàleg (`manifest.json`, origen `florence`), com les versions «pautada» o «adaptada» de 2n i 3r. |
+| Pauta d'observació, Anàlisi de la sessió, observacions omplertes | No s'han publicat: són documents de seguiment del programa. |
+| Material complementari (SVG, Beam Studio) | Fitxers per tallar peces amb làser. No es publiquen aquí. |
+| Activitats focus (DOCX) | **Encara no tenen lloc a la web**: pendent de decidir com s'hi integren. |
+
+Les preguntes CB es van triar entre les que ja tenien targeta i, per a «Qui té la raó?», se
+n'hi van generar tres de noves: `CB9` i `CB10` (l'escala i la rampa del mercat, 4t del
+2025), que treballen exactament la raó entre els catets, i `CB88` (la foto, 4t del 2023),
+que treballa la raó entre costats que es manté en reduir una figura.
+
 ### Donar d'alta una sessió
 
 ```jsonc
@@ -185,7 +207,7 @@ El guió necessita el projecte `cb-main` al costat (`preguntes.json` + `data/`).
 `cb-img-noves/`; copia'n el contingut a `cb-img/`.
 
 Les targetes surten en RGB i pesen unes tres vegades més del compte. **Palatitza-les abans
-de fer el commit**, com les 166 que ja hi ha:
+de fer el commit**, com les 169 que ja hi ha:
 
 ```python
 from PIL import Image
@@ -243,20 +265,25 @@ que surt la imatge, i que estiguin descrits en alguna sessió del `PAYLOAD`, per
 surten la font (`2ESO`/`4ESO`) i el text de la columna «Continguts que es mobilitzen». Si
 poses un id que no compleix les dues coses, `valida-dades.js` t'ho dirà.
 
-### Quan arriba un graf Florence nou (1r i 4t, juny del 2027)
+### Quan arriben sessions Florence noves (sobretot de 1r i 4t)
 
-Aquest és el cas gros, i el que farà pujar més la cobertura.
+Aquest és el cas gros, i el que farà pujar més la cobertura. L'octubre del 2026 es va fer
+per primer cop, amb «Sanefes» (1r) i «Qui té la raó?» (4t).
 
 1. Dona d'alta les sessions al `PAYLOAD` (secció anterior). Fins aquí, l'entrada
    «Per contingut» encara no les proposa.
 2. Per a cada sessió nova, llegeix-ne el `nucli` i busca **quins fils ja existents** la
    descriuen. Afegeix-hi `['F_1ESO_S03', <encaix>]`. Sovint no cal cap fil nou: una sessió
    de 1r sobre àrees encaixa al fil `area-figures` que ja hi ha.
-3. Crea fils nous només per a idees que no hi són. Els forats coneguts del 2026 són bons
-   candidats: logaritmes, trigonometria, notació científica, sistemes de numeració, la
-   jerarquia de les operacions.
+3. Crea fils nous només per a idees que no hi són. Els forats coneguts són bons candidats:
+   logaritmes, la resta de trigonometria (reducció al primer quadrant, teoremes del sinus i
+   del cosinus), notació científica, sistemes de numeració, la jerarquia de les operacions.
+   El fil `trigonometria` es va crear així l'octubre del 2026.
 4. Assigna els fils nous als continguts a `CONTINGUT_PIPELINE`, amb la clau
    `<CURS>|<sentit>/<tema.id>` i la **posició** del contingut dins del tema, començant per 1.
+5. Si una sessió de 1r no troba cap contingut de 1r on encaixar, mira si el repartiment de 1r
+   té aquell tema. Per exemple, el repartiment de 1r no té cap contingut de raó ni de
+   proporcionalitat (és a 2n), i per això «Sanefes» només surt a 1r per «Gràfics i taules».
 
 Un detall que va sorprendre el 2026 i tornarà a passar: **una sessió pot servir per a un
 contingut d'un altre curs**. El teorema de Pitàgores és contingut de 2n, però la sessió que
@@ -265,8 +292,9 @@ marca; no ho «arreglis» limitant els fils al seu propi curs.
 
 ### Frases que ja no s'han de tocar
 
-La interfície deriva del `PAYLOAD` quins cursos tenen graf. Quan omplis `d1` i `d4`, els
-missatges del tipus «De moment només hi ha graf de 2n i 3r d'ESO» desapareixen sols. **No
+La interfície deriva del `PAYLOAD` quins cursos tenen graf. Des que `d1` i `d4` tenen
+sessions (octubre del 2026), els missatges del tipus «De moment només hi ha graf de 2n i 3r
+d'ESO» ja no surten: van desaparèixer sols. **No
 hi ha cap any escrit a mà dins de `florence-cb.html`**; si n'hi afegeixes un, el tornaràs a
 haver de buscar l'any vinent.
 
