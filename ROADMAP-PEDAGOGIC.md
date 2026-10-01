@@ -210,8 +210,9 @@ segon és el gros.
 - [x] **Estat:** Fet (parcial, 2026-09-05) · **Prioritat:** Mitjana · **Tipus:** Funcionalitat
 - **Què s'ha fet:** el forat es veu des del costat del currículum, que és on es nota. Cada curs
   diu quants dels seus continguts tenen pràctica associada (2n 80/80 · 3r 48/49 · 1r 54/62 ·
-  4t 49/60) i un contingut sense res ho diu obertament. Els buits documentats són logaritmes,
-  trigonometria, notació científica i bona part de 1r.
+  4t 51/60) i un contingut sense res ho diu obertament. Els buits documentats són logaritmes,
+  part de la trigonometria (la sessió «Qui té la raó?», d'octubre del 2026, en va tapar dos
+  continguts), notació científica i bona part de 1r.
 - **Què hi falta:** l'altra direcció, la que deia la fitxa original: quins ítems CB no toca cap
   sessió Florence. Amb `pipeline-data.js` ara és una resta de conjunts trivial.
 - **Cost:** tècnic S · contingut baix
@@ -313,5 +314,6 @@ Afegeix una línia per cada idea aplicada (la més recent a dalt).
 
 | Data | ID | Canvi | Qui |
 |------|----|-------|-----|
+| 2026-10-01 | F2 · CB1 | Primeres sessions Florence de 1r («Sanefes») i de 4t («Qui té la raó?»), del bloc I1 «Raonament proporcional». Fil nou «Raons trigonomètriques» a `pipeline-data.js` (49 fils, 233/251 continguts; 4t passa de 49/60 a 51/60). Les «Activitats focus» del mateix bloc queden pendents d'integrar | — |
 | 2026-09-05 | F2 · CB1 | Mode «El meu repartiment» a `florence-cb.html` i fitxer de pont `pipeline-data.js` (48 fils, 231/251 continguts). El repartiment de continguts passa a ser un punt d'entrada navegable cap a Florence, les CB i el catàleg | — |
 | _(exemple)_ 2026-06-04 | — | Creació del roadmap pedagògic | — |

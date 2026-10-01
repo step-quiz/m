@@ -94,7 +94,8 @@ surt sense les respostes. **Necessita connexió** (les imatges venen de `cb.step
 Les proves de competències bàsiques de l'any i les seqüències noves de Florence entren
 per camins diferents i tenen guia pròpia: [`ACTUALITZACIO-ANUAL.md`](ACTUALITZACIO-ANUAL.md).
 Hi ha els dos procediments pas a pas, els guions que cal executar i les comprovacions
-abans del commit. `florence-cb.html` ja admet grafs de 1r i 4t d'ESO sense tocar codi.
+abans del commit. `florence-cb.html` té grafs dels quatre cursos: els de 1r i 4t, des de
+l'octubre del 2026, amb una sessió cadascun. Afegir-ne més no demana tocar codi.
 
 ---
 
@@ -110,7 +111,7 @@ abans del commit. `florence-cb.html` ja admet grafs de 1r i 4t d'ESO sense tocar
 - **El camp `generated`** del manifest es posa sol a la data de cada descàrrega; no cal tocar-lo.
 - **Imatges de `florence-cb.html`:** són locals a `cb-img/` (`CB<id>.png`). Si una sessió
   recomana un CB del qual no hi ha el PNG, la previsualització/baixada d'aquella entrada
-  falla. Ara hi ha totes les 166 imatges referenciades (`CB1.png … CB218.png`), sense cap
+  falla. Ara hi ha totes les 169 imatges referenciades (`CB1.png … CB218.png`), sense cap
   pendent. Per generar-ne de noves: `make_cb_card.py <ids>`, amb el projecte CB al costat.
 - **Llibreries:** algunes pàgines les carreguen de `cdnjs.cloudflare.com`. Si algun dia cdnjs
   no és accessible, `eliminar-curs.html` (pdf.js, pdf-lib, jszip) i `extreu-json.html`
