@@ -14,8 +14,8 @@
  *   correspondre entre ells, i les relacions no són evidents:
  *
  *     florence-cb.html (PAYLOAD) ──┬─→ cb-img/CB<id>.png      (cada id, una targeta)
- *                                  └─→ florence-pdf/<id>.pdf  (cada sessió amb pdf:true)
- *     pipeline-data.js ────────────┬─→ PAYLOAD                (sessions i ids CB)
+ *                                  └─→ florence-pdf/<id>.pdf  (cada sessió o activitat focus amb pdf:true)
+ *     pipeline-data.js ────────────┬─→ PAYLOAD                (sessions, activitats focus i ids CB)
  *                                  └─→ repartiment-data.js    (cursos, temes, posicions)
  *
  *   Cap d'aquestes relacions no peta en execució: si falla, el que passa és
@@ -105,6 +105,16 @@ for (const g of ['1', '2', '3', '4']) {
   }
 }
 
+/* Activitats focus: no formen graf, però tenen PDF i les proposen els fils. */
+const focus = {};               // id d'activitat focus → objecte
+for (const f of (PAYLOAD.focus || [])) {
+  if (focus[f.id] || sessions[f.id]) err(`Id repetit al PAYLOAD (focus): ${f.id}`);
+  focus[f.id] = f;
+  if (!CURSOS.includes(f.curs)) err(`L'activitat focus ${f.id} té un curs desconegut: «${f.curs}»`);
+  if (!f.titol) err(`L'activitat focus ${f.id} no té títol`);
+  if (!f.conflicte) avis(`L'activitat focus ${f.id} no té «conflicte»: la targeta sortirà sense l'error que ataca`);
+}
+
 const temes = {};   // "CURS|sentit/tema" → objecte tema
 for (const curs of CURSOS) {
   for (const b of ((REPARTIMENT[curs] || {}).blocs || [])) {
@@ -130,8 +140,12 @@ for (const [sid, g] of Object.entries(sessions)) {
   if (!s.pdf && pdfs.has(sid)) avis(`Hi ha florence-pdf/${sid}.pdf però la sessió diu pdf:false`);
   if (!s.nucli) avis(`${sid} no té «nucli»: la fitxa quedarà sense la línia explicativa`);
 }
+for (const [fid, f] of Object.entries(focus)) {
+  if (f.pdf && !pdfs.has(fid)) err(`${fid} declara pdf:true però no hi ha florence-pdf/${fid}.pdf`);
+  if (!f.pdf && pdfs.has(fid)) avis(`Hi ha florence-pdf/${fid}.pdf però l'activitat focus diu pdf:false`);
+}
 for (const p of pdfs)
-  if (!sessions[p]) avis(`florence-pdf/${p}.pdf no correspon a cap sessió del PAYLOAD`);
+  if (!sessions[p] && !focus[p]) avis(`florence-pdf/${p}.pdf no correspon a cap sessió ni activitat focus del PAYLOAD`);
 
 /* ── 2. Relacions ff<n> ─────────────────────────────────────────────── */
 
@@ -164,9 +178,18 @@ for (const [pid, p] of Object.entries(PIPELINES)) {
     if (cbVistes.has(id)) err(`El fil «${pid}» repeteix la pregunta CB ${id}`);
     cbVistes.add(id);
   }
-  if (!(p.florence || []).length && !(p.cb || []).length)
+  const focusVistes = new Set();
+  for (const id of (p.focus || [])) {
+    if (!focus[id]) err(`El fil «${pid}» apunta a una activitat focus inexistent: ${id}`);
+    if (focusVistes.has(id)) err(`El fil «${pid}» repeteix l'activitat focus ${id}`);
+    focusVistes.add(id);
+  }
+  if (!(p.florence || []).length && !(p.cb || []).length && !(p.focus || []).length)
     err(`El fil «${pid}» és buit: no proposa ni tasca ni pràctica`);
 }
+const focusUsades = new Set(Object.values(PIPELINES).flatMap(p => p.focus || []));
+for (const fid of Object.keys(focus))
+  if (!focusUsades.has(fid)) avis(`L'activitat focus ${fid} no és a cap fil: cap contingut no la proposarà`);
 
 /* ── 4. CONTINGUT_PIPELINE ──────────────────────────────────────────── */
 
@@ -221,14 +244,16 @@ try {
 /* ── Cobertura i xifres per als .md ─────────────────────────────────── */
 
 const cobertura = {};
-let totCont = 0, totAmb = 0;
+let totCont = 0, totAmb = 0, totFocus = 0;
 for (const curs of CURSOS) {
   let tot = 0, amb = 0;
   for (const b of ((REPARTIMENT[curs] || {}).blocs || []))
     for (const t of b.temes)
       t.continguts.forEach((c, i) => {
         tot++;
-        if (((CONTINGUT_PIPELINE[`${curs}|${b.sentit}/${t.id}`] || {})[i+1] || []).length) amb++;
+        const ids = (CONTINGUT_PIPELINE[`${curs}|${b.sentit}/${t.id}`] || {})[i+1] || [];
+        if (ids.length) amb++;
+        if (ids.some(id => ((PIPELINES[id] || {}).focus || []).length)) totFocus++;
       });
   cobertura[curs] = [amb, tot]; totCont += tot; totAmb += amb;
 }
@@ -252,6 +277,7 @@ console.log(`  Targetes cb-img/            ${targetes.size}`);
 console.log(`  Ids CB referenciats         ${cbAlPayload.size}`);
 console.log(`  Fitxes florence-pdf/        ${pdfs.size}`);
 console.log(`  Sessions Florence           ${nSessions}  (grafs plens: ${grafsPlens.join(', ')})`);
+console.log(`  Activitats focus            ${Object.keys(focus).length}  (les proposen ${totFocus} continguts)`);
 console.log(`  Preguntes a cb-items.json   ${nItems}  (id més alt: ${maxItem})`);
 console.log(`  Fils a pipeline-data.js     ${Object.keys(PIPELINES).length}`);
 console.log(`  Cobertura del repartiment   ${totAmb}/${totCont}  ` +

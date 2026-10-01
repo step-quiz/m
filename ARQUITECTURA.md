@@ -37,7 +37,7 @@ Les dades viuen en cinc contractes separats:
 ```jsonc
 {
   "version": 4,
-  "generated": "2026-09-03T05:32:50",   // darrer segell; l'editor hi escriu només YYYY-MM-DD
+  "generated": "2026-10-01",            // darrer segell; l'editor hi escriu només YYYY-MM-DD
   "folder_url": "https://drive.google.com/drive/folders/…",
   "vocabulary": {                   // valors permesos (slugs) per cada faceta
     "origin":     ["miquel-tarradell", "florence", "nrich", …],
@@ -45,9 +45,9 @@ Les dades viuen en cinc contractes separats:
     "course":     ["1ESO","2ESO","3ESO","4ESO","1Bat","2Bat","ESO","Bat", …],
     "math_sense": ["algebraic","mesura","espacial","estocastic","numeric", …],
     "activity":   ["nombres-naturals", "fraccions", …],   // 91 valors
-    "type":       ["exercici","dossier","examen", …]
+    "type":       ["exercici","focus","dossier","examen", …]   // focus = «Activitat focus»
   },
-  "vocabulary_labels": {            // slug → text visible (135 entrades)
+  "vocabulary_labels": {            // slug → text visible (136 entrades)
     "miquel-tarradell": "Miquel Tarradell",
     "1ESO": "1r ESO",
     …
@@ -61,7 +61,7 @@ Les dades viuen en cinc contractes separats:
     { "label": "Àlgebra",     "items": [ … ] },
     … (8 blocs en total)
   ],
-  "files": [ /* 135 entrades, vegeu sota */ ]
+  "files": [ /* 147 entrades, vegeu sota */ ]
 }
 ```
 
@@ -78,19 +78,27 @@ Les dades viuen en cinc contractes separats:
   "activities": ["arees-perimetres","pitagores"],
   "type":       "exercici",
   "drive_id":   "1BLWEO4w…",                 // cal drive_id O url
-  "url":        "https://cb.step-quiz.net/…",// per a recursos web (format: "web")
+  "url":        "https://cb.step-quiz.net/…",// recurs web (format "web") o PDF del web (format "pdf")
   "year":       2026,                        // opcional
   "notes":      "…"                          // opcional
 }
 ```
 
-Freqüència real dels camps (sobre 135 fitxes): `title`/`id`/`format`/`origin`/`courses`/`type`
-a totes; `drive_id` 129; `math_sense` 129; `activities` 129; `notes` 82; `year` 30; `url` 6.
-Les 129 amb `drive_id` i les 6 amb `url` no se solapen, tal com demana la regla «cal `drive_id`
-O `url`». Distribució de format: **pdf 116 · doc 13 · web 6**.
+Freqüència real dels camps (sobre 147 fitxes): `title`/`id`/`format`/`origin`/`courses`/`type`
+a totes; `drive_id` 131; `math_sense` 141; `activities` 141; `notes` 92; `year` 30; `url` 16.
+Les 131 amb `drive_id` i les 16 amb `url` no se solapen, tal com demana la regla «cal `drive_id`
+O `url`». Distribució de format: **pdf 128 · doc 13 · web 6**.
+
+Les 16 amb `url` són de dos tipus: les 6 proves CB (`format: "web"`, a `cb.step-quiz.net`) i
+les 10 activitats focus de Florence (`format: "pdf"`, `type: "focus"`), que no són al Drive:
+el seu `url` és relatiu, `florence-pdf/FO_<curs>ESO_<nn>.pdf`, el mateix PDF que fa servir
+`florence-cb.html`.
 
 Com es construeix l'enllaç d'obertura (a `index.html`):
-- `url` present → s'obre l'`url` (recursos web).
+- `url` amb `format: "pdf"` → s'obre l'`url` i també es pot previsualitzar a l'iframe lateral
+  (les activitats focus).
+- `url` amb un altre format → s'obre l'`url` en una pestanya nova, sense previsualització
+  (les proves CB).
 - `format: "doc"` → `https://docs.google.com/document/d/<drive_id>/edit`.
 - altres → `https://drive.google.com/file/d/<drive_id>/view` (i `/preview` a l'iframe lateral).
 
@@ -111,7 +119,7 @@ interfície. Però **no s'actualitzen sols**: afegir un valor a `vocabulary.acti
 l'afegeix a cap bloc.
 
 El vocabulari és la llista de valors **permesos**, no un índex del que hi ha al catàleg: és
-normal que hi hagi valors que ara mateix no fa servir cap fitxa. Avui n'hi ha 24 de 135
+normal que hi hagi valors que ara mateix no fa servir cap fitxa. Avui n'hi ha 24 de 136
 (1 origen, 1 curs, 16 activitats escampades per sis blocs temàtics i 6 tipus). `index.html` els
 pinta amb la classe `is-zero`, que els atenua però no els amaga, perquè un valor amb zero
 resultats *amb els filtres actuals* i un valor sense cap fitxa al catàleg s'han de veure
@@ -167,7 +175,8 @@ Objecte JS incrustat:
   "ff2": [ ["F_2ESO_S01","F_2ESO_S11","relació…"], … ],   // 10 relacions
   "d3": [ /* 11 sessions de 3r ESO */ ],
   "ff3": [ … ],                                           // 9 relacions
-  "d4": [ /* 1 sessió de 4t ESO */ ], "ff4": []           // encara cap relació
+  "d4": [ /* 1 sessió de 4t ESO */ ], "ff4": [],          // encara cap relació
+  "focus": [ /* 10 activitats focus (bloc I1) */ ]
 }
 ```
 
@@ -202,6 +211,32 @@ Quan una mateixa pregunta CB surt a diverses sessions, l'entrada «Per contingut
 descripció de la **primera** sessió que la cita, recorrent els grafs de 1r a 4t. Per això les
 sessions de 1r copien literalment la descripció que ja tenia cada pregunta: si se'n canvia el
 text a `d1`, canvia a tota la vista «Per contingut».
+
+### Activitats focus (`PAYLOAD.focus`)
+
+Activitats curtes de Florence (10–20 min més una microavaluació) que fan aflorar un error típic
+per discutir-lo a classe. Arriben en un sol DOCX per bloc i es divideixen amb
+`divideix_focus.py`, un PDF per activitat. No formen graf, no tenen relacions `ff` ni preguntes
+CB pròpies, i no surten a l'entrada «Per sessió Florence»: les proposen els fils de
+`pipeline-data.js` (camp `focus`, §4e), com un pas propi de l'entrada «Per contingut» entre la
+tasca Florence i les preguntes CB. Si cap fil del contingut en porta, el pas no surt i els
+passos es renumeren.
+
+```jsonc
+{
+  "id":        "FO_4ESO_01",            // FO_<curs>ESO_<nn>; = florence-pdf/<id>.pdf
+  "titol":     "El dia sense IVA",
+  "curs":      "4ESO",                  // per a qui es va pensar («Pensada per a…»)
+  "bloc":      "I1",                    // bloc de Florence d'on surt
+  "pdf":       true,
+  "conflicte": "Pensar que una reducció… desfà un augment previ del mateix percentatge."
+}
+```
+
+A cada contingut surten primer les del curs dels alumnes i després les dels cursos més
+propers. El PDF és la fitxa docent de l'activitat (inclou la situació que es projecta o es
+reparteix). Al catàleg (`manifest.json`) cada activitat té també una fitxa amb
+`type: "focus"`, i totes es poden llistar amb `index.html?type=focus`.
 
 ---
 
@@ -292,7 +327,8 @@ PIPELINES = {
     "label":    "Teorema de Pitàgores",
     "nota":     "…per què aquesta tasca serveix per a això (opcional)",
     "florence": [ ["F_3ESO_S02", 3] ],   // [id de sessió, encaix 1-3]
-    "cb":       [133, 164, 131, 132, 74] // ids de pregunta, els millors primer
+    "cb":       [133, 164, 131, 132, 74],// ids de pregunta, els millors primer
+    "focus":    [ "FO_2ESO_01", … ]      // opcional: activitats focus (§4)
   }, …
 }
 
@@ -353,7 +389,7 @@ La clau de cada tema és `"<sentit>/<tema.id>"`.
 
 | Pàgina | Llibreries | Xarxa en execució |
 |---|---|---|
-| `index.html` | cap | `fetch('manifest.json')`; iframes de Google Drive a la previsualització |
+| `index.html` | cap | `fetch('manifest.json')`; iframes de Google Drive a la previsualització (o del PDF local, a les activitats focus) |
 | `repartiment.html` | cap | `fetch('manifest.json')` per a les icones de material (opcional: si falla, no en surt cap); dades via `repartiment-data.js` i `pipeline-data.js` locals |
 | `afegir-material.html` | cap | `fetch('manifest.json')`; descàrrega del `manifest.json` editat |
 | `extreu-json.html` | **mammoth 1.8.0** (cdnjs) | `fetch('manifest.json')` per sincronitzar vocabulari; **Gemini API** (clau de l'usuari) |
@@ -521,12 +557,13 @@ documenten perquè se'n tingui constància.
 
 `node valida-dades.js` (només Node, cap paquet) creua tots els contractes de dades i
 comprova el que no peta en execució però es veu a classe: ids CB sense targeta a `cb-img/`,
-sessions amb `pdf:true` sense fitxer, fils que apunten a sessions inexistents, posicions de
+sessions i activitats focus amb `pdf:true` sense fitxer, fils que apunten a sessions o
+activitats focus inexistents, activitats focus que cap fil no proposa, posicions de
 `CONTINGUT_PIPELINE` fora del seu tema, fils definits i no fets servir, relacions `ff<n>`
 que travessen grafs, i el desfasament entre `cb-items.json` i el `PAYLOAD`.
 
-Acaba imprimint totes les xifres que hi ha escrites als `.md` (targetes, sessions, fils,
-cobertura per curs). Quan un recompte d'aquest fitxer o del `README` no quadri, la sortida
+Acaba imprimint totes les xifres que hi ha escrites als `.md` (targetes, sessions, activitats
+focus, fils, cobertura per curs). Quan un recompte d'aquest fitxer o del `README` no quadri, la sortida
 del guió és la bona.
 
 Torna codi 1 si hi ha errors i 0 si només hi ha avisos, de manera que es pot encadenar
@@ -544,5 +581,5 @@ abans d'un commit.
   `manifest.json` nou que cal pujar a mà. Per tant l'eina no pot corrompre el catàleg en
   producció. La validació bloqueja la descàrrega davant d'errors estructurals (IDs duplicats,
   valors fora de vocabulari) i un avís `beforeunload` evita perdre canvis a mig fer.
-- **Rendiment:** el càlcul dels filtres és O(grups × fitxers × valors) per render; amb 135
+- **Rendiment:** el càlcul dels filtres és O(grups × fitxers × valors) per render; amb 147
   fitxes és instantani. Cap problema a aquesta escala.

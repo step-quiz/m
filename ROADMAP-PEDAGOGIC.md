@@ -314,6 +314,7 @@ Afegeix una línia per cada idea aplicada (la més recent a dalt).
 
 | Data | ID | Canvi | Qui |
 |------|----|-------|-----|
+| 2026-10-01 | F2 | Activitats focus del bloc I1 (10 activitats curtes, de 1r a 4t, cadascuna contra un error típic de raonament proporcional). A «Per contingut» surten com a pas propi entre la tasca Florence i la pràctica CB, i al catàleg amb el tipus «Activitat focus» | — |
 | 2026-10-01 | F2 · CB1 | Primeres sessions Florence de 1r («Sanefes») i de 4t («Qui té la raó?»), del bloc I1 «Raonament proporcional». Fil nou «Raons trigonomètriques» a `pipeline-data.js` (49 fils, 233/251 continguts; 4t passa de 49/60 a 51/60). Les «Activitats focus» del mateix bloc queden pendents d'integrar | — |
 | 2026-09-05 | F2 · CB1 | Mode «El meu repartiment» a `florence-cb.html` i fitxer de pont `pipeline-data.js` (48 fils, 231/251 continguts). El repartiment de continguts passa a ser un punt d'entrada navegable cap a Florence, les CB i el catàleg | — |
 | _(exemple)_ 2026-06-04 | — | Creació del roadmap pedagògic | — |

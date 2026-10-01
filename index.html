@@ -1389,12 +1389,15 @@ function renderResults(filtered, opts = {}) {
       `<span class="pill pill-course">${escHtml(label(c))}</span>`).join('');
 
     const isLink = !!f.url;
+    // Un PDF amb URL pròpia (les activitats focus de florence-pdf/) es
+    // previsualitza com els del Drive; les altres URL són les proves CB.
+    const isPdfUrl = isLink && f.format === 'pdf';
     const openHref = isLink
       ? (safeUrl(f.url) || '#')
       : (f.format === 'doc'
           ? `https://docs.google.com/document/d/${encodeURIComponent(f.drive_id)}/edit`
           : `https://drive.google.com/file/d/${encodeURIComponent(f.drive_id)}/view`);
-    const openLabel = isLink ? 'Obre la prova ↗' : 'Obre al Drive ↗';
+    const openLabel = isPdfUrl ? 'Obre el PDF ↗' : (isLink ? 'Obre la prova ↗' : 'Obre al Drive ↗');
 
     const rating = getRating(f.id);
     const star = (val) => {
@@ -1427,8 +1430,8 @@ function renderResults(filtered, opts = {}) {
             </div>
           </div>
           <div class="card-actions">
-            ${isLink ? '' : `<button class="btn-act btn-prim act-preview" data-id="${escHtml(f.id)}">Previsualitza</button>`}
-            <a class="btn-act ${isLink ? 'btn-prim ' : ''}act-drive" href="${escHtml(openHref)}" target="_blank" rel="noopener">${openLabel}</a>
+            ${isLink && !isPdfUrl ? '' : `<button class="btn-act btn-prim act-preview" data-id="${escHtml(f.id)}">Previsualitza</button>`}
+            <a class="btn-act ${isLink && !isPdfUrl ? 'btn-prim ' : ''}act-drive" href="${escHtml(openHref)}" target="_blank" rel="noopener">${openLabel}</a>
           </div>
         </div>
       </li>`;
@@ -1510,8 +1513,9 @@ function closeCard() {
 
 function openPreview(id) {
   // Web resources (proves CB, etc.) have no Drive preview — open externally.
+  // Els PDF amb URL pròpia sí que es previsualitzen (renderPreview usa f.url).
   const wf = state.manifest?.files.find(x => x.id === id);
-  if (wf && wf.url) {
+  if (wf && wf.url && wf.format !== 'pdf') {
     const target = safeUrl(wf.url);   // no obrim mai una URL d'esquema no permès
     if (!target) return;
     pushRecent(id);
