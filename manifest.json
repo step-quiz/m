@@ -1,6 +1,6 @@
 {
   "version": 4,
-  "generated": "2026-09-03T05:32:50",
+  "generated": "2026-10-01",
   "folder_url": "https://drive.google.com/drive/folders/1WjqddjN3uQhO7zUXzRKwDmBia6jqCUdy",
   "vocabulary": {
     "origin": [
@@ -140,6 +140,7 @@
     "type": [
       "exercici",
       "exercici-solucions",
+      "focus",
       "dossier",
       "examen",
       "examen-recuperacio-trimestral",
@@ -286,7 +287,8 @@
     "prova-cb": "Prova CB",
     "mariel-mates": "Mariel Mates",
     "solucions": "Solucions",
-    "angles": "Angles"
+    "angles": "Angles",
+    "focus": "Activitat focus"
   },
   "files": [
     {
@@ -1535,6 +1537,203 @@
       "type": "exercici"
     },
     {
+      "title": "Sanefes",
+      "id": "fl-1eso-s01-sanefes",
+      "drive_id": "17LVsrgTzQ9KSx1HmOnv6SD16fiUdsKn2",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "1ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "proporcionalitat"
+      ],
+      "type": "exercici"
+    },
+    {
+      "title": "Qui té la raó?",
+      "id": "fl-4eso-s01-qui-te-la-rao",
+      "drive_id": "1GBS0pxd24l6XMiPc7Vm2i6FkShM2sukF",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "4ESO"
+      ],
+      "math_sense": "mesura",
+      "activities": [
+        "trigonometria",
+        "triangles-rectangles",
+        "semblanca",
+        "tales"
+      ],
+      "type": "exercici"
+    },
+    {
+      "title": "La motxilla (activitat focus)",
+      "id": "fl-focus-1eso-01-la-motxilla",
+      "url": "florence-pdf/FO_1ESO_01.pdf",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "1ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "percentatges"
+      ],
+      "type": "focus",
+      "notes": "Bloc I1 de Florence (raonament proporcional). Error que ataca: Interpretar el percentatge com un increment additiu absolut, no relatiu."
+    },
+    {
+      "title": "Una classe molt esportiva (activitat focus)",
+      "id": "fl-focus-1eso-02-classe-esportiva",
+      "url": "florence-pdf/FO_1ESO_02.pdf",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "1ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "percentatges"
+      ],
+      "type": "focus",
+      "notes": "Bloc I1 de Florence (raonament proporcional). Error que ataca: Pensar els percentatges com a parts que sempre es poden sumar sense tenir en compte la base, total o quantitat de referència."
+    },
+    {
+      "title": "Els preus varien (activitat focus)",
+      "id": "fl-focus-1eso-03-els-preus-varien",
+      "url": "florence-pdf/FO_1ESO_03.pdf",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "1ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "percentatges"
+      ],
+      "type": "focus",
+      "notes": "Bloc I1 de Florence (raonament proporcional). Error que ataca: Creure que increments i decrements percentuals oposats es compensen."
+    },
+    {
+      "title": "La sabateria (activitat focus)",
+      "id": "fl-focus-1eso-04-la-sabateria",
+      "url": "florence-pdf/FO_1ESO_04.pdf",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "1ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "percentatges",
+        "proporcionalitat"
+      ],
+      "type": "focus",
+      "notes": "Bloc I1 de Florence (raonament proporcional). Error que ataca: Interpretar les relacions d'una taula de percentatges de forma additiva en lloc de multiplicativa."
+    },
+    {
+      "title": "La foto (activitat focus)",
+      "id": "fl-focus-2eso-01-la-foto",
+      "url": "florence-pdf/FO_2ESO_01.pdf",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "2ESO"
+      ],
+      "math_sense": "mesura",
+      "activities": [
+        "semblanca",
+        "arees-perimetres"
+      ],
+      "type": "focus",
+      "notes": "Bloc I1 de Florence (raonament proporcional). Error que ataca: Pensar que, quan les longituds d'una figura s'amplien segons una determinada raó, l'àrea augmenta segons aquesta mateixa raó."
+    },
+    {
+      "title": "L'edifici (activitat focus)",
+      "id": "fl-focus-2eso-02-l-edifici",
+      "url": "florence-pdf/FO_2ESO_02.pdf",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "2ESO"
+      ],
+      "math_sense": "mesura",
+      "activities": [
+        "semblanca",
+        "arees-perimetres"
+      ],
+      "type": "focus",
+      "notes": "Bloc I1 de Florence (raonament proporcional). Error que ataca: Pensar que la relació k² entre àrees es pot aplicar encara que les diferents dimensions no hagin variat segons la mateixa raó."
+    },
+    {
+      "title": "El logo (activitat focus)",
+      "id": "fl-focus-2eso-03-el-logo",
+      "url": "florence-pdf/FO_2ESO_03.pdf",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "2ESO"
+      ],
+      "math_sense": "mesura",
+      "activities": [
+        "semblanca",
+        "arees-perimetres"
+      ],
+      "type": "focus",
+      "notes": "Bloc I1 de Florence (raonament proporcional). Error que ataca: Pensar que la mateixa raó que relaciona les àrees de dues figures també relaciona les seves longituds."
+    },
+    {
+      "title": "Comparem triangles I (activitat focus)",
+      "id": "fl-focus-3eso-01-comparem-triangles-1",
+      "url": "florence-pdf/FO_3ESO_01.pdf",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "3ESO"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "semblanca"
+      ],
+      "type": "focus",
+      "notes": "Bloc I1 de Florence (raonament proporcional). Error que ataca: Pensar que dos triangles deixen de ser semblants quan un d'ells està girat o capgirat."
+    },
+    {
+      "title": "Comparem triangles II (activitat focus)",
+      "id": "fl-focus-3eso-02-comparem-triangles-2",
+      "url": "florence-pdf/FO_3ESO_02.pdf",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "3ESO"
+      ],
+      "math_sense": "espacial",
+      "activities": [
+        "semblanca"
+      ],
+      "type": "focus",
+      "notes": "Bloc I1 de Florence (raonament proporcional). Error que ataca: Pensar que n'hi ha prou que alguns costats tinguin la mateixa proporció perquè dos triangles siguin semblants."
+    },
+    {
+      "title": "El dia sense IVA (activitat focus)",
+      "id": "fl-focus-4eso-01-el-dia-sense-iva",
+      "url": "florence-pdf/FO_4ESO_01.pdf",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "4ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "percentatges"
+      ],
+      "type": "focus",
+      "notes": "Bloc I1 de Florence (raonament proporcional). Error que ataca: Pensar que una reducció d'un determinat percentatge aplicada al valor final desfà un augment previ del mateix percentatge."
+    },
+    {
       "title": "Àlgebra",
       "id": "bg-algebra-eso",
       "drive_id": "1psaps76jnp18u6jUN7wpUuWfnWsDvgEP",
@@ -2646,6 +2845,7 @@
     "type": [
       "exercici",
       "exercici-solucions",
+      "focus",
       "dossier",
       "examen",
       "teoria",

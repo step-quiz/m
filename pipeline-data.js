@@ -24,8 +24,14 @@
  *     label:    text visible del fil,
  *     nota:     (opcional) per què aquesta tasca serveix per a això,
  *     florence: [ ['<id de sessió>', <encaix 1-3>], … ],
- *     cb:       [ <id de pregunta CB>, … ]
+ *     cb:       [ <id de pregunta CB>, … ],
+ *     focus:    (opcional) [ '<id d'activitat focus>', … ]
  *   }
+ *
+ *   Les activitats focus (FO_<curs>ESO_<nn>) són activitats curtes de
+ *   Florence que ataquen un error típic. Viuen a PAYLOAD.focus, a
+ *   florence-cb.html, i surten com a pas propi entre la tasca Florence i
+ *   les preguntes CB de cada contingut que toqui el fil.
  *
  *   CONTINGUT_PIPELINE['<CURS>|<sentit>/<tema.id>'] = {
  *     <posició del contingut>: ['<id de fil>', …], …
@@ -54,7 +60,8 @@
  *   L'01/10/2026 s'hi van afegir les dues primeres sessions de 1r i 4t
  *   (bloc I1 de Florence, raonament proporcional): «Sanefes» al fil
  *   'proporcionalitat' i «Qui té la raó?» a 'semblanca' i al fil nou
- *   'trigonometria', que tapa dos forats de 4t.
+ *   'trigonometria', que tapa dos forats de 4t. El mateix dia hi van
+ *   entrar les 10 activitats focus del bloc I1 (camp 'focus' de cinc fils).
  *   ESTÀ PENSAT PER SER REVISAT pel departament: els encaixos (1-3) i la
  *   tria de preguntes són una proposta, no una veritat.
  */
@@ -189,6 +196,7 @@ const PIPELINES = {
     label: 'Percentatges',
     florence: [['F_2ESO_S03', 3], ['F_3ESO_S07', 3]],
     cb: [108, 110, 193, 207, 95, 85, 39, 40, 16, 171, 146, 117],
+    focus: ['FO_1ESO_01', 'FO_1ESO_02', 'FO_1ESO_04'],
   },
 
   'percentatge-variacio': {
@@ -196,6 +204,7 @@ const PIPELINES = {
     nota:  '+10 i +10% no són el mateix, i dos descomptes seguits no se sumen. És l\'error clàssic que ataca «Qui en dona més?».',
     florence: [['F_3ESO_S07', 3], ['F_2ESO_S03', 2]],
     cb: [153, 37, 193, 85, 86, 40, 68, 67],
+    focus: ['FO_1ESO_03', 'FO_4ESO_01'],
   },
 
   'proporcionalitat': {
@@ -203,6 +212,7 @@ const PIPELINES = {
     nota:  'Una raó compara dues quantitats («per cada hexàgon, 2 trapezis i 3 triangles»): no és una part del tot, com la fracció. «Sanefes» la construeix abans de parlar de proporcions.',
     florence: [['F_1ESO_S01', 3], ['F_3ESO_S07', 2], ['F_2ESO_S03', 2]],
     cb: [194, 192, 184, 182, 174, 188, 186, 88, 69, 141, 54],
+    focus: ['FO_1ESO_04'],
   },
 
   'enters': {
@@ -261,6 +271,7 @@ const PIPELINES = {
     nota:  'Si dupliques el costat l\'àrea es multiplica per 4. És l\'error més persistent de tota la geometria d\'ESO.',
     florence: [['F_2ESO_S06', 3], ['F_3ESO_S02', 2]],
     cb: [14, 132, 131, 127, 50, 81, 138],
+    focus: ['FO_2ESO_01', 'FO_2ESO_02', 'FO_2ESO_03'],
   },
 
   'pitagores': {
@@ -274,6 +285,7 @@ const PIPELINES = {
     label: 'Semblança i teorema de Tales',
     florence: [['F_3ESO_S05', 3], ['F_4ESO_S01', 3], ['F_2ESO_S06', 2]],
     cb: [28, 9, 14, 81, 88, 132, 127, 138],
+    focus: ['FO_3ESO_01', 'FO_3ESO_02'],
   },
 
   'trigonometria': {

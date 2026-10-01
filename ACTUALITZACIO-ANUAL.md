@@ -38,7 +38,8 @@ manera més ràpida de veure l'estat real del repositori sense fiar-te del que d
 | Banc CB | 2n ESO 2024–2026 · 4t ESO 2022–2026 · **84 blocs, 218 preguntes** (ids 1–218) |
 | Grafs Florence | 1r ESO (1 sessió) · 2n ESO (11 sessions) · 3r ESO (11 sessions) · 4t ESO (1 sessió) |
 | Targetes `cb-img/` | 169 (`CB1.png … CB218.png`) |
-| Fitxes d'alumnat `florence-pdf/` | 24 |
+| Fitxes `florence-pdf/` | 34: 24 fitxes d'alumnat de sessions i 10 fitxes docents d'activitats focus |
+| Activitats focus | 10 (bloc I1) · les proposen 22 continguts |
 | Pont `pipeline-data.js` | 49 fils · 233 dels 251 continguts (2n 80/80 · 3r 48/49 · 1r 54/62 · 4t 51/60) |
 
 > Aquestes xifres les imprimeix `node valida-dades.js`. Si no coincideixen amb el que veus,
@@ -161,12 +162,35 @@ document d'«Activitats focus». L'octubre del 2026 es va incorporar així:
 | Fitxa docent, Fitxa Centre, Presentació, Recurs imprimible | No van al repositori. Si el departament les vol a mà, al Drive i al catàleg (`manifest.json`, origen `florence`), com les versions «pautada» o «adaptada» de 2n i 3r. |
 | Pauta d'observació, Anàlisi de la sessió, observacions omplertes | No s'han publicat: són documents de seguiment del programa. |
 | Material complementari (SVG, Beam Studio) | Fitxers per tallar peces amb làser. No es publiquen aquí. |
-| Activitats focus (DOCX) | **Encara no tenen lloc a la web**: pendent de decidir com s'hi integren. |
+| Activitats focus (DOCX) | Un PDF per activitat a `florence-pdf/FO_<curs>ESO_<nn>.pdf`, fet amb `divideix_focus.py`; entrada a `PAYLOAD.focus`, als fils i al catàleg (vegeu «Donar d'alta activitats focus»). |
 
 Les preguntes CB es van triar entre les que ja tenien targeta i, per a «Qui té la raó?», se
 n'hi van generar tres de noves: `CB9` i `CB10` (l'escala i la rampa del mercat, 4t del
 2025), que treballen exactament la raó entre els catets, i `CB88` (la foto, 4t del 2023),
 que treballa la raó entre costats que es manté en reduir una figura.
+
+### Donar d'alta activitats focus
+
+Les activitats focus són activitats curtes que ataquen un error típic. Arriben totes les d'un
+bloc en un sol DOCX per al docent. Es van incorporar per primer cop l'octubre del 2026 (bloc
+I1, 10 activitats de 1r a 4t).
+
+1. **Divideix el DOCX:** `python3 divideix_focus.py "<fitxer>.docx"`. Deixa a `focus-nou/` un
+   DOCX i un PDF per activitat, amb els ids que continuen la numeració de cada curs
+   (`FO_1ESO_05`…), i un `payload-focus.json` amb les entrades proposades. Comprova que cada
+   PDF comença pel títol de la seva activitat i que no en falta cap pàgina.
+2. **Copia els PDF** a `florence-pdf/`, i esborra la carpeta `focus-nou/` (no s'ha de pujar).
+3. **Afegeix les entrades a `PAYLOAD.focus`** de `florence-cb.html`. El camp `conflicte` és la
+   frase de l'apartat «Conflicte/Error focalitzat»: el guió la proposa, però revisa-la perquè
+   s'entengui sola (surt a la targeta com «Error que ataca»).
+4. **Posa cada activitat als fils** de `pipeline-data.js` (camp `focus`) de la idea que
+   treballa: `percentatges`, `percentatge-variacio`, `area-escala`, `semblanca`… Així surt a
+   tots els continguts que toquen aquell fil. Si la idea no té fil, crea'l (secció «Eix
+   repartiment»).
+5. **Dona-les d'alta al catàleg** (`manifest.json`) amb `type: "focus"`, `format: "pdf"` i
+   `url: "florence-pdf/<id>.pdf"`: no cal pujar-les al Drive. El títol porta «(activitat
+   focus)» al darrere i les `notes`, l'error que ataca (així també es troben cercant).
+6. Executa `node valida-dades.js`: avisa si una activitat no té PDF o si no és a cap fil.
 
 ### Donar d'alta una sessió
 
@@ -323,10 +347,13 @@ nova per copiar-la als `.md`.
 | `retalla_cb.py` | Retalla enunciats i preguntes dels PDF oficials d'una prova CB |
 | `genera_cb_items.py` | Refà `cb-items.json` a partir de `preguntes.json` de `cb-main` |
 | `make_cb_card.py` | Compon les targetes `cb-img/CB<id>.png` de `florence-cb.html` |
+| `divideix_focus.py` | Divideix el DOCX d'«Activitats focus» d'un bloc en un DOCX i un PDF per activitat |
 | `valida-dades.js` | Comprova la coherència entre el `PAYLOAD`, `pipeline-data.js`, `repartiment-data.js`, `cb-img/`, `florence-pdf/` i `cb-items.json`, i imprimeix les xifres dels `.md` |
 
 Els tres primers necessiten Python 3; dos d'ells, també Pillow, i `retalla_cb.py` a més
-`pdfplumber` i les eines de `poppler` (`pdftoppm`). `valida-dades.js` només necessita Node,
+`pdfplumber` i les eines de `poppler` (`pdftoppm`). `divideix_focus.py` necessita Python 3,
+`python-docx` i, per als PDF, LibreOffice amb el Writer i les fonts del document (Roboto,
+Roboto Condensed, Lexend, Noto Color Emoji); sense LibreOffice, fa només els DOCX. `valida-dades.js` només necessita Node,
 sense cap paquet: llegeix els fitxers de dades tal com ho faria el navegador.
 
 `cb-items.json` **es dedueix sencer** de `preguntes.json`: la font de veritat és el segon i
