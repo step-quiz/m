@@ -1,6 +1,6 @@
 {
   "version": 4,
-  "generated": "2026-10-01",
+  "generated": "2026-10-02",
   "folder_url": "https://drive.google.com/drive/folders/1WjqddjN3uQhO7zUXzRKwDmBia6jqCUdy",
   "vocabulary": {
     "origin": [
@@ -1633,6 +1633,38 @@
       ],
       "type": "focus",
       "notes": "Bloc I1 de Florence (raonament proporcional). Error que ataca: Interpretar les relacions d'una taula de percentatges de forma additiva en lloc de multiplicativa."
+    },
+    {
+      "title": "El suc de taronja (activitat focus)",
+      "id": "fl-focus-1eso-05-el-suc-de-taronja",
+      "url": "florence-pdf/FO_1ESO_05.pdf",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "1ESO"
+      ],
+      "math_sense": "numeric",
+      "activities": [
+        "proporcionalitat"
+      ],
+      "type": "focus",
+      "notes": "Bloc I1 de Florence (raonament proporcional). Error que ataca: Pensar que, per mantenir la mateixa proporció entre dues quantitats, n'hi ha prou a sumar el mateix valor a totes dues."
+    },
+    {
+      "title": "La cinta elàstica (activitat focus)",
+      "id": "fl-focus-1eso-06-la-cinta-elastica",
+      "url": "florence-pdf/FO_1ESO_06.pdf",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "1ESO"
+      ],
+      "math_sense": "mesura",
+      "activities": [
+        "proporcionalitat"
+      ],
+      "type": "focus",
+      "notes": "Bloc I1 de Florence (raonament proporcional). Error que ataca: Pensar que, quan la longitud d'un segment augmenta una determinada quantitat, la distància de qualsevol punt del segment a un dels seus extrems augmenta aquesta mateixa quantitat."
     },
     {
       "title": "La foto (activitat focus)",

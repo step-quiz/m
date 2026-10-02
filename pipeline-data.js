@@ -62,6 +62,8 @@
  *   'proporcionalitat' i «Qui té la raó?» a 'semblanca' i al fil nou
  *   'trigonometria', que tapa dos forats de 4t. El mateix dia hi van
  *   entrar les 10 activitats focus del bloc I1 (camp 'focus' de cinc fils).
+ *   El 02/10/2026, dues activitats focus més de 1r del bloc I1 (El suc de taronja,
+ *   La cinta elàstica) als fils 'proporcionalitat' i 'escala-plans'.
  *   ESTÀ PENSAT PER SER REVISAT pel departament: els encaixos (1-3) i la
  *   tria de preguntes són una proposta, no una veritat.
  */
@@ -212,7 +214,7 @@ const PIPELINES = {
     nota:  'Una raó compara dues quantitats («per cada hexàgon, 2 trapezis i 3 triangles»): no és una part del tot, com la fracció. «Sanefes» la construeix abans de parlar de proporcions.',
     florence: [['F_1ESO_S01', 3], ['F_3ESO_S07', 2], ['F_2ESO_S03', 2]],
     cb: [194, 192, 184, 182, 174, 188, 186, 88, 69, 141, 54],
-    focus: ['FO_1ESO_04'],
+    focus: ['FO_1ESO_04', 'FO_1ESO_05', 'FO_1ESO_06'],
   },
 
   'enters': {
@@ -323,6 +325,7 @@ const PIPELINES = {
     label: 'Escala en plànols i mapes',
     florence: [['F_2ESO_S07', 2], ['F_3ESO_S02', 1]],
     cb: [102, 81, 14, 96, 165, 183],
+    focus: ['FO_1ESO_06'],
   },
 
   'unitats': {

@@ -38,8 +38,8 @@ manera més ràpida de veure l'estat real del repositori sense fiar-te del que d
 | Banc CB | 2n ESO 2024–2026 · 4t ESO 2022–2026 · **84 blocs, 218 preguntes** (ids 1–218) |
 | Grafs Florence | 1r ESO (1 sessió) · 2n ESO (11 sessions) · 3r ESO (11 sessions) · 4t ESO (1 sessió) |
 | Targetes `cb-img/` | 169 (`CB1.png … CB218.png`) |
-| Fitxes `florence-pdf/` | 34: 24 fitxes d'alumnat de sessions i 10 fitxes docents d'activitats focus |
-| Activitats focus | 10 (bloc I1) · les proposen 22 continguts |
+| Fitxes `florence-pdf/` | 36: 24 fitxes d'alumnat de sessions i 12 fitxes docents d'activitats focus |
+| Activitats focus | 12, totes del bloc I1 · les proposen 25 continguts |
 | Pont `pipeline-data.js` | 49 fils · 233 dels 251 continguts (2n 80/80 · 3r 48/49 · 1r 54/62 · 4t 51/60) |
 
 > Aquestes xifres les imprimeix `node valida-dades.js`. Si no coincideixen amb el que veus,
@@ -173,7 +173,9 @@ que treballa la raó entre costats que es manté en reduir una figura.
 
 Les activitats focus són activitats curtes que ataquen un error típic. Arriben totes les d'un
 bloc en un sol DOCX per al docent. Es van incorporar per primer cop l'octubre del 2026 (bloc
-I1, 10 activitats de 1r a 4t).
+I1, 10 activitats de 1r a 4t). L'endemà en van arribar dues més per a 1r del mateix bloc, cadascuna en un
+DOCX propi: el guió funciona igual amb un DOCX d'una sola activitat. Com que el nom del fitxer
+no porta el bloc (`extra1…`), cal posar `bloc: "I1"` a mà a la proposta.
 
 1. **Divideix el DOCX:** `python3 divideix_focus.py "<fitxer>.docx"`. Deixa a `focus-nou/` un
    DOCX i un PDF per activitat, amb els ids que continuen la numeració de cada curs

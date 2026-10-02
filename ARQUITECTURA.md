@@ -61,7 +61,7 @@ Les dades viuen en cinc contractes separats:
     { "label": "Àlgebra",     "items": [ … ] },
     … (8 blocs en total)
   ],
-  "files": [ /* 147 entrades, vegeu sota */ ]
+  "files": [ /* 149 entrades, vegeu sota */ ]
 }
 ```
 
@@ -84,13 +84,13 @@ Les dades viuen en cinc contractes separats:
 }
 ```
 
-Freqüència real dels camps (sobre 147 fitxes): `title`/`id`/`format`/`origin`/`courses`/`type`
-a totes; `drive_id` 131; `math_sense` 141; `activities` 141; `notes` 92; `year` 30; `url` 16.
-Les 131 amb `drive_id` i les 16 amb `url` no se solapen, tal com demana la regla «cal `drive_id`
-O `url`». Distribució de format: **pdf 128 · doc 13 · web 6**.
+Freqüència real dels camps (sobre 149 fitxes): `title`/`id`/`format`/`origin`/`courses`/`type`
+a totes; `drive_id` 131; `math_sense` 143; `activities` 143; `notes` 94; `year` 30; `url` 18.
+Les 131 amb `drive_id` i les 18 amb `url` no se solapen, tal com demana la regla «cal `drive_id`
+O `url`». Distribució de format: **pdf 130 · doc 13 · web 6**.
 
-Les 16 amb `url` són de dos tipus: les 6 proves CB (`format: "web"`, a `cb.step-quiz.net`) i
-les 10 activitats focus de Florence (`format: "pdf"`, `type: "focus"`), que no són al Drive:
+Les 18 amb `url` són de dos tipus: les 6 proves CB (`format: "web"`, a `cb.step-quiz.net`) i
+les 12 activitats focus de Florence (`format: "pdf"`, `type: "focus"`), que no són al Drive:
 el seu `url` és relatiu, `florence-pdf/FO_<curs>ESO_<nn>.pdf`, el mateix PDF que fa servir
 `florence-cb.html`.
 
@@ -176,7 +176,7 @@ Objecte JS incrustat:
   "d3": [ /* 11 sessions de 3r ESO */ ],
   "ff3": [ … ],                                           // 9 relacions
   "d4": [ /* 1 sessió de 4t ESO */ ], "ff4": [],          // encara cap relació
-  "focus": [ /* 10 activitats focus (bloc I1) */ ]
+  "focus": [ /* 12 activitats focus (bloc I1) */ ]
 }
 ```
 
@@ -581,5 +581,5 @@ abans d'un commit.
   `manifest.json` nou que cal pujar a mà. Per tant l'eina no pot corrompre el catàleg en
   producció. La validació bloqueja la descàrrega davant d'errors estructurals (IDs duplicats,
   valors fora de vocabulari) i un avís `beforeunload` evita perdre canvis a mig fer.
-- **Rendiment:** el càlcul dels filtres és O(grups × fitxers × valors) per render; amb 147
+- **Rendiment:** el càlcul dels filtres és O(grups × fitxers × valors) per render; amb 149
   fitxes és instantani. Cap problema a aquesta escala.
