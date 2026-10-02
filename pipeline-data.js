@@ -62,7 +62,7 @@
  *   'proporcionalitat' i «Qui té la raó?» a 'semblanca' i al fil nou
  *   'trigonometria', que tapa dos forats de 4t. El mateix dia hi van
  *   entrar les 10 activitats focus del bloc I1 (camp 'focus' de cinc fils).
- *   El 02/10/2026, dues activitats focus extra de 1r (El suc de taronja,
+ *   El 02/10/2026, dues activitats focus més de 1r del bloc I1 (El suc de taronja,
  *   La cinta elàstica) als fils 'proporcionalitat' i 'escala-plans'.
  *   ESTÀ PENSAT PER SER REVISAT pel departament: els encaixos (1-3) i la
  *   tria de preguntes són una proposta, no una veritat.

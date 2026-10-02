@@ -176,7 +176,7 @@ Objecte JS incrustat:
   "d3": [ /* 11 sessions de 3r ESO */ ],
   "ff3": [ … ],                                           // 9 relacions
   "d4": [ /* 1 sessió de 4t ESO */ ], "ff4": [],          // encara cap relació
-  "focus": [ /* 12 activitats focus (10 del bloc I1, 2 extra) */ ]
+  "focus": [ /* 12 activitats focus (bloc I1) */ ]
 }
 ```
 
