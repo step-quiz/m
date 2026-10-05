@@ -196,8 +196,8 @@ surt com a «Molt relacionada / Relacionada / Relació parcial» amb punts, no a
 Cada sessió: `{ id, titol, cataleg, nucli, cb[] }`. `cataleg` és l'`id` de la fitxa del
 `manifest.json` que té l'enllaç de Drive de la fitxa de l'alumnat: és l'únic lloc on hi ha
 l'enllaç, i la pàgina el llegeix de `manifest.json` en arrencar (si no pot, arrenca sense
-els botons de fitxa). Les sessions que encara no tenen enllaç de Drive porten `pdf: true` i
-obren `florence-pdf/<id>.pdf`; és el sistema antic i `valida-dades.js` les llista.
+els botons de fitxa). Fins a l'octubre del 2026 les fitxes eren al repositori, a
+`florence-pdf/<id>.pdf` (camp `pdf: true`); aquesta carpeta ja no existeix.
 Cada ítem CB: `{ id (numèric), desc, src ("2ESO"|"4ESO"), pes (1–3) }`.
 
 `ff2`/`ff3` són triples `[origen, destí, descripció]`; la descripció surt com a `title` del

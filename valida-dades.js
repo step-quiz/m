@@ -25,7 +25,7 @@
  *
  * QUAN EXECUTAR-LO
  *   Sempre que toquis el PAYLOAD, pipeline-data.js, repartiment-data.js,
- *   cb-img/ o florence-pdf/. En particular, cada juny (vegeu
+ *   cb-img/ o manifest.json. En particular, cada juny (vegeu
  *   ACTUALITZACIO-ANUAL.md), després d'incorporar l'edició CB de l'any i les
  *   sessions Florence noves.
  *
@@ -125,7 +125,6 @@ for (const curs of CURSOS) {
 const fitxers = d => { try { return fs.readdirSync(F(d)); } catch { return []; } };
 const targetes = new Set(fitxers('cb-img')
   .map(f => (f.match(/^CB(\d+)\.png$/) || [])[1]).filter(Boolean).map(Number));
-const pdfs = new Set(fitxers('florence-pdf').filter(f => f.endsWith('.pdf')).map(f => f.slice(0, -4)));
 
 /* ── 1. PAYLOAD ↔ imatges i PDF ─────────────────────────────────────── */
 
@@ -135,23 +134,16 @@ for (const id of targetes)
   if (!cbAlPayload.has(id)) avis(`cb-img/CB${id}.png no la referencia cap sessió`);
 
 /* Les fitxes són al Drive i l'únic enllaç és al catàleg: cada sessió i cada
-   activitat focus apunta a la seva fitxa de manifest.json (camp «cataleg»).
-   «pdf:true» (PDF a florence-pdf/) és el sistema antic, només per a les
-   sessions que encara esperen l'enllaç de Drive. */
+   activitat focus apunta a la seva fitxa de manifest.json (camp «cataleg»). */
 let cataleg = {};
 try { cataleg = Object.fromEntries(JSON.parse(llegeix('manifest.json')).files.map(f => [f.id, f])); }
 catch (e) { err(`manifest.json no es pot llegir: ${e.message}`); }
-const pendents = [];
 function fitxa(id, n, que) {
   if (n.cataleg) {
     const f = cataleg[n.cataleg];
     if (!f) err(`${id} apunta a una fitxa del catàleg que no existeix: «${n.cataleg}»`);
     else if (!f.drive_id) err(`${id}: la fitxa «${n.cataleg}» del catàleg no té drive_id`);
-    if (n.pdf) avis(`${id} té «cataleg» i també «pdf:true»: sobra el PDF local`);
-  } else if (n.pdf) {
-    pendents.push(id);
-    if (!pdfs.has(id)) err(`${id} declara pdf:true però no hi ha florence-pdf/${id}.pdf`);
-  } else avis(`${id} no té ${que}: sortirà sense el botó de la fitxa`);
+  } else avis(`${id} no té ${que} al catàleg (camp «cataleg»): sortirà sense el botó de la fitxa`);
 }
 for (const [sid, g] of Object.entries(sessions)) {
   const s = (PAYLOAD['d' + g] || []).find(x => x.id === sid);
@@ -159,10 +151,6 @@ for (const [sid, g] of Object.entries(sessions)) {
   if (!s.nucli) avis(`${sid} no té «nucli»: la fitxa quedarà sense la línia explicativa`);
 }
 for (const [fid, f] of Object.entries(focus)) fitxa(fid, f, 'fitxa docent');
-if (pendents.length)
-  avis(`${pendents.length} sessions encara obren el PDF local de florence-pdf/ (falta l'enllaç de Drive): ${pendents.join(', ')}`);
-for (const p of pdfs)
-  if (!pendents.includes(p)) avis(`florence-pdf/${p}.pdf no el fa servir ningú: la fitxa ja és al Drive`);
 // Dues fitxes Florence amb el mateix fitxer de Drive gairebé sempre és un error de còpia.
 const perDrive = {};
 for (const f of Object.values(cataleg))
@@ -298,7 +286,6 @@ for (const i of info) console.log('\n  nota: ' + i);
 console.log('\n── Xifres que apareixen escrites als .md ────────────────────');
 console.log(`  Targetes cb-img/            ${targetes.size}`);
 console.log(`  Ids CB referenciats         ${cbAlPayload.size}`);
-console.log(`  PDF que queden a florence-pdf/ ${pdfs.size}  (pendents d'enllaç de Drive)`);
 console.log(`  Sessions Florence           ${nSessions}  (grafs plens: ${grafsPlens.join(', ')})`);
 console.log(`  Activitats focus            ${Object.keys(focus).length}  (les proposen ${totFocus} continguts)`);
 console.log(`  Preguntes a cb-items.json   ${nItems}  (id més alt: ${maxItem})`);

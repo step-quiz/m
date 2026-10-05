@@ -1389,7 +1389,7 @@ function renderResults(filtered, opts = {}) {
       `<span class="pill pill-course">${escHtml(label(c))}</span>`).join('');
 
     const isLink = !!f.url;
-    // Un PDF amb URL pròpia (les activitats focus de florence-pdf/) es
+    // Un PDF amb URL pròpia (un PDF servit pel mateix web) es
     // previsualitza com els del Drive; les altres URL són les proves CB.
     const isPdfUrl = isLink && f.format === 'pdf';
     const openHref = isLink

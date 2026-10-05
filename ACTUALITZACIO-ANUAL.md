@@ -38,7 +38,7 @@ manera més ràpida de veure l'estat real del repositori sense fiar-te del que d
 | Banc CB | 2n ESO 2024–2026 · 4t ESO 2022–2026 · **84 blocs, 218 preguntes** (ids 1–218) |
 | Grafs Florence | 1r ESO (1 sessió) · 2n ESO (11 sessions) · 3r ESO (11 sessions) · 4t ESO (1 sessió) |
 | Targetes `cb-img/` | 169 (`CB1.png … CB218.png`) |
-| Fitxes de Florence | Al Drive, enllaçades des del catàleg. A `florence-pdf/` només en queden 2, pendents d'enllaç |
+| Fitxes de Florence | Totes al Drive, enllaçades des del catàleg (no n'hi ha cap al repositori) |
 | Activitats focus | 12, totes del bloc I1 · les proposen 25 continguts |
 | Pont `pipeline-data.js` | 49 fils · 233 dels 251 continguts (2n 80/80 · 3r 48/49 · 1r 54/62 · 4t 51/60) |
 
