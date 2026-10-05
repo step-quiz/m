@@ -344,22 +344,6 @@
       "type": "dossier"
     },
     {
-      "title": "Desenvolupament pla de cossos geomètrics",
-      "id": "desenvolupament-pla-de-cossos-geometrics",
-      "drive_id": "1CUd5CKph1V1A156qR2RVUGmaZ2iomowI",
-      "format": "pdf",
-      "origin": "florence",
-      "courses": [
-        "ESO"
-      ],
-      "math_sense": "espacial",
-      "activities": [
-        "figures-planes",
-        "cossos-geometrics"
-      ],
-      "type": "dossier"
-    },
-    {
       "title": "Potencies i arrels",
       "id": "potencies-i-arrels",
       "drive_id": "1oUImZr-o5ytNxO9l6erBvOKoWxb4FH_b",

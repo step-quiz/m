@@ -61,7 +61,7 @@ Les dades viuen en cinc contractes separats:
     { "label": "Àlgebra",     "items": [ … ] },
     … (8 blocs en total)
   ],
-  "files": [ /* 150 entrades, vegeu sota */ ]
+  "files": [ /* 149 entrades, vegeu sota */ ]
 }
 ```
 
@@ -84,10 +84,10 @@ Les dades viuen en cinc contractes separats:
 }
 ```
 
-Freqüència real dels camps (sobre 150 fitxes): `title`/`id`/`format`/`origin`/`courses`/`type`
-a totes; `drive_id` 144; `math_sense` 144; `activities` 144; `notes` 94; `year` 30; `url` 6.
-Les 144 amb `drive_id` i les 6 amb `url` no se solapen, tal com demana la regla «cal `drive_id`
-O `url`». Distribució de format: **pdf 131 · doc 13 · web 6**.
+Freqüència real dels camps (sobre 149 fitxes): `title`/`id`/`format`/`origin`/`courses`/`type`
+a totes; `drive_id` 143; `math_sense` 143; `activities` 143; `notes` 94; `year` 30; `url` 6.
+Les 143 amb `drive_id` i les 6 amb `url` no se solapen, tal com demana la regla «cal `drive_id`
+O `url`». Distribució de format: **pdf 130 · doc 13 · web 6**.
 
 Les 6 amb `url` són les proves CB (`format: "web"`, a `cb.step-quiz.net`). Totes les fitxes de
 Florence, també les activitats focus (`type: "focus"`), són al Drive (`drive_id`).
@@ -582,5 +582,5 @@ abans d'un commit.
   `manifest.json` nou que cal pujar a mà. Per tant l'eina no pot corrompre el catàleg en
   producció. La validació bloqueja la descàrrega davant d'errors estructurals (IDs duplicats,
   valors fora de vocabulari) i un avís `beforeunload` evita perdre canvis a mig fer.
-- **Rendiment:** el càlcul dels filtres és O(grups × fitxers × valors) per render; amb 150
+- **Rendiment:** el càlcul dels filtres és O(grups × fitxers × valors) per render; amb 149
   fitxes és instantani. Cap problema a aquesta escala.
