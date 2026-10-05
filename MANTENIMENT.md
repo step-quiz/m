@@ -113,10 +113,13 @@ l'octubre del 2026, amb una sessió cadascun. Afegir-ne més no demana tocar cod
   recomana un CB del qual no hi ha el PNG, la previsualització/baixada d'aquella entrada
   falla. Ara hi ha totes les 169 imatges referenciades (`CB1.png … CB218.png`), sense cap
   pendent. Per generar-ne de noves: `make_cb_card.py <ids>`, amb el projecte CB al costat.
-- **Activitats focus al catàleg:** no són al Drive. La seva fitxa té el tipus «Activitat focus»
-  i `url: "florence-pdf/FO_….pdf"`, el mateix PDF que fa servir `florence-cb.html`. El cercador
-  les previsualitza com les del Drive. Si se substitueix el PDF, no cal tocar el catàleg; si
-  s'esborra, cal treure'n també la fitxa del `manifest.json` i l'entrada del `PAYLOAD`.
+- **Fitxes de Florence: només al Drive.** Les fitxes de l'alumnat de les sessions i les
+  fitxes docents de les activitats focus (tipus «Activitat focus») són al Drive, i l'enllaç
+  només és al catàleg. `florence-cb.html` el llegeix d'allà (camp `cataleg` de cada sessió).
+  Per substituir una fitxa, puja la nova versió al Drive amb «Gestiona les versions» (manté
+  l'enllaç) o canvia el `drive_id` al catàleg: no cal tocar res més. Si n'esborres una, treu-ne
+  també la fitxa del `manifest.json` i l'entrada del `PAYLOAD`. Els fitxers han de tenir el
+  permís «Qualsevol persona amb l'enllaç pot veure».
 - **Llibreries:** algunes pàgines les carreguen de `cdnjs.cloudflare.com`. Si algun dia cdnjs
   no és accessible, `eliminar-curs.html` (pdf.js, pdf-lib, jszip) i `extreu-json.html`
   (mammoth) deixarien de funcionar. `banc-cb.html` ja porta `pdf-lib` en local i no en depèn.

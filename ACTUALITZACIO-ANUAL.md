@@ -38,7 +38,7 @@ manera més ràpida de veure l'estat real del repositori sense fiar-te del que d
 | Banc CB | 2n ESO 2024–2026 · 4t ESO 2022–2026 · **84 blocs, 218 preguntes** (ids 1–218) |
 | Grafs Florence | 1r ESO (1 sessió) · 2n ESO (11 sessions) · 3r ESO (11 sessions) · 4t ESO (1 sessió) |
 | Targetes `cb-img/` | 169 (`CB1.png … CB218.png`) |
-| Fitxes `florence-pdf/` | 36: 24 fitxes d'alumnat de sessions i 12 fitxes docents d'activitats focus |
+| Fitxes de Florence | Al Drive, enllaçades des del catàleg. A `florence-pdf/` només en queden 2, pendents d'enllaç |
 | Activitats focus | 12, totes del bloc I1 · les proposen 25 continguts |
 | Pont `pipeline-data.js` | 49 fils · 233 dels 251 continguts (2n 80/80 · 3r 48/49 · 1r 54/62 · 4t 51/60) |
 
@@ -158,11 +158,11 @@ document d'«Activitats focus». L'octubre del 2026 es va incorporar així:
 
 | Fitxer de la carpeta | On va |
 |---|---|
-| Fitxa alumnat (PDF) | `florence-pdf/F_<curs>ESO_S<nn>.pdf`. El número surt del títol intern del document (`ESO4_S01_Fitxa docent…` → `F_4ESO_S01`). |
+| Fitxa alumnat (PDF) | Al Drive, amb fitxa al catàleg; la sessió `F_<curs>ESO_S<nn>` hi apunta amb `cataleg`. El número surt del títol intern del document (`ESO4_S01_Fitxa docent…` → `F_4ESO_S01`). |
 | Fitxa docent, Fitxa Centre, Presentació, Recurs imprimible | No van al repositori. Si el departament les vol a mà, al Drive i al catàleg (`manifest.json`, origen `florence`), com les versions «pautada» o «adaptada» de 2n i 3r. |
 | Pauta d'observació, Anàlisi de la sessió, observacions omplertes | No s'han publicat: són documents de seguiment del programa. |
 | Material complementari (SVG, Beam Studio) | Fitxers per tallar peces amb làser. No es publiquen aquí. |
-| Activitats focus (DOCX) | Un PDF per activitat a `florence-pdf/FO_<curs>ESO_<nn>.pdf`, fet amb `divideix_focus.py`; entrada a `PAYLOAD.focus`, als fils i al catàleg (vegeu «Donar d'alta activitats focus»). |
+| Activitats focus (DOCX) | Un PDF per activitat fet amb `divideix_focus.py` i pujat al Drive; entrada a `PAYLOAD.focus`, als fils i al catàleg (vegeu «Donar d'alta activitats focus»). |
 
 Les preguntes CB es van triar entre les que ja tenien targeta i, per a «Qui té la raó?», se
 n'hi van generar tres de noves: `CB9` i `CB10` (l'escala i la rampa del mercat, 4t del
@@ -181,7 +181,8 @@ no porta el bloc (`extra1…`), cal posar `bloc: "I1"` a mà a la proposta.
    DOCX i un PDF per activitat, amb els ids que continuen la numeració de cada curs
    (`FO_1ESO_05`…), i un `payload-focus.json` amb les entrades proposades. Comprova que cada
    PDF comença pel títol de la seva activitat i que no en falta cap pàgina.
-2. **Copia els PDF** a `florence-pdf/`, i esborra la carpeta `focus-nou/` (no s'ha de pujar).
+2. **Puja els PDF al Drive** amb el permís «Qualsevol persona amb l'enllaç pot veure», i
+   esborra la carpeta `focus-nou/` (no s'ha de pujar al repositori).
 3. **Afegeix les entrades a `PAYLOAD.focus`** de `florence-cb.html`. El camp `conflicte` és la
    frase de l'apartat «Conflicte/Error focalitzat»: el guió la proposa, però revisa-la perquè
    s'entengui sola (surt a la targeta com «Error que ataca»).
@@ -189,10 +190,11 @@ no porta el bloc (`extra1…`), cal posar `bloc: "I1"` a mà a la proposta.
    treballa: `percentatges`, `percentatge-variacio`, `area-escala`, `semblanca`… Així surt a
    tots els continguts que toquen aquell fil. Si la idea no té fil, crea'l (secció «Eix
    repartiment»).
-5. **Dona-les d'alta al catàleg** (`manifest.json`) amb `type: "focus"`, `format: "pdf"` i
-   `url: "florence-pdf/<id>.pdf"`: no cal pujar-les al Drive. El títol porta «(activitat
+5. **Dona-les d'alta al catàleg** (`manifest.json`) amb `type: "focus"`, `format: "pdf"` i el
+   `drive_id` del PDF pujat, amb l'`id` que proposa el guió al camp `cataleg`. El títol porta «(activitat
    focus)» al darrere i les `notes`, l'error que ataca (així també es troben cercant).
-6. Executa `node valida-dades.js`: avisa si una activitat no té PDF o si no és a cap fil.
+6. Executa `node valida-dades.js`: avisa si una activitat no té fitxa al catàleg o si no és
+   a cap fil.
 
 ### Donar d'alta una sessió
 
@@ -200,7 +202,7 @@ no porta el bloc (`extra1…`), cal posar `bloc: "I1"` a mà a la proposta.
 {
   "id":    "F_1ESO_S01",        // F_<curs>ESO_S<nn>; ha de coincidir amb el PDF
   "titol": "Títol de la sessió",
-  "pdf":   true,                 // hi ha florence-pdf/F_1ESO_S01.pdf?
+  "cataleg": "fl-1eso-s01-sanefes",  // fitxa del catàleg amb l'enllaç de Drive
   "nucli": "continguts que treballa, en una línia",
   "cb": [
     { "id": 158, "desc": "què mobilitza aquesta pregunta", "src": "4ESO", "pes": 3 }
@@ -249,7 +251,7 @@ L'error mitjà és de 0,2 sobre 255 i el pes baixa un 60 %.
 - Cap `src` contradiu el `nivell` real de la pregunta a `preguntes.json`.
 - Cap sessió repeteix el mateix id CB.
 - Les llistes `cb` estan ordenades per pes descendent.
-- Cada sessió amb `"pdf": true` té el seu fitxer a `florence-pdf/`.
+- Cada sessió apunta (`cataleg`) a una fitxa del catàleg amb `drive_id`.
 - **Afegeix les sessions noves als fils de `pipeline-data.js`** (secció següent). Sense
   això, les sessions surten a l'entrada «Per sessió Florence» però no a «Per contingut».
 - Executa `node valida-dades.js` i resol-ne els errors.
@@ -350,7 +352,7 @@ nova per copiar-la als `.md`.
 | `genera_cb_items.py` | Refà `cb-items.json` a partir de `preguntes.json` de `cb-main` |
 | `make_cb_card.py` | Compon les targetes `cb-img/CB<id>.png` de `florence-cb.html` |
 | `divideix_focus.py` | Divideix el DOCX d'«Activitats focus» d'un bloc en un DOCX i un PDF per activitat |
-| `valida-dades.js` | Comprova la coherència entre el `PAYLOAD`, `pipeline-data.js`, `repartiment-data.js`, `cb-img/`, `florence-pdf/` i `cb-items.json`, i imprimeix les xifres dels `.md` |
+| `valida-dades.js` | Comprova la coherència entre el `PAYLOAD`, `pipeline-data.js`, `repartiment-data.js`, `manifest.json`, `cb-img/` i `cb-items.json`, i imprimeix les xifres dels `.md` |
 
 Els tres primers necessiten Python 3; dos d'ells, també Pillow, i `retalla_cb.py` a més
 `pdfplumber` i les eines de `poppler` (`pdftoppm`). `divideix_focus.py` necessita Python 3,
