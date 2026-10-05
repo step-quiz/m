@@ -14,7 +14,7 @@
  *   correspondre entre ells, i les relacions no són evidents:
  *
  *     florence-cb.html (PAYLOAD) ──┬─→ cb-img/CB<id>.png      (cada id, una targeta)
- *                                  └─→ florence-pdf/<id>.pdf  (cada sessió o activitat focus amb pdf:true)
+ *                                  └─→ manifest.json          (camp «cataleg»: la fitxa al Drive)
  *     pipeline-data.js ────────────┬─→ PAYLOAD                (sessions, activitats focus i ids CB)
  *                                  └─→ repartiment-data.js    (cursos, temes, posicions)
  *
@@ -25,7 +25,7 @@
  *
  * QUAN EXECUTAR-LO
  *   Sempre que toquis el PAYLOAD, pipeline-data.js, repartiment-data.js,
- *   cb-img/ o florence-pdf/. En particular, cada juny (vegeu
+ *   cb-img/ o manifest.json. En particular, cada juny (vegeu
  *   ACTUALITZACIO-ANUAL.md), després d'incorporar l'edició CB de l'any i les
  *   sessions Florence noves.
  *
@@ -125,7 +125,6 @@ for (const curs of CURSOS) {
 const fitxers = d => { try { return fs.readdirSync(F(d)); } catch { return []; } };
 const targetes = new Set(fitxers('cb-img')
   .map(f => (f.match(/^CB(\d+)\.png$/) || [])[1]).filter(Boolean).map(Number));
-const pdfs = new Set(fitxers('florence-pdf').filter(f => f.endsWith('.pdf')).map(f => f.slice(0, -4)));
 
 /* ── 1. PAYLOAD ↔ imatges i PDF ─────────────────────────────────────── */
 
@@ -134,18 +133,30 @@ for (const id of cbAlPayload)
 for (const id of targetes)
   if (!cbAlPayload.has(id)) avis(`cb-img/CB${id}.png no la referencia cap sessió`);
 
+/* Les fitxes són al Drive i l'únic enllaç és al catàleg: cada sessió i cada
+   activitat focus apunta a la seva fitxa de manifest.json (camp «cataleg»). */
+let cataleg = {};
+try { cataleg = Object.fromEntries(JSON.parse(llegeix('manifest.json')).files.map(f => [f.id, f])); }
+catch (e) { err(`manifest.json no es pot llegir: ${e.message}`); }
+function fitxa(id, n, que) {
+  if (n.cataleg) {
+    const f = cataleg[n.cataleg];
+    if (!f) err(`${id} apunta a una fitxa del catàleg que no existeix: «${n.cataleg}»`);
+    else if (!f.drive_id) err(`${id}: la fitxa «${n.cataleg}» del catàleg no té drive_id`);
+  } else avis(`${id} no té ${que} al catàleg (camp «cataleg»): sortirà sense el botó de la fitxa`);
+}
 for (const [sid, g] of Object.entries(sessions)) {
   const s = (PAYLOAD['d' + g] || []).find(x => x.id === sid);
-  if (s.pdf && !pdfs.has(sid)) err(`${sid} declara pdf:true però no hi ha florence-pdf/${sid}.pdf`);
-  if (!s.pdf && pdfs.has(sid)) avis(`Hi ha florence-pdf/${sid}.pdf però la sessió diu pdf:false`);
+  fitxa(sid, s, "fitxa de l'alumnat");
   if (!s.nucli) avis(`${sid} no té «nucli»: la fitxa quedarà sense la línia explicativa`);
 }
-for (const [fid, f] of Object.entries(focus)) {
-  if (f.pdf && !pdfs.has(fid)) err(`${fid} declara pdf:true però no hi ha florence-pdf/${fid}.pdf`);
-  if (!f.pdf && pdfs.has(fid)) avis(`Hi ha florence-pdf/${fid}.pdf però l'activitat focus diu pdf:false`);
-}
-for (const p of pdfs)
-  if (!sessions[p] && !focus[p]) avis(`florence-pdf/${p}.pdf no correspon a cap sessió ni activitat focus del PAYLOAD`);
+for (const [fid, f] of Object.entries(focus)) fitxa(fid, f, 'fitxa docent');
+// Dues fitxes Florence amb el mateix fitxer de Drive gairebé sempre és un error de còpia.
+const perDrive = {};
+for (const f of Object.values(cataleg))
+  if (f.origin === 'florence' && f.drive_id) (perDrive[f.drive_id] = perDrive[f.drive_id] || []).push(f.id);
+for (const ids of Object.values(perDrive))
+  if (ids.length > 1) avis(`Fitxes Florence del catàleg amb el mateix fitxer de Drive: ${ids.join(', ')}`);
 
 /* ── 2. Relacions ff<n> ─────────────────────────────────────────────── */
 
@@ -275,7 +286,6 @@ for (const i of info) console.log('\n  nota: ' + i);
 console.log('\n── Xifres que apareixen escrites als .md ────────────────────');
 console.log(`  Targetes cb-img/            ${targetes.size}`);
 console.log(`  Ids CB referenciats         ${cbAlPayload.size}`);
-console.log(`  Fitxes florence-pdf/        ${pdfs.size}`);
 console.log(`  Sessions Florence           ${nSessions}  (grafs plens: ${grafsPlens.join(', ')})`);
 console.log(`  Activitats focus            ${Object.keys(focus).length}  (les proposen ${totFocus} continguts)`);
 console.log(`  Preguntes a cb-items.json   ${nItems}  (id més alt: ${maxItem})`);

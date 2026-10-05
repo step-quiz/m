@@ -61,7 +61,7 @@ Les dades viuen en cinc contractes separats:
     { "label": "Àlgebra",     "items": [ … ] },
     … (8 blocs en total)
   ],
-  "files": [ /* 149 entrades, vegeu sota */ ]
+  "files": [ /* 150 entrades, vegeu sota */ ]
 }
 ```
 
@@ -84,15 +84,13 @@ Les dades viuen en cinc contractes separats:
 }
 ```
 
-Freqüència real dels camps (sobre 149 fitxes): `title`/`id`/`format`/`origin`/`courses`/`type`
-a totes; `drive_id` 131; `math_sense` 143; `activities` 143; `notes` 94; `year` 30; `url` 18.
-Les 131 amb `drive_id` i les 18 amb `url` no se solapen, tal com demana la regla «cal `drive_id`
-O `url`». Distribució de format: **pdf 130 · doc 13 · web 6**.
+Freqüència real dels camps (sobre 150 fitxes): `title`/`id`/`format`/`origin`/`courses`/`type`
+a totes; `drive_id` 144; `math_sense` 144; `activities` 144; `notes` 94; `year` 30; `url` 6.
+Les 144 amb `drive_id` i les 6 amb `url` no se solapen, tal com demana la regla «cal `drive_id`
+O `url`». Distribució de format: **pdf 131 · doc 13 · web 6**.
 
-Les 18 amb `url` són de dos tipus: les 6 proves CB (`format: "web"`, a `cb.step-quiz.net`) i
-les 12 activitats focus de Florence (`format: "pdf"`, `type: "focus"`), que no són al Drive:
-el seu `url` és relatiu, `florence-pdf/FO_<curs>ESO_<nn>.pdf`, el mateix PDF que fa servir
-`florence-cb.html`.
+Les 6 amb `url` són les proves CB (`format: "web"`, a `cb.step-quiz.net`). Totes les fitxes de
+Florence, també les activitats focus (`type: "focus"`), són al Drive (`drive_id`).
 
 Com es construeix l'enllaç d'obertura (a `index.html`):
 - `url` amb `format: "pdf"` → s'obre l'`url` i també es pot previsualitzar a l'iframe lateral
@@ -195,8 +193,11 @@ dades tenen nom propi: el graf de la sessió surt com a «Pensada per a 3r d'ESO
 no coincideix) i el camp `src` de cada CB surt com a «Prova de 2n» / «Prova de 4t». El `pes`
 surt com a «Molt relacionada / Relacionada / Relació parcial» amb punts, no amb colors.
 
-Cada sessió: `{ id, titol, pdf, nucli, cb[] }`; `pdf` diu si hi ha
-`florence-pdf/<id>.pdf` (abans era el conjunt `FPDF`, una llista paral·lela d'ids).
+Cada sessió: `{ id, titol, cataleg, nucli, cb[] }`. `cataleg` és l'`id` de la fitxa del
+`manifest.json` que té l'enllaç de Drive de la fitxa de l'alumnat: és l'únic lloc on hi ha
+l'enllaç, i la pàgina el llegeix de `manifest.json` en arrencar (si no pot, arrenca sense
+els botons de fitxa). Fins a l'octubre del 2026 les fitxes eren al repositori, a
+`florence-pdf/<id>.pdf` (camp `pdf: true`); aquesta carpeta ja no existeix.
 Cada ítem CB: `{ id (numèric), desc, src ("2ESO"|"4ESO"), pes (1–3) }`.
 
 `ff2`/`ff3` són triples `[origen, destí, descripció]`; la descripció surt com a `title` del
@@ -224,11 +225,11 @@ passos es renumeren.
 
 ```jsonc
 {
-  "id":        "FO_4ESO_01",            // FO_<curs>ESO_<nn>; = florence-pdf/<id>.pdf
+  "id":        "FO_4ESO_01",            // FO_<curs>ESO_<nn>
   "titol":     "El dia sense IVA",
   "curs":      "4ESO",                  // per a qui es va pensar («Pensada per a…»)
   "bloc":      "I1",                    // bloc de Florence d'on surt
-  "pdf":       true,
+  "cataleg":   "fl-focus-4eso-01-el-dia-sense-iva",  // fitxa del catàleg (Drive)
   "conflicte": "Pensar que una reducció… desfà un augment previ del mateix percentatge."
 }
 ```
@@ -581,5 +582,5 @@ abans d'un commit.
   `manifest.json` nou que cal pujar a mà. Per tant l'eina no pot corrompre el catàleg en
   producció. La validació bloqueja la descàrrega davant d'errors estructurals (IDs duplicats,
   valors fora de vocabulari) i un avís `beforeunload` evita perdre canvis a mig fer.
-- **Rendiment:** el càlcul dels filtres és O(grups × fitxers × valors) per render; amb 149
+- **Rendiment:** el càlcul dels filtres és O(grups × fitxers × valors) per render; amb 150
   fitxes és instantani. Cap problema a aquesta escala.

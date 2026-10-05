@@ -1,6 +1,6 @@
 {
   "version": 4,
-  "generated": "2026-10-02",
+  "generated": "2026-10-05",
   "folder_url": "https://drive.google.com/drive/folders/1WjqddjN3uQhO7zUXzRKwDmBia6jqCUdy",
   "vocabulary": {
     "origin": [
@@ -1145,7 +1145,7 @@
     {
       "title": "Podem construir-ho",
       "id": "fl-2eso-s02-podem-construir-ho",
-      "drive_id": "1Srxqw1t9lKaxIYC-_kWVAM5mh_BIW-zX",
+      "drive_id": "1CUd5CKph1V1A156qR2RVUGmaZ2iomowI",
       "format": "pdf",
       "origin": "florence",
       "courses": [
@@ -1424,7 +1424,7 @@
     {
       "title": "Fake news. Es poden menjar els peixos dels nostres llacs?",
       "id": "fl-3eso-s06-fake-news-peixos-llacs",
-      "drive_id": "1WmdTHsjjttEG9fCDLKetgLn8Ps9dHgMZ",
+      "drive_id": "16Zwyo3Yt85cydOjW-YhM-HkmrDuFxbBW",
       "format": "pdf",
       "origin": "florence",
       "courses": [
@@ -1521,6 +1521,22 @@
       "type": "exercici"
     },
     {
+      "title": "Parabolitza't",
+      "id": "fl-3eso-s10-parabolitzat",
+      "drive_id": "1UdXGTkjwKXSVfrEp52BjZ8N7JaHVMwcO",
+      "format": "pdf",
+      "origin": "florence",
+      "courses": [
+        "3ESO"
+      ],
+      "math_sense": "algebraic",
+      "activities": [
+        "funcio-quadratica",
+        "concepte-funcio"
+      ],
+      "type": "exercici"
+    },
+    {
       "title": "Daus intransitius",
       "id": "fl-3eso-s11-daus-intransitius",
       "drive_id": "12kPu3oVHtLQIpXg7yQ25Muj7CjvmSHQ6",
@@ -1572,7 +1588,7 @@
     {
       "title": "La motxilla (activitat focus)",
       "id": "fl-focus-1eso-01-la-motxilla",
-      "url": "florence-pdf/FO_1ESO_01.pdf",
+      "drive_id": "1VmLmqH9H6euRLR5AtG2ZNYbAlcdy7fwN",
       "format": "pdf",
       "origin": "florence",
       "courses": [
@@ -1588,7 +1604,7 @@
     {
       "title": "Una classe molt esportiva (activitat focus)",
       "id": "fl-focus-1eso-02-classe-esportiva",
-      "url": "florence-pdf/FO_1ESO_02.pdf",
+      "drive_id": "1OYipfZmJhBmaQEn7kJOO3hIL4jo2HNg9",
       "format": "pdf",
       "origin": "florence",
       "courses": [
@@ -1604,7 +1620,7 @@
     {
       "title": "Els preus varien (activitat focus)",
       "id": "fl-focus-1eso-03-els-preus-varien",
-      "url": "florence-pdf/FO_1ESO_03.pdf",
+      "drive_id": "1UYX3tuk1WyWo3MfNdaVSiae2_a-uoe91",
       "format": "pdf",
       "origin": "florence",
       "courses": [
@@ -1620,7 +1636,7 @@
     {
       "title": "La sabateria (activitat focus)",
       "id": "fl-focus-1eso-04-la-sabateria",
-      "url": "florence-pdf/FO_1ESO_04.pdf",
+      "drive_id": "1dBt7Rz3kg4QK1AYQ_NLTu2eYjGfaRvzW",
       "format": "pdf",
       "origin": "florence",
       "courses": [
@@ -1637,7 +1653,7 @@
     {
       "title": "El suc de taronja (activitat focus)",
       "id": "fl-focus-1eso-05-el-suc-de-taronja",
-      "url": "florence-pdf/FO_1ESO_05.pdf",
+      "drive_id": "1gyHPqv3Z4IhszMkbyyBWmW-5bFyieYu0",
       "format": "pdf",
       "origin": "florence",
       "courses": [
@@ -1653,7 +1669,7 @@
     {
       "title": "La cinta elàstica (activitat focus)",
       "id": "fl-focus-1eso-06-la-cinta-elastica",
-      "url": "florence-pdf/FO_1ESO_06.pdf",
+      "drive_id": "1xpruVpwR1lEkFBPOvuUB-mGN-vfwzn-5",
       "format": "pdf",
       "origin": "florence",
       "courses": [
@@ -1669,7 +1685,7 @@
     {
       "title": "La foto (activitat focus)",
       "id": "fl-focus-2eso-01-la-foto",
-      "url": "florence-pdf/FO_2ESO_01.pdf",
+      "drive_id": "1g4JU022hsLszAOCi_Uco5s25dcNO4k5n",
       "format": "pdf",
       "origin": "florence",
       "courses": [
@@ -1686,7 +1702,7 @@
     {
       "title": "L'edifici (activitat focus)",
       "id": "fl-focus-2eso-02-l-edifici",
-      "url": "florence-pdf/FO_2ESO_02.pdf",
+      "drive_id": "1v6Zn6A8QDrgBnllb-daKnYXw0ftgUVWt",
       "format": "pdf",
       "origin": "florence",
       "courses": [
@@ -1703,7 +1719,7 @@
     {
       "title": "El logo (activitat focus)",
       "id": "fl-focus-2eso-03-el-logo",
-      "url": "florence-pdf/FO_2ESO_03.pdf",
+      "drive_id": "1h82WKkwZLQuwBZ32oxoOM3k7FnGxVdiU",
       "format": "pdf",
       "origin": "florence",
       "courses": [
@@ -1720,7 +1736,7 @@
     {
       "title": "Comparem triangles I (activitat focus)",
       "id": "fl-focus-3eso-01-comparem-triangles-1",
-      "url": "florence-pdf/FO_3ESO_01.pdf",
+      "drive_id": "1rrMD73KrSWnu3F4ZukIa-sPSHMtQTOBU",
       "format": "pdf",
       "origin": "florence",
       "courses": [
@@ -1736,7 +1752,7 @@
     {
       "title": "Comparem triangles II (activitat focus)",
       "id": "fl-focus-3eso-02-comparem-triangles-2",
-      "url": "florence-pdf/FO_3ESO_02.pdf",
+      "drive_id": "1ijCLC6dfegdwxt6mxl9YtDTl-NMJZqYn",
       "format": "pdf",
       "origin": "florence",
       "courses": [
@@ -1752,7 +1768,7 @@
     {
       "title": "El dia sense IVA (activitat focus)",
       "id": "fl-focus-4eso-01-el-dia-sense-iva",
-      "url": "florence-pdf/FO_4ESO_01.pdf",
+      "drive_id": "1VlcEmKd8deGohn7KEuGq7PjeQqhP9nlQ",
       "format": "pdf",
       "origin": "florence",
       "courses": [
