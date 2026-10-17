@@ -1,6 +1,6 @@
 /* common.js — Utilitats compartides
- * Carregat per index.html, afegir-material.html, banc-cb.html,
- * eliminar-curs.html i extreu-json.html amb <script src="common.js">.
+ * Carregat per index.html, repartiment.html, banc-cb.html i
+ * eliminar-curs.html amb <script src="common.js">.
  * Cap dependència externa; no requereix pas de compilació.
  */
 

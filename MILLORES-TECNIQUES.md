@@ -40,7 +40,7 @@ afegeix una línia al **Registre de canvis** i —si la millora resol un punt de
 | B3 | Centralitzar codi compartit en `common.js` | Mitjana | M | En curs (parcial) |
 | B4 | Treure el codi mort de `saveModal()` | Baixa | S | Fet |
 | B5 | Homogeneïtzar `florence-cb.html` (sense `onclick` en línia) | Baixa | M | Fet |
-| C1 | Servir totes les llibreries en local (treure cdnjs) | Mitjana | S–M | Pendent |
+| C1 | Servir totes les llibreries en local (treure cdnjs) | Mitjana | S–M | En curs (parcial) |
 | C2 | Allotjar en local les imatges del banc CB | Mitjana | M | Pendent |
 | D1 | Actualitzar la documentació desfasada | Alta | S | Fet |
 | E1 | Botó «comparteix aquesta cerca» (`index.html`) | Mitjana | S | Pendent |
@@ -167,8 +167,11 @@ afegeix una línia al **Registre de canvis** i —si la millora resol un punt de
 ## C. Resiliència i dependències externes
 
 ### C1 — Servir totes les llibreries en local
-- [ ] **Estat:** Pendent · **Prioritat:** Mitjana · **Esforç:** S–M
-- **Fitxers:** `eliminar-curs.html` (pdf.js, pdf-lib, jszip des de cdnjs), `extreu-json.html` (mammoth des de cdnjs); ja existeix `lib/pdf-lib.min.js`
+- [ ] **Estat:** En curs (parcial) · **Prioritat:** Mitjana · **Esforç:** S–M
+- **Fet:** `eliminar-curs.html` ja carrega pdf.js, pdf-lib i jszip de `lib/`. **Falta:** `extreu-json.html`
+  encara carrega mammoth de cdnjs, tot i que `lib/mammoth.browser.min.js` ja és al repositori: només cal
+  canviar-ne el `<script src>`.
+- **Fitxers (originals):** `eliminar-curs.html` (pdf.js, pdf-lib, jszip des de cdnjs), `extreu-json.html` (mammoth des de cdnjs); ja existeix `lib/pdf-lib.min.js`
 - **Problema:** Càrrega incoherent (§6.4): unes pàgines depenen de `cdnjs.cloudflare.com` en
   execució. Si el tallafocs de l'institut el bloqueja o cdnjs cau, aquelles pàgines deixen de
   funcionar. A més, `eliminar-curs.html` torna a baixar `pdf-lib` de cdnjs tot i tenir-lo al repo.

@@ -393,9 +393,9 @@ La clau de cada tema és `"<sentit>/<tema.id>"`.
 | `index.html` | cap | `fetch('manifest.json')`; iframes de Google Drive a la previsualització (o del PDF local, a les activitats focus) |
 | `repartiment.html` | cap | `fetch('manifest.json')` per a les icones de material (opcional: si falla, no en surt cap); dades via `repartiment-data.js` i `pipeline-data.js` locals |
 | `afegir-material.html` | cap | `fetch('manifest.json')`; descàrrega del `manifest.json` editat |
-| `extreu-json.html` | **mammoth 1.8.0** (cdnjs) | `fetch('manifest.json')` per sincronitzar vocabulari; **Gemini API** (clau de l'usuari) |
+| `extreu-json.html` | **mammoth 1.8.0** (cdnjs; la còpia de `lib/` no es fa servir) | `fetch('manifest.json')` per sincronitzar vocabulari; **Gemini API** (clau de l'usuari) |
 | `banc-cb.html` | **pdf-lib (local, `lib/`)** | `fetch('cb-items.json')`; imatges de `cb.step-quiz.net` (CORS) |
-| `eliminar-curs.html` | **pdf.js 3.11.174 + pdf-lib 1.17.1 + jszip 3.10.1** (cdnjs) | cap (tot el processament és al navegador) |
+| `eliminar-curs.html` | **pdf.js + pdf-lib + jszip (locals, `lib/`)** | cap (tot el processament és al navegador) |
 | `florence-cb.html` | cap | imatges locals `cb-img/`; `repartiment-data.js` i `pipeline-data.js` per `<script src>`; enllaços a `cb.step-quiz.net` |
 | `examen-recuperacio.html` | **jszip (local, `lib/`)** | `fetch('recuperacio-items.json')`; imatges locals `recuperacio-img/` |
 | `alimentar-banc.html` | **jszip (local, `lib/`)** | **Gemini API** (clau de l'usuari): `models` (llistar) + `generateContent` (detecció) |
@@ -407,7 +407,6 @@ Hosts externs que apareixen al codi: `drive.google.com`, `docs.google.com`,
 `localStorage`:
 - `material:recents` (`index.html`) — array `{id, ts}`, màxim 10 documents oberts recentment.
 - `material:uiMode` (`index.html`) — `"basic"` o `"advanced"`.
-- `dept-auth-token` (`auth.js`) — objecte de sessió `{expires}` (vegeu §4c).
 
 La clau de Gemini (`extreu-json.html` i `alimentar-banc.html`) s'introdueix a cada sessió i
 **no es desa** enlloc; s'envia directament a `generativelanguage.googleapis.com`. No queda
@@ -416,72 +415,16 @@ clau; convé restringir-la a l'API de Gemini a la consola de Google.
 
 ---
 
-## 4c. Autenticació per contrasenya: `auth.js`
+## 4c. Autenticació per contrasenya (desactivada)
 
-`auth.js` protegeix `repartiment.html` mostrant una pantalla de
-contrasenya mentre no hi hagi una sessió vàlida al navegador.
+`repartiment.html` estava protegit per contrasenya amb un `auth.js` (hash SHA-256 a
+`AUTH_HASH`, sessió de 30 dies a `localStorage` amb la clau `dept-auth-token` i un fragment
+«anti-flash» al `<head>`). **Ara està desactivada:** `auth.js` ja no és al repositori, el
+fragment del `<head>` s'ha tret i a `repartiment.html` només en queda la línia comentada
+`<!-- <script src="auth.js"></script> -->`. La pàgina és pública.
 
-### Mecanisme
-
-La contrasenya **no s'emmagatzema en clar**. `auth.js` conté una constant `AUTH_HASH` amb
-el seu hash SHA-256. Quan l'usuari introdueix la contrasenya, es calcula el hash al navegador
-mitjançant l'API nativa `crypto.subtle.digest` (sense cap llibreria externa) i es compara
-amb `AUTH_HASH`. Si coincideix, s'emmagatzema un token de sessió a `localStorage`:
-
-```js
-// Clau: 'dept-auth-token'
-{ expires: <timestamp ms> }  // Date.now() + 30 dies
-```
-
-En visites posteriors, el token es comprova sincrònament al `<head>` (snippet anti-flash)
-i al cos del IIFE. Si és vàlid, la porta no es mostra mai.
-
-### Canviar la contrasenya
-
-1. Obriu qualsevol pàgina del projecte al navegador.
-2. Obriu la consola (`F12` → *Console*) i executeu:
-   ```
-   authHash('nova-contrasenya').then(console.log)
-   ```
-   (`authHash` és una funció global que `auth.js` exposa expressament per a aquest ús.)
-3. Copieu el hash de 64 caràcters resultant.
-4. Obriu `auth.js`, localitzeu la constant `AUTH_HASH` (~línia 26) i substituïu-ne el valor.
-5. Feu *commit* de `auth.js`.
-
-### Snippet anti-flash
-
-Per evitar un parpelleig del contingut protegit mentre `auth.js` (al final del `<body>`) no
-s'ha executat encara, el `<head>` de cada pàgina protegida inclou aquest fragment síncron:
-
-```html
-<script>
-try {
-  var _s = JSON.parse(localStorage.getItem('dept-auth-token') || 'null');
-  if (!_s || Date.now() > _s.expires)
-    document.documentElement.classList.add('auth-locked');
-} catch(e) { document.documentElement.classList.add('auth-locked'); }
-</script>
-<style>.auth-locked body { visibility: hidden; }</style>
-```
-
-S'executa abans que el navegador pinti cap píxel. `auth.js` elimina la classe
-`auth-locked` en carregar, tant si mostra la porta (sessió invàlida) com si no (sessió
-vàlida).
-
-### Globals exposades
-
-| Funció | Ús |
-|---|---|
-| `authHash(str)` | Retorna una `Promise<string>` amb el SHA-256 de `str`. Per generar nous hashes des de la consola. |
-| `clearAuth()` | Elimina el token de sessió i recarrega la pàgina. Per tancar la sessió manualment. |
-
-### Limitacions conegudes
-
-- La seguretat és client-side: un usuari determinat pot llegir `AUTH_HASH` del codi font i
-  fer un atac de diccionari offline. Per al cas d'ús (accés informal al professorat), és suficient.
-- No hi ha mecanisme de bloqueig per intents fallits.
-- La sessió és per navegador: qualsevol persona amb accés a l'equip pot
-  utilitzar la sessió guardada fins que expiri o es tanqui manualment.
+Per reactivar-la caldria recuperar `auth.js` de l'historial de Git, tornar a posar el
+fragment anti-flash al `<head>` i descomentar aquella línia.
 
 ---
 
@@ -509,9 +452,9 @@ documenten perquè se'n tingui constància.
    `cb.step-quiz.net` (no del repo); sense connexió, sense aquell host actiu o sense les
    capçaleres CORS, ni les miniatures ni l'exportació a PDF funcionen.
 
-4. **Càrrega de llibreries inconsistent.** `eliminar-curs.html` i `extreu-json.html` les
-   agafen de cdnjs; `banc-cb.html` porta `pdf-lib` en local (`lib/`). En particular,
-   `eliminar-curs.html` torna a baixar `pdf-lib` de cdnjs tot i que ja és al repositori.
+4. **Càrrega de llibreries gairebé tota local.** Totes les pàgines carreguen les llibreries
+   de `lib/`, excepte `extreu-json.html`, que encara agafa mammoth de cdnjs tot i que
+   `lib/mammoth.browser.min.js` ja és al repositori (millora C1).
 
 5. **El vocabulari està triplicat.** A més del `manifest.json`, hi ha còpies «de reserva»
    dins de `extreu-json.html` i de `afegir-material.html` (l'`emptyManifest()`). Quan les

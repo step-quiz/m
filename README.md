@@ -35,13 +35,15 @@ Tot és **HTML + CSS + JavaScript pur (vanilla)**, sense framework, sense `npm` 
 | `manifest.json` | El catàleg: vocabulari, etiquetes, configuració dels filtres i la llista de materials. **Font de veritat del cercador.** |
 | `repartiment-data.js` | Dades del repartiment de continguts (estructura per curs, sentit, tema i ítems). **Font de veritat** de `repartiment.html`; també la llegeix `florence-cb.html`. |
 | `pipeline-data.js` | Pont entre el repartiment, Florence i les CB: els «fils didàctics» (`PIPELINES`) i quins toca cada contingut (`CONTINGUT_PIPELINE`). El fan servir `florence-cb.html` i `repartiment.html`. |
-| `auth.js` | Portal d'accés per contrasenya per a `repartiment.html`. Carregat al final del `<body>` de la pàgina protegida. Vegeu §&nbsp;[Canviar la contrasenya](#canviar-la-contrasenya) més avall. |
+| `common.js` | Utilitats compartides (escapament d'HTML, normalització de text, `FILTER_GROUPS`…) que carreguen `index.html`, `repartiment.html`, `banc-cb.html` i `eliminar-curs.html`. Les altres pàgines en tenen còpies pròpies. |
 | `cb-items.json` | El banc de proves CB que consumeix `banc-cb.html`. |
 | `cb-img/` | 169 imatges PNG (`CB1.png … CB218.png`) que fa servir `florence-cb.html`. |
 | `recuperacio-items.json` | El banc de preguntes de recuperació que consumeixen `examen-recuperacio.html` i `alimentar-banc.html`. Cada pregunta és **una imatge**. Té un camp `versio` (`"1.x"`) que `alimentar-banc.html` incrementa en actualitzar el banc. |
 | `recuperacio-img/` | Els PNG de les preguntes de recuperació (un per pregunta), referenciats pel camp `figura` de cada ítem. |
-| `lib/jszip.min.js` | Llibreria `jszip` servida en local; la fan servir `florence-cb.html`, `examen-recuperacio.html` i `alimentar-banc.html`. |
-| `lib/pdf-lib.min.js` | Llibreria `pdf-lib` servida en local; la fa servir `banc-cb.html`. |
+| `lib/jszip.min.js` | Llibreria `jszip` servida en local; la fan servir `examen-recuperacio.html`, `alimentar-banc.html` i `eliminar-curs.html`. |
+| `lib/pdf-lib.min.js` | Llibreria `pdf-lib` servida en local; la fan servir `banc-cb.html` i `eliminar-curs.html`. |
+| `lib/pdf.min.js`, `lib/pdf.worker.min.js` | `pdf.js` servit en local; el fa servir `eliminar-curs.html`. |
+| `lib/mammoth.browser.min.js` | Còpia local de `mammoth` que **no carrega cap pàgina**: `extreu-json.html` el carrega de cdnjs. |
 | `retalla_cb.py` | Retalla els enunciats i les preguntes dels PDF oficials d'una prova CB. |
 | `genera_cb_items.py` | Refà `cb-items.json` a partir del `preguntes.json` del projecte CB. |
 | `make_cb_card.py` | Compon les targetes `cb-img/CB<id>.png` que mostra `florence-cb.html`. |
@@ -49,23 +51,11 @@ Tot és **HTML + CSS + JavaScript pur (vanilla)**, sense framework, sense `npm` 
 | `valida-dades.js` | `node valida-dades.js` — comprova que totes les dades lliguen entre elles i imprimeix les xifres que apareixen escrites als `.md`. Executa'l abans de qualsevol commit que toqui dades. |
 | `ACTUALITZACIO-ANUAL.md` | Com incorporar les proves CB de l'any i les sessions Florence noves. |
 
-## Canviar la contrasenya
+## Contrasenya (desactivada)
 
-`repartiment.html` està protegit per contrasenya. La contrasenya no s'emmagatzema en clar: `auth.js` en guarda el **hash SHA-256** a la constant `AUTH_HASH`.
-
-Per canviar-la:
-
-1. Obriu qualsevol pàgina del projecte al navegador (no cal que sigui una pàgina protegida).
-2. Obriu la consola de desenvolupador (`F12` → pestanya *Console*).
-3. Executeu:
-   ```
-   authHash('nova-contrasenya').then(console.log)
-   ```
-4. Copieu el hash de 64 caràcters que apareix a la consola.
-5. Obriu `auth.js` i substituïu el valor de `AUTH_HASH` (línia ~26) pel hash obtingut.
-6. Feu *commit* de `auth.js` al repositori.
-
-> **Nota:** `authHash` és una funció global que `auth.js` exposa expressament per a aquest ús. Utilitza l'API nativa `crypto.subtle` del navegador (SHA-256); no cal cap eina externa.
+`repartiment.html` estava protegit amb contrasenya (`auth.js`), però ara és públic: `auth.js`
+ja no és al repositori i a la pàgina només en queda la línia comentada. Vegeu
+[`ARQUITECTURA.md`](ARQUITECTURA.md) §4c per reactivar-la.
 
 ## Stack i desplegament
 
