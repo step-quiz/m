@@ -393,7 +393,7 @@ La clau de cada tema és `"<sentit>/<tema.id>"`.
 | `index.html` | cap | `fetch('manifest.json')`; iframes de Google Drive a la previsualització (o del PDF local, a les activitats focus) |
 | `repartiment.html` | cap | `fetch('manifest.json')` per a les icones de material (opcional: si falla, no en surt cap); dades via `repartiment-data.js` i `pipeline-data.js` locals |
 | `afegir-material.html` | cap | `fetch('manifest.json')`; descàrrega del `manifest.json` editat |
-| `extreu-json.html` | **mammoth 1.8.0** (cdnjs; la còpia de `lib/` no es fa servir) | `fetch('manifest.json')` per sincronitzar vocabulari; **Gemini API** (clau de l'usuari) |
+| `extreu-json.html` | **mammoth 1.8.0 (local, `lib/`)** | `fetch('manifest.json')` per sincronitzar vocabulari; **Gemini API** (clau de l'usuari) |
 | `banc-cb.html` | **pdf-lib (local, `lib/`)** | `fetch('cb-items.json')`; imatges de `cb.step-quiz.net` (CORS) |
 | `eliminar-curs.html` | **pdf.js + pdf-lib + jszip (locals, `lib/`)** | cap (tot el processament és al navegador) |
 | `florence-cb.html` | cap | imatges locals `cb-img/`; `repartiment-data.js` i `pipeline-data.js` per `<script src>`; enllaços a `cb.step-quiz.net` |
@@ -401,8 +401,8 @@ La clau de cada tema és `"<sentit>/<tema.id>"`.
 | `alimentar-banc.html` | **jszip (local, `lib/`)** | **Gemini API** (clau de l'usuari): `models` (llistar) + `generateContent` (detecció) |
 
 Hosts externs que apareixen al codi: `drive.google.com`, `docs.google.com`,
-`cb.step-quiz.net`, `m.step-quiz.net`, `cdnjs.cloudflare.com`,
-`generativelanguage.googleapis.com`.
+`cb.step-quiz.net`, `m.step-quiz.net`, `generativelanguage.googleapis.com`. Cap pàgina no
+carrega res de cap CDN: totes les llibreries són a `lib/`.
 
 `localStorage`:
 - `material:recents` (`index.html`) — array `{id, ts}`, màxim 10 documents oberts recentment.
@@ -452,9 +452,8 @@ documenten perquè se'n tingui constància.
    `cb.step-quiz.net` (no del repo); sense connexió, sense aquell host actiu o sense les
    capçaleres CORS, ni les miniatures ni l'exportació a PDF funcionen.
 
-4. **Càrrega de llibreries gairebé tota local.** Totes les pàgines carreguen les llibreries
-   de `lib/`, excepte `extreu-json.html`, que encara agafa mammoth de cdnjs tot i que
-   `lib/mammoth.browser.min.js` ja és al repositori (millora C1).
+4. **Càrrega de llibreries tota local.** Totes les pàgines carreguen les llibreries de
+   `lib/`; cap no depèn de cdnjs ni de cap altre CDN (millora C1, acabada el 18/10/2026).
 
 5. **El vocabulari està triplicat.** A més del `manifest.json`, hi ha còpies «de reserva»
    dins de `extreu-json.html` i de `afegir-material.html` (l'`emptyManifest()`). Quan les

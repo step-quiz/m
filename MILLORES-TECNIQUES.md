@@ -40,7 +40,7 @@ afegeix una línia al **Registre de canvis** i —si la millora resol un punt de
 | B3 | Centralitzar codi compartit en `common.js` | Mitjana | M | En curs (parcial) |
 | B4 | Treure el codi mort de `saveModal()` | Baixa | S | Fet |
 | B5 | Homogeneïtzar `florence-cb.html` (sense `onclick` en línia) | Baixa | M | Fet |
-| C1 | Servir totes les llibreries en local (treure cdnjs) | Mitjana | S–M | En curs (parcial) |
+| C1 | Servir totes les llibreries en local (treure cdnjs) | Mitjana | S–M | Fet |
 | C2 | Allotjar en local les imatges del banc CB | Mitjana | M | Pendent |
 | D1 | Actualitzar la documentació desfasada | Alta | S | Fet |
 | E1 | Botó «comparteix aquesta cerca» (`index.html`) | Mitjana | S | Pendent |
@@ -167,10 +167,10 @@ afegeix una línia al **Registre de canvis** i —si la millora resol un punt de
 ## C. Resiliència i dependències externes
 
 ### C1 — Servir totes les llibreries en local
-- [ ] **Estat:** En curs (parcial) · **Prioritat:** Mitjana · **Esforç:** S–M
-- **Fet:** `eliminar-curs.html` ja carrega pdf.js, pdf-lib i jszip de `lib/`. **Falta:** `extreu-json.html`
-  encara carrega mammoth de cdnjs, tot i que `lib/mammoth.browser.min.js` ja és al repositori: només cal
-  canviar-ne el `<script src>`.
+- [x] **Estat:** Fet · **Prioritat:** Mitjana · **Esforç:** S–M
+- **Fet:** `eliminar-curs.html` carrega pdf.js, pdf-lib i jszip de `lib/`, i des del 18/10/2026
+  `extreu-json.html` carrega mammoth de `lib/` (idèntic byte a byte al 1.8.0 de npm que abans
+  baixava de cdnjs).
 - **Fitxers (originals):** `eliminar-curs.html` (pdf.js, pdf-lib, jszip des de cdnjs), `extreu-json.html` (mammoth des de cdnjs); ja existeix `lib/pdf-lib.min.js`
 - **Problema:** Càrrega incoherent (§6.4): unes pàgines depenen de `cdnjs.cloudflare.com` en
   execució. Si el tallafocs de l'institut el bloqueja o cdnjs cau, aquelles pàgines deixen de
@@ -359,6 +359,7 @@ Afegeix una línia per cada millora aplicada (la més recent a dalt).
 
 | Data | ID | Canvi | Qui |
 |------|----|-------|-----|
+| 2026-10-18 | C1 | `extreu-json.html` carrega mammoth de `lib/mammoth.browser.min.js` en comptes de cdnjs (el fitxer és idèntic al 1.8.0 de npm). Ja cap pàgina no depèn de cap CDN. Provat a Chromium amb la xarxa externa bloquejada: `mammoth.convertToHtml` converteix un DOCX sense cap petició externa. `ARQUITECTURA.md` §5 i §6.4 i `README.md` al dia | — |
 | 2026-10-05 | dades | `manifest.json`: retirada la fitxa «Desenvolupament pla de cossos geomètrics» (`desenvolupament-pla-de-cossos-geometrics`). El dossier no existeix: el seu `drive_id` era el fitxer de «Podem construir-ho?» (2n S02), copiat per error. 150 → 149 fitxes; `valida-dades.js` ja no dona cap avís | — |
 | 2026-10-05 | estructura | Enllaços de Drive de «Podem construir-ho?» (2n S02) i «Fake news» (3r S06): s'esborren els dos últims PDF i la carpeta `florence-pdf/` desapareix. Fora el sistema antic `pdf: true` de `florence-cb.html` i de `valida-dades.js`. L'enllaç de S02 és el mateix fitxer que la fitxa «Desenvolupament pla de cossos geomètrics», i el validador ho avisa | — |
 | 2026-10-05 | estructura | Fitxes de Florence només al Drive (DRY). S'esborren 34 dels 36 PDF de `florence-pdf/`; cada sessió i activitat focus del `PAYLOAD` apunta amb `cataleg` a la seva fitxa del `manifest.json`, que és l'únic lloc amb l'enllaç de Drive, i `florence-cb.html` llegeix els enllaços de `manifest.json` en arrencar. Catàleg: les 12 activitats focus passen d'`url` local a `drive_id`, i fitxa nova de «Parabolitza't» (3r S10), que no en tenia (149 → 150). Queden amb PDF local, i el validador ho avisa, «Podem construir-ho?» (2n S02) i «Fake news» (3r S06): la seva fitxa de catàleg comparteix fitxer de Drive amb una altra sessió. `valida-dades.js` comprova les fitxes de catàleg i avisa de fitxes Florence amb el mateix `drive_id`. `divideix_focus.py` numera a partir del `PAYLOAD` i proposa l'id de catàleg | — |

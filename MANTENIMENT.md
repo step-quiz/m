@@ -120,9 +120,9 @@ l'octubre del 2026, amb una sessió cadascun. Afegir-ne més no demana tocar cod
   l'enllaç) o canvia el `drive_id` al catàleg: no cal tocar res més. Si n'esborres una, treu-ne
   també la fitxa del `manifest.json` i l'entrada del `PAYLOAD`. Els fitxers han de tenir el
   permís «Qualsevol persona amb l'enllaç pot veure».
-- **Llibreries:** algunes pàgines les carreguen de `cdnjs.cloudflare.com`. Si algun dia cdnjs
-  no és accessible, `eliminar-curs.html` (pdf.js, pdf-lib, jszip) i `extreu-json.html`
-  (mammoth) deixarien de funcionar. `banc-cb.html` ja porta `pdf-lib` en local i no en depèn.
+- **Llibreries:** totes són a `lib/` (pdf.js, pdf-lib, jszip i mammoth) i cap pàgina no les
+  carrega de cap CDN. Per actualitzar-ne una, substitueix el fitxer de `lib/` per la versió
+  nova del mateix paquet de npm i prova la pàgina que la fa servir (`ARQUITECTURA.md` §5).
 - **Clau de Gemini:** s'introdueix a cada sessió de `extreu-json.html` i no es desa. Cada
   persona necessita la seva pròpia clau de Google AI Studio.
 

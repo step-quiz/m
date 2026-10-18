@@ -43,7 +43,7 @@ Tot és **HTML + CSS + JavaScript pur (vanilla)**, sense framework, sense `npm` 
 | `lib/jszip.min.js` | Llibreria `jszip` servida en local; la fan servir `examen-recuperacio.html`, `alimentar-banc.html` i `eliminar-curs.html`. |
 | `lib/pdf-lib.min.js` | Llibreria `pdf-lib` servida en local; la fan servir `banc-cb.html` i `eliminar-curs.html`. |
 | `lib/pdf.min.js`, `lib/pdf.worker.min.js` | `pdf.js` servit en local; el fa servir `eliminar-curs.html`. |
-| `lib/mammoth.browser.min.js` | Còpia local de `mammoth` que **no carrega cap pàgina**: `extreu-json.html` el carrega de cdnjs. |
+| `lib/mammoth.browser.min.js` | `mammoth` 1.8.0, que fa servir `extreu-json.html` per llegir els DOCX. |
 | `retalla_cb.py` | Retalla els enunciats i les preguntes dels PDF oficials d'una prova CB. |
 | `genera_cb_items.py` | Refà `cb-items.json` a partir del `preguntes.json` del projecte CB. |
 | `make_cb_card.py` | Compon les targetes `cb-img/CB<id>.png` que mostra `florence-cb.html`. |
@@ -71,7 +71,6 @@ L'aplicació depèn d'internet per a les seves funcions principals:
 - **Google Drive / Docs** — previsualització i obertura del material.
 - **`cb.step-quiz.net`** — imatges de les proves CB (banc) i enllaços a les proves.
 - **`generativelanguage.googleapis.com`** (Gemini) — la catalogació amb IA.
-- **`cdnjs.cloudflare.com`** — algunes llibreries JS (vegeu `ARQUITECTURA.md`).
 
 Vegeu el mapa complet de dependències a [`ARQUITECTURA.md`](ARQUITECTURA.md#dependències-per-pàgina).
 
