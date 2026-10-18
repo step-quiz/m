@@ -9,14 +9,12 @@ detalls que convé tenir presents abans de tocar res).
 ## 1. Forma general
 
 Nou pàgines HTML independents, cadascuna autocontinguda (el seu CSS i el seu JS dins del
-mateix fitxer). El codi compartit està **parcialment** centralitzat: `common.js` aplega
-utilitats com `escHtml`, `slugify` o `normalize` i constants com `FILTER_GROUPS`, i el
-carreguen `index.html`, `repartiment.html`, `banc-cb.html` i `eliminar-curs.html`. La resta
-de pàgines (`afegir-material.html`, `extreu-json.html`, `alimentar-banc.html` i
-`examen-recuperacio.html`) **no** carreguen `common.js` i en conserven **còpies pròpies**
-d'aquestes utilitats. És un compromís deliberat per evitar un pas de compilació; el cost és
-que un canvi de lògica comuna s'ha de replicar a mà a les pàgines que no fan servir
-`common.js`. Vegeu la millora `B3` a `MILLORES-TECNIQUES.md`.
+mateix fitxer). El codi compartit és a `common.js`: utilitats com `escHtml`, `slugify` o
+`normalize`, constants com `FILTER_GROUPS` i el vocabulari de reserva. El carreguen amb
+`<script src="common.js">` totes les pàgines que en fan servir alguna cosa (totes menys
+`florence-cb.html`), i cap no en conserva còpies pròpies: `valida-dades.js` falla si una pàgina
+en redefineix alguna o la fa servir sense carregar `common.js` (millora `B3`, acabada el
+18/10/2026). `afegir-material.html` només en canvia l'ordre dels grups (`EDITOR_GROUPS`).
 
 Cada pàgina segueix la mateixa estructura interna: `CONFIG → STATE → utilitats → càlcul →
 render → accions → events → init`, amb separadors de comentari. El codi està ben comentat,
@@ -137,7 +135,7 @@ universal i passa tots els filtres de curs.
 {
   "generated": "2026-06-02",
   "source":     "https://cb.step-quiz.net/",
-  "image_base": "https://cb.step-quiz.net/",   // les imatges es carreguen d'AQUÍ
+  "image_base": "cb/",   // les imatges es carreguen d'AQUÍ: m/cb/data/…
   "labels": { "numeric": "…", "2eso": "…", … },// 7 etiquetes (5 sentits + 2 nivells)
   "blocks": [
     {
@@ -155,9 +153,11 @@ universal i passa tots els filtres de curs.
 
 - **84 blocs · 218 preguntes**, nivells `2eso` i `4eso`, anys 2022–2026.
 - La unitat de filtre i d'exportació és el **bloc** (enunciat + la seva seqüència de preguntes).
-- Les imatges es resolen com `image_base + img`, és a dir **des de `cb.step-quiz.net`** —
-  no estan al repositori. L'exportació a PDF (i les miniatures) per tant necessiten connexió
-  i que el host serveixi les imatges amb capçaleres **CORS**.
+- Les imatges es resolen com `image_base + img`, és a dir des de **`cb/data/`** d'aquest
+  repositori: una còpia palatitzada (256 colors, un terç de la mida) de les de
+  `cb.step-quiz.net`, que fa `genera_cb_items.py --imatges`. Les miniatures i l'exportació a
+  PDF funcionen sense connexió i sense CORS (millora `C2`, 18/10/2026). `valida-dades.js`
+  comprova que hi siguin totes.
 - El PDF generat per a l'alumnat **no inclou** el panell de respostes; això només es veu dins l'app.
 
 ---
@@ -394,7 +394,7 @@ La clau de cada tema és `"<sentit>/<tema.id>"`.
 | `repartiment.html` | cap | `fetch('manifest.json')` per a les icones de material (opcional: si falla, no en surt cap); dades via `repartiment-data.js` i `pipeline-data.js` locals |
 | `afegir-material.html` | cap | `fetch('manifest.json')`; descàrrega del `manifest.json` editat |
 | `extreu-json.html` | **mammoth 1.8.0 (local, `lib/`)** | `fetch('manifest.json')` per sincronitzar vocabulari; **Gemini API** (clau de l'usuari) |
-| `banc-cb.html` | **pdf-lib (local, `lib/`)** | `fetch('cb-items.json')`; imatges de `cb.step-quiz.net` (CORS) |
+| `banc-cb.html` | **pdf-lib (local, `lib/`)** | `fetch('cb-items.json')`; imatges locals `cb/data/` |
 | `eliminar-curs.html` | **pdf.js + pdf-lib + jszip (locals, `lib/`)** | cap (tot el processament és al navegador) |
 | `florence-cb.html` | cap | imatges locals `cb-img/`; `repartiment-data.js` i `pipeline-data.js` per `<script src>`; enllaços a `cb.step-quiz.net` |
 | `examen-recuperacio.html` | **jszip (local, `lib/`)** | `fetch('recuperacio-items.json')`; imatges locals `recuperacio-img/` |
@@ -448,18 +448,18 @@ documenten perquè se'n tingui constància.
    demanar «Qui té la raó?» l'octubre del 2026 (`CB9`, `CB10`, `CB88`) es van generar amb
    `make_cb_card.py` i estan palatitzades (mode P), com la resta.
 
-3. **El banc CB depèn d'imatges remotes.** `banc-cb.html` carrega les imatges de
-   `cb.step-quiz.net` (no del repo); sense connexió, sense aquell host actiu o sense les
-   capçaleres CORS, ni les miniatures ni l'exportació a PDF funcionen.
+3. **Les imatges del banc CB són una còpia.** Des del 18/10/2026 `banc-cb.html` les llegeix
+   de `cb/data/` i ja no depèn de `cb.step-quiz.net` (millora C2). El preu és que, quan
+   s'afegeix una edició nova al cb, cal tornar a executar `genera_cb_items.py --imatges`
+   (`ACTUALITZACIO-ANUAL.md`); si no, `valida-dades.js` ho diu.
 
 4. **Càrrega de llibreries tota local.** Totes les pàgines carreguen les llibreries de
    `lib/`; cap no depèn de cdnjs ni de cap altre CDN (millora C1, acabada el 18/10/2026).
 
-5. **El vocabulari està triplicat.** A més del `manifest.json`, hi ha còpies «de reserva»
-   dins de `extreu-json.html` i de `afegir-material.html` (l'`emptyManifest()`). Quan les
-   pàgines se serveixen per HTTP, totes dues se sobreescriuen amb el manifest carregat, així
-   que la font de veritat efectiva és única; però les còpies estan desfasades i només
-   actuen com a reserva per a `file://` o per crear un manifest des de zero.
+5. **El vocabulari és a dos llocs.** La font de veritat és `manifest.json`. `common.js` en té
+   una còpia de reserva (`FALLBACK_VOCAB` i `FALLBACK_LABELS`), que només fa servir
+   `extreu-json.html` quan no pot llegir el manifest (per exemple, obert amb `file://`).
+   `valida-dades.js` avisa si la còpia es desfasa.
 
 6. **Codi mort menor** a `saveModal()` (`afegir-material.html`): la variable `others` es
    calcula i no s'utilitza, i hi ha un bloc `if (!state.editingNew) { }` buit. La comprovació
@@ -503,7 +503,9 @@ comprova el que no peta en execució però es veu a classe: ids CB sense targeta
 sessions i activitats focus amb `pdf:true` sense fitxer, fils que apunten a sessions o
 activitats focus inexistents, activitats focus que cap fil no proposa, posicions de
 `CONTINGUT_PIPELINE` fora del seu tema, fils definits i no fets servir, relacions `ff<n>`
-que travessen grafs, i el desfasament entre `cb-items.json` i el `PAYLOAD`.
+que travessen grafs, el desfasament entre `cb-items.json` i el `PAYLOAD`, que totes les
+imatges del banc CB siguin a `cb/data/`, que cap pàgina no tingui còpies de les utilitats de
+`common.js` i que el vocabulari de reserva de `common.js` coincideixi amb el de `manifest.json`.
 
 Acaba imprimint totes les xifres que hi ha escrites als `.md` (targetes, sessions, activitats
 focus, fils, cobertura per curs). Quan un recompte d'aquest fitxer o del `README` no quadri, la sortida

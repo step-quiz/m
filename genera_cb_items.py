@@ -12,8 +12,17 @@ que el segon es dedueix del primer sense pèrdua: la font de veritat és
     python3 genera_cb_items.py preguntes.json cb-items.json
 
 Un bloc = preguntes consecutives que comparteixen el mateix fitxer d'enunciat.
+
+IMATGES (millora C2). banc-cb.html no les baixa de cb.step-quiz.net: en té una
+còpia a `cb/data/` (la mateixa estructura que el web del cb), de manera que
+funciona sense connexió i sense CORS. Amb --imatges, l'script hi copia les
+imatges que fa servir cb-items.json, palatitzades (256 colors, error mitjà
+< 0,2/255, com les targetes de Florence: ocupen un terç), i esborra les que ja
+no s'hi fan servir. Necessita Pillow només en aquest cas:
+
+    python3 genera_cb_items.py ../cb/preguntes.json cb-items.json --imatges ../cb/data
 """
-import json, sys, datetime
+import argparse, datetime, io, json, os, sys
 
 ETIQUETES = {
     "algebraic": "Algebraic",
@@ -26,6 +35,7 @@ ETIQUETES = {
 }
 NOM_NIVELL = {"2eso": "2n ESO", "4eso": "4t ESO"}
 BASE = "https://cb.step-quiz.net/"
+IMATGES_LOCALS = "cb/"   # image_base: les rutes data/… es resolen dins de m/cb/
 
 
 def genera(preguntes, generat=None):
@@ -69,19 +79,64 @@ def genera(preguntes, generat=None):
     return {
         "generated": generat or datetime.date.today().isoformat(),
         "source": BASE,
-        "image_base": BASE,
+        "image_base": IMATGES_LOCALS,
         "labels": etiquetes,
         "blocks": blocs,
     }
 
 
+def imatges_de(dades):
+    """Rutes (data/….png) de totes les imatges que fa servir cb-items.json."""
+    rutes = set()
+    for b in dades["blocks"]:
+        rutes.add(b["enunciat"])
+        rutes.update(q["img"] for q in b["questions"])
+    return sorted(rutes)
+
+
+def copia_imatges(dades, origen, arrel):
+    """Copia (palatitzades) les imatges que falten o han canviat i esborra les sobrants."""
+    from PIL import Image
+    desti = os.path.join(arrel, IMATGES_LOCALS)
+    rutes = imatges_de(dades)
+    noves = 0
+    for r in rutes:
+        font = os.path.join(origen, os.path.basename(r))
+        if not os.path.exists(font):
+            sys.exit(f"Falta la imatge {font} (la cita preguntes.json)")
+        im = Image.open(font).convert("RGB")
+        q = im.quantize(colors=256, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
+        buf = io.BytesIO()
+        q.save(buf, "PNG", optimize=True)
+        cami = os.path.join(desti, r)
+        os.makedirs(os.path.dirname(cami), exist_ok=True)
+        if not os.path.exists(cami) or open(cami, "rb").read() != buf.getvalue():
+            open(cami, "wb").write(buf.getvalue())
+            noves += 1
+    usades = {os.path.normpath(os.path.join(desti, r)) for r in rutes}
+    sobrants = 0
+    for d, _, fitxers in os.walk(desti):
+        for f in fitxers:
+            c = os.path.normpath(os.path.join(d, f))
+            if f.endswith(".png") and c not in usades:
+                os.remove(c)
+                sobrants += 1
+    print(f"{IMATGES_LOCALS}: {len(rutes)} imatges ({noves} escrites, {sobrants} esborrades)")
+
+
 if __name__ == "__main__":
-    entrada = sys.argv[1] if len(sys.argv) > 1 else "preguntes.json"
-    sortida = sys.argv[2] if len(sys.argv) > 2 else "cb-items.json"
-    generat = sys.argv[3] if len(sys.argv) > 3 else None
-    dades = genera(json.load(open(entrada, encoding="utf-8")), generat)
-    with open(sortida, "w", encoding="utf-8") as f:
+    ap = argparse.ArgumentParser(description="Reconstrueix cb-items.json a partir de preguntes.json del cb.")
+    ap.add_argument("entrada", nargs="?", default="preguntes.json")
+    ap.add_argument("sortida", nargs="?", default="cb-items.json")
+    ap.add_argument("generat", nargs="?", default=None, help="data del camp generated (per defecte, avui)")
+    ap.add_argument("--imatges", metavar="CARPETA_DATA_DEL_CB",
+                    help="copia també les imatges a cb/data/ (p. ex. ../cb/data)")
+    a = ap.parse_args()
+    dades = genera(json.load(open(a.entrada, encoding="utf-8")), a.generat)
+    with open(a.sortida, "w", encoding="utf-8") as f:
         json.dump(dades, f, ensure_ascii=False, indent=2)
         f.write("\n")
-    print(f"{sortida}: {len(dades['blocks'])} blocs · "
+    print(f"{a.sortida}: {len(dades['blocks'])} blocs · "
           f"{sum(len(b['questions']) for b in dades['blocks'])} preguntes")
+    if a.imatges:
+        copia_imatges(dades, a.imatges, os.path.dirname(os.path.abspath(a.sortida)))

@@ -1,7 +1,7 @@
 {
   "generated": "2026-09-18",
   "source": "https://cb.step-quiz.net/",
-  "image_base": "https://cb.step-quiz.net/",
+  "image_base": "cb/",
   "labels": {
     "algebraic": "Algebraic",
     "mesura": "Mesura",

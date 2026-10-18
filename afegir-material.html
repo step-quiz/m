@@ -627,19 +627,16 @@
 
 <div class="toast" id="toast" hidden></div>
 
+<script src="common.js"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════
    Manifest editor — vanilla JS, no dependencies.
    ═══════════════════════════════════════════════════════════════════ */
 
-const FILTER_GROUPS = [
-  { key: 'origin',     label: 'Origen',           field: 'origin',     multi: false, required: false },
-  { key: 'format',     label: 'Format',           field: 'format',     multi: false, required: true  },
-  { key: 'course',     label: 'Curs',             field: 'courses',    multi: true,  required: false },
-  { key: 'math_sense', label: 'Sentit matemàtic', field: 'math_sense', multi: false, required: false },
-  { key: 'activity',   label: 'Activitat',        field: 'activities', multi: true,  required: false },
-  { key: 'type',       label: 'Tipus',            field: 'type',       multi: false, required: false },
-];
+/* Els grups de filtre són els de common.js (FILTER_GROUPS); l'editor només
+   en canvia l'ordre, que és el dels camps del formulari. */
+const EDITOR_GROUPS = ['origin', 'format', 'course', 'math_sense', 'activity', 'type']
+  .map(k => FILTER_GROUPS.find(g => g.key === k));
 
 /* ─── STATE ─────────────────────────────────────────────────────── */
 const state = {
@@ -653,27 +650,13 @@ const state = {
 
 const $ = id => document.getElementById(id);
 
-/* ─── HELPERS ───────────────────────────────────────────────────── */
-function escHtml(s) {
-  return String(s ?? '').replace(/[&<>"']/g, c => ({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-  }[c]));
-}
+/* ─── HELPERS ─── (escHtml i slugify són a common.js) ──────────── */
 function attr(s) { return escHtml(s); }
 
 function label(value) {
   if (!value && value !== 0) return '';
   if (state.manifest?.vocabulary_labels?.[value]) return state.manifest.vocabulary_labels[value];
   return String(value).replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-}
-
-function slugify(s) {
-  return String(s)
-    .toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '')
-    .slice(0, 60);
 }
 
 function setDirty(flag = true) {
@@ -699,7 +682,7 @@ function loadFromText(text, sourceName) {
     toast('Manifest invàlid: falta "vocabulary" o "files"', true, 4000); return false;
   }
   // Ensure every vocab key exists
-  for (const G of FILTER_GROUPS) {
+  for (const G of EDITOR_GROUPS) {
     if (!Array.isArray(data.vocabulary[G.key])) data.vocabulary[G.key] = [];
   }
   if (!data.vocabulary_labels || typeof data.vocabulary_labels !== 'object') {
@@ -994,7 +977,7 @@ function renderEditor() {
         <span class="panel-hint">Valors disponibles per cada categoria d'etiqueta</span>
       </summary>
       <div class="panel-body" id="vocab-body">
-        ${FILTER_GROUPS.map(G => renderVocabRow(G)).join('')}
+        ${EDITOR_GROUPS.map(G => renderVocabRow(G)).join('')}
         <div class="hint" style="margin-top:10px">
           Clica una etiqueta per editar el seu nom visible. El × la treu del vocabulari
           (els fitxers que la facin servir mantindran el valor, però sortirà sense format).
@@ -1162,7 +1145,7 @@ function editVocabLabel(groupKey, value) {
 
 function removeVocabValue(groupKey, value) {
   const inUse = state.manifest.files.filter(f => {
-    const G = FILTER_GROUPS.find(g => g.key === groupKey);
+    const G = EDITOR_GROUPS.find(g => g.key === groupKey);
     const v = f[G.field];
     return Array.isArray(v) ? v.includes(value) : v === value;
   });

@@ -240,7 +240,7 @@ for (const [clau, mapa] of Object.entries(CONTINGUTS_ACTIVITATS || {})) {
 
 /* ── 6. cb-items.json (banc CB) ─────────────────────────────────────── */
 
-let nItems = 0, maxItem = 0;
+let nItems = 0, maxItem = 0, imatgesBanc = 0;
 try {
   const cb = JSON.parse(llegeix('cb-items.json'));
   const ids = cb.blocks.flatMap(b => b.questions.map(q => q.id));
@@ -250,7 +250,49 @@ try {
     info.push(`cb-items.json va ${falten.length} preguntes endarrerit respecte del PAYLOAD `
       + `(ids ${falten[0]}–${falten[falten.length-1]}). Regenera'l amb genera_cb_items.py `
       + `si vols que banc-cb.html les tingui.`);
-} catch { avis('No s\'ha pogut llegir cb-items.json'); }
+  // Les imatges del banc són al mateix lloc (millora C2): cb/data/…
+  const rutes = new Set(cb.blocks.flatMap(b => [b.enunciat, ...b.questions.map(q => q.img)]));
+  if (/^https?:/.test(cb.image_base || ''))
+    avis(`cb-items.json treu les imatges de ${cb.image_base}: banc-cb.html no funcionarà sense connexió`);
+  else {
+    const absents = [...rutes].filter(r => !fs.existsSync(F((cb.image_base || '') + r)));
+    if (absents.length)
+      err(`Falten ${absents.length} imatges del banc CB a ${cb.image_base} (p. ex. ${absents[0]}). `
+        + `Copia-les amb «python3 genera_cb_items.py ../cb/preguntes.json cb-items.json --imatges ../cb/data».`);
+  }
+  imatgesBanc = rutes.size;
+} catch (e) { avis('No s\'ha pogut llegir cb-items.json: ' + e.message); }
+
+/* ── 7. common.js: cap còpia local de les utilitats (millora B3) ─────── */
+
+const COMUNS = ['escHtml', 'normalize', 'slugify', 'FILTER_GROUPS', 'FALLBACK_VOCAB', 'FALLBACK_LABELS'];
+for (const pagina of fs.readdirSync(ARREL).filter(f => f.endsWith('.html')).sort()) {
+  const t = llegeix(pagina) || '';
+  const carrega = t.includes('<script src="common.js"></script>');
+  for (const nom of COMUNS) {
+    if (new RegExp(`(function|const|let|var)\\s+${nom}\\b`).test(t))
+      err(`${pagina} defineix ${nom}, que ja és a common.js: esborra la còpia i carrega common.js`);
+    else if (!carrega && new RegExp(`(?<![.\\w])${nom}\\b`).test(t))   // .normalize() de String no compta
+      err(`${pagina} fa servir ${nom} però no carrega common.js`);
+  }
+}
+
+{ // El vocabulari de reserva de common.js ha de coincidir amb el de manifest.json.
+  let C = null;
+  try {   // common.js toca document en carregar-se: se li dona un document buit
+    C = new Function('document', (llegeix('common.js') || '') + '\n; return {FALLBACK_VOCAB, FALLBACK_LABELS};')(
+      { addEventListener() {} });
+  } catch (e) { err(`common.js no s'avalua: ${e.message}`); }
+  let man = null;
+  try { man = JSON.parse(llegeix('manifest.json')); } catch (e) { /* ja s'ha avisat */ }
+  if (C && man) {
+    const iguals = JSON.stringify(C.FALLBACK_VOCAB) === JSON.stringify(man.vocabulary)
+      && JSON.stringify(C.FALLBACK_LABELS) === JSON.stringify(man.vocabulary_labels);
+    if (!iguals) avis('El vocabulari de reserva de common.js (FALLBACK_VOCAB/LABELS) no coincideix amb '
+      + 'el de manifest.json. Només es fa servir si extreu-json.html no pot llegir el manifest, però '
+      + 'convé copiar-hi el vocabulari actual.');
+  }
+}
 
 /* ── Cobertura i xifres per als .md ─────────────────────────────────── */
 
@@ -289,6 +331,7 @@ console.log(`  Ids CB referenciats         ${cbAlPayload.size}`);
 console.log(`  Sessions Florence           ${nSessions}  (grafs plens: ${grafsPlens.join(', ')})`);
 console.log(`  Activitats focus            ${Object.keys(focus).length}  (les proposen ${totFocus} continguts)`);
 console.log(`  Preguntes a cb-items.json   ${nItems}  (id més alt: ${maxItem})`);
+console.log(`  Imatges del banc a cb/data/  ${imatgesBanc}`);
 console.log(`  Fils a pipeline-data.js     ${Object.keys(PIPELINES).length}`);
 console.log(`  Cobertura del repartiment   ${totAmb}/${totCont}  ` +
   CURSOS.map(c => `${ORDINAL[c]} ${cobertura[c][0]}/${cobertura[c][1]}`).join(' · '));

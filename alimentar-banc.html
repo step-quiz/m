@@ -232,6 +232,7 @@
   </div>
 </div>
 <script src="lib/jszip.min.js"></script>
+<script src="common.js"></script>
 <script>
 /* ══════════════════════════════════════════════════════════════════════
    CONFIG — taxonomia (mirall de repartiment-data.js)
@@ -287,7 +288,6 @@ const state = {
    UTILS
    ══════════════════════════════════════════════════════════════════════ */
 const $ = id => document.getElementById(id);
-function escHtml(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function setStatus(msg, cls){ const e=$('status'); e.textContent=msg||''; e.className='status'+(cls?' '+cls:''); }
 function clamp(v,a,b){ return Math.max(a,Math.min(b,v)); }
 function blobToDataURL(blob){ return new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result);f.readAsDataURL(blob);}); }

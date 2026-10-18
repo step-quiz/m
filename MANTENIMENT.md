@@ -85,7 +85,7 @@ editable i sense rastre). Descarrega el fitxer «(sense curs)». No altera el fi
 ### Generar un PDF de proves CB per a l'alumnat
 
 Obre **`banc-cb.html`**, filtra per nivell/any/sentit/dificultat i prem exportar. El PDF
-surt sense les respostes. **Necessita connexió** (les imatges venen de `cb.step-quiz.net`).
+surt sense les respostes. Funciona sense connexió: les imatges són a `cb/data/`.
 
 ---
 

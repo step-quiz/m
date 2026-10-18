@@ -83,8 +83,11 @@ complexitat de cada ítem, i la clau de respostes. No cal endevinar res.
 
 4. **Copiar les imatges** a `cb-main/data/`.
 
-5. **Regenerar `cb-items.json`** d'aquest projecte:
-   `python3 genera_cb_items.py <ruta>/preguntes.json cb-items.json`.
+5. **Regenerar `cb-items.json` i copiar-ne les imatges** a aquest projecte (`cb/data/`, que és
+   d'on les llegeix `banc-cb.html`):
+   `python3 genera_cb_items.py <ruta>/preguntes.json cb-items.json --imatges <ruta>/data`.
+   Necessita Pillow (`pip install pillow`). Després, `node valida-dades.js` ha de dir que no
+   falta cap imatge.
 
 6. Res més. `banc-cb.html` no s'ha de tocar: els quatre filtres es construeixen llegint el
    JSON i l'any nou hi apareix sol. L'`index.html` de `cb-main` tampoc: des del setembre
@@ -352,12 +355,12 @@ nova per copiar-la als `.md`.
 | Guió | Què fa |
 |---|---|
 | `retalla_cb.py` | Retalla enunciats i preguntes dels PDF oficials d'una prova CB |
-| `genera_cb_items.py` | Refà `cb-items.json` a partir de `preguntes.json` de `cb-main` |
+| `genera_cb_items.py` | Refà `cb-items.json` a partir de `preguntes.json` de `cb-main` i, amb `--imatges`, en copia les imatges a `cb/data/` |
 | `make_cb_card.py` | Compon les targetes `cb-img/CB<id>.png` de `florence-cb.html` |
 | `divideix_focus.py` | Divideix el DOCX d'«Activitats focus» d'un bloc en un DOCX i un PDF per activitat |
-| `valida-dades.js` | Comprova la coherència entre el `PAYLOAD`, `pipeline-data.js`, `repartiment-data.js`, `manifest.json`, `cb-img/` i `cb-items.json`, i imprimeix les xifres dels `.md` |
+| `valida-dades.js` | Comprova la coherència entre el `PAYLOAD`, `pipeline-data.js`, `repartiment-data.js`, `manifest.json`, `cb-img/`, `cb-items.json`, `cb/data/` i `common.js`, i imprimeix les xifres dels `.md` |
 
-Els tres primers necessiten Python 3; dos d'ells, també Pillow, i `retalla_cb.py` a més
+Els tres primers necessiten Python 3; tots tres, també Pillow (`genera_cb_items.py`, només amb `--imatges`), i `retalla_cb.py` a més
 `pdfplumber` i les eines de `poppler` (`pdftoppm`). `divideix_focus.py` necessita Python 3,
 `python-docx` i, per als PDF, LibreOffice amb el Writer i les fonts del document (Roboto,
 Roboto Condensed, Lexend, Noto Color Emoji); sense LibreOffice, fa només els DOCX. `valida-dades.js` només necessita Node,

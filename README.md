@@ -18,7 +18,7 @@ Tot és **HTML + CSS + JavaScript pur (vanilla)**, sense framework, sense `npm` 
 
 | Fitxer | Què és | Per a qui |
 |---|---|---|
-| `index.html` | **Cercador**. Cerca per paraula clau + filtres (curs, origen, sentit, format, tipus, activitat). Previsualització lateral del Drive i enllaços per obrir. | Tot el professorat |
+| `index.html` | **Cercador**. Cerca per paraula clau + filtres (curs, origen, sentit, format, tipus, activitat). Previsualització lateral del Drive i enllaços per obrir. El botó «Copia l'enllaç d'aquesta cerca» dona una adreça que obre la mateixa llista (per passar-la a un company). | Tot el professorat |
 | `repartiment.html` | **Repartiment de continguts**. Consulta els continguts matemàtics assignats a cada curs de l'ESO (1r–4t), organitzats per sentit matemàtic. Cada contingut pot dur dues icones: a l'esquerra, el material del catàleg; a la dreta, la seqüència de pràctica a `florence-cb.html`. | Tot el professorat |
 | `afegir-material.html` | **Editor del manifest**. Afegeix, edita i elimina entrades del catàleg, gestiona el vocabulari, valida i descarrega el `manifest.json`. | Qui manté el catàleg |
 | `extreu-json.html` | **Catalogador amb IA**. Puja un PDF/DOCX i Gemini en proposa l'entrada de manifest (títol, curs, activitats…). Cal una clau de Gemini. | Qui manté el catàleg |
@@ -35,8 +35,9 @@ Tot és **HTML + CSS + JavaScript pur (vanilla)**, sense framework, sense `npm` 
 | `manifest.json` | El catàleg: vocabulari, etiquetes, configuració dels filtres i la llista de materials. **Font de veritat del cercador.** |
 | `repartiment-data.js` | Dades del repartiment de continguts (estructura per curs, sentit, tema i ítems). **Font de veritat** de `repartiment.html`; també la llegeix `florence-cb.html`. |
 | `pipeline-data.js` | Pont entre el repartiment, Florence i les CB: els «fils didàctics» (`PIPELINES`) i quins toca cada contingut (`CONTINGUT_PIPELINE`). El fan servir `florence-cb.html` i `repartiment.html`. |
-| `common.js` | Utilitats compartides (escapament d'HTML, normalització de text, `FILTER_GROUPS`…) que carreguen `index.html`, `repartiment.html`, `banc-cb.html` i `eliminar-curs.html`. Les altres pàgines en tenen còpies pròpies. |
-| `cb-items.json` | El banc de proves CB que consumeix `banc-cb.html`. |
+| `common.js` | Utilitats compartides (escapament d'HTML, normalització de text, `FILTER_GROUPS`, vocabulari de reserva…). El carreguen totes les pàgines que les fan servir, i cap no en té còpies pròpies (`valida-dades.js` ho comprova). |
+| `cb-items.json` | El banc de proves CB que consumeix `banc-cb.html`. Es genera amb `genera_cb_items.py`. |
+| `cb/data/` | Còpia local (palatitzada) de les 302 imatges del banc CB, perquè `banc-cb.html` funcioni sense connexió. La fa `genera_cb_items.py --imatges`. |
 | `cb-img/` | 169 imatges PNG (`CB1.png … CB218.png`) que fa servir `florence-cb.html`. |
 | `recuperacio-items.json` | El banc de preguntes de recuperació que consumeixen `examen-recuperacio.html` i `alimentar-banc.html`. Cada pregunta és **una imatge**. Té un camp `versio` (`"1.x"`) que `alimentar-banc.html` incrementa en actualitzar el banc. |
 | `recuperacio-img/` | Els PNG de les preguntes de recuperació (un per pregunta), referenciats pel camp `figura` de cada ítem. |
@@ -69,7 +70,7 @@ ja no és al repositori i a la pàgina només en queda la línia comentada. Vege
 L'aplicació depèn d'internet per a les seves funcions principals:
 
 - **Google Drive / Docs** — previsualització i obertura del material.
-- **`cb.step-quiz.net`** — imatges de les proves CB (banc) i enllaços a les proves.
+- **`cb.step-quiz.net`** — enllaços a les proves CB. Les imatges del banc ja són al repositori (`cb/data/`).
 - **`generativelanguage.googleapis.com`** (Gemini) — la catalogació amb IA.
 
 Vegeu el mapa complet de dependències a [`ARQUITECTURA.md`](ARQUITECTURA.md#dependències-per-pàgina).

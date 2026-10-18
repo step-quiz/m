@@ -258,6 +258,7 @@
 <div id="app"></div>
 
 <script src="lib/jszip.min.js"></script>
+<script src="common.js"></script>
 <script>
 /* ══════════════════════════════════════════════════════════════════════
    CONFIG
@@ -306,10 +307,7 @@ const state = {
    ══════════════════════════════════════════════════════════════════════ */
 const $ = id => document.getElementById(id);
 
-function escHtml(s) {
-  return String(s).replace(/[&<>"']/g, c =>
-    ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
-}
+/* escHtml és a common.js. */
 function escXml(s) {
   return String(s).replace(/[&<>"']/g, c =>
     ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;' }[c]));

@@ -37,13 +37,13 @@ afegeix una línia al **Registre de canvis** i —si la millora resol un punt de
 | A4 | Semàntica correcta del commutador Bàsic/Avançat | Baixa | S | Fet |
 | B1 | Avisar d'activitats òrfenes al validador (`afegir-material.html`) | Alta | S | Fet |
 | B2 | Resoldre l'activitat òrfena actual al `manifest.json` | Alta | S | Fet |
-| B3 | Centralitzar codi compartit en `common.js` | Mitjana | M | En curs (parcial) |
+| B3 | Centralitzar codi compartit en `common.js` | Mitjana | M | Fet |
 | B4 | Treure el codi mort de `saveModal()` | Baixa | S | Fet |
 | B5 | Homogeneïtzar `florence-cb.html` (sense `onclick` en línia) | Baixa | M | Fet |
 | C1 | Servir totes les llibreries en local (treure cdnjs) | Mitjana | S–M | Fet |
-| C2 | Allotjar en local les imatges del banc CB | Mitjana | M | Pendent |
+| C2 | Allotjar en local les imatges del banc CB | Mitjana | M | Fet |
 | D1 | Actualitzar la documentació desfasada | Alta | S | Fet |
-| E1 | Botó «comparteix aquesta cerca» (`index.html`) | Mitjana | S | Pendent |
+| E1 | Botó «comparteix aquesta cerca» (`index.html`) | Mitjana | S | Fet |
 | E2 | Millorar el rànquing de la cerca (pes del títol) | Baixa | S | Fet |
 | F1 | Les etiquetes del vocabulari no entren a l'índex de cerca | Alta | S | Fet |
 | F2 | La cerca bloqueja el navegador uns segons per pulsació de tecla | Alta | S | Fet |
@@ -126,22 +126,21 @@ afegeix una línia al **Registre de canvis** i —si la millora resol un punt de
   ```
 
 ### B3 — Centralitzar codi compartit en `common.js`
-- [ ] **Estat:** En curs (parcial) · **Prioritat:** Mitjana · **Esforç:** M
+- [x] **Estat:** Fet · **Prioritat:** Mitjana · **Esforç:** M
 - **Fitxers:** totes les pàgines
 - **Problema:** `escHtml`, `normalize`, `slugify`, `FILTER_GROUPS` i el vocabulari
-  de reserva estaven **copiats** a cada pàgina (documentat a `ARQUITECTURA.md` §1 i §6.5). Un
-  canvi de lògica comuna s'ha de replicar a mà i el vocabulari es pot desincronitzar.
-- **Proposta:** Moure aquestes utilitats a un únic `common.js` carregat amb
-  `<script src="common.js"></script>`. **No cal pas de compilació**; segueix sent estàtic.
-- **Estat actual (parcial):** `common.js` existeix i el carreguen `index.html`,
-  `repartiment.html`, `banc-cb.html` i `eliminar-curs.html`. Les altres quatre pàgines
-  (`afegir-material.html`, `extreu-json.html`, `alimentar-banc.html`,
-  `examen-recuperacio.html`) **encara NO** el carreguen i conserven còpies locals. Mentre
-  això sigui així es paga alhora el cost del fitxer compartit i el de la duplicació. **Decisió
-  actual: no completar B3** (es manté la coexistència deliberadament); aquesta entrada queda
-  oberta com a recordatori de l'estat real, no com a feina planificada.
-- **Verificació (si algun dia es completa):** cercar `function escHtml` a `*.html` retorna 0
-  definicions locals; totes les pàgines carreguen `common.js`.
+  de reserva estaven **copiats** a cada pàgina. Un canvi de lògica comuna s'havia de replicar a
+  mà i el vocabulari es podia desincronitzar.
+- **Fet (18/10/2026):** les quatre pàgines que encara tenien còpies (`afegir-material.html`,
+  `extreu-json.html`, `alimentar-banc.html` i `examen-recuperacio.html`) carreguen `common.js`
+  i ja no en tenen. Diferències trobades i resoltes: l'editor tenia `FILTER_GROUPS` en un
+  altre ordre (ara és `EDITOR_GROUPS`, derivat del comú); dues pàgines tenien un `escHtml` que
+  convertia `null` en el text «null» (el comú el converteix en buit); i el vocabulari de
+  reserva d'`extreu-json` no tenia el tipus `solucions`. El vocabulari de reserva de
+  `common.js` s'ha posat al dia amb `manifest.json` (n'hi faltaven 9 valors).
+- **Verificació:** `valida-dades.js` falla si una pàgina redefineix alguna utilitat de
+  `common.js` o la fa servir sense carregar-lo, i avisa si el vocabulari de reserva es desfasa.
+  Les vuit pàgines es renderitzen igual abans i després (comparat a Chromium) i sense errors.
 
 ### B4 — Treure el codi mort de `saveModal()`
 - [x] **Estat:** Fet · **Prioritat:** Baixa · **Esforç:** S
@@ -181,14 +180,16 @@ afegeix una línia al **Registre de canvis** i —si la millora resol un punt de
   local, `eliminar-curs.html` i `extreu-json.html` segueixen carregant les seves eines.
 
 ### C2 — Allotjar en local les imatges del banc CB
-- [ ] **Estat:** Pendent · **Prioritat:** Mitjana · **Esforç:** M
-- **Fitxers:** `banc-cb.html` (`fetch(url, {mode:'cors'})` ~ln 487), `cb-items.json` (`image_base`)
-- **Problema:** Les imatges del banc es carreguen de `cb.step-quiz.net` (§6.3). Sense connexió,
-  sense aquell host o sense capçaleres CORS, ni les miniatures ni l'exportació a PDF funcionen.
-  En canvi, `florence-cb.html` ja serveix els seus PNG en local (`cb-img/`).
-- **Proposta:** Descarregar les imatges del banc i servir-les en local (o cau), com es fa amb
-  Florence. Implica decidir on viuen i actualitzar `image_base`.
-- **Verificació:** Generar un PDF del banc **sense connexió** (servint el lloc en local) funciona.
+- [x] **Estat:** Fet · **Prioritat:** Mitjana · **Esforç:** M
+- **Fitxers:** `banc-cb.html`, `cb-items.json` (`image_base`), `genera_cb_items.py`, `cb/data/`
+- **Problema:** Les imatges del banc es carregaven de `cb.step-quiz.net`. Sense connexió,
+  sense aquell host o sense capçaleres CORS, ni les miniatures ni l'exportació a PDF funcionaven.
+- **Fet (18/10/2026):** `genera_cb_items.py --imatges ../cb/data` copia les 302 imatges a
+  `cb/data/`, palatitzades (256 colors, error mitjà < 0,2/255, com les targetes de Florence):
+  12 MB en lloc de 34. `image_base` passa a `cb/`. `valida-dades.js` comprova que no en falti
+  cap. Cada edició nova del cb demana tornar a executar l'script (`ACTUALITZACIO-ANUAL.md`).
+- **Verificació:** servint el lloc en local i amb totes les peticions externes bloquejades,
+  les miniatures es veuen i es generen els dos PDF (alumnat i professorat) de 4t 2026.
 
 ---
 
@@ -213,13 +214,16 @@ afegeix una línia al **Registre de canvis** i —si la millora resol un punt de
 ## E. Millores funcionals menors (tècniques)
 
 ### E1 — Botó «comparteix aquesta cerca»
-- [ ] **Estat:** Pendent · **Prioritat:** Mitjana · **Esforç:** S
-- **Fitxers:** `index.html` (ja existeix `buildUrlParams` ~ln 1369 i `syncToUrl`)
-- **Problema:** L'estat ja viu a la URL (`?q=&course=…&open=`), però no hi ha una manera
+- [x] **Estat:** Fet · **Prioritat:** Mitjana · **Esforç:** S
+- **Fitxers:** `index.html` (`renderChips`, `copiaEnllacCerca`)
+- **Problema:** L'estat ja vivia a la URL (`?q=&course=…&open=`), però no hi havia una manera
   còmoda de copiar-la per passar als companys una llista filtrada.
-- **Proposta:** Un botó que copiï `location.href` al porta-retalls (`navigator.clipboard`) amb
-  un petit *toast* de confirmació. Pràcticament una funció.
-- **Verificació:** Filtrar, copiar, obrir l'enllaç en una altra pestanya → es restaura el mateix estat.
+- **Fet (18/10/2026):** quan hi ha una cerca o un filtre, al final de la fila de xips surt el
+  botó «Copia l'enllaç d'aquesta cerca». Copia l'adreça amb la paraula clau i els filtres (sense
+  el document obert) i diu «Enllaç copiat»; si el navegador no deixa fer servir el porta-retalls,
+  mostra l'enllaç per copiar-lo a mà.
+- **Verificació:** cerca «fraccions» + 2n ESO, copiar, obrir l'enllaç en una altra pestanya →
+  mateixos xips i mateixos 10 resultats (comprovat a Chromium).
 
 ### E2 — Millorar el rànquing de la cerca
 - [x] **Estat:** Fet · **Prioritat:** Baixa · **Esforç:** S
@@ -359,6 +363,7 @@ Afegeix una línia per cada millora aplicada (la més recent a dalt).
 
 | Data | ID | Canvi | Qui |
 |------|----|-------|-----|
+| 2026-10-18 | B3 · C2 · E1 | **B3:** `afegir-material`, `extreu-json`, `alimentar-banc` i `examen-recuperacio` carreguen `common.js` i ja no tenen còpies de les utilitats; vocabulari de reserva al dia amb el manifest; `valida-dades.js` ho comprova. **C2:** imatges del banc CB a `cb/data/` (palatitzades, 12 MB) amb `genera_cb_items.py --imatges`; `banc-cb.html` ja no depèn de `cb.step-quiz.net` ni de CORS. **E1:** botó «Copia l'enllaç d'aquesta cerca» a l'`index.html`. Tot provat a Chromium. `README`, `ARQUITECTURA` (§1, §3, §5, §6.3, §6.5, §6b), `MANTENIMENT` i `ACTUALITZACIO-ANUAL` al dia | — |
 | 2026-10-18 | C1 | `extreu-json.html` carrega mammoth de `lib/mammoth.browser.min.js` en comptes de cdnjs (el fitxer és idèntic al 1.8.0 de npm). Ja cap pàgina no depèn de cap CDN. Provat a Chromium amb la xarxa externa bloquejada: `mammoth.convertToHtml` converteix un DOCX sense cap petició externa. `ARQUITECTURA.md` §5 i §6.4 i `README.md` al dia | — |
 | 2026-10-05 | dades | `manifest.json`: retirada la fitxa «Desenvolupament pla de cossos geomètrics» (`desenvolupament-pla-de-cossos-geometrics`). El dossier no existeix: el seu `drive_id` era el fitxer de «Podem construir-ho?» (2n S02), copiat per error. 150 → 149 fitxes; `valida-dades.js` ja no dona cap avís | — |
 | 2026-10-05 | estructura | Enllaços de Drive de «Podem construir-ho?» (2n S02) i «Fake news» (3r S06): s'esborren els dos últims PDF i la carpeta `florence-pdf/` desapareix. Fora el sistema antic `pdf: true` de `florence-cb.html` i de `valida-dades.js`. L'enllaç de S02 és el mateix fitxer que la fitxa «Desenvolupament pla de cossos geomètrics», i el validador ho avisa | — |

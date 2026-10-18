@@ -530,7 +530,7 @@ async function exportPdf(btn) {
     const CW = PW - 2 * M;                      // amplada de contingut
     const TOP = PH - M;
 
-    // Descarrega i incrusta cada imatge una sola vegada (cross-origin → cal CORS al cb).
+    // Incrusta cada imatge una sola vegada (són a cb/data/, al mateix lloc: no cal CORS).
     const cache = new Map();
     async function embed(path) {
       if (cache.has(path)) return cache.get(path);
@@ -582,7 +582,7 @@ async function exportPdf(btn) {
   } catch (err) {
     console.error(err);
     alert("No s'ha pogut generar el PDF.\n\n" + err.message +
-          "\n\nSi és un error de xarxa o CORS, comprova que el fitxer _headers estigui desplegat al cb.step-quiz.net.");
+          "\n\nSi falta alguna imatge, cal tornar a copiar-les a cb/data/ amb «python3 genera_cb_items.py ../cb/preguntes.json cb-items.json --imatges ../cb/data».");
   } finally {
     btn.disabled = false;
     btn.innerHTML = original;
@@ -745,7 +745,7 @@ async function exportPdfTeacher(btn) {
   } catch (err) {
     console.error(err);
     alert("No s'ha pogut generar el PDF.\n\n" + err.message +
-          "\n\nSi es un error de xarxa o CORS, comprova que el fitxer _headers estigui desplegat al cb.step-quiz.net.");
+          "\n\nSi falta alguna imatge, cal tornar a copiar-les a cb/data/ amb «python3 genera_cb_items.py ../cb/preguntes.json cb-items.json --imatges ../cb/data».");
   } finally {
     btn.disabled = false;
     btn.innerHTML = original;
