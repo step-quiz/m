@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-18",
+  "generated": "2026-10-18",
   "source": "https://cb.step-quiz.net/",
   "image_base": "cb/",
   "labels": {
@@ -603,10 +603,10 @@
           "dificultat": 1,
           "correcta": 1,
           "pistes": [
-            "pista pendent",
+            "2.000 × 1,5 no és 2.500: potser has sumat 500 en lloc de multiplicar. Multiplicar per 1,5 és sumar-hi la meitat.",
             "",
-            "pista pendent",
-            "pista pendent"
+            "Has sumat massa. 2.000 × 1,5 és 2.000 més la meitat de 2.000. Quant és la meitat de 2.000?",
+            "Has calculat com si cada papereta costés 2 €. Fixa't en el preu: 1,50 €."
           ]
         },
         {
@@ -616,9 +616,9 @@
           "dificultat": 2,
           "correcta": 3,
           "pistes": [
-            "pista pendent",
-            "pista pendent",
-            "pista pendent",
+            "Ves pas a pas: quantes paperetes són la meitat de 2.000? Quants diners en treuen, a 1,50 € cadascuna? Quina fracció d'aquests diners són 250 €?",
+            "Has comparat 250 amb el nombre de paperetes venudes (1.000), però la pregunta parla de diners. Quants euros recapten amb 1.000 paperetes?",
+            "Has comparat el premi amb el que queda per al viatge. La pregunta demana quina part del total recaptat és el premi.",
             ""
           ]
         },
@@ -630,9 +630,9 @@
           "correcta": 0,
           "pistes": [
             "",
-            "pista pendent",
-            "pista pendent",
-            "pista pendent"
+            "Ha comprat 3 paperetes de 1.500. Revisa com simplifiques la fracció: has de dividir el numerador i el denominador pel mateix nombre.",
+            "Aquesta seria la probabilitat amb una sola papereta. Quantes paperetes ha comprat l'alumne?",
+            "El número imprès a la papereta no hi té res a veure: totes les paperetes tenen la mateixa probabilitat de sortir. Compta quantes en té."
           ]
         }
       ]
