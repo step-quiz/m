@@ -58,9 +58,12 @@ complexitat de cada ítem, i la clau de respostes. No cal endevinar res.
 
 ### Passos
 
-1. **Retallar les imatges.** `python3 retalla_cb.py` sobre els PDF de la prova. Genera
-   `data/cb<nivell><any>e<N>.png` (enunciats) i `data/cb<nivell><any>p<M>.png` (preguntes),
-   amb `M` = el número oficial de l'ítem a la prova.
+1. **Retallar les imatges.** `python3 retalla_cb.py 2027` (l'any de la convocatòria) sobre
+   els PDF de la prova, que per defecte llegeix de `pdfs/2eso_prova.pdf` i
+   `pdfs/4eso_prova.pdf` (altres rutes amb `--2eso`, `--4eso` i `--sortida`; vegeu
+   `python3 retalla_cb.py --help`). Deixa a `noves/data/` els PNG
+   `cb<nivell><any>e<N>.png` (enunciats) i `cb<nivell><any>p<M>.png` (preguntes), amb
+   `M` = el número oficial de l'ítem a la prova; els bons es copien a `data/` de `cb-main`.
 
    El guió dedueix els blocs sol: un bloc és un estímul compartit més les preguntes que en
    pengen. Quan una pàgina continua l'activitat anterior sense estímul nou (només la barra
