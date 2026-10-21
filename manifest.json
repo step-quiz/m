@@ -346,7 +346,7 @@
     {
       "title": "Potencies i arrels",
       "id": "potencies-i-arrels",
-      "drive_id": "1oUImZr-o5ytNxO9l6erBvOKoWxb4FH_b",
+      "drive_id": "1hp1bEIbNMURb7-cjseXfz1CN-rieMu-y",
       "format": "pdf",
       "origin": "g-morales",
       "courses": [
@@ -362,7 +362,7 @@
     {
       "title": "Nombres enters",
       "id": "nombres-enters",
-      "drive_id": "1aMWvL9Tp0PcZ8C1MyDTT4XD5vF6TuzkK",
+      "drive_id": "12vwDXDtBcXplP_C2vd_ZNSCKe2Y-5Vym",
       "format": "pdf",
       "origin": "g-morales",
       "courses": [
@@ -377,7 +377,7 @@
     {
       "title": "Divisibilitat",
       "id": "divisibilitat",
-      "drive_id": "1qb3bl-YXQNr-89pWNKKhIjN4p-i_CJjx",
+      "drive_id": "1ZaponsCo_ZUuD2TQtNch_jNcrzel5y-m",
       "format": "pdf",
       "origin": "g-morales",
       "courses": [
@@ -393,7 +393,7 @@
     {
       "title": "Fraccions",
       "id": "fraccions",
-      "drive_id": "1U8qyHQGMJ48y7yfXerkyg19WqBRD4upV",
+      "drive_id": "1JLp4c9KwqCwfSm14MEL7ZgJgt-Wyci-_",
       "format": "pdf",
       "origin": "g-morales",
       "courses": [
@@ -410,7 +410,7 @@
     {
       "title": "Proporcionalitat numèrica",
       "id": "proporcionalitat-numerica",
-      "drive_id": "1PWjyD5T9nFX6Wa-Nn1J551fd6P8D-Oma",
+      "drive_id": "10KpMO0QRrpV5fTIENlIcxUm8csb4lwMe",
       "format": "pdf",
       "origin": "g-morales",
       "courses": [
@@ -419,6 +419,21 @@
       "math_sense": "numeric",
       "activities": [
         "proporcionalitat"
+      ],
+      "type": "dossier"
+    },
+    {
+      "title": "Llenguatge algebraic",
+      "id": "llenguatge-algebraic-morales",
+      "drive_id": "1iyvb2t5BUqCgII0JfUA4DDe1Z_DRxbyR",
+      "format": "pdf",
+      "origin": "g-morales",
+      "courses": [
+        "1ESO"
+      ],
+      "math_sense": "algebraic",
+      "activities": [
+        "llenguatge-algebraic"
       ],
       "type": "dossier"
     },
